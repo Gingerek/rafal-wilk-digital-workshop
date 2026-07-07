@@ -3546,8 +3546,9 @@ function openApp(id, title){
       if (typeof next === 'function') next();
     } else {
       if (err) err.textContent = 'Incorrect code. Try again.';
-      pin.select();
-      pin.focus();
+      pin.value = '';
+      pin.dispatchEvent(new Event('input', { bubbles: true }));
+      try { pin.focus({ preventScroll: true }); } catch(_e) { pin.focus(); }
     }
   }
 
@@ -6425,3 +6426,5 @@ ${moduleBrain ? [summarizeBrainList(moduleBrain.rules,8),summarizeBrainList(modu
   setTimeout(install, 2200);
 })();
 </script>
+<link rel="stylesheet" href="assets/css/platform-v2.css">
+<script src="assets/js/platform-v2.js"></script>
