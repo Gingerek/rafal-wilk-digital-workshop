@@ -90,14 +90,35 @@
 
   let activeFilter = 'all';
   let activeModuleTitle = '';
+  let activeLangOverride = null;
 
   function lang(){
-    const raw = String(localStorage.getItem(LS_LANG) || document.documentElement.lang || 'pl').toLowerCase();
+    let stored = '';
+    try { stored = localStorage.getItem(LS_LANG) || ''; } catch(_e) {}
+    const raw = String(activeLangOverride || stored || document.documentElement.lang || 'pl').toLowerCase();
     if (raw.startsWith('en')) return 'en';
     if (raw.startsWith('nl')) return 'nl';
     return 'pl';
   }
+  function setPlatformLang(nextLang){
+    activeLangOverride = String(nextLang || 'pl').toLowerCase().slice(0, 2);
+    if (!['pl', 'en', 'nl'].includes(activeLangOverride)) activeLangOverride = 'pl';
+    try {
+      localStorage.setItem(LS_LANG, activeLangOverride);
+      localStorage.setItem('doc_lang', activeLangOverride);
+      localStorage.setItem('supplier_lang', activeLangOverride);
+    } catch(_e) {}
+    document.documentElement.lang = activeLangOverride;
+  }
   function t(key){ return copy[key]?.[lang()] || copy[key]?.pl || key; }
+  function moduleTitle(meta){
+    return meta?.title?.[lang()] || meta?.title?.pl || '';
+  }
+  function syncHomeLang(){
+    document.querySelectorAll('[data-rw-home-lang]').forEach((btn) => {
+      btn.setAttribute('aria-pressed', btn.dataset.rwHomeLang === lang() ? 'true' : 'false');
+    });
+  }
   function findMeta(card){
     const title = card.querySelector('.title');
     const key = title?.dataset.titleKey || title?.textContent || '';
@@ -132,8 +153,17 @@
     const hero = document.querySelector('.rw-v2-hero');
     if (!hero) return;
     hero.innerHTML = `<div class="rw-v2-hero-poster">
-      <h2>Rafal Wilk Digital Workshop</h2>
+      <h2 class="rw-v2-brand-lockup">
+        <span>Rafal Wilk Digital Workshop</span>
+        <span class="rw-v2-copy-mark" title="Copyright" aria-label="Copyright">&copy;</span>
+      </h2>
+      <div class="rw-v2-home-lang" role="group" aria-label="Language">
+        <button type="button" data-rw-home-lang="pl">PL</button>
+        <button type="button" data-rw-home-lang="en">EN</button>
+        <button type="button" data-rw-home-lang="nl">NL</button>
+      </div>
     </div>`;
+    syncHomeLang();
   }
   function renderToolbar(){
     const toolbar = document.querySelector('.rw-v2-toolbar');
@@ -164,10 +194,15 @@
       card.querySelector('.rw-v2-card-meta')?.remove();
       card.querySelector('.rw-v2-card-desc')?.remove();
       const title = card.querySelector('.title');
-      if (title) title.textContent = meta.title[lang()] || meta.title.pl;
+      const titleText = moduleTitle(meta);
+      if (title) title.textContent = titleText;
+      card.classList.add('rw-v2-card-clickable');
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', `${t('open')} ${titleText}`);
       const btn = card.querySelector('.btn');
       if (btn) {
-        const label = `${t('open')} ${meta.title[lang()] || meta.title.pl}`;
+        const label = `${t('open')} ${titleText}`;
         btn.classList.add('rw-v2-card-open');
         btn.setAttribute('aria-label', label);
         btn.setAttribute('title', label);
@@ -212,10 +247,21 @@
     const text = document.querySelector('#mc_gate p');
     const cancel = document.getElementById('mc_cancel');
     const ok = document.getElementById('mc_ok');
-    if (title) title.textContent = t('pinTitle');
-    if (text) text.textContent = activeModuleTitle ? `${t('pinText')} ${activeModuleTitle}` : t('pinText');
-    if (cancel) cancel.textContent = t('cancel');
-    if (ok) ok.textContent = t('unlock');
+    const gate = document.getElementById('mc_gate');
+    const module = String(activeModuleTitle || gate?.dataset.rwModuleTitle || '').trim();
+    const pinText = {
+      pl: module ? `Wpisz PIN, aby otworzyć: ${module}` : 'Wpisz PIN, aby otworzyć wybrany moduł.',
+      en: module ? `Enter PIN to open: ${module}` : 'Enter PIN to open this module.',
+      nl: module ? `Voer de pincode in voor: ${module}` : 'Voer de pincode in om deze module te openen.'
+    };
+    const desiredTitle = t('pinTitle');
+    const desiredText = pinText[lang()] || pinText.pl;
+    const desiredCancel = t('cancel');
+    const desiredOk = t('unlock');
+    if (title && title.textContent !== desiredTitle) title.textContent = desiredTitle;
+    if (text && text.textContent !== desiredText) text.textContent = desiredText;
+    if (cancel && cancel.textContent !== desiredCancel) cancel.textContent = desiredCancel;
+    if (ok && ok.textContent !== desiredOk) ok.textContent = desiredOk;
   }
   function patchPinGateHooks(){
     if (window.__rwV2PinHooks) return;
@@ -224,6 +270,8 @@
     if (typeof originalRequest === 'function') {
       window.__rwRequestModulePin = function(callback, moduleTitle){
         activeModuleTitle = moduleTitle || '';
+        const gate = document.getElementById('mc_gate');
+        if (gate) gate.dataset.rwModuleTitle = activeModuleTitle;
         originalRequest(callback, moduleTitle);
         setTimeout(() => {
           patchPinTexts();
@@ -235,6 +283,14 @@
     const input = document.getElementById('mc_pin');
     const err = document.getElementById('mc_err');
     const gate = document.getElementById('mc_gate');
+    const pinTextObserver = new MutationObserver(() => {
+      if (!gate || getComputedStyle(gate).display === 'none') return;
+      setTimeout(patchPinTexts, 0);
+    });
+    gate && pinTextObserver.observe(gate, { childList:true, characterData:true, subtree:true, attributes:true, attributeFilter:['style', 'class'] });
+    setInterval(() => {
+      if (gate && getComputedStyle(gate).display !== 'none') patchPinTexts();
+    }, 500);
     const mo = new MutationObserver(() => {
       if (err && err.textContent) {
         err.textContent = t('wrongPin');
@@ -288,9 +344,23 @@
     enhanceCards();
     patchPinTexts();
     updateModuleBar();
+    syncHomeLang();
   }
   function bindEvents(){
     document.addEventListener('click', (event) => {
+      const homeLang = event.target.closest('[data-rw-home-lang]');
+      if (homeLang) {
+        event.preventDefault();
+        const nextLang = homeLang.dataset.rwHomeLang || 'pl';
+        setPlatformLang(nextLang);
+        document.querySelector(`.rw-lang-btn[data-lang="${nextLang}"]`)?.click();
+        window.dispatchEvent(new CustomEvent('rwLanguageChanged'));
+        applyLanguage();
+        setTimeout(applyLanguage, 120);
+        setTimeout(applyLanguage, 700);
+        setTimeout(applyLanguage, 1700);
+        return;
+      }
       const filter = event.target.closest('.rw-v2-filter');
       if (filter) {
         activeFilter = filter.dataset.filter || 'all';
@@ -304,6 +374,15 @@
         applyLanguage();
         document.querySelector('.rw-v2-toolbar')?.scrollIntoView({ behavior:'smooth', block:'start' });
       }
+      const wholeCard = event.target.closest('main.wrap .grid .card');
+      if (wholeCard && !event.target.closest('a, button, input, select, textarea, label, [contenteditable="true"]')) {
+        const btn = wholeCard.querySelector('.btn');
+        if (btn) {
+          event.preventDefault();
+          btn.click();
+          return;
+        }
+      }
       const moduleButton = event.target.closest('main.wrap .grid .btn');
       if (moduleButton) {
         const card = moduleButton.closest('.card');
@@ -316,6 +395,21 @@
     }, true);
     window.addEventListener('storage', applyLanguage);
     window.addEventListener('rwLanguageChanged', applyLanguage);
+    setInterval(() => {
+      if (!document.body.classList.contains('app-open')) {
+        syncHomeLang();
+        enhanceCards();
+      }
+    }, 1600);
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const card = event.target.closest?.('main.wrap .grid .card');
+      if (!card || event.target.closest('a, button, input, select, textarea, label, [contenteditable="true"]')) return;
+      const btn = card.querySelector('.btn');
+      if (!btn) return;
+      event.preventDefault();
+      btn.click();
+    });
     const bodyObserver = new MutationObserver(updateModuleBar);
     bodyObserver.observe(document.body, { attributes:true, attributeFilter:['class'] });
     setInterval(updateModuleBar, 1200);
