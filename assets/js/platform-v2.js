@@ -51,16 +51,16 @@
   const copy = {
     eyebrow:{pl:'Platforma operacyjna', en:'Operations platform', nl:'Operationeel platform'},
     headline:{pl:'Platforma modułów pracy.', en:'Private Work Platform.', nl:'Privé werkplatform.'},
-    intro:{pl:'Profesjonalna platforma online z chronionymi modułami, obsługą języków i szybkim dostępem do narzędzi rekrutacyjnych, finansowych i dokumentowych.',
-      en:'A professional online platform with protected modules, multilingual controls, and fast access to recruitment, finance, document, and tracking tools.',
-      nl:'Een professioneel online platform met beveiligde modules, meertalige bediening en snelle toegang tot recruitment-, finance-, document- en trackingtools.'},
-    ownerNote:{pl:'Prywatna strona Rafal Wilk. Dostęp do modułów ma wyłącznie właściciel.',
-      en:'Private Rafal Wilk page. Module access is reserved for the owner only.',
-      nl:'Privepagina van Rafal Wilk. Alleen de eigenaar heeft toegang tot de modules.'},
+    intro:{pl:'Prywatna przestrzeń Rafała Wilka.',
+      en:'Rafal Wilk private workspace.',
+      nl:'Prive werkruimte van Rafal Wilk.'},
+    ownerNote:{pl:'Dostęp do modułów ma wyłącznie właściciel.',
+      en:'Owner-only module access.',
+      nl:'Alleen toegang voor de eigenaar.'},
     openFirst:{pl:'Otwórz pierwszy moduł', en:'Open first module', nl:'Open eerste module'},
     viewAll:{pl:'Pokaż wszystkie', en:'View all', nl:'Toon alles'},
     library:{pl:'Biblioteka modułów', en:'Module library', nl:'Modulebibliotheek'},
-    librarySub:{pl:'Wybierz kategorię albo otwórz moduł po PIN-ie.', en:'Filter by category or open a module with PIN access.', nl:'Filter op categorie of open een module met pincode.'},
+    librarySub:{pl:'Wybierz moduł lub kategorię.', en:'Choose a module or category.', nl:'Kies een module of categorie.'},
     protected:{pl:'Chronione moduły', en:'Protected modules', nl:'Beveiligde modules'},
     categories:{pl:'Kategorie', en:'Categories', nl:'Categorieën'},
     languages:{pl:'Języki', en:'Languages', nl:'Talen'},
@@ -127,7 +127,7 @@
         <div class="rw-v2-eyebrow">${t('eyebrow')}</div>
         <h2>${t('headline')}</h2>
         <p>${t('intro')}</p>
-        <div class="rw-v2-owner-note"><span>RW</span>${t('ownerNote')}</div>
+        <div class="rw-v2-owner-note">${t('ownerNote')}</div>
         <div class="rw-v2-hero-actions">
           <button class="rw-v2-primary" type="button" data-rw-v2-open-first>${t('openFirst')}</button>
           <button class="rw-v2-secondary" type="button" data-rw-v2-view-all>${t('viewAll')}</button>
@@ -333,6 +333,21 @@
     bodyObserver.observe(document.body, { attributes:true, attributeFilter:['class'] });
     setInterval(updateModuleBar, 1200);
   }
+  function hideStageWidgets(){
+    ['rwPlatformApiStatus', 'rwVoiceLauncher', 'rwLauncherDock'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.setAttribute('hidden', '');
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('visibility', 'hidden', 'important');
+      el.style.setProperty('opacity', '0', 'important');
+      el.style.setProperty('pointer-events', 'none', 'important');
+    });
+    document.querySelectorAll('.privacy-footer').forEach((el) => {
+      el.setAttribute('hidden', '');
+      el.style.setProperty('display', 'none', 'important');
+    });
+  }
   function init(){
     document.body.classList.add('rw-v2-ready');
     ensureShell();
@@ -340,6 +355,9 @@
     patchPinGateHooks();
     ensureModuleBar();
     bindEvents();
+    hideStageWidgets();
+    new MutationObserver(hideStageWidgets).observe(document.body, { childList:true, subtree:true });
+    setInterval(hideStageWidgets, 1200);
     applyLanguage();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
