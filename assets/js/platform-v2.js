@@ -120,17 +120,26 @@
     const hero = document.querySelector('.rw-v2-hero');
     if (!hero) return;
     hero.innerHTML = `<div class="rw-v2-hero-inner">
-      <div class="rw-v2-eyebrow">${t('eyebrow')}</div>
-      <h2>${t('headline')}</h2>
-      <p>${t('intro')}</p>
-      <div class="rw-v2-hero-actions">
-        <button class="rw-v2-primary" type="button" data-rw-v2-open-first>${t('openFirst')}</button>
-        <button class="rw-v2-secondary" type="button" data-rw-v2-view-all>${t('viewAll')}</button>
+      <div class="rw-v2-hero-copy">
+        <div class="rw-v2-eyebrow">${t('eyebrow')}</div>
+        <h2>${t('headline')}</h2>
+        <p>${t('intro')}</p>
+        <div class="rw-v2-hero-actions">
+          <button class="rw-v2-primary" type="button" data-rw-v2-open-first>${t('openFirst')}</button>
+          <button class="rw-v2-secondary" type="button" data-rw-v2-view-all>${t('viewAll')}</button>
+        </div>
+        <div class="rw-v2-stats">
+          <div class="rw-v2-stat"><strong>${modules.length}</strong><span>${t('protected')}</span></div>
+          <div class="rw-v2-stat"><strong>${categories.length - 1}</strong><span>${t('categories')}</span></div>
+          <div class="rw-v2-stat"><strong>PL/EN/NL</strong><span>${t('languages')}</span></div>
+        </div>
       </div>
-      <div class="rw-v2-stats">
-        <div class="rw-v2-stat"><strong>${modules.length}</strong><span>${t('protected')}</span></div>
-        <div class="rw-v2-stat"><strong>${categories.length - 1}</strong><span>${t('categories')}</span></div>
-        <div class="rw-v2-stat"><strong>PL/EN/NL</strong><span>${t('languages')}</span></div>
+      <div class="rw-v2-visual" aria-hidden="true">
+        <div class="rw-v2-visual-photo"></div>
+        <div class="rw-v2-ring rw-v2-ring-a"></div>
+        <div class="rw-v2-ring rw-v2-ring-b"></div>
+        <div class="rw-v2-dash rw-v2-dash-a"></div>
+        <div class="rw-v2-dash rw-v2-dash-b"></div>
       </div>
     </div>`;
   }
