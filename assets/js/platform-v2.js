@@ -19,9 +19,9 @@
     { match:'Ocena dopasowania CV', icon:'cv', category:'recruitment',
       title:{pl:'Ocena dopasowania CV', en:'CV Match Review', nl:'CV-match beoordeling'},
       desc:{pl:'Porównanie CV z opisem stanowiska i wymaganiami.', en:'Compare a CV against role requirements.', nl:'Vergelijk een CV met functie-eisen.'}},
-    { match:'MSD CAO', icon:'document', category:'documents',
-      title:{pl:'MSD CAO 2026-2027', en:'MSD CAO 2026-2027', nl:'MSD CAO 2026-2027'},
-      desc:{pl:'Szybki dostęp do warunków i stawek CAO.', en:'Quick access to CAO terms and rates.', nl:'Snelle toegang tot CAO-voorwaarden en tarieven.'}},
+    { match:['MSD CAO', 'Merit increase'], icon:'document', category:'documents',
+      title:{pl:'Merit increase 2026', en:'Merit increase 2026', nl:'Merit increase 2026'},
+      desc:{pl:'Kalkulator merit increase z wyraźnym wyborem roku.', en:'Merit increase calculator with clear year selection.', nl:'Merit increase calculator met duidelijke jaarkeuze.'}},
     { match:'Przegląd agencji', icon:'agency', category:'documents',
       title:{pl:'Przegląd agencji', en:'Agency Review', nl:'Bureauoverzicht'},
       desc:{pl:'Porządkowanie informacji o agencjach i partnerach.', en:'Organize agency and partner information.', nl:'Orden informatie over bureaus en partners.'}},
@@ -101,7 +101,10 @@
   function findMeta(card){
     const title = card.querySelector('.title');
     const key = title?.dataset.titleKey || title?.textContent || '';
-    return modules.find(m => key.includes(m.match) || String(title?.textContent || '').includes(m.match)) || modules[0];
+    return modules.find((m) => {
+      const matches = Array.isArray(m.match) ? m.match : [m.match];
+      return matches.some((match) => key.includes(match) || String(title?.textContent || '').includes(match));
+    }) || modules[0];
   }
   function syncBrand(){
     document.querySelectorAll('.rw-brand-main').forEach((el) => {
