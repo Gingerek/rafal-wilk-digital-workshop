@@ -54,6 +54,9 @@
     intro:{pl:'Profesjonalna platforma online z chronionymi modułami, obsługą języków i szybkim dostępem do narzędzi rekrutacyjnych, finansowych i dokumentowych.',
       en:'A professional online platform with protected modules, multilingual controls, and fast access to recruitment, finance, document, and tracking tools.',
       nl:'Een professioneel online platform met beveiligde modules, meertalige bediening en snelle toegang tot recruitment-, finance-, document- en trackingtools.'},
+    ownerNote:{pl:'Prywatna strona Rafal Wilk. Dostęp do modułów ma wyłącznie właściciel.',
+      en:'Private Rafal Wilk page. Module access is reserved for the owner only.',
+      nl:'Privepagina van Rafal Wilk. Alleen de eigenaar heeft toegang tot de modules.'},
     openFirst:{pl:'Otwórz pierwszy moduł', en:'Open first module', nl:'Open eerste module'},
     viewAll:{pl:'Pokaż wszystkie', en:'View all', nl:'Toon alles'},
     library:{pl:'Biblioteka modułów', en:'Module library', nl:'Modulebibliotheek'},
@@ -124,6 +127,7 @@
         <div class="rw-v2-eyebrow">${t('eyebrow')}</div>
         <h2>${t('headline')}</h2>
         <p>${t('intro')}</p>
+        <div class="rw-v2-owner-note"><span>RW</span>${t('ownerNote')}</div>
         <div class="rw-v2-hero-actions">
           <button class="rw-v2-primary" type="button" data-rw-v2-open-first>${t('openFirst')}</button>
           <button class="rw-v2-secondary" type="button" data-rw-v2-view-all>${t('viewAll')}</button>
