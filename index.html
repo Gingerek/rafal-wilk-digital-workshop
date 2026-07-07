@@ -1244,6 +1244,184 @@ body.app-open .rw-header{display:none !important;}
   setTimeout(apply, 1000);
 })();
 </script>
+<style id="rw-professional-final-v2">
+  body:not(.app-open){
+    background:#f5f7fb !important;
+    color:#111827 !important;
+    overflow:auto !important;
+  }
+  body:not(.app-open) .rw-header{
+    background:rgba(255,255,255,.94) !important;
+    border-bottom:1px solid #dde5f0 !important;
+    box-shadow:0 8px 26px rgba(15,23,42,.06) !important;
+  }
+  body:not(.app-open) .rw-title,
+  body:not(.app-open) .rw-brand-main{
+    color:#111827 !important;
+    text-shadow:none !important;
+  }
+  body:not(.app-open) .rw-owner-mark{
+    background:#ecfdf5 !important;
+    color:#047857 !important;
+    border:1px solid #a7f3d0 !important;
+    box-shadow:none !important;
+  }
+  body:not(.app-open) .rw-future-hero{
+    display:none !important;
+  }
+  body:not(.app-open) main.wrap{
+    display:block !important;
+    width:min(1180px, calc(100vw - 32px)) !important;
+    max-width:1180px !important;
+    min-height:auto !important;
+    height:auto !important;
+    margin:0 auto !important;
+    padding:28px 0 110px !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    border:0 !important;
+    overflow:visible !important;
+  }
+  body:not(.app-open) main.wrap::before{
+    content:"Rafal Wilk Digital Workshop";
+    display:flex !important;
+    align-items:flex-start !important;
+    min-height:220px !important;
+    margin:0 0 18px !important;
+    padding:42px clamp(26px,5vw,64px) !important;
+    border-radius:8px !important;
+    border:1px solid #dbe3ef !important;
+    background:
+      linear-gradient(135deg, rgba(17,24,39,.96), rgba(15,118,110,.84)),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='360' viewBox='0 0 900 360'%3E%3Cg fill='none' stroke='rgba(255,255,255,.22)' stroke-width='1.2'%3E%3Cpath d='M110 250 C260 80 440 310 620 130 S830 180 880 70'/%3E%3Cpath d='M40 150 C170 40 350 180 480 92 S740 50 860 230'/%3E%3C/g%3E%3Cg fill='rgba(255,255,255,.24)'%3E%3Ccircle cx='130' cy='238' r='5'/%3E%3Ccircle cx='292' cy='128' r='7'/%3E%3Ccircle cx='474' cy='230' r='5'/%3E%3Ccircle cx='642' cy='128' r='8'/%3E%3Ccircle cx='810' cy='154' r='6'/%3E%3Ccircle cx='206' cy='68' r='5'/%3E%3Ccircle cx='518' cy='88' r='6'/%3E%3Ccircle cx='758' cy='82' r='5'/%3E%3C/g%3E%3C/svg%3E") right center / auto 100% no-repeat !important;
+    color:#ffffff !important;
+    font-size:clamp(32px,4vw,58px) !important;
+    line-height:1.02 !important;
+    font-weight:860 !important;
+    letter-spacing:0 !important;
+    box-shadow:0 18px 44px rgba(15,23,42,.12) !important;
+  }
+  body:not(.app-open) main.wrap::after{
+    content:"Professional, protected modules for recruitment operations, finance checks, documents, and work tracking.";
+    display:block !important;
+    width:min(680px, calc(100% - 56px)) !important;
+    margin:-138px 0 92px clamp(26px,5vw,64px) !important;
+    color:rgba(255,255,255,.78) !important;
+    font-size:15px !important;
+    line-height:1.55 !important;
+    position:relative !important;
+    z-index:1 !important;
+  }
+  body:not(.app-open) main.wrap .grid{
+    display:grid !important;
+    grid-template-columns:repeat(3, minmax(0,1fr)) !important;
+    gap:14px !important;
+    width:100% !important;
+    max-width:none !important;
+    min-height:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    border:0 !important;
+  }
+  body:not(.app-open) main.wrap .card{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:14px !important;
+    min-height:132px !important;
+    height:auto !important;
+    padding:18px !important;
+    border-radius:8px !important;
+    border:1px solid #dbe3ef !important;
+    background:#ffffff !important;
+    box-shadow:0 10px 24px rgba(15,23,42,.07) !important;
+    backdrop-filter:none !important;
+    transform:none !important;
+    overflow:hidden !important;
+  }
+  body:not(.app-open) main.wrap .card:hover{
+    transform:translateY(-2px) !important;
+    border-color:#b6c7dc !important;
+    box-shadow:0 16px 34px rgba(15,23,42,.10) !important;
+  }
+  body:not(.app-open) main.wrap .card::before{
+    content:"" !important;
+    display:block !important;
+    position:absolute !important;
+    inset:0 auto 0 0 !important;
+    width:4px !important;
+    background:linear-gradient(180deg,#2563eb,#0f766e,#b45309) !important;
+  }
+  body:not(.app-open) main.wrap .card::after{
+    content:"Lock" !important;
+    position:absolute !important;
+    right:16px !important;
+    top:16px !important;
+    padding:4px 8px !important;
+    border-radius:999px !important;
+    background:#f1f5f9 !important;
+    color:#64748b !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+    letter-spacing:0 !important;
+  }
+  body:not(.app-open) main.wrap .title{
+    max-width:calc(100% - 64px) !important;
+    color:#111827 !important;
+    text-shadow:none !important;
+    font-size:16px !important;
+    line-height:1.28 !important;
+    font-weight:820 !important;
+  }
+  body:not(.app-open) main.wrap .btn{
+    margin-top:auto !important;
+    align-self:flex-start !important;
+    min-width:0 !important;
+    min-height:38px !important;
+    padding:9px 14px !important;
+    border-radius:8px !important;
+    border:1px solid rgba(15,118,110,.18) !important;
+    background:#0f766e !important;
+    color:#ffffff !important;
+    box-shadow:none !important;
+    font-size:12px !important;
+    line-height:1 !important;
+    font-weight:850 !important;
+    text-shadow:none !important;
+    text-transform:none !important;
+    letter-spacing:0 !important;
+  }
+  body:not(.app-open) main.wrap .btn:hover{
+    background:#115e59 !important;
+    filter:none !important;
+  }
+  body:not(.app-open) .privacy-footer{
+    background:#ffffff !important;
+    color:#475569 !important;
+    border:1px solid #dbe3ef !important;
+    box-shadow:0 10px 24px rgba(15,23,42,.08) !important;
+    backdrop-filter:none !important;
+  }
+  body:not(.app-open) #rwPlatformApiStatus .rwStatusCard{
+    border-radius:8px !important;
+    background:#ffffff !important;
+    color:#111827 !important;
+    border:1px solid #dbe3ef !important;
+    box-shadow:0 10px 24px rgba(15,23,42,.10) !important;
+  }
+  body:not(.app-open) #rwPlatformApiStatus .rwLabel{color:#0f766e !important;}
+  body:not(.app-open) #rwPlatformApiStatus .rwValue{color:#111827 !important;}
+  @media (max-width:900px){
+    body:not(.app-open) main.wrap .grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+  }
+  @media (max-width:620px){
+    body:not(.app-open) main.wrap{width:calc(100vw - 24px) !important; padding-top:18px !important;}
+    body:not(.app-open) main.wrap::before{min-height:210px !important; padding:28px 24px !important; font-size:34px !important;}
+    body:not(.app-open) main.wrap::after{margin:-124px 24px 76px !important; width:auto !important; font-size:13px !important;}
+    body:not(.app-open) main.wrap .grid{grid-template-columns:1fr !important;}
+  }
+</style>
 
 <style id="rw-v20-molecular-visual">
   .rw-future-hero.rw-molecule-hero{
@@ -2544,6 +2722,238 @@ body.app-open .rw-header{display:none !important;}
   setInterval(ensureDock,1000);
 })();
 </script>
+<style id="rw-professional-platform-v1">
+  :root{
+    --rw-pro-bg:#f6f8fb;
+    --rw-pro-surface:#ffffff;
+    --rw-pro-ink:#111827;
+    --rw-pro-muted:#64748b;
+    --rw-pro-line:#dbe3ef;
+    --rw-pro-accent:#0f766e;
+    --rw-pro-accent-2:#2563eb;
+    --rw-pro-warm:#b45309;
+    --rw-pro-shadow:0 18px 48px rgba(15,23,42,.10);
+  }
+  body:not(.app-open){
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.72), rgba(246,248,251,.94)),
+      radial-gradient(circle at 16% 12%, rgba(37,99,235,.14), transparent 30%),
+      radial-gradient(circle at 86% 18%, rgba(15,118,110,.14), transparent 28%),
+      var(--rw-pro-bg) !important;
+    color:var(--rw-pro-ink) !important;
+    overflow:auto !important;
+  }
+  body:not(.app-open)::before{display:none !important;}
+  body:not(.app-open) .rw-header{
+    position:sticky !important;
+    top:0 !important;
+    background:rgba(255,255,255,.86) !important;
+    border-bottom:1px solid rgba(219,227,239,.9) !important;
+    box-shadow:0 10px 30px rgba(15,23,42,.06) !important;
+    backdrop-filter:blur(16px) saturate(130%) !important;
+  }
+  body:not(.app-open) .rw-wrap{
+    max-width:1180px !important;
+    min-height:72px !important;
+    padding:14px 24px !important;
+  }
+  body:not(.app-open) .rw-brand-main{
+    color:var(--rw-pro-ink) !important;
+    text-shadow:none !important;
+    font-size:clamp(24px,2vw,34px) !important;
+    font-weight:850 !important;
+  }
+  body:not(.app-open) .rw-brand-sub::before{
+    content:"Recruitment operations workspace";
+    color:var(--rw-pro-muted) !important;
+    letter-spacing:.16em !important;
+  }
+  body:not(.app-open) .rw-owner-mark{
+    border-color:rgba(15,118,110,.22) !important;
+    background:rgba(15,118,110,.08) !important;
+    color:var(--rw-pro-accent) !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+  }
+  body:not(.app-open) .rw-lang{
+    background:#f8fafc !important;
+    border:1px solid var(--rw-pro-line) !important;
+    box-shadow:none !important;
+  }
+  body:not(.app-open) .rw-lang-btn{
+    color:var(--rw-pro-muted) !important;
+    border-radius:8px !important;
+  }
+  body:not(.app-open) .rw-lang-btn.active,
+  body:not(.app-open) .rw-lang-btn[aria-pressed="true"]{
+    background:var(--rw-pro-ink) !important;
+    color:#fff !important;
+  }
+  body:not(.app-open) .rw-future-hero{
+    width:min(1180px, calc(100vw - 32px)) !important;
+    min-height:260px !important;
+    height:260px !important;
+    margin:26px auto 18px !important;
+    padding:0 !important;
+    border:1px solid rgba(219,227,239,.95) !important;
+    border-radius:8px !important;
+    background:
+      linear-gradient(135deg, rgba(17,24,39,.94), rgba(15,118,110,.82)),
+      linear-gradient(90deg, rgba(37,99,235,.24), rgba(180,83,9,.20)) !important;
+    box-shadow:var(--rw-pro-shadow) !important;
+    overflow:hidden !important;
+  }
+  body:not(.app-open) .rw-future-hero::before{
+    content:"Rafal Wilk Digital Workshop";
+    position:absolute !important;
+    left:clamp(24px,5vw,68px) !important;
+    top:44px !important;
+    right:28px !important;
+    z-index:4 !important;
+    color:#fff !important;
+    font-size:clamp(30px,4vw,56px) !important;
+    line-height:1 !important;
+    font-weight:850 !important;
+    letter-spacing:0 !important;
+    text-shadow:none !important;
+  }
+  body:not(.app-open) .rw-future-hero::after{
+    content:"Modular business tools, protected workspaces, and multilingual workflow support.";
+    position:absolute !important;
+    left:clamp(24px,5vw,68px) !important;
+    top:128px !important;
+    right:clamp(24px,5vw,68px) !important;
+    width:auto !important;
+    height:auto !important;
+    z-index:4 !important;
+    color:rgba(255,255,255,.78) !important;
+    background:none !important;
+    filter:none !important;
+    font-size:15px !important;
+    line-height:1.55 !important;
+    animation:none !important;
+  }
+  body:not(.app-open) .rw-molecule-stage{
+    opacity:.34 !important;
+    transform:translateX(24%) scale(.74) !important;
+    filter:saturate(.85) !important;
+  }
+  body:not(.app-open) main.wrap{
+    width:min(1180px, calc(100vw - 32px)) !important;
+    max-width:1180px !important;
+    padding:0 0 96px !important;
+    margin:0 auto !important;
+  }
+  body:not(.app-open) main.wrap .grid{
+    display:grid !important;
+    grid-template-columns:repeat(3, minmax(0, 1fr)) !important;
+    gap:14px !important;
+    margin:0 !important;
+    padding:0 !important;
+    width:100% !important;
+  }
+  body:not(.app-open) .card{
+    position:relative !important;
+    min-height:132px !important;
+    padding:18px !important;
+    border:1px solid var(--rw-pro-line) !important;
+    border-radius:8px !important;
+    background:var(--rw-pro-surface) !important;
+    box-shadow:0 10px 28px rgba(15,23,42,.07) !important;
+    backdrop-filter:none !important;
+    overflow:hidden !important;
+  }
+  body:not(.app-open) .card::before{
+    content:"" !important;
+    display:block !important;
+    position:absolute !important;
+    inset:0 auto 0 0 !important;
+    width:4px !important;
+    background:linear-gradient(180deg,var(--rw-pro-accent-2),var(--rw-pro-accent),var(--rw-pro-warm)) !important;
+  }
+  body:not(.app-open) .card::after{
+    content:"\1F512";
+    position:absolute !important;
+    top:16px !important;
+    right:16px !important;
+    width:28px !important;
+    height:28px !important;
+    display:grid !important;
+    place-items:center !important;
+    border-radius:50% !important;
+    background:#f1f5f9 !important;
+    color:var(--rw-pro-muted) !important;
+    font-size:13px !important;
+  }
+  body:not(.app-open) .card .title{
+    max-width:calc(100% - 44px) !important;
+    color:var(--rw-pro-ink) !important;
+    font-size:16px !important;
+    line-height:1.25 !important;
+    font-weight:820 !important;
+    text-shadow:none !important;
+  }
+  body:not(.app-open) .card .btn{
+    margin-top:auto !important;
+    align-self:flex-start !important;
+    min-height:38px !important;
+    padding:9px 14px !important;
+    border-radius:8px !important;
+    border:1px solid rgba(15,118,110,.18) !important;
+    background:var(--rw-pro-accent) !important;
+    color:#fff !important;
+    box-shadow:none !important;
+    font-size:12px !important;
+    font-weight:850 !important;
+    text-transform:none !important;
+    letter-spacing:0 !important;
+  }
+  body:not(.app-open) .card .btn:hover{
+    background:#115e59 !important;
+    transform:translateY(-1px) !important;
+    filter:none !important;
+  }
+  #mc_gate{
+    background:rgba(15,23,42,.58) !important;
+    backdrop-filter:blur(8px) !important;
+  }
+  #mc_gate .panel{
+    max-width:420px !important;
+    border-radius:8px !important;
+    background:#fff !important;
+    color:var(--rw-pro-ink) !important;
+    border:1px solid var(--rw-pro-line) !important;
+    box-shadow:0 24px 70px rgba(15,23,42,.25) !important;
+  }
+  #mc_gate h2{color:var(--rw-pro-ink) !important;}
+  #mc_gate p{color:var(--rw-pro-muted) !important;}
+  #mc_gate input{
+    background:#f8fafc !important;
+    color:var(--rw-pro-ink) !important;
+    border:1px solid var(--rw-pro-line) !important;
+    border-radius:8px !important;
+  }
+  #mc_gate button{
+    border-radius:8px !important;
+    background:var(--rw-pro-accent) !important;
+  }
+  #mc_gate .ghost{
+    background:#fff !important;
+    color:var(--rw-pro-ink) !important;
+    border:1px solid var(--rw-pro-line) !important;
+  }
+  @media (max-width:900px){
+    body:not(.app-open) main.wrap .grid{grid-template-columns:repeat(2, minmax(0,1fr)) !important;}
+    body:not(.app-open) .rw-future-hero{height:230px !important; min-height:230px !important;}
+  }
+  @media (max-width:620px){
+    body:not(.app-open) main.wrap .grid{grid-template-columns:1fr !important;}
+    body:not(.app-open) .rw-wrap{padding:12px 16px !important;}
+    body:not(.app-open) .rw-future-hero{width:calc(100vw - 24px) !important; height:220px !important; min-height:220px !important;}
+    body:not(.app-open) .rw-future-hero::before{top:30px !important;}
+    body:not(.app-open) .rw-future-hero::after{top:116px !important; font-size:13px !important;}
+  }
+</style>
 
 </head>
 <body>
@@ -2912,6 +3322,10 @@ function openMyCompany(){
   });
 
   function loadApp(idx){
+    if (!window.__rwModulePinConsume || !window.__rwModulePinConsume()){
+      window.__rwRequestModulePin && window.__rwRequestModulePin(function(){ window.loadApp(idx); }, APPS[idx] && APPS[idx].title);
+      return;
+    }
     __rwSaveActiveModule(idx);
     // Use srcdoc to keep same-origin context (enables localStorage and in-module language switching)
     const html = b64ToUtf8(APPS[idx].b64);
@@ -3036,6 +3450,10 @@ function openMyCompany(){
 </script>
 <script>
 function openApp(id, title){
+  if (!window.__rwModulePinConsume || !window.__rwModulePinConsume()){
+    window.__rwRequestModulePin && window.__rwRequestModulePin(function(){ openApp(id, title); }, title || id || 'Module');
+    return;
+  }
   try{ if (window.__rwSaveActiveFrame && id && id !== 'appframe') window.__rwSaveActiveFrame(id, title || ''); }catch(_e){}
   // hide all iframes
   document.querySelectorAll('iframe').forEach(f => f.classList.remove('show'));
@@ -3076,7 +3494,7 @@ function openApp(id, title){
 </div>
 </div>
 <script>
-// --- My Projects password gate (always ask) ---
+// --- Module password gate (always ask) ---
 (function(){
   const PIN = "4685";
   const gate = document.getElementById('mc_gate');
@@ -3084,8 +3502,21 @@ function openApp(id, title){
   const err = document.getElementById('mc_err');
   const ok = document.getElementById('mc_ok');
   const cancel = document.getElementById('mc_cancel');
+  const title = document.getElementById('mc_title');
+  const text = gate ? gate.querySelector('p') : null;
+  let pendingOpen = null;
+  let authorizedOnce = false;
 
-  window.openMc = function(){
+  window.__rwModulePinConsume = function(){
+    if (!authorizedOnce) return false;
+    authorizedOnce = false;
+    return true;
+  };
+
+  window.__rwRequestModulePin = function(callback, moduleTitle){
+    pendingOpen = callback;
+    if (title) title.textContent = 'Enter PIN';
+    if (text) text.innerHTML = 'Enter the module PIN to continue.';
     if (!gate) return;
     gate.style.display = 'flex';
     if (err) err.textContent = '';
@@ -3095,15 +3526,24 @@ function openApp(id, title){
     }
   };
 
-  function tryUnlock(){
-    if (!pin) return;
-    if (pin.value === PIN){
-      gate.style.display = 'none';
+  window.openMc = function(){
+    window.__rwRequestModulePin(function(){
       if (typeof openMyCompany === 'function') {
         openMyCompany();
       } else {
         openApp('mycompany', 'My Projects');
       }
+    }, 'My Projects');
+  };
+
+  function tryUnlock(){
+    if (!pin) return;
+    if (pin.value === PIN){
+      gate.style.display = 'none';
+      authorizedOnce = true;
+      const next = pendingOpen;
+      pendingOpen = null;
+      if (typeof next === 'function') next();
     } else {
       if (err) err.textContent = 'Incorrect code. Try again.';
       pin.select();
@@ -5907,5 +6347,81 @@ ${moduleBrain ? [summarizeBrainList(moduleBrain.rules,8),summarizeBrainList(modu
   setInterval(render, 1200);
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', render);
   render();
+})();
+</script>
+<script id="rw-professional-final-loader">
+(function(){
+  const css = `
+  body:not(.app-open){background:#f5f7fb!important;color:#111827!important;overflow:auto!important;}
+  body:not(.app-open) .rw-header{background:rgba(255,255,255,.94)!important;border-bottom:1px solid #dde5f0!important;box-shadow:0 8px 26px rgba(15,23,42,.06)!important;}
+  body:not(.app-open) .rw-title,body:not(.app-open) .rw-brand-main{color:#111827!important;text-shadow:none!important;}
+  body:not(.app-open) .rw-owner-mark{background:#ecfdf5!important;color:#047857!important;border:1px solid #a7f3d0!important;box-shadow:none!important;}
+  body:not(.app-open) .rw-future-hero{display:none!important;}
+  body:not(.app-open) main.wrap{display:block!important;width:min(1180px,calc(100vw - 32px))!important;max-width:1180px!important;min-height:auto!important;height:auto!important;margin:0 auto!important;padding:28px 0 110px!important;background:transparent!important;box-shadow:none!important;border:0!important;overflow:visible!important;}
+  body:not(.app-open) main.wrap::before{content:"Rafal Wilk Digital Workshop";display:flex!important;align-items:flex-start!important;min-height:220px!important;margin:0 0 18px!important;padding:42px clamp(26px,5vw,64px)!important;border-radius:8px!important;border:1px solid #dbe3ef!important;background:linear-gradient(135deg,rgba(17,24,39,.96),rgba(15,118,110,.84)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='360' viewBox='0 0 900 360'%3E%3Cg fill='none' stroke='rgba(255,255,255,.22)' stroke-width='1.2'%3E%3Cpath d='M110 250 C260 80 440 310 620 130 S830 180 880 70'/%3E%3Cpath d='M40 150 C170 40 350 180 480 92 S740 50 860 230'/%3E%3C/g%3E%3Cg fill='rgba(255,255,255,.24)'%3E%3Ccircle cx='130' cy='238' r='5'/%3E%3Ccircle cx='292' cy='128' r='7'/%3E%3Ccircle cx='474' cy='230' r='5'/%3E%3Ccircle cx='642' cy='128' r='8'/%3E%3Ccircle cx='810' cy='154' r='6'/%3E%3Ccircle cx='206' cy='68' r='5'/%3E%3Ccircle cx='518' cy='88' r='6'/%3E%3Ccircle cx='758' cy='82' r='5'/%3E%3C/g%3E%3C/svg%3E") right center/auto 100% no-repeat!important;color:#fff!important;font-size:clamp(32px,4vw,58px)!important;line-height:1.02!important;font-weight:860!important;letter-spacing:0!important;box-shadow:0 18px 44px rgba(15,23,42,.12)!important;}
+  body:not(.app-open) main.wrap::after{content:"Professional, protected modules for recruitment operations, finance checks, documents, and work tracking.";display:block!important;width:min(680px,calc(100% - 56px))!important;margin:-138px 0 92px clamp(26px,5vw,64px)!important;color:rgba(255,255,255,.78)!important;font-size:15px!important;line-height:1.55!important;position:relative!important;z-index:1!important;}
+  body:not(.app-open) main.wrap .grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important;width:100%!important;max-width:none!important;min-height:0!important;padding:0!important;margin:0!important;background:transparent!important;box-shadow:none!important;border:0!important;}
+  body:not(.app-open) main.wrap .card{display:flex!important;flex-direction:column!important;gap:14px!important;min-height:132px!important;height:auto!important;padding:18px!important;border-radius:8px!important;border:1px solid #dbe3ef!important;background:#fff!important;box-shadow:0 10px 24px rgba(15,23,42,.07)!important;backdrop-filter:none!important;transform:none!important;overflow:hidden!important;}
+  body:not(.app-open) main.wrap .card:hover{transform:translateY(-2px)!important;border-color:#b6c7dc!important;box-shadow:0 16px 34px rgba(15,23,42,.10)!important;}
+  body:not(.app-open) main.wrap .card::before{content:""!important;display:block!important;position:absolute!important;inset:0 auto 0 0!important;width:4px!important;background:linear-gradient(180deg,#2563eb,#0f766e,#b45309)!important;}
+  body:not(.app-open) main.wrap .card::after{content:"Lock"!important;position:absolute!important;right:16px!important;top:16px!important;width:auto!important;height:auto!important;padding:4px 8px!important;border-radius:999px!important;background:#f1f5f9!important;color:#64748b!important;font-size:11px!important;font-weight:800!important;letter-spacing:0!important;}
+  body:not(.app-open) main.wrap .title{max-width:calc(100% - 64px)!important;color:#111827!important;text-shadow:none!important;font-size:16px!important;line-height:1.28!important;font-weight:820!important;}
+  body:not(.app-open) main.wrap .btn{margin-top:auto!important;align-self:flex-start!important;min-width:0!important;min-height:38px!important;padding:9px 14px!important;border-radius:8px!important;border:1px solid rgba(15,118,110,.18)!important;background:#0f766e!important;color:#fff!important;box-shadow:none!important;font-size:12px!important;line-height:1!important;font-weight:850!important;text-shadow:none!important;text-transform:none!important;letter-spacing:0!important;}
+  body:not(.app-open) main.wrap .btn:hover{background:#115e59!important;filter:none!important;}
+  body:not(.app-open) .privacy-footer{background:#fff!important;color:#475569!important;border:1px solid #dbe3ef!important;box-shadow:0 10px 24px rgba(15,23,42,.08)!important;backdrop-filter:none!important;}
+  body:not(.app-open) #rwPlatformApiStatus .rwStatusCard{border-radius:8px!important;background:#fff!important;color:#111827!important;border:1px solid #dbe3ef!important;box-shadow:0 10px 24px rgba(15,23,42,.10)!important;}
+  body:not(.app-open) #rwPlatformApiStatus .rwLabel{color:#0f766e!important;}
+  body:not(.app-open) #rwPlatformApiStatus .rwValue{color:#111827!important;}
+  @media (max-width:900px){body:not(.app-open) main.wrap .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}}
+  @media (max-width:620px){body:not(.app-open) main.wrap{width:calc(100vw - 24px)!important;padding-top:18px!important;}body:not(.app-open) main.wrap::before{min-height:210px!important;padding:28px 24px!important;font-size:34px!important;}body:not(.app-open) main.wrap::after{margin:-124px 24px 76px!important;width:auto!important;font-size:13px!important;}body:not(.app-open) main.wrap .grid{grid-template-columns:1fr!important;}}
+  `;
+  function install(){
+    let style = document.getElementById('rw-professional-final-runtime');
+    if(!style){
+      style = document.createElement('style');
+      style.id = 'rw-professional-final-runtime';
+      document.head.appendChild(style);
+    }
+    style.textContent = css;
+    document.head.appendChild(style);
+  }
+  install();
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install);
+  setTimeout(install, 500);
+  setTimeout(install, 1800);
+})();
+</script>
+<script id="rw-professional-final-fix">
+(function(){
+  const css = `
+  body:not(.app-open){display:block!important;background:#f5f7fb!important;}
+  body:not(.app-open) main.wrap{background:#ffffff!important;border:1px solid #dbe3ef!important;border-radius:8px!important;box-shadow:0 18px 44px rgba(15,23,42,.08)!important;margin-top:28px!important;padding:26px!important;}
+  body:not(.app-open) main.wrap::before{display:none!important;content:""!important;min-height:0!important;height:0!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;}
+  body:not(.app-open) main.wrap::after{display:none!important;content:""!important;}
+  body:not(.app-open) main.wrap .grid{position:static!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:auto!important;align-items:stretch!important;gap:14px!important;margin:0!important;padding:0!important;background:transparent!important;}
+  body:not(.app-open) main.wrap::after{display:none!important;content:""!important;}
+  body:not(.app-open) main.wrap .grid::before{content:"Professional protected workspace for recruitment, finance, documents, and work tracking."!important;display:block!important;grid-column:1/-1!important;margin:0 0 2px!important;color:#64748b!important;font-size:15px!important;line-height:1.5!important;}
+  body:not(.app-open) main.wrap .card{position:relative!important;isolation:isolate!important;background:#ffffff!important;color:#111827!important;border:1px solid #dbe3ef!important;border-radius:8px!important;box-shadow:0 10px 24px rgba(15,23,42,.07)!important;padding:18px!important;min-height:126px!important;}
+  body:not(.app-open) main.wrap .card::before{content:""!important;position:absolute!important;inset:0 auto 0 0!important;width:4px!important;height:auto!important;border:0!important;border-radius:0!important;background:linear-gradient(180deg,#2563eb,#0f766e,#b45309)!important;box-shadow:none!important;opacity:1!important;transform:none!important;}
+  body:not(.app-open) main.wrap .card::after{content:"PIN"!important;position:absolute!important;inset:16px 16px auto auto!important;left:auto!important;right:16px!important;top:16px!important;bottom:auto!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:34px!important;height:22px!important;padding:0 8px!important;border:0!important;border-radius:999px!important;background:#eef2f7!important;color:#64748b!important;box-shadow:none!important;opacity:1!important;filter:none!important;transform:none!important;font-size:11px!important;font-weight:850!important;letter-spacing:0!important;}
+  body:not(.app-open) main.wrap .title{position:relative!important;z-index:2!important;max-width:calc(100% - 56px)!important;color:#111827!important;opacity:1!important;filter:none!important;text-shadow:none!important;font-size:16px!important;font-weight:850!important;line-height:1.25!important;}
+  body:not(.app-open) main.wrap .btn{position:relative!important;z-index:2!important;margin-top:auto!important;background:#0f766e!important;color:#ffffff!important;border:0!important;border-radius:8px!important;box-shadow:0 8px 18px rgba(15,118,110,.18)!important;}
+  @media (max-width:900px){body:not(.app-open) main.wrap .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}}
+  @media (max-width:620px){body:not(.app-open) main.wrap{width:calc(100vw - 24px)!important;padding:18px!important;}body:not(.app-open) main.wrap .grid{grid-template-columns:1fr!important;}}
+  `;
+  function install(){
+    let style = document.getElementById('rw-professional-final-fix-style');
+    if(!style){
+      style=document.createElement('style');
+      style.id='rw-professional-final-fix-style';
+      document.head.appendChild(style);
+    }
+    style.textContent=css;
+    document.head.appendChild(style);
+  }
+  install();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', install);
+  setTimeout(install, 600);
+  setTimeout(install, 2200);
 })();
 </script>
