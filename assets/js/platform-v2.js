@@ -50,7 +50,7 @@
 
   const copy = {
     eyebrow:{pl:'Platforma operacyjna', en:'Operations platform', nl:'Operationeel platform'},
-    headline:{pl:'Jedna przestrzeń dla modułów pracy.', en:'One workspace for your work modules.', nl:'Eén werkruimte voor je werkmodules.'},
+    headline:{pl:'Platforma modułów pracy.', en:'Private Work Platform.', nl:'Privé werkplatform.'},
     intro:{pl:'Profesjonalna platforma online z chronionymi modułami, obsługą języków i szybkim dostępem do narzędzi rekrutacyjnych, finansowych i dokumentowych.',
       en:'A professional online platform with protected modules, multilingual controls, and fast access to recruitment, finance, document, and tracking tools.',
       nl:'Een professioneel online platform met beveiligde modules, meertalige bediening en snelle toegang tot recruitment-, finance-, document- en trackingtools.'},
