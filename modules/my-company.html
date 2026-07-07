@@ -1,0 +1,3778 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mijn Projecten - Factuur Studio</title>
+  <style>:root {
+--bg:#f5f7fa;--card:#ffffff;--ink:#0f172a;--muted:#475569;--line:#d8dee6;--accent:#1f4acc
+}
+* {
+box-sizing:border-box
+}
+body {
+margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,Segoe UI,Roboto,Helvetica,Arial
+}
+.page {
+max-width:1100px;margin:18px auto;padding:0 16px
+}
+.toolbar {
+display:flex;gap:8px;align-items:center;justify-content:flex-end;margin:12px auto
+}
+.btn {
+border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer
+}
+.btn.primary {
+background:var(--accent);color:#fff;border-color:transparent
+}
+.btn.success {
+background:#16a34a;color:#fff;border-color:transparent
+}
+.doc {
+background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 22px rgba(2,8,23,.06);padding:18px
+}
+.header {
+display:grid;grid-template-columns:1.6fr 1fr;gap:16px;align-items:start
+}
+.brand h1 {
+font-size:20px;margin:0 0 8px;letter-spacing:.2px
+}
+.brand .meta {
+font-size:12px;color:var(--muted)
+}
+.subgrid {
+display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px
+}
+.stamp {
+border:1px solid var(--line);border-radius:12px;padding:12px
+}
+.stamp h2 {
+font-size:14px;margin:0 0 6px
+}
+.stamp select {
+min-width: 100%;
+  white-space: normal;
+}
+.grid-2 {
+display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px
+}
+.grid-3 {
+display:grid;grid-template-columns:1.7fr 0.9fr 1.1fr;gap:12px;margin-top:14px
+}
+.section h3 {
+font-size:14px;margin:14px 0 6px;color:#1f2937;letter-spacing:.2px
+}
+label {
+font-weight:600;font-size:13px
+}
+input,select,textarea {
+width:100%;padding:8px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px
+}
+.readonly {
+background:#f8fafc
+}
+.hr {
+height:1px;background:var(--line);margin:14px 0
+}
+table {
+width:100%;border-collapse:collapse;margin-top:6px
+}
+th,td {
+border:1px solid var(--line);padding:8px;text-align:left;font-size:13px
+}
+th {
+background:#f0f3f8;font-weight:700
+}
+.right {
+text-align:right
+}
+.mono {
+font-variant-numeric:tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace
+}
+.totals {
+display:grid;grid-template-columns:1fr .56fr;gap:10px;margin-top:6px
+}
+.totals .box {
+border:1px solid var(--line);border-radius:10px;padding:10px;background:#fafbff
+}
+.small {
+font-size:12px;color:#64748b
+}
+.sig-grid {
+display:grid;grid-template-columns:1fr 1fr;gap:16px
+}
+.sign {
+height:60px;border:1px dashed var(--line);border-radius:10px
+}
+.foot {
+font-size:11.5px;color:#334155;margin-top:10px;line-height:1.45
+}
+.note {
+background:#f8fafc;border:1px dashed var(--line);border-radius:10px;padding:10px
+}
+@page {
+size: A4; margin: 12mm
+}
+/* Professional look for right-side panel */
+.stamp select, .stamp input[type="date"], .stamp input[type="text"], .stamp .btn, .stamp input[type="email"], .stamp input[type="tel"], .stamp input[type="number"] {
+height: 40px;
+  line-height: 40px;
+}
+.stamp label {
+margin-bottom:4px; display:block;
+}
+.stamp .status-one {
+grid-template-columns: 1fr;
+}
+/* ==== ONE-PAGE PDF MODE ==== */
+body.pdf-mode * {
+-webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+body.pdf-mode #belastingcalc,
+body.pdf-mode #tikkie_controls_row,
+body.pdf-mode .sig-grid,
+body.pdf-mode .foot,
+body.pdf-mode #label_tikkie_url,
+body.pdf-mode #tikkie_url,
+body.pdf-mode #btn-qr,
+body.pdf-mode #qr_help,
+body.pdf-mode #qr_title {
+display:none !important;
+}
+body.pdf-mode .page {
+max-width: 780px; padding: 0 8px;
+}
+body.pdf-mode .header {
+gap:10px;
+}
+body.pdf-mode .grid-3 {
+gap:8px;
+}
+body.pdf-mode .grid-2 {
+gap:8px;
+}
+body.pdf-mode .note {
+padding:6px;
+}
+body.pdf-mode table th, body.pdf-mode table td {
+padding:6px; font-size:12.5px;
+}
+body.pdf-mode .brand h1 {
+font-size:18px;
+}
+body.pdf-mode label {
+font-size:12.5px;
+}
+body.pdf-mode .small {
+font-size:11px;
+}
+body.pdf-mode .hr {
+margin:10px 0;
+}
+body.pdf-mode #qr_block {
+border:none!important; background:#fff!important; padding:0!important; margin-top:6px;
+}
+/* ===== Typography & row alignment fixes (non-invasive) ===== */
+:root {
+--lineHeightBase: 1.35;
+}
+/* Prevent clipped text across the UI */
+label, input, select, textarea, th, td, .meta, .brand h1, .small {
+line-height: var(--lineHeightBase);
+  overflow: visible;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+/* Ensure table alignment: numeric columns right-aligned */
+table thead th:nth-child(2),
+table thead th:nth-child(3),
+table thead th:nth-child(4),
+table tbody td:nth-child(2),
+table tbody td:nth-child(3),
+table tbody td:nth-child(4) {
+text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+/* Avoid fixed control heights that cause clipping on long labels */
+.stamp select,
+.stamp input[type="date"],
+.stamp input[type="text"],
+.stamp input[type="email"],
+.stamp input[type="tel"],
+.stamp input[type="number"],
+.stamp .btn {
+height: auto;
+  line-height: var(--lineHeightBase);
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+/* Print-specific safety nets to keep everything on ONE page and avoid clipping */
+@media print {
+html, body { zoom: 0.83; } /* keep single page */
+  #docRoot, .doc, .section, table, #qr_block { page-break-inside: avoid; }
+  label, input, select, textarea, th, td, .meta, .brand h1, .small {
+    line-height: 1.35;
+    overflow: visible !important;
+    word-break: normal;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+  input, select, textarea { height: auto !important; min-height: 28px; }
+}
+/* PDF-mode (html2canvas snapshot) – avoid clipping and keep rows consistent */
+body.pdf-mode label,
+body.pdf-mode input,
+body.pdf-mode select,
+body.pdf-mode textarea,
+body.pdf-mode th,
+body.pdf-mode td,
+body.pdf-mode .meta,
+body.pdf-mode .brand h1,
+body.pdf-mode .small {
+line-height: 1.33 !important;
+  overflow: visible !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  hyphens: auto !important;
+}
+body.pdf-mode input,
+body.pdf-mode select,
+body.pdf-mode textarea {
+height: auto !important;
+  min-height: 26px;
+}
+/* -- PDF-only signatures under QR -- */
+.sig-grid-print {
+display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px
+}
+.sig-grid-print .sig-box {
+height:60px;border:1px dashed var(--line);border-radius:10px
+}
+/* --- Improved font for PDF clarity --- */
+body, * {
+font-family: Arial, Helvetica, sans-serif !important;
+  color: #000 !important;
+}
+.pdf-mode *, @media print {
+font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #000 !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+/* --- PDF signatures under QR --- */
+@media print {
+.pdf-mode #pdf_sig { display: grid !important; grid-template-columns: 1fr 1fr; gap: 12mm; margin-top: 8mm; }
+  .pdf-mode #pdf_sig .sig-box { border: 1px solid #000; height: 22mm; }
+}
+/* --- Fix word cutting in PDF export --- */
+@media print {
+.pdf-mode, 
+  .pdf-mode * {
+    hyphens: none !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    white-space: normal !important;
+  }
+}
+/* === PDF/PRINT CLEANUP & SIGNATURE ALIGN === */
+body.pdf-mode #pay_method,
+@media print {
+#pay_method { -webkit-appearance:none !important; -moz-appearance:none !important; appearance:none !important; background:transparent !important; border:none !important; box-shadow:none !important; }
+}
+body.pdf-mode #pay_method::-ms-expand {
+display:none !important;
+}
+body.pdf-mode #pay_method + svg,
+body.pdf-mode #pay_method + i,
+body.pdf-mode #pay_method ~ .arrow,
+body.pdf-mode #pay_method ~ .caret,
+body.pdf-mode #pay_method ~ .chevron,
+body.pdf-mode .caret, body.pdf-mode .chevron, body.pdf-mode .arrow {
+display:none !important;
+}
+body.pdf-mode [class*="select"]::after, body.pdf-mode [class*="dropdown"]::after {
+content:none !important; display:none !important;
+}
+/* Remove dotted baselines under signatures (both modes) */
+body.pdf-mode #provider_name_line, body.pdf-mode #client_name_line {
+display:none !important; height:0 !important; border:0 !important; margin:0 !important; padding:0 !important;
+}
+/* Make signatures two equal columns and align */
+body.pdf-mode #pdf_sig {
+display:grid !important; grid-template-columns:1fr 1fr !important; column-gap: 12mm !important; align-items:start !important;
+}
+body.pdf-mode #pdf_sig .sig-box {
+height: 14mm !important; border:none !important; box-shadow:none !important;
+}
+body.pdf-mode #label_pdf_sign_provider, body.pdf-mode #label_pdf_sign_client {
+margin:0 !important; font-weight:700 !important;
+}
+/* CUSTOM_SIGNATURE_EXPORT_FIXES */
+.sig-grid-print {
+display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px
+}
+/* Hide the right “Dane dokumentu” panel (the .stamp box) in PDF export and print */
+body.pdf-mode .stamp {
+display:none !important;
+}
+/* Przesunięcie podpisu zleceniodawcy maksymalnie w prawo w trybie PDF i druku */
+body.pdf-mode #pdf_sig,
+@media print {
+#pdf_sig {
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    column-gap: 120mm !important; /* zwiększony odstęp między podpisami */
+    justify-content: space-between !important;
+  }
+  #pdf_sig > div:last-child {
+    justify-self: end !important;
+  }
+}
+/* Lepsze proporcje marginesów w PDF i przy druku */
+@media print, screen {
+body.pdf-mode .page {
+    padding: 10mm 14mm !important;
+  }
+  body.pdf-mode .doc {
+    padding: 10mm 12mm !important;
+    margin: 0 auto !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  body.pdf-mode #qr_area {
+    margin-top: 10mm !important;
+    margin-bottom: 8mm !important;
+  }
+  body.pdf-mode #pdf_sig {
+    margin-top: 10mm !important;
+    margin-bottom: 10mm !important;
+  }
+}
+/* Symetryczne wypełnienie A4: szerokość obszaru dokumentu zbliżona do A4 minus marginesy */
+body.pdf-mode .page {
+width: 190mm !important; max-width: 190mm !important;
+}
+/* Maksymalne wypełnienie strony A4 w trybie PDF */
+body.pdf-mode .page {
+width: 202mm !important; max-width: 202mm !important; padding: 0 !important;
+}
+body.pdf-mode .doc {
+padding: 2mm 2mm !important; margin: 0 !important; border: none !important; box-shadow: none !important;
+}
+body.pdf-mode #qr_area {
+margin-top: 4mm !important; margin-bottom: 4mm !important;
+}
+body.pdf-mode #pdf_sig {
+margin-top: 4mm !important; margin-bottom: 4mm !important;
+}
+/* Maksymalne przesunięcie podpisu zleceniodawcy do prawej krawędzi strony */
+body.pdf-mode #pdf_sig,
+@media print {
+#pdf_sig {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    column-gap: 0 !important;
+    justify-content: space-between !important;
+  }
+  #pdf_sig > div:last-child {
+    justify-self: end !important;
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+/* HARD RIGHT: ustaw podpis zleceniodawcy maksymalnie przy prawej krawędzi */
+body.pdf-mode #pdf_sig {
+display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+  column-gap: 0 !important;
+}
+body.pdf-mode #pdf_sig > div {
+flex: 0 0 auto !important;
+}
+body.pdf-mode #pdf_sig > div:last-child {
+margin-left: auto !important;
+  text-align: right !important;
+  padding-right: 0 !important;
+}
+/* === POPRAWA CZYTELNOŚCI CZCIONKI W PDF/DRUKU === */
+@media print, screen {
+body.pdf-mode, body.pdf-mode * {
+    color: #000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  /* Minimalny rozmiar i waga tekstu */
+  body.pdf-mode .doc, 
+  body.pdf-mode .doc * {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 13.5px !important;
+    line-height: 1.35 !important;
+  }
+  body.pdf-mode h1, 
+  body.pdf-mode h2, 
+  body.pdf-mode h3, 
+  body.pdf-mode label, 
+  body.pdf-mode th {
+    font-weight: 700 !important;
+  }
+  body.pdf-mode td, 
+  body.pdf-mode input, 
+  body.pdf-mode select, 
+  body.pdf-mode textarea, 
+  body.pdf-mode .small, 
+  body.pdf-mode .meta {
+    font-weight: 600 !important;
+  }
+  /* Pogrubione liczby i kolumny monetarne */
+  body.pdf-mode .mono, 
+  @media print { .mono { font-weight: 700 !important; } }
+}
+/* === PDF: tylko nagłówki tabeli wyraźnie pogrubione, reszta czytelna === */
+@media print, screen {
+/* Tytuł: 'Rachunek' lekko większy, ale bez przesady */
+  body.pdf-mode #screen_title {
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.2px !important;
+  }
+  /* Obramowania wyraźne, ale nie przesadzone */
+  body.pdf-mode table,
+  body.pdf-mode th,
+  body.pdf-mode td {
+    border: 1px solid #000 !important;
+  }
+  /* Nagłówki — mocno wyróżnione */
+  body.pdf-mode th {
+    background: #e0e0e0 !important;
+    color: #000 !important;
+    font-weight: 800 !important;
+  }
+  /* Komórki — zwykła waga, dobra czytelność */
+  body.pdf-mode td {
+    background: #fff !important;
+    color: #000 !important;
+    font-weight: 450 !important; /* półgrube dla czytelności, ale wyraźnie mniej niż nagłówki */
+  }
+  /* Wizualne pasy co drugiego wiersza (delikatne) */
+  body.pdf-mode tbody tr:nth-child(even) td { background: #f6f6f6 !important; }
+}
+/* === FINALNY WYGLĄD PDF: tytuł „Rachunek za usługi fotograficzne”, pogrubione tylko nagłówki === */
+@media print, screen {
+/* Tytuł dokumentu */
+  body.pdf-mode #screen_title {
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.3px !important;
+    margin-bottom: 6px !important;
+  }
+  /* Normalny tekst w dokumencie */
+  body.pdf-mode .doc,
+  body.pdf-mode .doc * {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-weight: 400 !important;
+    color: #000 !important;
+  }
+  /* Nagłówki sekcji i etykiety */
+  body.pdf-mode h2,
+  body.pdf-mode h3,
+  body.pdf-mode label {
+    font-weight: 600 !important;
+  }
+  /* Tabela: wyraźne obramowania i kontrastowe nagłówki */
+  body.pdf-mode table,
+  body.pdf-mode th,
+  body.pdf-mode td {
+    border: 1px solid #000 !important;
+  }
+  body.pdf-mode th {
+    background: #e0e0e0 !important;
+    color: #000 !important;
+    font-weight: 800 !important;
+  }
+  body.pdf-mode td {
+    background: #fff !important;
+    font-weight: 400 !important;
+    color: #000 !important;
+  }
+  /* Czytelne pasy wierszy */
+  body.pdf-mode tbody tr:nth-child(even) td {
+    background: #f7f7f7 !important;
+  }
+}
+@media print {
+#lang_inline, #belastingcalc, .no-print {
+display:none!important;
+}
+body {
+background:#fff
+}
+.page {
+padding:0;margin:0
+}
+.doc {
+border:none;box-shadow:none;border-radius:0
+}
+/* hide Tikkie edit controls */
+  #label_tikkie_url, #tikkie_url, #btn-qr, #qr_help, #qr_title {
+display:none !important;
+}
+/* simplify the QR container */
+  #qr_block {
+border:none !important; padding:0 !important; background:#fff !important;
+}
+/* center the QR on print */
+  #qr_area {
+display:flex; justify-content:center; align-items:center; padding:0; margin-top:0;
+}
+#belastingcalc {
+display:none !important;
+}
+/* Hide all Tikkie controls and texts */
+  #label_tikkie_url, #tikkie_url, #btn-qr, #qr_help, #qr_title {
+display:none !important;
+}
+/* Hide the container of the controls row completely */
+  #label_tikkie_url, #tikkie_url, #btn-qr {
+visibility:hidden !important; height:0 !important; padding:0 !important; margin:0 !important;
+}
+/* Make QR block minimal and clean */
+  #qr_block {
+border:none !important; padding:0 !important; background:#fff !important;
+}
+/* Ensure QR area is centered and with some top margin */
+  #qr_area {
+display:flex; justify-content:center; align-items:center; margin:24px 0 0 0 !important; padding:0 !important;
+}
+/* hide Tikkie row, signatures, legal notes, tax calculator */
+  #tikkie_controls_row {
+display:none !important;
+}
+.sig-grid {
+display:none !important;
+}
+.foot {
+display:none !important;
+}
+/* keep only QR at the bottom */
+  #qr_block {
+border:none !important; padding:0 !important; background:#fff !important;
+}
+#qr_area {
+display:flex; justify-content:center; align-items:center; margin:24px 0 0 0 !important; padding:0 !important;
+}
+html, body {
+zoom: 0.83;
+}
+#pay_method + svg, #pay_method + i, #pay_method ~ .arrow, #pay_method ~ .caret, #pay_method ~ .chevron,
+  .caret, .chevron, .arrow,
+  [class*="select"]::after, [class*="dropdown"]::after {
+display:none !important; content:none !important;
+}
+#provider_name_line, #client_name_line {
+display:none !important; height:0 !important; border:0 !important; margin:0 !important; padding:0 !important;
+}
+.stamp {
+display:none !important;
+}
+#pdf_sig {
+display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    column-gap: 0 !important;
+}
+#pdf_sig > div {
+flex: 0 0 auto !important;
+}
+#pdf_sig > div:last-child {
+margin-left: auto !important;
+    text-align: right !important;
+    padding-right: 0 !important;
+}
+}
+
+@media print, screen {
+/* Tytuł dokumentu większy, ale całość nadal mieści się na 1 stronie (skalowanie w exportPDF) */
+  body.pdf-mode #screen_title {
+font-size: 24px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.2px !important;
+    margin-bottom: 6px !important;
+}
+/* Obudowa sekcji, aby nic nie „ucinało się” na zrzucie */
+  body.pdf-mode #docRoot, 
+  body.pdf-mode .doc, 
+  body.pdf-mode .section, 
+  body.pdf-mode table {
+page-break-inside: avoid !important;
+}
+/* Tabela: mocniejsze obramowanie i kontrast */
+  body.pdf-mode table,
+  body.pdf-mode th,
+  body.pdf-mode td {
+border: 1.2px solid #000 !important;
+}
+/* Cieniowanie wierszy dla lepszej czytelności kwot */
+  body.pdf-mode tbody tr:nth-child(even) td {
+background: #f2f2f2 !important;
+}
+/* Wyrównania i tablicowy wygląd cyfr */
+  body.pdf-mode .mono {
+font-variant-numeric: tabular-nums !important;
+    letter-spacing: 0 !important;
+}
+/* Nagłówki kolumn liczb prawostronnie */
+  body.pdf-mode table thead th:nth-child(2),
+  body.pdf-mode table thead th:nth-child(3),
+  body.pdf-mode table thead th:nth-child(4),
+  body.pdf-mode table tbody td:nth-child(2),
+  body.pdf-mode table tbody td:nth-child(3),
+  body.pdf-mode table tbody td:nth-child(4) {
+text-align: right !important;
+}
+/* Tytuł dokumentu – lekko większy i pogrubiony */
+  body.pdf-mode #screen_title {
+font-size: 22px !important;
+    font-weight: 700 !important;
+}
+/* Tabela: tylko nagłówki pogrubione */
+  body.pdf-mode table,
+  body.pdf-mode th,
+  body.pdf-mode td {
+border: 1px solid #000 !important;
+}
+body.pdf-mode th {
+background: #e8e8e8 !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+    padding: 6px 7px !important;
+}
+body.pdf-mode td {
+background: #fff !important;
+    font-weight: 500 !important;
+    color: #000 !important;
+    padding: 6px 7px !important;
+}
+/* Cieniowanie wierszy dla czytelności */
+  body.pdf-mode tbody tr:nth-child(even) td {
+background: #f6f6f6 !important;
+}
+/* Zachowaj proporcje na jednej stronie */
+  body.pdf-mode .page,
+  body.pdf-mode .doc,
+  body.pdf-mode table {
+page-break-inside: avoid !important;
+}
+}
+
+</style>
+<style>
+#paid_stamp {
+  display:none; position:absolute; top:14px; right:14px;
+  border:2px solid #0a0; color:#0a0; padding:6px 10px; border-radius:8px;
+  font-weight:800; font-size:13px; transform: rotate(-4deg);
+  background:#fff;
+}
+body.pdf-mode.receipt-mode #paid_stamp { display:block; }
+</style>
+
+<style>
+/* Professional receipt PDF layout */
+.pro-receipt {
+  font-family: Arial, Helvetica, sans-serif;
+  max-width: 860px;
+  margin: 24px auto;
+  padding: 0;
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px #e6e6e6;
+  overflow: hidden;
+  background: #fff;
+}
+.pro-receipt .header-bar {
+  height: 16px;
+  background: #2f66b5; /* business blue */
+}
+.pro-receipt .pad {
+  padding: 22px 26px;
+}
+.pro-receipt h1 {
+  font-size: 22px;
+  margin: 0 0 10px 0;
+}
+.pro-receipt .row {
+  display: flex;
+  gap: 24px;
+}
+.pro-receipt .col {
+  flex: 1;
+}
+.pro-receipt .muted { color: #666; }
+.pro-receipt table.items {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  font-size: 14px;
+}
+.pro-receipt table.items th,
+.pro-receipt table.items td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+.pro-receipt table.items th.qty,
+.pro-receipt table.items td.qty { width: 10%; text-align:center; }
+.pro-receipt table.items th.unit,
+.pro-receipt table.items td.unit { width: 20%; text-align:right; }
+.pro-receipt table.items th.amount,
+.pro-receipt table.items td.amount { width: 20%; text-align:right; }
+.pro-receipt .total-line {
+  display:flex; justify-content:flex-end; margin-top:12px;
+  font-size: 18px; font-weight: 700;
+}
+.pro-receipt .total-line .label { margin-right: 12px; }
+.pro-receipt .signature {
+  margin-top: 28px;
+  display:flex; justify-content:flex-end; align-items:center; gap:16px;
+}
+.pro-receipt .signature .line {
+  width: 220px; border-top: 1px solid #aaa; height: 1px;
+}
+</style>
+
+
+<style id="rw-modern-projects-ui">
+:root{
+  --bg:#eef4ff;
+  --bg2:#f8fbff;
+  --card:rgba(255,255,255,.86);
+  --ink:#111827;
+  --muted:#5f6b7a;
+  --line:rgba(15,23,42,.12);
+  --accent:#1a73e8;
+  --accent2:#00a884;
+  --accent3:#fbbc04;
+  --danger:#ea4335;
+  --soft-blue:#e8f0fe;
+  --soft-green:#e6f4ea;
+  --shadow:0 18px 45px rgba(31,74,204,.12);
+  --radius:8px;
+}
+html{background:var(--bg)}
+body{
+  min-height:100vh;
+  margin:0;
+  color:var(--ink);
+  font-family:Inter, "Google Sans", "Segoe UI", Roboto, Arial, sans-serif;
+  background:
+    linear-gradient(135deg, rgba(66,133,244,.12), transparent 34%),
+    linear-gradient(220deg, rgba(52,168,83,.10), transparent 42%),
+    linear-gradient(180deg, var(--bg2), var(--bg));
+}
+.page{
+  max-width:1320px;
+  margin:0 auto;
+  padding:18px clamp(14px,2vw,28px) 30px;
+}
+.toolbar.no-print{
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin:0 0 14px;
+  padding:10px 0 12px;
+  background:linear-gradient(180deg, rgba(248,251,255,.96), rgba(248,251,255,.72));
+  backdrop-filter:blur(14px) saturate(140%);
+}
+.btn,
+button.btn,
+input[type="button"]{
+  min-height:38px;
+  border:1px solid rgba(26,115,232,.18);
+  border-radius:999px;
+  padding:8px 14px;
+  color:#174ea6;
+  background:#fff;
+  font-weight:700;
+  letter-spacing:0;
+  box-shadow:0 2px 8px rgba(15,23,42,.06);
+  transition:transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+}
+.btn:hover,
+button.btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(26,115,232,.16);background:#f8fbff}
+.btn:active,
+button.btn:active{transform:translateY(0);box-shadow:0 3px 8px rgba(15,23,42,.10)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.success{background:var(--accent2);border-color:var(--accent2);color:#fff}
+.doc{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(26,115,232,.16);
+  border-radius:18px;
+  padding:clamp(16px,2vw,26px);
+  background:var(--card);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px) saturate(130%);
+}
+.doc:before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:5px;
+  background:linear-gradient(90deg,#4285f4,#34a853,#fbbc04,#ea4335);
+}
+.header{
+  display:grid;
+  grid-template-columns:minmax(280px,1.25fr) minmax(320px,.9fr);
+  gap:16px;
+  align-items:stretch;
+}
+.brand,
+.stamp,
+.section,
+.note,
+.totals .box{
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.78);
+  box-shadow:0 8px 24px rgba(15,23,42,.06);
+}
+.brand{padding:18px;min-height:100%}
+.brand h1,
+#screen_title{
+  margin:0 0 12px;
+  color:#111827;
+  font-size:clamp(24px,3vw,40px);
+  line-height:1.05;
+  font-weight:850;
+  letter-spacing:0;
+}
+.brand .meta,.small,.foot{color:var(--muted)}
+.subgrid,
+.grid-2,
+.grid-3{
+  gap:12px;
+}
+.stamp{padding:16px}
+.stamp h2,
+.section h3,
+#h_taxcalc{
+  margin:0 0 12px;
+  color:#174ea6;
+  font-size:15px;
+  font-weight:850;
+  letter-spacing:0;
+}
+.section{
+  margin-top:14px;
+  padding:16px;
+}
+.section h3{margin-bottom:14px}
+label{
+  display:block;
+  margin:0 0 5px;
+  color:#334155;
+  font-size:12px;
+  font-weight:760;
+}
+input,select,textarea{
+  min-height:42px;
+  border:1px solid rgba(100,116,139,.22);
+  border-radius:10px;
+  background:#fff;
+  color:#111827;
+  padding:10px 12px;
+  font-size:14px;
+  box-shadow:0 1px 0 rgba(15,23,42,.03);
+  transition:border-color .12s ease, box-shadow .12s ease, background .12s ease;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none;
+  border-color:rgba(26,115,232,.72);
+  box-shadow:0 0 0 4px rgba(66,133,244,.14);
+}
+input.readonly,.readonly{
+  color:#475569;
+  background:#f7faff;
+  border-color:rgba(26,115,232,.14);
+}
+table{
+  overflow:hidden;
+  border-collapse:separate;
+  border-spacing:0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+}
+th,td{border:0;border-bottom:1px solid rgba(15,23,42,.08);padding:10px 12px}
+thead th,th{background:#eef4ff;color:#174ea6;font-weight:850}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:nth-child(even){background:#fafcff}
+.totals{align-items:stretch;gap:14px}
+.totals .box{padding:14px;background:linear-gradient(180deg,#fff,#f8fbff)}
+.totals .box > div{padding:7px 0;border-bottom:1px solid rgba(15,23,42,.08)}
+.totals .box > div:last-child{border-bottom:0}
+#sum_total{color:#0f9d58;font-size:18px;font-weight:900}
+.hr{height:1px;background:rgba(15,23,42,.08);margin:16px 0}
+.sign,.sig-box{
+  border:1px dashed rgba(26,115,232,.28);
+  border-radius:12px;
+  background:linear-gradient(180deg,#fff,#f8fbff);
+}
+#belastingcalc{
+  border-style:solid;
+  background:linear-gradient(135deg,#eef4ff,#f6fff9);
+}
+#qr_block{background:#fff;border-style:solid}
+::placeholder{color:#94a3b8}
+@media (max-width:900px){
+  .header,.grid-2,.grid-3,.totals{grid-template-columns:1fr!important}
+  .toolbar.no-print{justify-content:flex-start;overflow:auto}
+  .btn{white-space:nowrap}
+}
+@media print{
+  body{background:#fff!important}
+  .doc,.brand,.stamp,.section,.note,.totals .box{box-shadow:none!important;backdrop-filter:none!important}
+  .doc{border-color:#d8dee6!important;border-radius:0!important}
+  .doc:before{display:none!important}
+}
+</style>
+
+</head>
+<body>
+  <div class="page">
+    <div class="toolbar no-print">
+      <button class="btn" id="btn-new">Nowy</button>
+      <button class="btn" id="btn-save" type="button">Zapisz</button>
+      <button class="btn success" id="btn-mail">Wyślij do klienta</button>
+      <button class="btn primary" id="btn-print">Drukuj / PDF</button>
+    </div>
+
+    
+    <section class="admin-shell no-print" aria-label="Administracja dokumentami">
+      <div class="admin-hero">
+        <div class="admin-title-block">
+          <div class="admin-kicker">Mijn Projecten</div>
+          <h2>Administracyjne centrum dokumentów</h2>
+          <p>Twórz, zapisuj, kontroluj status i wysyłaj profesjonalne dokumenty do klienta.</p>
+        </div>
+        <div class="admin-health">
+          <span class="health-dot"></span>
+          <span id="admin_save_state">Autosave aktywny</span>
+        </div>
+      </div>
+      <div class="admin-grid">
+        <article class="admin-card accent-blue">
+          <span>Dokument</span>
+          <strong id="admin_doc_no">001</strong>
+          <small id="admin_doc_status">Przypomnienie</small>
+        </article>
+        <article class="admin-card accent-green">
+          <span>Klient</span>
+          <strong id="admin_client">Brak danych</strong>
+          <small id="admin_client_contact">Uzupełnij kontakt</small>
+        </article>
+        <article class="admin-card accent-yellow">
+          <span>Kwota</span>
+          <strong id="admin_total">EUR 0,00</strong>
+          <small id="admin_total_hint">Suma dokumentu</small>
+        </article>
+        <article class="admin-card accent-red">
+          <span>Archiwum</span>
+          <strong id="admin_saved_count">0</strong>
+          <small>zapisanych dokumentów</small>
+        </article>
+      </div>
+      <div class="admin-workbench">
+        <div class="admin-actions-panel">
+          <h3>Szybkie akcje</h3>
+          <div class="admin-action-row">
+            <button class="admin-chip" type="button" data-admin-scroll="docRoot">Dokument</button>
+            <button class="admin-chip" type="button" data-admin-focus="client_name">Klient</button>
+            <button class="admin-chip" type="button" data-admin-focus="hours">Rozliczenie</button>
+            <button class="admin-chip" type="button" data-admin-focus="tikkie_url">Płatność</button>
+          </div>
+        </div>
+        <div class="admin-saved-panel">
+          <div class="saved-head">
+            <h3>Zapisane dokumenty</h3>
+            <button class="admin-mini" id="admin_refresh_saved" type="button">Odśwież</button>
+          </div>
+          <div id="admin_saved_list" class="saved-list"><div class="saved-empty">Brak zapisanych dokumentów.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="doc" id="docRoot">
+      <div class="header">
+        <div class="brand">
+          <h1 id="screen_title">Aanmaning / Ingebrekestelling – Factuur</h1>
+<div class="subgrid">
+            <div>
+              <label for="doc_no" id="label_doc_no">Numer faktury / dokumentu</label>
+              <input id="doc_no" class="mono" readonly>
+            </div>
+            <div>
+              <label for="date_issu" id="label_date_issu">Data wystawienia</label>
+              <input type="date" id="date_issu">
+            </div>
+          </div>
+        </div>
+
+        <div class="stamp">
+          <h2 id="h_docdata">Dane dokumentu</h2>
+          <div class="grid-3">
+            <div>
+              <label for="mode" id="label_mode">Zastosowanie przepisów</label>
+              <select id="mode">
+                <option value="kwit">Usługi prywatne (kwit)</option>
+                <option value="dah">Dienstverlening aan huis (DAH)</option>
+              </select>
+            </div>
+            <div>
+              <label for="currency" id="label_currency">Waluta</label>
+              <select id="currency">
+                <option value="EUR" selected>EUR</option>
+                <option value="PLN">PLN</option>
+                <option value="USD">USD</option>
+              </select>
+            </div>
+            <div>
+              <label for="lang_select" id="label_language">Język</label>
+              <select id="lang_select">
+                <option value="pl" selected>Polski</option>
+                <option value="en">English</option>
+                <option value="nl">Nederlands</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-2 status-one" style="margin-top:10px">
+            <div>
+              <label for="doc_status" id="label_status">Status dokumentu</label>
+              <select id="doc_status">
+                <option value="verzoek" selected>Przypomnienie o płatności</option>
+                <option value="bewijs">Potwierdzenie płatności</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 section">
+        <div>
+          <h3 id="h_provider">Dane wykonawcy</h3>
+          <label for="person_name" id="label_provider_name">Imię i nazwisko</label>
+          <input id="person_name" value="Rafał Wilk" class="readonly" readonly>
+          <label for="person_addr" id="label_provider_addr" style="margin-top:6px">Adres</label>
+          <input id="person_addr" value="Dr Knippenberghof 22, 5709 EE Helmond" class="readonly" readonly>
+          <label for="person_email" id="label_provider_email" style="margin-top:6px">E-mail</label>
+          <input id="person_email" value="fotodisogno@gmail.com" class="readonly" readonly>
+          <label for="person_phone" id="label_provider_phone" style="margin-top:6px">Telefon</label>
+          <input id="person_phone" value="+31 0644747733" class="readonly" readonly>
+        </div>
+        <div>
+          <h3 id="h_client">Dane zleceniodawcy</h3>
+          <label for="client_name" id="label_client_name">Imię i nazwisko / nazwa</label>
+          <input id="client_name" placeholder="Wpisz imię i nazwisko / nazwę">
+          <label for="client_addr" id="label_client_addr" style="margin-top:6px">Adres</label>
+          <input id="client_addr" placeholder="Ulica, kod pocztowy, miejscowość">
+          <label for="client_email" id="label_client_email" style="margin-top:6px">E-mail klienta</label>
+          <input id="client_email" type="email" placeholder="klient@example.com">
+          <label for="client_phone" id="label_client_phone" style="margin-top:6px">Telefon klienta</label>
+          <input id="client_phone" type="tel" placeholder="+31 ...">
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 id="h_service">Opis wykonywanych czynności</h3>
+        <div class="grid-3">
+          <div>
+            <label for="service_type" id="label_service_type">Rodzaj usługi</label>
+            <input id="service_type" value="" class="readonly" readonly>
+          </div>
+          <div>
+            <label for="hours" id="label_hours">Liczba godzin</label>
+            <input type="number" id="hours" min="0" step="0.25" value="1">
+          </div>
+          <div>
+            <label for="rate" id="label_rate">Stawka godzinowa (brutto)</label>
+            <input type="number" id="rate" min="0" step="0.01" value="50">
+          </div>
+        </div>
+        <div class="grid-3" style="margin-top:8px">
+          <div>
+            <label for="extras" id="label_travel">Koszty dojazdu</label>
+            <input type="number" id="extras" min="0" step="0.01" value="0">
+          </div>
+          <div>
+            <label for="photos_count" id="label_photos">Liczba zdjęć</label>
+            <input type="number" id="photos_count" min="0" step="1" value="0">
+          </div>
+          <div>
+            <label for="desc" id="label_desc">Opis (opcjonalnie)</label>
+            <input id="desc" placeholder="Opisz wykonane prace…">
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 id="h_spec">Specyfikacja</h3>
+        <table>
+          <thead>
+            <tr>
+              <th id="th_post">Pozycja</th>
+              <th class="right" id="th_qty">Ilość</th>
+              <th class="right" id="th_rate">Stawka</th>
+              <th class="right" id="th_amount">Kwota</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="row_label_service">Usługa fotograficzna</td>
+              <td class="right mono" id="t_hours">1,00</td>
+              <td class="right mono" id="t_rate">EUR 50,00</td>
+              <td class="right mono" id="t_base">EUR 50,00</td>
+            </tr>
+            <tr>
+              <td id="row_label_photos">Liczba zdjęć</td>
+              <td class="right mono" id="t_photos">0</td>
+              <td class="right mono">-</td>
+              <td class="right mono">-</td>
+            </tr>
+            <tr id="row_vak" style="display:none">
+              <td id="row_label_vak">Dodatek wakacyjny 8% (DAH)</td>
+              <td class="right mono">-</td>
+              <td class="right mono">-</td>
+              <td class="right mono" id="t_vak">EUR 0,00</td>
+            </tr>
+            <tr>
+              <td id="row_label_travel">Koszty dojazdu</td>
+              <td class="right mono">-</td>
+              <td class="right mono">-</td>
+              <td class="right mono" id="t_extra">EUR 0,00</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="totals">
+          <div class="note">
+            <div id="term_line">Termin płatności: 14 dni od daty doręczenia tego pisma, chyba że uzgodniono inaczej na piśmie.</div>
+          </div>
+          <div class="box">
+            <div style="display:flex;justify-content:space-between">
+              <div id="label_sum_sub">Suma</div><div class="mono" id="sum_sub">EUR 50,00</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-weight:700;margin-top:6px">
+              <div id="label_sum_total">Łącznie do zapłaty / wypłaty</div><div class="mono" id="sum_total" style="font-size:16px">EUR 50,00</div>
+            </div>
+            <div class="small" id="vat_note" style="margin-top:6px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 id="h_payment">Płatność</h3>
+        <div class="grid-2">
+          <div>
+            <label for="pay_place" id="label_pay_place">Miejsce i data zapłaty</label>
+            <input id="pay_place" placeholder="Miejsce, data">
+          </div>
+          <div>
+            <label for="pay_method" id="label_pay_method">Sposób zapłaty</label>
+            <select id="pay_method">
+              <option value="cash">Gotówka</option>
+              <option value="iban">Przelew IBAN</option>
+              <option value="tikkie">Tikkie</option>
+            </select>
+          </div>
+        </div>
+        
+        <div id="tikkie_controls_row" class="grid-2" style="margin-top:10px">
+          <div>
+            <label for="tikkie_url" id="label_tikkie_url">Link do Tikkie</label>
+            <input id="tikkie_url" placeholder="Wklej tutaj link do płatności Tikkie">
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:8px">
+            <button class="btn" id="btn-qr" type="button">Wygeneruj kod QR</button>
+          </div>
+        </div>
+        <div class="note" id="qr_block" style="margin-top:10px">
+          <div style="font-weight:600;margin-bottom:6px" id="qr_title">Płatność Tikkie – zeskanuj kod</div>
+          
+
+        <!-- PDF-only signatures (appear only in print/PDF export) -->
+        <div id="pdf_sig" class="sig-grid-print" style="display:none">
+  <div>
+    <label class="small" id="label_pdf_sign_provider">Podpis wykonawcy</label>
+    <div class="sig-box"></div>
+  </div>
+  <div>
+    <label class="small" id="label_pdf_sign_client">Podpis zleceniodawcy</label>
+    <div class="sig-box"></div>
+  </div>
+</div>
+            <div class="small mono" id="provider_name_line">……………………………………</div>
+          </div>
+        </div>
+
+<div class="small" id="qr_help">Po zeskanowaniu kod przeniesie do płatności Tikkie.</div>
+          <div id="qr_area" style="margin-top:8px"></div>
+<div id="qr_status" class="small" style="margin-top:6px"></div>
+          </div>
+        </div>
+
+</div>
+        </div>
+
+        <div class="sig-grid" style="margin-top:10px">
+          <div>
+            <label id="label_sign_provider">Podpis wykonawcy</label>
+            <div class="sign"></div>
+          </div>
+          <div>
+            <label id="label_sign_client">Podpis zleceniodawcy</label>
+            <div class="sign"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="foot">
+        <strong id="h_legal">Postanowienia prawne (NL)</strong><br>
+        <span id="clause_kwit">
+          Ten dokument stanowi aanmaning / ingebrekestelling. Dla konsumentów zapewnia 14 dni na zapłatę bez dodatkowych kosztów. Po upływie terminu mogą zostać doliczone odsetki ustawowe i koszty incasso. W usługach prywatnych VAT nie dotyczy. Zleceniodawca nie jest płatnikiem zaliczek i składek. Warunki płatności ustala się na piśmie. Zleceniodawca zapewnia bezpieczne i zdrowe warunki pracy zgodnie z Arbowet.
+        </span>
+        <span id="clause_dah" style="display:none">
+          Dienstverlening aan huis: praca u tej samej osoby mniej niż 4 dni w tygodniu. Zleceniodawca wypłaca co najmniej płacę minimalną i 8% dodatku wakacyjnego, zapewnia płatny urlop w wymiarze 4 razy tygodniowe godziny oraz wypłatę w razie choroby do 6 tygodni (co najmniej 70%). Zleceniodawca zapewnia bezpieczne i zdrowe miejsce pracy. Wykonawca rozlicza dochód w Belastingdienst. W razie zmian ustawowych należy stosować aktualne przepisy.
+        </span>
+      </div>
+
+      <div class="hr"></div>
+
+      <section class="note no-print" id="belastingcalc">
+        <h3 style="margin:10px 0 6px" id="h_taxcalc">Kalkulator podatku</h3>
+        <div style="margin-top:6px">
+          <div><span id="label_tax_bruto">Podstawa (suma z dokumentu): </span><span class="mono" id="tax_bruto">EUR 50,00</span></div>
+          <div><span id="label_tax_due">Podatek</span> <span class="small" id="tax_rate_view">(36,97%)</span>: <span class="mono" id="tax_due">EUR 18,49</span></div>
+          <div><strong id="label_tax_total_inc">Łącznie z podatkiem:</strong> <span class="mono" id="tax_total_inc">EUR 68,49</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Libraries for client-side PDF export -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script>
+// --- Helpers moved out of external <script src> (must not be inline there) ---
+function _swapPayMethodToText(){
+  const sel = document.getElementById('pay_method');
+  if(!sel) return ()=>{};
+  const txt = (sel.options && sel.selectedIndex >= 0) ? (sel.options[sel.selectedIndex].text || sel.value) : (sel.value || '');
+  const span = document.createElement('span');
+  span.id = 'pay_method_text_print';
+  span.textContent = txt;
+  span.style.display = 'inline-block';
+  span.style.minHeight = '18px';
+  sel.style.display = 'none';
+  sel.parentNode.insertBefore(span, sel);
+  return ()=>{ try{ span.remove(); sel.style.display=''; }catch(_e){} };
+}
+function _clearSignatureBaselines(){
+  ['provider_name_line','client_name_line'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){ el.textContent=''; el.style.display='none'; }
+  });
+}
+
+// --- Dynamic loaders to guarantee libs are present ---
+function loadScriptOnce(src){
+  return new Promise((resolve, reject)=>{
+    // already loaded?
+    if ([...document.scripts].some(s => s.src === src)) return resolve();
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = ()=>reject(new Error('Failed to load: '+src));
+    document.head.appendChild(s);
+  });
+}
+async function ensureLibs(){
+  if (!window.html2canvas){
+    await loadScriptOnce('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js');
+  }
+  if (!(window.jspdf && window.jspdf.jsPDF)){
+    await loadScriptOnce('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js');
+  }
+}
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+  // ========= I18N =========
+
+  function ensureQRCodeLib(cb){
+    if (window.QRCode) { cb(); return; }
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    s.onload = cb;
+    s.onerror = function(){ 
+      var st = document.getElementById('qr_status'); 
+      if(st) st.textContent = 'Nie udało się wczytać biblioteki QR. Sprawdź połączenie internetowe.';
+    };
+    document.head.appendChild(s);
+  }
+  function generateQR(){
+    const url = (document.getElementById('tikkie_url')?.value || '').trim();
+    const area = document.getElementById('qr_area');
+    if(!area) return;
+    area.innerHTML = '';
+    if(!url) return;
+    ensureQRCodeLib(function(){
+      try{ 
+        new QRCode(area, { text: url, width: 160, height: 160, correctLevel: QRCode.CorrectLevel.M });
+        var st = document.getElementById('qr_status'); if(st) st.textContent = '';
+      }catch(e){ document.body.classList.remove('pdf-mode'); 
+        console.error(e); 
+        var st = document.getElementById('qr_status'); if(st) st.textContent = 'Błąd generowania kodu QR.';
+      }
+    });
+  }
+
+  const I18N = {
+    nl: {
+      DOC_TITLE_REQUEST: "Factuur voor fotografiediensten",
+      DOC_TITLE_RECEIPT: "Factuur voor fotografiediensten",
+      META_LINE: "Document voor particuliere dienstverlening. Geen btw. Indien van toepassing: Dienstverlening aan huis - minder dan 4 dagen per week bij dezelfde opdrachtgever.",
+      BTN_NEW: "Nieuw", BTN_MAIL: "Verzenden naar klant", BTN_PRINT: "Afdrukken / PDF",
+      SECTION_DOC_DATA: "Documentgegevens",
+      SECTION_PROVIDER: "Gegevens dienstverlener",
+      SECTION_CLIENT: "Gegevens opdrachtgever",
+      SECTION_SERVICE_DETAILS: "Omschrijving van de werkzaamheden",
+      SECTION_SPEC: "Specificatie",
+      SECTION_PAYMENT: "Betaling",
+      SECTION_LEGAL: "Juridische bepalingen (NL)",
+      LABEL_STATUS: "Documentstatus",
+      STATUS_REQUEST: "Betalingsherinnering / Aanmaning",
+      STATUS_RECEIPT: "Betalingsbewijs (betaald)",
+      LABEL_MODE: "Toepasselijke regels",
+      MODE_KWIT: "Particuliere dienstverlening (kwitantie)",
+      MODE_DAH: "Usługi domowe (DAH)",
+      LABEL_CURRENCY: "Valuta",
+      LABEL_LANGUAGE: "Taal",
+      LABEL_DOC_NO: "Factuurnummer / documentnummer",
+      LABEL_DATE_ISSU: "Uitgiftedatum",
+      LABEL_PROVIDER_NAME: "Naam",
+      LABEL_PROVIDER_ADDR: "Adres",
+      LABEL_PROVIDER_EMAIL: "E-mail",
+      LABEL_PROVIDER_PHONE: "Telefoon",
+      LABEL_CLIENT_NAME: "Naam",
+      LABEL_CLIENT_ADDR: "Adres",
+      LABEL_CLIENT_EMAIL: "E-mail opdrachtgever",
+      LABEL_CLIENT_PHONE: "Telefoon opdrachtgever",
+      LABEL_SERVICE_TYPE: "Soort dienst",
+      LABEL_DATE_WORK: "Uitvoerdatum",
+      LABEL_DESC: "Omschrijving (optioneel)",
+      LABEL_HOURS: "Aantal uren",
+      LABEL_RATE: "Uurtarief (bruto)",
+      LABEL_TRAVEL: "Reiskosten",
+      LABEL_PHOTOS: "Aantal foto's",
+      LABEL_PAY_METHOD: "Betaalwijze",
+      LABEL_PAY_PLACE: "Plaats en datum betaling",
+      PAY_OPT_CASH: "Contant", PAY_OPT_IBAN: "Overschrijving IBAN", PAY_OPT_TIKKIE: "Tikkie",
+      TH_POST: "Post", TH_QTY: "Aantal", TH_RATE: "Tarief", TH_AMOUNT: "Bedrag",
+      ROW_LABEL_SERVICE: "Fotografische dienst",
+      ROW_LABEL_VAK: "Vakantiegeld 8% (DAH)",
+      ROW_LABEL_TRAVEL: "Reiskosten",
+      ROW_LABEL_PHOTOS: "Aantal foto's",
+      SUM_SUB: "Subtotaal",
+      TOTAL_PAYABLE: "Totaal te betalen / uit te keren",
+      SIGN_PROVIDER: "Handtekening dienstverlener",
+      SIGN_CLIENT: "Handtekening opdrachtgever",
+      LEGAL_KWIT: "Dit document geldt als aanmaning / ingebrekestelling. Voor consumenten geldt een 14-dagentermijn zonder extra kosten. Na afloop kunnen wettelijke rente en incassokosten worden berekend. Geen btw. Opdrachtgever is geen inhoudingsplichtige. Betaalafspraken schriftelijk vastleggen. Opdrachtgever zorgt voor een veilige en gezonde werkplek (Arbowet).",
+      LEGAL_DAH: "Dienstverlening aan huis - minder dan 4 dagen per week bij dezelfde opdrachtgever. Minimaal wettelijk minimumloon en 8% vakantiegeld. Betaald verlof van 4× de wekelijkse arbeidsduur en loondoorbetaling bij ziekte tot 6 weken (minstens 70%). Veilige en gezonde werkplek verplicht. Inkomensopgave bij Belastingdienst.",
+      TERM_LINE: "Betaaltermijn: 14 dagen na ontvangst van dit schrijven, tenzij anders schriftelijk overeengekomen.",
+      VAT_NOTE_KWIT: "Aantekening: geen btw van toepassing. Dit is een betalingsbewijs, geen btw-factuur.",
+      VAT_NOTE_DAH: "Aantekening: DAH van toepassing - 8% vakantiegeld opgenomen.",
+      TAXCAL: { TITLE: "Belastingcalculator", GROSS: "Grondslag (totaal uit document): ", TAX: "Belasting", TOTAL_INC: "Totaal inclusief belasting:" },
+      PLACEHOLDERS: { client_name: "Naam", client_addr: "Straat, postcode, plaats", client_email: "klant@example.com", client_phone: "+31 ...", desc: "Omschrijving werkzaamheden…", pay_place: "Plaats, datum" },
+      EMAIL: {
+        REQUEST_SUBJ: "Factuur voor fotografiediensten",
+        RECEIPT_SUBJ: "Factuur voor fotografiediensten",
+        BODY: (data)=>`Hallo,\n\nIk stuur je hierbij een vriendelijke herinnering voor de *fotografische dienst*.  In het kort:\n\n• Nummer: ${data.no}\n• Datum: ${data.issue}\n• Basis: ${data.scheme}\n• Totaal: ${data.total}\n• Betaalwijze: ${data.paymethod}\n• Termijn: 14 dagen na ontvangst\n\nKun je laten weten als er iets onduidelijk is of als de datum onhandig uitkomt? Dank je wel!\n\nHartelijke groet,\n${data.provider}`
+      }
+    },
+    en: {
+      DOC_TITLE_REQUEST: "Invoice for photography services",
+      DOC_TITLE_RECEIPT: "Invoice for photography services",
+      META_LINE: "Document for personal services. VAT not applicable. If applicable: Domestic services scheme - fewer than 4 days per week with the same client.",
+      BTN_NEW: "New", BTN_MAIL: "Send to client", BTN_PRINT: "Print / PDF",
+      SECTION_DOC_DATA: "Document details",
+      SECTION_PROVIDER: "Service provider details",
+      SECTION_CLIENT: "Client details",
+      SECTION_SERVICE_DETAILS: "Description of services",
+      SECTION_SPEC: "Specification",
+      SECTION_PAYMENT: "Payment",
+      SECTION_LEGAL: "Legal provisions (NL)",
+      LABEL_STATUS: "Document status",
+      STATUS_REQUEST: "Payment reminder / Notice",
+      STATUS_RECEIPT: "Payment receipt (paid)",
+      LABEL_MODE: "Applicable rules",
+      MODE_KWIT: "Personal services (receipt)",
+      MODE_DAH: "Domestic services scheme (DAH)",
+      LABEL_CURRENCY: "Currency",
+      LABEL_LANGUAGE: "Language",
+      LABEL_DOC_NO: "Invoice / document number",
+      LABEL_DATE_ISSU: "Issue date",
+      LABEL_PROVIDER_NAME: "Name",
+      LABEL_PROVIDER_ADDR: "Address",
+      LABEL_PROVIDER_EMAIL: "E-mail",
+      LABEL_PROVIDER_PHONE: "Phone",
+      LABEL_CLIENT_NAME: "Name",
+      LABEL_CLIENT_ADDR: "Address",
+      LABEL_CLIENT_EMAIL: "Client e-mail",
+      LABEL_CLIENT_PHONE: "Client phone",
+      LABEL_SERVICE_TYPE: "Type of service",
+      LABEL_DATE_WORK: "Service date",
+      LABEL_DESC: "Description (optional)",
+      LABEL_HOURS: "Number of hours",
+      LABEL_RATE: "Hourly rate (gross)",
+      LABEL_TRAVEL: "Travel expenses",
+      LABEL_PHOTOS: "Number of photos",
+      LABEL_PAY_METHOD: "Payment method",
+      LABEL_PAY_PLACE: "Place and date of payment",
+      PAY_OPT_CASH: "Cash", PAY_OPT_IBAN: "Bank transfer (IBAN)", PAY_OPT_TIKKIE: "Tikkie",
+      TH_POST: "Item", TH_QTY: "Quantity", TH_RATE: "Rate", TH_AMOUNT: "Amount",
+      ROW_LABEL_SERVICE: "Photography service",
+      ROW_LABEL_VAK: "Holiday allowance 8% (DAH)",
+      ROW_LABEL_TRAVEL: "Travel expenses",
+      ROW_LABEL_PHOTOS: "Number of photos",
+      SUM_SUB: "Subtotal",
+      TOTAL_PAYABLE: "Total payable / disbursable",
+      SIGN_PROVIDER: "Signature of service provider",
+      SIGN_CLIENT: "Signature of client",
+      LEGAL_KWIT: "This document serves as a payment reminder / notice of default. Consumers must be granted a 14-day period without extra costs. After that, statutory interest and collection costs may be charged. VAT not applicable. The client is not a withholding agent. Payment terms should be agreed in writing. The client must ensure a safe and healthy workplace (Arbowet).",
+      LEGAL_DAH: "Domestic services scheme - fewer than 4 days per week with the same client. At least statutory minimum wage and 8% holiday allowance. Paid leave equal to 4× weekly hours and paid sick leave up to 6 weeks (at least 70%). Safe and healthy workplace required. Income must be declared to the Dutch Tax Administration.",
+      TERM_LINE: "Payment term: 14 days from receipt of this letter, unless otherwise agreed in writing.",
+      VAT_NOTE_KWIT: "Note: VAT not applicable. This is a payment receipt, not a VAT invoice.",
+      VAT_NOTE_DAH: "Note: DAH applies - 8% holiday allowance included.",
+      TAXCAL: { TITLE: "Tax calculator", GROSS: "Base (document total): ", TAX: "Tax", TOTAL_INC: "Total including tax:" },
+      PLACEHOLDERS: { client_name: "Enter name", client_addr: "Street, postal code, city", client_email: "client@example.com", client_phone: "+31 ...", desc: "Describe the work…", pay_place: "Place, date" },
+      EMAIL: {
+        REQUEST_SUBJ: "Invoice for photography services",
+        RECEIPT_SUBJ: "Invoice for photography services",
+        BODY: (data)=>`Hi,\n\nI'm sending a friendly reminder for the *photography service*.  Quick summary:\n\n• Number: ${data.no}\n• Date: ${data.issue}\n• Basis: ${data.scheme}\n• Total: ${data.total}\n• Payment method: ${data.paymethod}\n• Term: 14 days from receipt\n\nIf anything's unclear or the timing is tricky, just let me know—happy to help.\n\nBest regards,\n${data.provider}`
+      }
+    },
+    pl: {
+      DOC_TITLE_REQUEST: "Rachunek za usługi fotograficzne",
+      DOC_TITLE_RECEIPT: "Rachunek za usługi fotograficzne",
+      META_LINE: "Dokument dla usług prywatnych. VAT nie dotyczy. Jeśli ma zastosowanie: Dienstverlening aan huis - mniej niż 4 dni w tygodniu u tej samej osoby.",
+      BTN_NEW: "Nowy", BTN_MAIL: "Wyślij do klienta", BTN_PRINT: "Drukuj / PDF",
+      SECTION_DOC_DATA: "Dane dokumentu",
+      SECTION_PROVIDER: "Dane wykonawcy",
+      SECTION_CLIENT: "Dane zleceniodawcy",
+      SECTION_SERVICE_DETAILS: "Opis wykonywanych czynności",
+      SECTION_SPEC: "Specyfikacja",
+      SECTION_PAYMENT: "Płatność",
+      SECTION_LEGAL: "Postanowienia prawne (NL)",
+      LABEL_STATUS: "Status dokumentu",
+      STATUS_REQUEST: "Przypomnienie o płatności / Wezwanie",
+      STATUS_RECEIPT: "Potwierdzenie płatności (opłacone)",
+      LABEL_MODE: "Zastosowanie przepisów",
+      MODE_KWIT: "Usługi prywatne (kwit)",
+      MODE_DAH: "Usługi domowe (DAH)",
+      LABEL_CURRENCY: "Waluta",
+      LABEL_LANGUAGE: "Język",
+      LABEL_DOC_NO: "Numer faktury / dokumentu",
+      LABEL_DATE_ISSU: "Data wystawienia",
+      LABEL_PROVIDER_NAME: "Imię i nazwisko",
+      LABEL_PROVIDER_ADDR: "Adres",
+      LABEL_PROVIDER_EMAIL: "E-mail",
+      LABEL_PROVIDER_PHONE: "Telefon",
+      LABEL_CLIENT_NAME: "Imię i nazwisko / nazwa",
+      LABEL_CLIENT_ADDR: "Adres",
+      LABEL_CLIENT_EMAIL: "E-mail klienta",
+      LABEL_CLIENT_PHONE: "Telefon klienta",
+      LABEL_SERVICE_TYPE: "Rodzaj usługi",
+      LABEL_DATE_WORK: "Data wykonania",
+      LABEL_DESC: "Opis (opcjonalnie)",
+      LABEL_HOURS: "Liczba godzin",
+      LABEL_RATE: "Stawka godzinowa (brutto)",
+      LABEL_TRAVEL: "Koszty dojazdu",
+      LABEL_PHOTOS: "Liczba zdjęć",
+      LABEL_PAY_METHOD: "Sposób zapłaty",
+      LABEL_PAY_PLACE: "Miejsce i data zapłaty",
+      PAY_OPT_CASH: "Gotówka", PAY_OPT_IBAN: "Przelew IBAN", PAY_OPT_TIKKIE: "Tikkie",
+      TH_POST: "Pozycja", TH_QTY: "Ilość", TH_RATE: "Stawka", TH_AMOUNT: "Kwota",
+      ROW_LABEL_SERVICE: "Usługa fotograficzna",
+      ROW_LABEL_VAK: "Dodatek wakacyjny 8% (DAH)",
+      ROW_LABEL_TRAVEL: "Koszty dojazdu",
+      ROW_LABEL_PHOTOS: "Liczba zdjęć",
+      SUM_SUB: "Suma",
+      TOTAL_PAYABLE: "Łącznie do zapłaty / wypłaty",
+      SIGN_PROVIDER: "Podpis wykonawcy",
+      SIGN_CLIENT: "Podpis zleceniodawcy",
+      LEGAL_KWIT: "Dokument stanowi aanmaning / ingebrekestelling. Dla konsumentów obowiązuje 14 dni bez dodatkowych kosztów. Po tym terminie naliczane są odsetki ustawowe i koszty incasso. VAT nie dotyczy. Zleceniodawca nie jest płatnikiem zaliczek. Warunki płatności należy ustalić na piśmie. Zleceniodawca zapewnia bezpieczne i zdrowe warunki pracy (Arbowet).",
+      LEGAL_DAH: "Dienstverlening aan huis - praca u tej samej osoby mniej niż 4 dni w tygodniu. Wynagrodzenie co najmniej równe płacy minimalnej i 8% dodatku wakacyjnego. Płatny urlop 4× tygodniowy wymiar godzin i wynagrodzenie chorobowe do 6 tygodni (min. 70%). Bezpieczne i zdrowe miejsce pracy wymagane. Dochód należy rozliczyć w Belastingdienst.",
+      TERM_LINE: "Termin płatności: 14 dni od odbioru niniejszego pisma, o ile nie uzgodniono inaczej na piśmie.",
+      VAT_NOTE_KWIT: "Uwaga: VAT nie dotyczy. To jest potwierdzenie płatności, a nie faktura VAT.",
+      VAT_NOTE_DAH: "Uwaga: zasady DAH - uwzględniono 8% dodatku wakacyjnego.",
+      TAXCAL: { TITLE: "Kalkulator podatku", GROSS: "Podstawa (suma z dokumentu): ", TAX: "Podatek", TOTAL_INC: "Łącznie z podatkiem:" },
+      PLACEHOLDERS: { client_name: "Wpisz imię i nazwisko / nazwę", client_addr: "Ulica, kod pocztowy, miejscowość", client_email: "klient@example.com", client_phone: "+31 ...", desc: "Opisz wykonane prace…", pay_place: "Miejsce, data" },
+      EMAIL: {
+        REQUEST_SUBJ: "Informacja o płatności za usługi fotograficzne",
+        RECEIPT_SUBJ: "Informacja o płatności za usługi fotograficzne",
+        BODY: (data)=>`Cześć,\n\nPrzesyłam uprzejme przypomnienie za *usługę fotograficzną*.  W skrócie:\n\n• Numer: ${data.no}\n• Data: ${data.issue}\n• Podstawa: ${data.scheme}\n• Razem: ${data.total}\n• Sposób zapłaty: ${data.paymethod}\n• Termin: 14 dni od otrzymania\n\nJeśli coś jest niejasne albo termin jest kłopotliwy, daj znać — znajdziemy rozwiązanie.\n\nPozdrawiam,\n${data.provider}`
+      }
+    }
+  };
+
+  function currentLang(){ return localStorage.getItem('doc_lang') || document.getElementById('lang_select').value || 'pl'; }
+  function setLang(lang){
+    try{ localStorage.setItem('doc_lang', lang); localStorage.setItem('rw_lang', lang); localStorage.setItem('supplier_lang', lang); }catch(e){ document.body.classList.remove('pdf-mode');}
+    document.getElementById('lang_select').value = lang;
+    document.documentElement.lang = lang;
+    applyLang();
+    try{ __rwPushLang(); }catch(e){}
+  /* SIGN_LABEL_LOCALIZE_SAFEHOOK */
+  try{
+    var lpsp = document.getElementById('label_pdf_sign_provider');
+    if(lpsp) lpsp.textContent = t('SIGN_PROVIDER');
+    var lpsc = document.getElementById('label_pdf_sign_client');
+    if(lpsc) lpsc.textContent = t('SIGN_CLIENT');
+  }catch(_e){}
+  }
+  function t(k){ const L = I18N[currentLang()]||I18N.pl; return k.split('.').reduce((o,kk)=>o&&o[kk], L) || k; }
+  function S(id, key){ const el=document.getElementById(id); if(el) el.textContent = t(key); }
+  function applyPlaceholders(){
+    const P = I18N[currentLang()]?.PLACEHOLDERS || I18N.pl.PLACEHOLDERS;
+    ['client_name','client_addr','client_email','client_phone','desc','pay_place'].forEach(id=>{
+      const el=document.getElementById(id); if(el && P[id]) el.placeholder = P[id];
+    });
+    const pm = document.getElementById('pay_method');
+    if(pm){
+      pm.options[0].text = t('PAY_OPT_CASH');
+      pm.options[1].text = t('PAY_OPT_IBAN');
+      pm.options[2].text = t('PAY_OPT_TIKKIE');
+    }
+  }
+  function applyLang(){
+    const L = I18N[currentLang()]||I18N.pl;
+    const isReceipt = (document.getElementById('doc_status').value === 'bewijs');
+    document.title = isReceipt ? L.DOC_TITLE_RECEIPT : L.DOC_TITLE_REQUEST;
+    S('screen_title', isReceipt ? 'DOC_TITLE_RECEIPT' : 'DOC_TITLE_REQUEST');
+    S('meta_line','META_LINE');
+
+    S('btn-new','BTN_NEW'); S('btn-mail','BTN_MAIL'); S('btn-print','BTN_PRINT');
+    S('h_docdata','SECTION_DOC_DATA'); S('h_provider','SECTION_PROVIDER'); S('h_client','SECTION_CLIENT');
+    S('h_service','SECTION_SERVICE_DETAILS'); S('h_spec','SECTION_SPEC'); S('h_payment','SECTION_PAYMENT'); S('h_legal','SECTION_LEGAL'); S('h_taxcalc','TAXCAL.TITLE');
+
+    S('label_mode','LABEL_MODE'); S('label_currency','LABEL_CURRENCY'); S('label_language','LABEL_LANGUAGE');
+    S('label_doc_no','LABEL_DOC_NO'); S('label_date_issu','LABEL_DATE_ISSU'); S('label_status','LABEL_STATUS');
+    S('label_provider_name','LABEL_PROVIDER_NAME'); S('label_provider_addr','LABEL_PROVIDER_ADDR'); S('label_provider_email','LABEL_PROVIDER_EMAIL'); S('label_provider_phone','LABEL_PROVIDER_PHONE');
+    S('label_client_name','LABEL_CLIENT_NAME'); S('label_client_addr','LABEL_CLIENT_ADDR'); S('label_client_email','LABEL_CLIENT_EMAIL'); S('label_client_phone','LABEL_CLIENT_PHONE');
+    S('label_service_type','LABEL_SERVICE_TYPE'); S('label_date_work','LABEL_DATE_WORK'); S('label_desc','LABEL_DESC'); S('label_hours','LABEL_HOURS'); S('label_rate','LABEL_RATE'); S('label_travel','LABEL_TRAVEL'); S('label_photos','LABEL_PHOTOS');
+    S('label_pay_method','LABEL_PAY_METHOD'); S('label_pay_place','LABEL_PAY_PLACE');
+    S('label_sum_sub','SUM_SUB'); S('label_sum_total','TOTAL_PAYABLE');
+    S('label_sign_provider','SIGN_PROVIDER'); S('label_sign_client','SIGN_CLIENT');
+    S('term_line','TERM_LINE');
+
+    document.getElementById('clause_kwit').textContent = L.LEGAL_KWIT;
+    document.getElementById('clause_dah').textContent = L.LEGAL_DAH;
+
+    const isKwit = (document.getElementById('mode').value !== 'dah');
+    document.getElementById('vat_note').innerHTML = isKwit ? L.VAT_NOTE_KWIT : L.VAT_NOTE_DAH;
+
+    document.getElementById('h_taxcalc').textContent = t('TAXCAL.TITLE');
+    document.getElementById('label_tax_bruto').textContent = t('TAXCAL.GROSS');
+    document.getElementById('label_tax_due').textContent = t('TAXCAL.TAX');
+    document.getElementById('label_tax_total_inc').textContent = t('TAXCAL.TOTAL_INC');
+
+    
+// --- Aktualizacja opcji selectów po zmianie języka ---
+const modeSel = document.getElementById('mode');
+if(modeSel){
+  if(modeSel.options.length >= 2){
+    modeSel.options[0].text = t('MODE_KWIT');
+    modeSel.options[1].text = t('MODE_DAH');
+  }
+}
+const statusSel = document.getElementById('doc_status');
+if(statusSel){
+  if(statusSel.options.length >= 2){
+    statusSel.options[0].text = t('STATUS_REQUEST');
+    statusSel.options[1].text = t('STATUS_RECEIPT');
+  }
+}
+
+    // Relabel language selector option texts so they match the current interface language
+    const langSel = document.getElementById('lang_select');
+    if (langSel && langSel.options.length >= 3){
+      const current = currentLang();
+      if(current === 'pl'){
+        langSel.options[0].text = 'Polski';
+        langSel.options[1].text = 'English';
+        langSel.options[2].text = 'Nederlands';
+      }else if(current === 'nl'){
+        langSel.options[0].text = 'Pools';
+        langSel.options[1].text = 'Engels';
+        langSel.options[2].text = 'Nederlands';
+      }else{ // en
+        langSel.options[0].text = 'Polish';
+        langSel.options[1].text = 'English';
+        langSel.options[2].text = 'Dutch';
+      }
+    }
+
+    // Ustaw nazwę usługi zgodną z językiem
+    const svcInput = document.getElementById('service_type');
+    if(svcInput){ svcInput.value = t('ROW_LABEL_SERVICE'); }
+    // Zaktualizuj nagłówki tabeli i etykiety wierszy
+    const mapIds = [
+      ['th_post','TH_POST'],['th_qty','TH_QTY'],['th_rate','TH_RATE'],['th_amount','TH_AMOUNT'],
+      ['row_label_service','ROW_LABEL_SERVICE'],['row_label_travel','ROW_LABEL_TRAVEL'],
+      ['row_label_photos','ROW_LABEL_PHOTOS'],['row_label_vak','ROW_LABEL_VAK']
+    ];
+    mapIds.forEach(([id,key])=>{ const el=document.getElementById(id); if(el) el.textContent = t(key); });
+
+    // Wymuś pełną spójność językową pól edycyjnych (placeholders/value tylko jeśli puste)
+    const setIfEmpty = (id, val)=>{ const el=document.getElementById(id); if(el && !el.value){ el.value = val; } };
+    setIfEmpty('desc', '');
+    setIfEmpty('pay_place', '');
+    // Upewnij się, że nazwa usługi jest zgodna z językiem
+    const svc = document.getElementById('service_type'); if(svc){ svc.value = t('ROW_LABEL_SERVICE'); }
+
+    // Translate QR section
+    try{
+      const LMAP = {
+        pl:{lbl:'Link do Tikkie', btn:'Wygeneruj kod QR', title:'Płatność Tikkie – zeskanuj kod', ph:'Wklej tutaj link do płatności Tikkie', help:'Po zeskanowaniu kod przeniesie do płatności Tikkie.'},
+        en:{lbl:'Tikkie link', btn:'Generate QR code', title:'Tikkie payment – scan to pay', ph:'Paste the Tikkie payment link here', help:'Scanning the code takes you to the Tikkie payment.'},
+        nl:{lbl:'Tikkie‑link', btn:'QR‑code genereren', title:'Tikkie‑betaling – scan om te betalen', ph:'Plak hier de Tikkie‑betaallink', help:'Na scannen ga je naar de Tikkie‑betaling.'}
+      };
+      const lang = currentLang(); const X = LMAP[lang]||LMAP.pl;
+      const lbl = document.getElementById('label_tikkie_url'); if(lbl) lbl.textContent = X.lbl;
+      const btn = document.getElementById('btn-qr'); if(btn) btn.textContent = X.btn;
+      const ttl = document.getElementById('qr_title'); if(ttl) ttl.textContent = X.title;
+      const hlp = document.getElementById('qr_help'); if(hlp) hlp.textContent = X.help;
+      const tik = document.getElementById('tikkie_url'); if(tik) tik.placeholder = X.ph;
+    }catch(e){ document.body.classList.remove('pdf-mode');}
+applyPlaceholders();
+
+    // Localize PDF-only signature labels
+    var lpsp = document.getElementById('label_pdf_sign_provider');
+    if(lpsp){ lpsp.textContent = t('SIGN_PROVIDER'); }
+    var lpsc = document.getElementById('label_pdf_sign_client');
+    if(lpsc){ lpsc.textContent = t('SIGN_CLIENT'); }
+
+  }
+
+  // ========= Helpers / state =========
+  const qs = s => document.querySelector(s);
+  const fmt = (n,c=2) => (isNaN(n)?0:n).toLocaleString(undefined,{minimumFractionDigits:c,maximumFractionDigits:c});
+  function currencyCode(){ return (qs('#currency') ? qs('#currency').value : 'EUR'); }
+  function currencyPrefix(){ return currencyCode() + ' '; }
+
+  function nextInvoiceSeq(){
+    const key='invoice_seq_v5';
+    let n = parseInt(localStorage.getItem(key)||'1',10);
+    if(!n || n<1) n = 1;
+    localStorage.setItem(key, String(n+1));
+    return n;
+  }
+  function peekInvoiceSeq(){
+    const key='invoice_seq_v5';
+    let n = parseInt(localStorage.getItem(key)||'1',10);
+    if(!n || n<1) n = 1;
+    return n;
+  }
+  function pad3(n){ n = parseInt(n||0,10); return String(n).padStart(3,'0'); }
+
+  function calculateTotals(){
+    const h = parseFloat(qs('#hours')?.value||0) || 0;
+    const r = parseFloat(qs('#rate')?.value||0) || 0;
+    const e = parseFloat(qs('#extras')?.value||0) || 0;
+    const photos = parseInt(qs('#photos_count')?.value||0,10) || 0;
+    const mode = qs('#mode')?.value || 'kwit';
+
+    const base = h * r;
+    const vak  = (mode === 'dah') ? base * 0.08 : 0;
+    const sub  = base + e;
+    const total = sub + vak;
+
+    return {h,r,e,photos,base,vak,sub,total,mode};
+  }
+  function recalc(){
+    const {h,r,e,photos,base,vak,sub,total,mode} = calculateTotals();
+    const isKwit = (mode === 'kwit');
+
+    const th=qs('#t_hours'); if(th) th.textContent = fmt(h);
+    const tr=qs('#t_rate');  if(tr) tr.textContent = currencyPrefix()+fmt(r);
+    const tb=qs('#t_base');  if(tb) tb.textContent = currencyPrefix()+fmt(base);
+    const te=qs('#t_extra'); if(te) te.textContent = currencyPrefix()+fmt(e);
+    const tv=qs('#t_vak');   if(tv) tv.textContent = currencyPrefix()+fmt(vak);
+    const tp=qs('#t_photos');if(tp) tp.textContent = String(photos);
+    const ss=qs('#sum_sub'); if(ss) ss.textContent = currencyPrefix()+fmt(sub);
+    const st=qs('#sum_total'); if(st) st.textContent = currencyPrefix()+fmt(total);
+
+    const rowVakMain = qs('#row_vak'); if(rowVakMain) rowVakMain.style.display = isKwit ? 'none' : 'table-row';
+
+    const L = I18N[currentLang()]||I18N.pl;
+    const vn = qs('#vat_note'); if(vn) vn.innerHTML = isKwit ? L.VAT_NOTE_KWIT : L.VAT_NOTE_DAH;
+
+    updateTax();
+  }
+  function updateTax(){
+    const TAX_RATE_PERCENT = 36.97;
+    const { total } = calculateTotals();
+    const tax = total * (TAX_RATE_PERCENT/100);
+    const totalInc = total + tax;
+    const set = (sel,val)=>{ const el=qs(sel); if(el) el.textContent = currencyPrefix() + fmt(val); };
+    set('#tax_bruto', total);
+    set('#tax_due', tax);
+    set('#tax_total_inc', totalInc);
+    const rv = qs('#tax_rate_view'); if(rv) rv.textContent = '(' + TAX_RATE_PERCENT.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) + '%)';
+  }
+
+  function paymentMethodText(){
+    const pm = qs('#pay_method').value;
+    const map = { cash: t('PAY_OPT_CASH'), iban: t('PAY_OPT_IBAN'), tikkie: t('PAY_OPT_TIKKIE') };
+    return map[pm] || '';
+  }
+  function schemeText(){
+    return (qs('#mode')?.value==='dah') ? t('MODE_DAH') : t('MODE_KWIT');
+  }
+  function openGmailCompose(){
+    const L = I18N[currentLang()]||I18N.pl;
+    const isProof = (qs('#doc_status')?.value === 'bewijs');
+    const subj = encodeURIComponent(isProof ? L.EMAIL.RECEIPT_SUBJ : L.EMAIL.REQUEST_SUBJ);
+    const toAddr = (qs('#client_email')?.value || '').trim();
+    const data = {
+      no: (qs('#doc_no')?.value || '—'),
+      issue: (qs('#date_issu')?.value || '—'),
+      scheme: schemeText(),
+      total: (qs('#sum_total')?.textContent || '—'),
+      provider: (qs('#person_name')?.value || '—'),
+      clientName: (qs('#client_name')?.value || ''),
+      paymethod: paymentMethodText()
+    };
+    const body = encodeURIComponent(L.EMAIL.BODY(data));
+    const gmailUrl = `https://mail.google.com/mail/u/0/?view=cm&fs=1&authuser=fotodisogno@gmail.com&to=${encodeURIComponent(toAddr)}&su=${subj}&body=${body}`;
+    window.open(gmailUrl, '_blank');
+  }
+
+  async function exportPDF(){
+  await ensureLibs();
+  /* ONE-PAGE export patch */
+  document.body.classList.add('pdf-mode');
+  try{ generateQR(); }catch(e){ document.body.classList.remove('pdf-mode');}
+
+    try{
+      var provName = (qs('#person_name')?.value || '').trim();
+      var clientName = (qs('#client_name')?.value || '').trim();
+      var pLine = document.getElementById('provider_name_line');
+      var cLine = document.getElementById('client_name_line');
+      if(pLine){ pLine.textContent = provName || '……………………………………'; }
+      if(cLine){ cLine.textContent = clientName || '……………………………………'; }
+    }catch(e){ document.body.classList.remove('pdf-mode'); }
+
+  try{ var qr=document.getElementById('qr_block'); var root=document.getElementById('docRoot'); if(qr && root){ root.appendChild(qr); } }catch(e){ document.body.classList.remove('pdf-mode');} 
+  try{
+    generateQR();
+    var qr = document.getElementById('qr_block');
+    var root = document.getElementById('docRoot');
+    if(qr && root && qr.parentNode !== root){ /* ensure exists */ }
+    if(qr && root){ root.appendChild(qr); }
+    try{ var sig=document.getElementById('pdf_sig'); if(sig&&root){ root.appendChild(sig); } }catch(_e){}
+  }catch(e){ document.body.classList.remove('pdf-mode');}
+
+    try{
+      recalc();
+      const jsPDF = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
+      if(!window.html2canvas || !jsPDF) throw new Error('libs');
+      const node = document.getElementById('docRoot');
+      const prevBg = node.style.backgroundColor; node.style.backgroundColor = '#ffffff';
+      const _cleanupPay = _swapPayMethodToText(); _clearSignatureBaselines();
+    const canvas = await html2canvas(node, { scale: 3, backgroundColor: '#ffffff', useCORS: true });
+      node.style.backgroundColor = prevBg || '';
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 4; // mm – minimalne marginesy po każdej stronie, prawie pełne A4
+      const innerW = pageWidth - margin * 2;
+      const innerH = pageHeight - margin * 2;
+      // Skaluj proporcjonalnie, aby wypełnić całą stronę z równymi marginesami
+      let scale = Math.min(innerW / canvas.width, innerH / canvas.height);
+      const drawW = canvas.width * scale;
+      const drawH = canvas.height * scale;
+      const x = margin + (innerW - drawW) / 2;
+      const y = margin + (innerH - drawH) / 2;
+      pdf.addImage(imgData, 'PNG', x, y, drawW, drawH, undefined, 'FAST');
+
+      const L = I18N[currentLang()]||I18N.pl;
+      const docNo = (qs('#doc_no')?.value || '000').toString().padStart(3,'0');
+      const isProof = (qs('#doc_status')?.value === 'bewijs');
+      const baseName = isProof ? L.DOC_TITLE_RECEIPT : L.DOC_TITLE_REQUEST;
+      const safe = (baseName || 'document').toLowerCase().replace(/[^a-z0-9]+/gi,'_').replace(/_+/g,'_').replace(/^_|_$/g,'');
+      pdf.save(`${safe}_${docNo}.pdf`, { returnPromise: false });
+    }catch(e){ document.body.classList.remove('pdf-mode');
+      alert('Nie udało się wygenerować PDF. Sprawdź połączenie internetowe i spróbuj ponownie.');
+    }
+  }
+
+  (function init(){
+    const initial = localStorage.getItem('doc_lang') || document.getElementById('lang_select').value || 'pl';
+    setLang(initial);
+
+    const localISO = new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+    (qs('#date_issu')||{}).value = localISO;
+    (qs('#date_work')||{}).value = localISO;
+
+    qs('#doc_no').value = pad3(peekInvoiceSeq());
+
+    ['mode','currency','hours','rate','extras','photos_count'].forEach(id=>{
+      const el=qs('#'+id); if(el){ el.addEventListener('input', recalc); el.addEventListener('change', recalc); }
+    });
+    const ds = qs('#doc_status'); if(ds){ ds.addEventListener('change', applyLang); }
+    const ls = qs('#lang_select'); if(ls){ ls.addEventListener('change', (e)=> setLang(e.target.value)); }
+
+    qs('#btn-print').addEventListener('click', exportPDF);
+    const qrb = qs('#btn-qr'); if(qrb){ qrb.addEventListener('click', generateQR); }
+    const tik = qs('#tikkie_url'); if(tik){ tik.addEventListener('change', generateQR); tik.addEventListener('blur', generateQR); }
+    qs('#btn-mail').addEventListener('click', openGmailCompose);
+    qs('#btn-new').addEventListener('click', ()=>{ nextInvoiceSeq(); location.reload(); });
+
+    recalc();
+    applyLang();
+  })();
+  </script>
+
+<!-- === PATCH: PDF export label sanitization + mail body sync === -->
+<script>
+(function(){
+  // Save originals so we can revert after export/print
+  const ORIG = {};
+  function _get(id){ return document.getElementById(id); }
+  function saveOnce(id){
+    if(!ORIG[id]){
+      const el=_get(id); if(el){ ORIG[id]=el.textContent; }
+    }
+  }
+  function setText(id, txt){
+    const el=_get(id); if(!el) return;
+    el.textContent = txt;
+  }
+  function sanitizeClientLabels(start){
+    // target labels
+    const ids = ['label_client_name','label_client_email','label_client_phone'];
+    ids.forEach(saveOnce);
+    if(start){
+      // neutral labels for export (remove " / nazwa" and "klienta")
+      const lang = (document.documentElement.lang||'pl').toLowerCase();
+      const MAP = {
+        pl: { name:'Imię i nazwisko', email:'E-mail', phone:'Telefon' },
+        nl: { name:'Naam', email:'E‑mail', phone:'Telefoon' },
+        en: { name:'Name', email:'E‑mail', phone:'Phone' }
+      };
+      const L = MAP[lang] || MAP.pl;
+      setText('label_client_name', L.name);
+      setText('label_client_email', L.email);
+      setText('label_client_phone', L.phone);
+    }else{
+      // revert
+      Object.keys(ORIG).forEach(id=>{ if(_get(id)) _get(id).textContent = ORIG[id]; });
+    }
+  }
+
+  // Hook print events
+  try{
+    window.addEventListener('beforeprint', function(){ sanitizeClientLabels(true); });
+    window.addEventListener('afterprint', function(){ sanitizeClientLabels(false); });
+  }catch(_e){}
+
+  // Observe entering/leaving PDF snapshot mode (body.pdf-mode)
+  try{
+    const mo = new MutationObserver(function(muts){
+      muts.forEach(m=>{
+        if(m.attributeName === 'class'){
+          const inPdf = document.body.classList.contains('pdf-mode');
+          sanitizeClientLabels(inPdf);
+        }
+      });
+    });
+    mo.observe(document.body, { attributes:true });
+  }catch(_e){}
+
+  // Improve "Send to client" to always reflect current invoice values
+  function formatMoney(amount){
+    const cur = (document.getElementById('currency')?.value || 'EUR');
+    const n = Number(amount||0);
+    return cur + ' ' + n.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function getPayMethodText(){
+    const sel = document.getElementById('pay_method');
+    if(!sel) return '';
+    return sel.options[sel.selectedIndex]?.text || sel.value || '';
+  }
+  function computeTotals(){
+    const h = parseFloat(document.getElementById('hours')?.value||0) || 0;
+    const r = parseFloat(document.getElementById('rate')?.value||0) || 0;
+    const e = parseFloat(document.getElementById('extras')?.value||0) || 0;
+    const mode = document.getElementById('mode')?.value || 'kwit';
+    const base = h*r;
+    const vak = (mode==='dah') ? base*0.08 : 0;
+    const sub = base + e;
+    const total = sub + vak;
+    return {h,r,e,base,vak,sub,total};
+  }
+
+  
+  
+  function buildMail(){
+    const lang = (document.getElementById('lang_select')?.value || 'pl').toLowerCase();
+    const docNo = document.getElementById('doc_no')?.value || '';
+    const issue = document.getElementById('date_issu')?.value || '';
+    const clientName = document.getElementById('client_name')?.value || '';
+    const modeSel = document.getElementById('mode');
+    const scheme = modeSel ? (modeSel.options[modeSel.selectedIndex]?.text || modeSel.value) : '';
+    const pm = getPayMethodText();
+    const {h,r,e,base,total} = computeTotals();
+
+    function linesPL(){
+      const arr = [];
+      arr.push(`Cześć${clientName? ' ' + clientName : ''},`);
+      arr.push('');
+      arr.push('W załączeniu przesyłam rachunek za wykonaną usługę fotograficzną.');
+      arr.push('');
+      arr.push(`Numer rachunku: ${docNo}`);
+      arr.push(`Data: ${issue}`);
+      arr.push(`Podstawa: ${scheme}`);
+      if(h>0 && r>0){ arr.push(`Godziny i stawka: ${h.toFixed(2)} × ${formatMoney(r)} = ${formatMoney(base)}`); }
+      if(e>0){ arr.push(`Koszty dojazdu: ${formatMoney(e)}`); }
+      arr.push(`Razem do zapłaty: ${formatMoney(total)}`);
+      arr.push(`Sposób zapłaty: ${pm}`);
+      arr.push('Termin płatności: 14 dni od otrzymania.');
+      arr.push('');
+      arr.push('W razie pytań proszę o kontakt.');
+      arr.push('');
+      arr.push('Pozdrawiam,');
+      arr.push('Rafał Wilk');
+      return {
+        subj: `Rachunek za usługę fotograficzną nr ${docNo}`,
+        body: arr.join('\n')
+      };
+    }
+
+    function linesNL(){
+      const arr = [];
+      arr.push(`Hallo${clientName? ' ' + clientName : ''},`);
+      arr.push('');
+      arr.push('In de bijlage vind je de factuur voor de uitgevoerde fotografiedienst.');
+      arr.push('');
+      arr.push(`Factuurnummer: ${docNo}`);
+      arr.push(`Datum: ${issue}`);
+      arr.push(`Basis: ${scheme}`);
+      if(h>0 && r>0){ arr.push(`Uren en tarief: ${h.toFixed(2)} × ${formatMoney(r)} = ${formatMoney(base)}`); }
+      if(e>0){ arr.push(`Reiskosten: ${formatMoney(e)}`); }
+      arr.push(`Te betalen: ${formatMoney(total)}`);
+      arr.push(`Betaalwijze: ${pm}`);
+      arr.push('Betalingstermijn: 14 dagen na ontvangst.');
+      arr.push('');
+      arr.push('Als er vragen zijn, laat het gerust weten.');
+      arr.push('');
+      arr.push('Met vriendelijke groet,');
+      arr.push('Rafał Wilk');
+      return {
+        subj: `Factuur fotografiedienst nr ${docNo}`,
+        body: arr.join('\n')
+      };
+    }
+
+    function linesEN(){
+      const arr = [];
+      arr.push(`Hi${clientName? ' ' + clientName : ''},`);
+      arr.push('');
+      arr.push('Please find attached the invoice for the completed photography service.');
+      arr.push('');
+      arr.push(`Invoice number: ${docNo}`);
+      arr.push(`Date: ${issue}`);
+      arr.push(`Basis: ${scheme}`);
+      if(h>0 && r>0){ arr.push(`Hours and rate: ${h.toFixed(2)} × ${formatMoney(r)} = ${formatMoney(base)}`); }
+      if(e>0){ arr.push(`Travel expenses: ${formatMoney(e)}`); }
+      arr.push(`Total due: ${formatMoney(total)}`);
+      arr.push(`Payment method: ${pm}`);
+      arr.push('Payment term: 14 days from receipt.');
+      arr.push('');
+      arr.push('If you have any questions, feel free to reach out.');
+      arr.push('');
+      arr.push('Best regards,');
+      arr.push('Rafał Wilk');
+      return {
+        subj: `Invoice for photography service #${docNo}`,
+        body: arr.join('\n')
+      };
+    }
+
+    const L = (lang==='nl') ? linesNL() : (lang==='en') ? linesEN() : linesPL();
+
+    const to = (document.getElementById('client_email')?.value || '');
+    const gmailURL = 'https://mail.google.com/mail/?view=cm&fs=1'
+      + '&to=' + encodeURIComponent(to)
+      + '&su=' + encodeURIComponent(L.subj || 'Invoice')
+      + '&body=' + encodeURIComponent(L.body || '')
+      + '&authuser=' + encodeURIComponent('fotodisogno@gmail.com');
+    const mailto = [
+      'mailto:' + encodeURIComponent(to),
+      '?subject=' + encodeURIComponent(L.subj || 'Invoice'),
+      '&body=' + encodeURIComponent(L.body || '')
+    ].join('');
+
+    try{
+      const w = window.open(gmailURL, '_blank');
+      if(!w){ window.location.href = mailto; }
+    }catch(_e){
+      window.location.href = mailto;
+    }
+    return gmailURL;
+  }
+[lang] || {};
+
+    const to = (document.getElementById('client_email')?.value || '');
+    // Prefer Gmail compose using the specified account; fall back to mailto.
+    const gmailURL = 'https://mail.google.com/mail/?view=cm&fs=1'
+      + '&to=' + encodeURIComponent(to)
+      + '&su=' + encodeURIComponent(lines.subj || 'Invoice')
+      + '&body=' + encodeURIComponent(lines.body || '')
+      + '&authuser=' + encodeURIComponent('fotodisogno@gmail.com');
+    const mailto = [
+      'mailto:' + encodeURIComponent(to),
+      '?subject=' + encodeURIComponent(lines.subj || 'Invoice'),
+      '&body=' + encodeURIComponent(lines.body || '')
+    ].join('');
+
+    // Try to open Gmail compose; if blocked, fall back to mailto
+    try{
+      // Open in a new tab so the app isn't navigated away from
+      const w = window.open(gmailURL, '_blank');
+      if(!w){
+        window.location.href = mailto;
+      }
+    }catch(_e){
+      window.location.href = mailto;
+    }
+    return gmailURL;
+  }
+[lang] || {};
+
+    const mailto = [
+      'mailto:' + encodeURIComponent(document.getElementById('client_email')?.value || ''),
+      '?subject=' + encodeURIComponent(lines.subj || 'Invoice'),
+      '&body=' + encodeURIComponent(lines.body || '')
+    ].join('');
+    return mailto;
+  }
+
+  // Bind button
+  try{
+    const btnMail = document.getElementById('btn-mail');
+    if(btnMail){
+      btnMail.addEventListener('click', function(ev){
+        try{
+          const href = buildMail();
+          window.location.href = href;
+        }catch(e){ console.error(e); }
+      }, { capture: true });
+    }
+  }catch(_e){}
+
+})();
+</script>
+
+
+<!-- === Unified printable invoice block === -->
+<style>
+/* Only print our unified block to avoid duplicates */
+@media print {
+  body * { visibility: hidden !important; }
+  #pdf-invoice-wrapper, #pdf-invoice-wrapper * { visibility: visible !important; }
+  #pdf-invoice-wrapper { position: absolute; left: 0; top: 0; width: 100%; padding: 20mm 18mm; box-sizing: border-box; }
+}
+#pdf-invoice-wrapper { display:none; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#111; }
+#pdf-invoice-wrapper h1 { font-size: 18px; margin: 0 0 10px 0; }
+#pdf-invoice-wrapper p { margin: 0 0 8px 0; }
+#pdf-invoice-wrapper .kv { line-height: 1.5; }
+#pdf-invoice-wrapper .kv div { margin: 2px 0; }
+</style>
+<div id="pdf-invoice-wrapper" aria-hidden="true">
+  <h1 id="pdf-title"></h1>
+  <p id="pdf-greeting"></p>
+  <p id="pdf-intro"></p>
+  <div class="kv" id="pdf-lines"></div>
+  <p id="pdf-closing"></p>
+  <p><strong>Rafał Wilk</strong></p>
+</div>
+
+
+<script>
+(function(){
+  function getLang(){
+    return (document.getElementById('lang_select')?.value || 'pl').toLowerCase();
+  }
+  function formatMoney(amount){
+    const cur = (document.getElementById('currency')?.value || 'EUR');
+    const n = Number(amount||0);
+    return cur + ' ' + n.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function getPayMethodText(){
+    const sel = document.getElementById('pay_method');
+    if(!sel) return '';
+    return sel.options[sel.selectedIndex]?.text || sel.value || '';
+  }
+  function computeTotals(){
+    const h = parseFloat(document.getElementById('hours')?.value||0) || 0;
+    const r = parseFloat(document.getElementById('rate')?.value||0) || 0;
+    const e = parseFloat(document.getElementById('extras')?.value||0) || 0;
+    const base = h*r;
+    const total = base + e + (document.getElementById('mode')?.value==='dah' ? base*0.08 : 0);
+    return {h,r,e,base,total};
+  }
+  function getFields(){
+    return {
+      docNo: document.getElementById('doc_no')?.value || '',
+      issue: document.getElementById('date_issu')?.value || '',
+      scheme: (function(){
+        const modeSel = document.getElementById('mode');
+        return modeSel ? (modeSel.options[modeSel.selectedIndex]?.text || modeSel.value) : '';
+      })(),
+      clientName: document.getElementById('client_name')?.value || '',
+      payMethod: getPayMethodText()
+    };
+  }
+
+  // Build ONE source of truth
+  function buildContent(lang){
+    const {h,r,e,base,total} = computeTotals();
+    const F = getFields();
+    function commonPL(){
+      const kv = [];
+      kv.push(['Numer rachunku', F.docNo]);
+      kv.push(['Data', F.issue]);
+      kv.push(['Podstawa', F.scheme]);
+      if(h>0 && r>0) kv.push(['Godziny i stawka', `${h.toFixed(2)} × ${formatMoney(r)} = ${formatMoney(base)}`]);
+      if(e>0) kv.push(['Koszty dojazdu', `${formatMoney(e)}`]);
+      kv.push(['Razem do zapłaty', `${formatMoney(total)}`]);
+      kv.push(['Sposób zapłaty', F.payMethod]);
+      kv.push(['Termin płatności', '14 dni od otrzymania']);
+      return {
+        subject: `Rachunek za usługę fotograficzną nr ${F.docNo}`,
+        greeting: `Cześć${F.clientName? ' ' + F.clientName : ''},`,
+        intro: 'W załączeniu przesyłam rachunek za wykonaną usługę fotograficzną.',
+        kv,
+        closing: 'W razie pytań proszę o kontakt.\n\nPozdrawiam,'
+      };
+    }
+    function commonNL(){
+      const kv = [];
+      kv.push(['Factuurnummer', F.docNo]);
+      kv.push(['Datum', F.issue]);
+      kv.push(['Basis', F.scheme]);
+      if(h>0 && r>0) kv.push(['Uren en tarief', `${h.toFixed(2)} × ${formatMoney(r)} = ${formatMoney(base)}`]);
+      if(e>0) kv.push(['Reiskosten', `${formatMoney(e)}`]);
+      kv.push(['Te betalen', `${formatMoney(total)}`]);
+      kv.push(['Betaalwijze', F.payMethod]);
+      kv.push(['Betalingstermijn', '14 dagen na ontvangst']);
+      return {
+        subject: `Factuur fotografiedienst nr ${F.docNo}`,
+        greeting: `Hallo${F.clientName? ' ' + F.clientName : ''},`,
+        intro: 'In de bijlage vind je de factuur voor de uitgevoerde fotografiedienst.',
+        kv,
+        closing: 'Als er vragen zijn, laat het gerust weten.\n\nMet vriendelijke groet,'
+      };
+    }
+    function commonEN(){
+      const kv = [];
+      kv.push(['Invoice number', F.docNo]);
+      kv.push(['Date', F.issue]);
+      kv.push(['Basis', F.scheme]);
+      if(h>0 && r>0) kv.push(['Hours and rate', `${h.toFixed(2)} × ${formatMoney(r)} = ${formatMoney(base)}`]);
+      if(e>0) kv.push(['Travel expenses', `${formatMoney(e)}`]);
+      kv.push(['Total due', `${formatMoney(total)}`]);
+      kv.push(['Payment method', F.payMethod]);
+      kv.push(['Payment term', '14 days from receipt']);
+      return {
+        subject: `Invoice for photography service #${F.docNo}`,
+        greeting: `Hi${F.clientName? ' ' + F.clientName : ''},`,
+        intro: 'Please find attached the invoice for the completed photography service.',
+        kv,
+        closing: 'If you have any questions, feel free to reach out.\n\nBest regards,'
+      };
+    }
+    return (lang==='nl') ? commonNL() : (lang==='en') ? commonEN() : commonPL();
+  }
+
+  // Fill printable block
+  function fillPDF(){
+    const lang = getLang();
+    const C = buildContent(lang);
+    const wrap = document.getElementById('pdf-invoice-wrapper');
+    if(!wrap) return;
+    document.getElementById('pdf-title').textContent = C.subject;
+    document.getElementById('pdf-greeting').textContent = C.greeting;
+    document.getElementById('pdf-intro').textContent = C.intro;
+    const lines = document.getElementById('pdf-lines');
+    lines.innerHTML='';
+    C.kv.forEach(([k,v]) => {
+      const d = document.createElement('div');
+      d.textContent = k + ': ' + v;
+      lines.appendChild(d);
+    });
+    document.getElementById('pdf-closing').textContent = C.closing;
+    wrap.style.display = 'block';
+  }
+
+  // Print hooks: render unified block and hide duplicates by CSS
+  window.addEventListener('beforeprint', fillPDF);
+
+  // Shared email compose
+  
+function openEmail(){
+  const lang = (document.getElementById('lang_select')?.value || 'pl').toLowerCase();
+  // Reuse existing builders if present, else minimal inline composition
+  let subject = 'Rachunek';
+  let body = 'Rafał Wilk';
+  try{
+    const C = (typeof buildContent === 'function') ? buildContent(lang) : null;
+    if(C){
+      subject = C.subject || subject;
+      const kvLines = (C.kv||[]).map(([k,v])=>`${k}: ${v}`);
+      body = [C.greeting||'', '', C.intro||'', '', ...kvLines, '', 'Rafał Wilk'].join('\n');
+    }else{
+      // Minimal fallback using visible fields
+      const docNo = document.getElementById('doc_no')?.value || '';
+      subject = (lang==='nl') ? `Factuur fotografiedienst nr ${docNo}`
+               : (lang==='en') ? `Invoice for photography service #${docNo}`
+               : `Rachunek za usługę fotograficzną nr ${docNo}`;
+      body = (lang==='nl') ? 'Zie bijlage.\n\nMet vriendelijke groet,\nRafał Wilk'
+           : (lang==='en') ? 'Please see attachment.\n\nBest regards,\nRafał Wilk'
+           : 'W załączeniu przesyłam rachunek.\n\nPozdrawiam,\nRafał Wilk';
+    }
+  }catch(_e){}
+
+  const to = (document.getElementById('client_email')?.value || '');
+  const gmailURL = 'https://mail.google.com/mail/?view=cm&fs=1'
+    + '&to=' + encodeURIComponent(to)
+    + '&su=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(body)
+    + '&authuser=' + encodeURIComponent('fotodisogno@gmail.com');
+
+  // Only Gmail: open new tab or redirect current tab to Gmail compose
+  let w = null;
+  try { w = window.open(gmailURL, '_blank', 'noopener'); } catch(_e){}
+  if(!w){ window.location.href = gmailURL; }
+}
+
+    }catch(_e){ window.location.href = mailto; }
+  }
+
+  const btnMail = document.getElementById('btn-mail');
+  if(btnMail){ btnMail.addEventListener('click', function(e){ e.preventDefault(); openEmail(); }); }
+})();
+</script>
+
+
+<script>
+(function(){
+  function hardenMailButton(){
+    const btn = document.getElementById('btn-mail');
+    if(!btn) return;
+    // Remove any mailto to avoid Outlook
+    try{
+      btn.removeAttribute('href');
+      btn.setAttribute('href', 'javascript:void(0)');
+      btn.setAttribute('role', 'button');
+      btn.setAttribute('target', '_blank');
+      btn.setAttribute('rel', 'noopener');
+    }catch(_e){}
+    // Remove other click handlers that might navigate to mailto
+    try{
+      btn.onclick = null;
+      // If using jQuery or others, clone node to drop listeners (safe fallback)
+      const clone = btn.cloneNode(true);
+      btn.parentNode.replaceChild(clone, btn);
+      // Re-grab reference after replace
+      const safeBtn = document.getElementById('btn-mail') || clone;
+      safeBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        if(typeof openEmail === 'function'){ openEmail(); }
+        return false;
+      }, {capture:true, passive:false});
+    }catch(_e){
+      // Minimal: still attach our listener
+      (document.getElementById('btn-mail')||btn).addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation(); if(typeof openEmail==='function'){ openEmail(); } return false;
+      }, {capture:true, passive:false});
+    }
+  }
+  // Run early and also after DOM ready
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', hardenMailButton);
+  }else{
+    hardenMailButton();
+  }
+})();
+</script>
+
+
+<script>
+(function(){
+  function bind(){
+    const b = document.getElementById('btn-mail');
+    if(!b) return;
+    b.removeAttribute('href');
+    b.setAttribute('href','javascript:void(0)');
+    b.onclick = null;
+    b.addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      if(typeof openEmail==='function'){ openEmail(); }
+      return false;
+    }, {capture:true});
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', bind);
+  }else{ bind(); }
+})();
+</script>
+
+
+<script>
+(function(){
+  // Expose a global content builder used by both email and PDF
+  window.buildMailContent = function(lang){
+    function val(id){ return document.getElementById(id)?.value || ''; }
+    function formatMoney(amount){
+      const cur = (document.getElementById('currency')?.value || 'EUR');
+      const n = Number(amount||0);
+      return cur + ' ' + n.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+    }
+    function getPayMethodText(){
+      const sel = document.getElementById('pay_method');
+      if(!sel) return '';
+      return sel.options[sel.selectedIndex]?.text || sel.value || '';
+    }
+    const h = parseFloat(val('hours')||0) || 0;
+    const r = parseFloat(val('rate')||0) || 0;
+    const e = parseFloat(val('extras')||0) || 0;
+    const base = h*r;
+    const total = base + e + (document.getElementById('mode')?.value==='dah' ? base*0.08 : 0);
+    const modeSel = document.getElementById('mode');
+    const scheme = modeSel ? (modeSel.options[modeSel.selectedIndex]?.text || modeSel.value) : '';
+
+    const F = {
+      docNo: val('doc_no'),
+      issue: val('date_issu'),
+      scheme,
+      clientName: val('client_name'),
+      payMethod: getPayMethodText(),
+      h, r, e, base, total
+    };
+
+    function pack(subject, greeting, intro, labels){
+      const kv = [];
+      if(F.docNo) kv.push([labels.no, F.docNo]);
+      if(F.issue) kv.push([labels.date, F.issue]);
+      if(F.scheme) kv.push([labels.scheme, F.scheme]);
+      if(F.h>0 && F.r>0) kv.push([labels.hr, `${F.h.toFixed(2)} × ${formatMoney(F.r)} = ${formatMoney(F.base)}`]);
+      if(F.e>0) kv.push([labels.travel, `${formatMoney(F.e)}`]);
+      kv.push([labels.total, `${formatMoney(F.total)}`]);
+      if(F.payMethod) kv.push([labels.pay, F.payMethod]);
+      kv.push([labels.term, labels.termText]);
+      const body = [
+        `${greeting}${F.clientName? ' ' + F.clientName : ''},`,
+        '',
+        intro,
+        '',
+        ...kv.map(([k,v])=>`${k}: ${v}`),
+        '',
+        (lang==='en'?'Best regards,':(lang==='nl'?'Met vriendelijke groet,':'Pozdrawiam,')),
+        'Rafał Wilk'
+      ].join('\n');
+      return { subject, body, kv };
+    }
+
+    if(lang==='nl'){
+      return pack(
+        `Factuur fotografiedienst nr ${F.docNo}`,
+        'Hallo',
+        'In de bijlage vind je de factuur voor de uitgevoerde fotografiedienst.',
+        { no:'Factuurnummer', date:'Datum', scheme:'Basis', hr:'Uren en tarief', travel:'Reiskosten', total:'Te betalen', pay:'Betaalwijze', term:'Betalingstermijn', termText:'14 dagen na ontvangst' }
+      );
+    } else if(lang==='en'){
+      return pack(
+        `Invoice for photography service #${F.docNo}`,
+        'Hi',
+        'Please find attached the invoice for the completed photography service.',
+        { no:'Invoice number', date:'Date', scheme:'Basis', hr:'Hours and rate', travel:'Travel expenses', total:'Total due', pay:'Payment method', term:'Payment term', termText:'14 days from receipt' }
+      );
+    } else {
+      return pack(
+        `Rachunek za usługę fotograficzną nr ${F.docNo}`,
+        'Cześć',
+        'W załączeniu przesyłam rachunek za wykonaną usługę fotograficzną.',
+        { no:'Numer rachunku', date:'Data', scheme:'Podstawa', hr:'Godziny i stawka', travel:'Koszty dojazdu', total:'Razem do zapłaty', pay:'Sposób zapłaty', term:'Termin płatności', termText:'14 dni od otrzymania' }
+      );
+    }
+  };
+})();
+</script>
+
+
+<script>
+(function(){
+  window.openEmail = function(){
+    const lang = (document.getElementById('lang_select')?.value || 'pl').toLowerCase();
+    const C = (typeof window.buildMailContent === 'function') ? window.buildMailContent(lang) : {subject:'Rachunek', body:'Rafał Wilk'};
+    const to = (document.getElementById('client_email')?.value || '');
+    const gmailURL = 'https://mail.google.com/mail/?view=cm&fs=1'
+      + '&to=' + encodeURIComponent(to)
+      + '&su=' + encodeURIComponent(C.subject)
+      + '&body=' + encodeURIComponent(C.body)
+      + '&authuser=' + encodeURIComponent('fotodisogno@gmail.com');
+    // Only Gmail
+    let w = null;
+    try { w = window.open(gmailURL, '_blank', 'noopener'); } catch(_e){}
+    if(!w){ window.location.href = gmailURL; }
+  };
+})();
+</script>
+
+
+<script>
+(function(){
+  function isMailButton(el){
+    if(!el) return false;
+    const t = (el.innerText || el.textContent || '').toLowerCase().trim();
+    if(el.id === 'btn-mail') return true;
+    if(el.dataset && (el.dataset.action==='send-mail' || el.dataset.mail==='send')) return true;
+    if(t.includes('wyślij do klienta') || t.includes('wyslij do klienta') || t.includes('send to client')) return true;
+    const href = (el.getAttribute && el.getAttribute('href')) || '';
+    if(href && href.startsWith('mailto:')) return true;
+    return false;
+  }
+  function handle(e){
+    const el = e.target.closest('a,button,div,span');
+    if(!isMailButton(el)) return;
+    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+    if(typeof window.openEmail === 'function'){ window.openEmail(); }
+  }
+  document.addEventListener('click', handle, true);
+  // Clean any mailto on the canonical button if it exists
+  function sanitize(){
+    const b = document.getElementById('btn-mail');
+    if(b){ b.removeAttribute('href'); b.style.cursor='pointer'; }
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', sanitize); } else { sanitize(); }
+})();
+</script>
+
+
+<!-- === Auto language-dependent legal notice (PL/NL/EN) === -->
+<style>
+#legal_notice{font-size:12px;color:#222;margin-top:10px}
+@media print{
+  #legal_notice{visibility:hidden!important} /* only show PDF version inside pdf wrapper */
+}
+#pdf-legal{font-size:12px;color:#222;margin-top:8px}
+</style>
+<script>
+(function(){
+  function getLang(){
+    return (document.getElementById('lang_select')?.value || 'pl').toLowerCase();
+  }
+  function getLegalText(lang){
+    if(lang==='nl'){
+      return 'Document voor particuliere diensten. Niet onderworpen aan btw. Indien van toepassing op huishoudelijke diensten: de dienstverlening bedraagt minder dan vier dagen per week bij dezelfde opdrachtgever.';
+    }else if(lang==='en'){
+      return 'Document for private services. Not subject to VAT. If applicable to domestic services: the service does not exceed four days per week for the same client.';
+    }else{
+      return 'Dokument dotyczący usług prywatnych. Nie podlega opodatkowaniu VAT. W przypadku usług domowych świadczenie nie przekracza czterech dni w tygodniu u tego samego zleceniodawcy.';
+    }
+  }
+  function ensureScreenNotice(){
+    let el = document.getElementById('legal_notice');
+    if(!el){
+      el = document.createElement('div');
+      el.id='legal_notice';
+      // Try to place near totals if exists; otherwise append to body end
+      const anchor = document.querySelector('#totals, .totals, footer, .footer') || document.body;
+      anchor.appendChild(el);
+    }
+    el.textContent = getLegalText(getLang());
+  }
+  function ensurePdfNotice(){
+    const pdf = document.getElementById('pdf-invoice-wrapper');
+    if(!pdf) return;
+    let el = document.getElementById('pdf-legal');
+    if(!el){
+      el = document.createElement('p');
+      el.id='pdf-legal';
+      pdf.appendChild(el);
+    }
+    el.textContent = getLegalText(getLang());
+  }
+  function updateLegal(){
+    ensureScreenNotice();
+    ensurePdfNotice();
+  }
+  // Update on load, on language change and before print
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', updateLegal);
+  }else{
+    updateLegal();
+  }
+  const sel = document.getElementById('lang_select');
+  if(sel){ sel.addEventListener('change', updateLegal); }
+  window.addEventListener('beforeprint', updateLegal);
+})();
+</script>
+
+<script>
+(function(){
+  const qs=(s)=>document.querySelector(s);
+  const _displayCache=new Map();
+  function _hide(sel){const el=qs(sel);if(!el)return;
+    if(!_displayCache.has(el))_displayCache.set(el,el.style.display||'');el.style.display='none';}
+  function _show(sel){const el=qs(sel);if(!el)return;
+    const prev=_displayCache.get(el);el.style.display=(prev===undefined)?'':prev;}
+  function currentLang(){return localStorage.getItem('doc_lang')||document.getElementById('lang_select')?.value||'pl';}
+  function paidStampText(){
+    const todayISO=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+    return 'ZAPŁACONO / BETAALD • '+todayISO;
+  }
+  function ensurePaidStamp(){
+    let s=document.getElementById('paid_stamp');
+    if(!s){s=document.createElement('div');s.id='paid_stamp';
+      s.textContent=paidStampText();qs('#docRoot').style.position='relative';qs('#docRoot').appendChild(s);}
+    else{s.textContent=paidStampText();}
+  }
+  function setReceiptModeForPDF(start){
+    const st=qs('#doc_status');if(!st)return;const isRec=st.value==='bewijs';
+    if(!isRec)return;
+    if(start){
+      document.body.classList.add('receipt-mode');
+      _hide('#tikkie_controls_row');_hide('#qr_block');_hide('#qr_area');_hide('#qr_help');_hide('#qr_status');
+      ensurePaidStamp();
+    }else{
+      document.body.classList.remove('receipt-mode');
+      _show('#tikkie_controls_row');_show('#qr_block');_show('#qr_area');_show('#qr_help');_show('#qr_status');
+    }
+  }
+  const _origExport=window.exportPDF;
+  window.exportPDF=async function(){
+    setReceiptModeForPDF(true);
+    try{await _origExport();}finally{setReceiptModeForPDF(false);}
+  };
+  ensurePaidStamp();
+})();
+</script>
+
+<script>
+(function(){
+  const qs = (s)=>document.querySelector(s);
+  // Helper to find a likely description from the page
+  function findDescription(){
+    const selectors = [
+      '#description','#doc_description','#payment_for','#service','#service_title',
+      '.description','.desc','.item-name','.item-description','.service-name',
+      '#invoice_items','.invoice-item','.item-row','.item'
+    ];
+    for(const sel of selectors){
+      const el = qs(sel);
+      if(el && el.textContent.trim().length>2){
+        return el.textContent.trim().replace(/\s+/g,' ');
+      }
+    }
+    // try to search for keywords in the document
+    const bodyText = document.body.textContent || '';
+    const keywords = ['fotograf','fotograficzn','sesj','sesja zdjęciowa','usługa','usluga','faktur','faktura'];
+    for(const kw of keywords){
+      const idx = bodyText.toLowerCase().indexOf(kw);
+      if(idx>-1){
+        // return a short snippet around the keyword
+        return bodyText.substr(Math.max(0,idx-30), 120).replace(/\s+/g,' ').trim();
+      }
+    }
+    // best fallback — explicit, specific description as requested
+    return 'usługę fotograficzną — sesję zdjęciową';
+  }
+
+  function minimalReceiptHtml(description){
+    const today = new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+    return `
+      <div style="font-family: Arial, Helvetica, sans-serif; max-width:800px; margin:24px auto; padding:24px; border:0px solid #eee; text-align:left;">
+        <h2 style="margin:0 0 10px 0; font-size:20px;">Potwierdzenie wpłaty / Betalingsbewijs</h2>
+        <div style="margin-top:18px; font-size:14px;">
+          <p style="margin:0 0 8px 0;">Otrzymaliśmy przelew za: <strong>${description}</strong></p>
+          <p style="margin:0 0 8px 0;">Data otrzymania: <strong>${today}</strong></p>
+        </div>
+        <div style="margin-top:30px; font-weight:800; font-size:16px; color:#0a0;">ZAPŁACONO / BETAALD</div>
+      </div>
+    `;
+  }
+
+  // Save original export if present
+  const originalExport = window.exportPDF || (async function(){ alert('Brak funkcji exportPDF - użyj standardowego przycisku drukuj.'); });
+
+  // New export wrapper: if status=bewijs generate minimal receipt PDF content only
+  window.exportPDF = async function(){
+    try{
+      const statusEl = qs('#doc_status');
+      const isReceipt = statusEl && statusEl.value === 'bewijs';
+      if(!isReceipt){
+        // fallback to original behavior for other statuses
+        return await originalExport();
+      }
+
+      // Build minimal content
+      const description = findDescription();
+      const root = qs('#docRoot') || document.body;
+      // Save backup
+      const backup = root.innerHTML;
+      // Replace with minimal HTML
+      root.innerHTML = minimalReceiptHtml(description);
+
+      // Allow any existing PDF snapshot function to run on this content.
+      // If the originalExport relies on DOM state beyond root, call it; otherwise fallback to window.print()
+      try{
+        await originalExport();
+      }catch(_e){
+        // last resort: open print dialog for user to save PDF
+        window.print();
+      }
+      // Restore original content
+      root.innerHTML = backup;
+    }catch(err){
+      console.error('exportPDF wrapper error', err);
+      // On error, attempt original
+      try{ await originalExport(); }catch(e){ window.print(); }
+    }
+  };
+})();
+</script>
+
+
+<script>
+(function(){
+  const $ = (s)=>document.querySelector(s);
+  const $ = (s)=>Array.from(document.querySelectorAll(s));
+
+  // Lista pól do zapisu/odtworzenia
+  const FIELD_IDS = [
+    'client_name','client_addr','client_email','client_phone',
+    'service_type','hours','rate','extras','photos_count','desc',
+    'pay_place','pay_method','tikkie_url'
+  ];
+
+  const PROVIDER_DEFAULTS = {
+    person_name: 'Rafał Wilk',
+    person_addr: 'Dr Knippenberghof 22, 5709 EE Helmond',
+    person_email: 'fotodisogno@gmail.com',
+    person_phone: '+31 0644747733'
+  };
+
+  function ensureProviderDefaults(){
+    for(const [id, value] of Object.entries(PROVIDER_DEFAULTS)){
+      const el = document.getElementById(id);
+      if(!el) continue;
+      el.value = value;
+      el.setAttribute('value', value);
+      el.readOnly = true;
+      el.classList.add('readonly');
+    }
+  }
+
+  function storageGetAll(){
+    try{
+      return JSON.parse(localStorage.getItem('rfw_invoices_v1')||'{}');
+    }catch(e){ return {}; }
+  }
+  function storageSetAll(data){
+    localStorage.setItem('rfw_invoices_v1', JSON.stringify(data));
+  }
+  function snapshot(){
+    ensureProviderDefaults();
+    const data = {};
+    for(const id of FIELD_IDS){
+      const el = document.getElementById(id);
+      if(!el) continue;
+      let val = (el.value!==undefined) ? el.value : (el.textContent||'');
+      data[id] = val;
+    }
+    data._saved_at = new Date().toISOString();
+    return data;
+  }
+  function restore(data){
+    ensureProviderDefaults();
+    if(!data) return;
+    for(const id of FIELD_IDS){
+      const el = document.getElementById(id);
+      if(!el) continue;
+      if(data[id]!==undefined){
+        el.value = data[id];
+        el.dispatchEvent(new Event('input', {bubbles:true}));
+        el.dispatchEvent(new Event('change', {bubbles:true}));
+      }
+    }
+  }
+  function saveInvoice(showToast=true){
+    ensureProviderDefaults();
+    const no = $('#doc_no')?.value?.trim();
+    if(!no){ alert('Podaj numer rachunku/faktury, aby zapisać.'); return false; }
+    const all = storageGetAll();
+    all[no] = snapshot();
+    storageSetAll(all);
+    if(showToast) toast('Zapisano rachunek #' + no);
+    return true;
+  }
+  function loadByNumber(no){
+    const all = storageGetAll();
+    const data = all[no];
+    if(data){
+      restore(data);
+      toast('Załadowano zapisany rachunek #' + no);
+      return true;
+    }
+    return false;
+  }
+  function toast(msg){
+    let t = document.getElementById('mini_toast');
+    if(!t){
+      t = document.createElement('div');
+      t.id = 'mini_toast';
+      t.style.position='fixed'; t.style.bottom='16px'; t.style.right='16px';
+      t.style.background='#111'; t.style.color='#fff'; t.style.padding='10px 14px';
+      t.style.borderRadius='10px'; t.style.zIndex='99999'; t.style.opacity='0.95';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.display='block';
+    clearTimeout(t._hid);
+    t._hid = setTimeout(()=>{ t.style.display='none'; }, 2200);
+  }
+
+  // UI: przycisk Zapisz
+  const btnSave = document.getElementById('btn-save');
+  if(btnSave){
+    btnSave.addEventListener('click', ()=> saveInvoice(true));
+  }
+
+  // Auto-ładowanie po wpisaniu numeru
+  const docNo = document.getElementById('doc_no');
+  if(docNo){
+    docNo.addEventListener('change', ()=>{
+      const no = docNo.value.trim();
+      if(no) loadByNumber(no);
+    });
+    docNo.addEventListener('blur', ()=>{
+      const no = docNo.value.trim();
+      if(no) loadByNumber(no);
+    });
+  }
+
+  // Podmiana exportPDF: przed eksportem automatyczny zapis wersji
+  const _origExport = window.exportPDF;
+  if(typeof _origExport === 'function'){
+    window.exportPDF = async function(){
+      saveInvoice(false);
+      return await _origExport();
+    };
+  }
+
+  // Prosta lista zapisanych (CTRL+L) — podgląd numerów
+  window.addEventListener('keydown', (e)=>{
+    if(e.ctrlKey && (e.key==='l' || e.key==='L')){
+      e.preventDefault();
+      const all = storageGetAll();
+      const keys = Object.keys(all);
+      if(keys.length===0){ alert('Brak zapisanych rachunków.'); return; }
+      const pick = prompt('Wpisz numer z listy, aby wczytać:\n' + keys.join('\n'));
+      if(pick){ if(!loadByNumber(pick.trim())) alert('Nie znaleziono: ' + pick); }
+    }
+  });
+
+})();
+</script>
+
+
+<script>
+(function(){
+  const qs = (s)=>document.querySelector(s);
+
+  function buildConcreteDescription(){
+    // 1) Najpierw pole opisu
+    const descEl = qs('#desc');
+    const d = (descEl && descEl.value || '').trim();
+    if(d.length > 2){
+      return d;
+    }
+    // 2) Wspomagająco: rodzaj usługi + liczba zdjęć
+    const stEl = qs('#service_type');
+    const pcEl = qs('#photos_count');
+    const st = (stEl && stEl.value || '').trim();
+    const pc = (pcEl && pcEl.value || '').trim();
+    if(st && pc){
+      return st + ' — ' + pc + ' zdjęć';
+    }
+    if(st){
+      return st;
+    }
+    if(pc){
+      return 'usługę fotograficzną — ' + pc + ' zdjęć';
+    }
+    // 3) Twardy minimalny fallback
+    return 'usługę fotograficzną';
+  }
+
+  function minimalReceiptHtml(description){
+    const today = new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+    return `
+      <div style="font-family: Arial, Helvetica, sans-serif; max-width:800px; margin:24px auto; padding:24px; text-align:left;">
+        <h2 style="margin:0 0 10px 0; font-size:20px;">Potwierdzenie wpłaty / Betalingsbewijs</h2>
+        <p style="margin:18px 0 8px 0; font-size:14px;">Otrzymaliśmy przelew za: <strong>${description}</strong></p>
+        <p style="margin:0 0 8px 0; font-size:14px;">Data otrzymania: <strong>${today}</strong></p>
+        <div style="margin-top:28px; font-weight:800; font-size:16px;">ZAPŁACONO / BETAALD</div>
+      </div>
+    `;
+  }
+
+  // zachowujemy oryginalny export
+  const originalExport = window.exportPDF || (async function(){ window.print(); });
+
+  // Wersja minimalna TYLKO dla statusu "bewijs" – bez żadnych innych informacji.
+  window.exportPDF = async function(){
+    const statusEl = qs('#doc_status');
+    const isReceipt = statusEl && statusEl.value === 'bewijs';
+    if(!isReceipt){
+      return await originalExport();
+    }
+    // zbuduj konkretny opis, bez szukania po całej stronie
+    const description = buildConcreteDescription();
+    const root = qs('#docRoot') || document.body;
+    const backup = root.innerHTML;
+    root.innerHTML = minimalReceiptHtml(description);
+    try{
+      await originalExport();
+    }catch(_e){
+      window.print();
+    }finally{
+      root.innerHTML = backup;
+    }
+  };
+})();
+</script>
+
+
+<script>
+(function(){
+  const qs = (s)=>document.querySelector(s);
+
+  function text(el, fallback=''){
+    if(!el) return fallback;
+    const v = ('value' in el) ? el.value : el.textContent;
+    return (v||'').toString().trim();
+  }
+
+  function buildConcreteDescription(){
+    const d = text(qs('#desc'));
+    if(d) return d;
+    const st = text(qs('#service_type'));
+    const pc = text(qs('#photos_count'));
+    if(st && pc) return `${st} — ${pc} zdjęć`;
+    if(st) return st;
+    if(pc) return `usługę fotograficzną — ${pc} zdjęć`;
+    return 'usługę fotograficzną';
+  }
+
+  function getAmountAndCurrency(){
+    const amt = text(qs('#sum_total')) || text(qs('#tax_total_inc')) || text(qs('#sum_sub'));
+    let cur = text(qs('#currency')) || 'EUR';
+    // normalize currency to short code
+    cur = cur.split(' ')[0].replace(/[^\w€£$]/g,'');
+    return { amount: amt || '', currency: cur || '' };
+  }
+
+  function buildRegularReceiptHtml(){
+    const today = new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+    const invoiceNo = text(qs('#doc_no')) || '—';
+    const payer = text(qs('#client_name')) || '—';
+    const payee = text(qs('#person_name')) || '—';
+    const method = text(qs('#pay_method')) || 'przelew';
+    const ref = text(qs('#tikkie_url')) || ''; // jeśli był Tikkie, posłuży jako referencja
+    const { amount, currency } = getAmountAndCurrency();
+    const description = buildConcreteDescription();
+
+    const refRow = ref ? `<tr><td>Referencja</td><td>${ref}</td></tr>` : '';
+
+    return `
+      <div style="font-family: Arial, Helvetica, sans-serif; max-width:820px; margin:26px auto; padding:24px;">
+        <h2 style="margin:0 0 12px 0; font-size:20px;">Potwierdzenie płatności / Betalingsbewijs</h2>
+        <table style="width:100%; border-collapse:collapse; font-size:14px;">
+          <tbody>
+            <tr><td style="padding:6px 0; width:38%;">Numer dokumentu</td><td style="padding:6px 0;"><strong>${invoiceNo}</strong></td></tr>
+            <tr><td style="padding:6px 0;">Tytuł/za co</td><td style="padding:6px 0;"><strong>${description}</strong></td></tr>
+            <tr><td style="padding:6px 0;">Kwota otrzymana</td><td style="padding:6px 0;"><strong>${amount ? amount : ''} ${currency}</strong></td></tr>
+            <tr><td style="padding:6px 0;">Data otrzymania</td><td style="padding:6px 0;">${today}</td></tr>
+            <tr><td style="padding:6px 0;">Metoda płatności</td><td style="padding:6px 0;">${method}</td></tr>
+            ${refRow}
+            <tr><td style="padding:6px 0;">Płatnik (klient)</td><td style="padding:6px 0;">${payer}</td></tr>
+            <tr><td style="padding:6px 0;">Odbiorca</td><td style="padding:6px 0;">${payee}</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:22px; font-weight:800; font-size:16px;">ZAPŁACONO / BETAALD</div>
+      </div>
+    `;
+  }
+
+  // Zachowujemy oryginalny export do PDF (Twoja dotychczasowa funkcja)
+  const originalExport = window.exportPDF || (async function(){ window.print(); });
+
+  // Podmieniamy export tylko dla statusu "bewijs" i tworzymy regularne potwierdzenie (bez QR i innych dodatków)
+  window.exportPDF = async function(){
+    const statusEl = qs('#doc_status');
+    const isReceipt = statusEl && statusEl.value === 'bewijs';
+    if(!isReceipt){
+      // normalny eksport
+      return await originalExport();
+    }
+    const root = qs('#docRoot') || document.body;
+    const backup = root.innerHTML;
+    // Minimalny/regularny widok
+    root.innerHTML = buildRegularReceiptHtml();
+    try{
+      await originalExport();
+    }catch(_e){
+      window.print();
+    }finally{
+      root.innerHTML = backup;
+    }
+  };
+
+  // Automat: gdy użytkownik zmieni status na "bewijs", od razu generujemy PDF potwierdzenia
+  const ds = qs('#doc_status');
+  if(ds){
+    ds.addEventListener('change', ()=>{
+      if(ds.value === 'bewijs'){
+        // krótka pauza, by UI zaktualizował internal state, i wywołujemy eksport
+        setTimeout(()=>{
+          // Schowaj potencjalne bloki QR/Tikkie jeśli istniały (bezpiecznik)
+          const hideSel = ['#tikkie_controls_row','#qr_block','#qr_area','#qr_help','#qr_status'];
+          hideSel.forEach(s=>{ const el=qs(s); if(el) el.style.display='none'; });
+          // Generuj PDF potwierdzenia
+          window.exportPDF();
+        }, 250);
+      }
+    });
+  }
+})();
+</script>
+
+
+<script>
+(function(){
+  const qs = (s)=>document.querySelector(s);
+  const val = (el)=>{
+    if(!el) return '';
+    return ('value' in el) ? (el.value||'') : (el.textContent||'');
+  };
+  const txt = (sel)=> val(qs(sel)).trim();
+
+  function todayISO(){
+    return new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+  }
+
+  function toNum(s){
+    if(!s) return 0;
+    // accept "1 234,56" or "1234.56"
+    const norm = s.replace(/\s/g,'').replace(',','.');
+    const n = parseFloat(norm);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function money(amount, currency){
+    const c = (currency||'EUR').replace(/[^A-Z€$£]/g,'');
+    try {
+      const num = (typeof amount==='number')? amount : toNum(amount);
+      return new Intl.NumberFormat('pl-PL', {minimumFractionDigits:2, maximumFractionDigits:2}).format(num) + ' ' + c;
+    } catch(_e){
+      return (amount||'') + ' ' + c;
+    }
+  }
+
+  function buildItems(){
+    // We compose up to three rows if present: hours*rate, photos_count, extras
+    const rows = [];
+    const desc = txt('#desc') || (txt('#service_type') || 'Usługa fotograficzna');
+    const hours = toNum(txt('#hours'));
+    const rate  = toNum(txt('#rate'));
+    const photos = toNum(txt('#photos_count'));
+    const extras = toNum(txt('#extras'));
+    const cur = (txt('#currency')||'EUR').split(' ')[0];
+
+    if(hours>0 && rate>0){
+      rows.push({qty: hours, desc: desc + ' — godziny', unit: money(rate, cur), amount: money(hours*rate, cur)});
+    } else {
+      // single main line with 1 qty priced as total if we cannot compute
+      const total = toNum(txt('#sum_total')) || toNum(txt('#tax_total_inc')) || 0;
+      if(total>0){
+        rows.push({qty: 1, desc: desc, unit: money(total, cur), amount: money(total, cur)});
+      } else {
+        rows.push({qty: 1, desc: desc, unit: '', amount: ''});
+      }
+    }
+    if(photos>0){
+      rows.push({qty: photos, desc: 'Liczba zdjęć', unit: money(0, cur), amount: ''});
+    }
+    if(extras>0){
+      rows.push({qty: 1, desc: 'Dodatkowe koszty', unit: money(extras, cur), amount: money(extras, cur)});
+    }
+    return {rows, currency: cur};
+  }
+
+  function calcTotal(rows){
+    return rows.reduce((s,r)=>{
+      const m = /([0-9.,]+)\s/.exec(r.amount||'');
+      return s + (m ? parseFloat(m[1].replace(',','.')) : 0);
+    },0);
+  }
+
+  function buildProfessionalReceipt(){
+    const invoiceNo = txt('#doc_no') || '—';
+    const datePaid  = todayISO();
+    const payer = txt('#client_name') || '—';
+    const payerAddr = txt('#client_addr') || '';
+    const payee = txt('#person_name') || '—';
+    const payeeAddr = txt('#person_addr') || '';
+    const method = txt('#pay_method') || 'Przelew';
+    const shipTo = ''; // not used for services
+    const {rows, currency} = buildItems();
+    let total = toNum(txt('#sum_total')) || toNum(txt('#tax_total_inc')) || calcTotal(rows);
+
+    // Header and two-column addresses + meta
+    const rowsHtml = [`
+      <tr>
+        <th class="qty">QTY</th>
+        <th>DESCRIPTION</th>
+        <th class="unit">UNIT PRICE</th>
+        <th class="amount">AMOUNT</th>
+      </tr>`
+    ].concat(rows.map(r => `
+      <tr>
+        <td class="qty">${r.qty||''}</td>
+        <td>${r.desc||''}</td>
+        <td class="unit">${r.unit||''}</td>
+        <td class="amount">${r.amount||''}</td>
+      </tr>
+    `)).join('');
+
+    return `
+      <div class="pro-receipt">
+        <div class="header-bar"></div>
+        <div class="pad">
+          <div class="row" style="margin-bottom:8px;">
+            <div class="col">
+              <div class="muted" style="font-size:12px;">OD / FROM</div>
+              <div><strong>${payee}</strong></div>
+              <div class="muted">${payeeAddr}</div>
+            </div>
+            <div class="col">
+              <div class="muted" style="font-size:12px;">DO / BILL TO</div>
+              <div><strong>${payer}</strong></div>
+              <div class="muted">${payerAddr}</div>
+            </div>
+            <div class="col">
+              <table style="width:100%; font-size:13px;">
+                <tr><td class="muted">RECEIPT #</td><td style="text-align:right;"><strong>${invoiceNo}</strong></td></tr>
+                <tr><td class="muted">PŁATNOŚĆ / PAID</td><td style="text-align:right;">${datePaid}</td></tr>
+                <tr><td class="muted">METODA</td><td style="text-align:right;">${method}</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <h1>Receipt</h1>
+
+          <table class="items">
+            ${rowsHtml}
+          </table>
+
+          <div class="total-line"><span class="label">Receipt Total</span><span>${money(total, currency)}</span></div>
+
+          <div class="signature">
+            <div class="line"></div>
+            <div class="muted" style="font-size:12px;">Podpis / Signature</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  const originalExport = window.exportPDF || (async ()=>{ window.print(); });
+
+  // Replace export for receipt mode
+  window.exportPDF = async function(){
+    const ds = qs('#doc_status');
+    const isReceipt = ds && ds.value === 'bewijs';
+    if(!isReceipt){
+      return await originalExport();
+    }
+    const root = qs('#docRoot') || document.body;
+    const backup = root.innerHTML;
+    root.innerHTML = buildProfessionalReceipt();
+    try {
+      await originalExport();
+    } catch(e){
+      window.print();
+    } finally {
+      root.innerHTML = backup;
+    }
+  };
+
+  // Auto-generate on status change to 'bewijs'
+  const ds = qs('#doc_status');
+  if(ds){
+    ds.addEventListener('change', ()=>{
+      if(ds.value === 'bewijs'){
+        setTimeout(()=> window.exportPDF(), 250);
+      }
+    });
+  }
+})();
+</script>
+
+<script id="rwProviderDefaultsBoot">
+(function(){
+  const saveLabels = { pl:'Zapisz', nl:'Opslaan', en:'Save' };
+  function currentLang(){
+    const v = (document.getElementById('lang_select')?.value || document.documentElement.lang || 'pl').toLowerCase();
+    return saveLabels[v] ? v : 'pl';
+  }
+  function updateSaveLabel(){
+    const btn = document.getElementById('btn-save');
+    if(btn) btn.textContent = saveLabels[currentLang()];
+  }
+  function boot(){
+    try{ if(typeof ensureProviderDefaults === 'function') ensureProviderDefaults(); }catch(e){}
+    updateSaveLabel();
+    const lang = document.getElementById('lang_select');
+    if(lang) lang.addEventListener('change', updateSaveLabel);
+    setTimeout(function(){ try{ if(typeof ensureProviderDefaults === 'function') ensureProviderDefaults(); }catch(e){} }, 250);
+    setTimeout(function(){ try{ if(typeof ensureProviderDefaults === 'function') ensureProviderDefaults(); }catch(e){} }, 900);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+<style id="rw-modern-projects-final-ui">
+body{font-size:14px!important;background:linear-gradient(180deg,#f8fbff,#eef4ff)!important;overflow-x:hidden!important}
+.page{max-width:1280px!important;margin:0 auto!important;padding:14px 18px 28px!important}
+.toolbar.no-print{position:sticky!important;top:0!important;z-index:999!important;display:flex!important;justify-content:flex-end!important;gap:8px!important;margin:0!important;padding:10px 0 12px!important;background:rgba(248,251,255,.9)!important;backdrop-filter:blur(14px)!important}
+.btn{border-radius:999px!important;min-height:38px!important;padding:8px 14px!important;font-weight:760!important;box-shadow:0 5px 16px rgba(15,23,42,.08)!important}
+.doc{border-radius:18px!important;border:1px solid rgba(26,115,232,.14)!important;background:rgba(255,255,255,.9)!important;box-shadow:0 18px 45px rgba(31,74,204,.12)!important;padding:22px!important;overflow:visible!important}
+.header{grid-template-columns:minmax(300px,1.05fr) minmax(340px,.95fr)!important;gap:16px!important}
+.brand,.stamp,.section,.note,.totals .box{border-radius:14px!important;border:1px solid rgba(15,23,42,.10)!important;background:rgba(255,255,255,.82)!important;box-shadow:0 8px 24px rgba(15,23,42,.055)!important}
+.brand{padding:18px!important}.stamp,.section{padding:16px!important}
+.brand h1,#screen_title{font-size:clamp(25px,2.2vw,38px)!important;line-height:1.08!important;letter-spacing:0!important;margin:0 0 12px!important}
+.stamp h2,.section h3,#h_taxcalc{font-size:15px!important;color:#174ea6!important;font-weight:850!important;margin:0 0 13px!important}
+.grid-2,.grid-3,.subgrid{gap:12px!important}label{font-size:12px!important;font-weight:780!important;color:#334155!important;margin-bottom:5px!important}
+input,select,textarea{min-height:42px!important;border-radius:10px!important;border:1px solid rgba(100,116,139,.22)!important;background:#fff!important;color:#111827!important;padding:10px 12px!important;font-size:14px!important;box-shadow:0 1px 0 rgba(15,23,42,.03)!important}
+input:focus,select:focus,textarea:focus{outline:none!important;border-color:rgba(26,115,232,.72)!important;box-shadow:0 0 0 4px rgba(66,133,244,.14)!important}
+input.readonly,.readonly{background:#f7faff!important;color:#475569!important;border-color:rgba(26,115,232,.14)!important}
+table{border-collapse:separate!important;border-spacing:0!important;border:1px solid rgba(15,23,42,.10)!important;border-radius:12px!important;overflow:hidden!important;background:#fff!important}th,td{border:0!important;border-bottom:1px solid rgba(15,23,42,.08)!important;padding:10px 12px!important}th{background:#eef4ff!important;color:#174ea6!important;font-weight:850!important}tbody tr:last-child td{border-bottom:0!important}tbody tr:nth-child(even){background:#fafcff!important}
+#sum_total{color:#0f9d58!important;font-size:18px!important;font-weight:900!important}.privacy-footer{display:none!important}
+@media(max-width:900px){.header,.grid-2,.grid-3,.totals{grid-template-columns:1fr!important}.toolbar.no-print{justify-content:flex-start!important;overflow:auto!important}.btn{white-space:nowrap!important}}
+@media print{.toolbar.no-print{display:none!important}.doc,.brand,.stamp,.section,.note,.totals .box{box-shadow:none!important;backdrop-filter:none!important}.doc{border-radius:0!important}.privacy-footer{display:none!important}}
+</style>
+<style id="rw-myprojects-futuristic-background">
+html,body{min-height:100%!important}
+body{
+  background:
+    radial-gradient(circle at 12% 8%, rgba(66,133,244,.24), transparent 28%),
+    radial-gradient(circle at 88% 14%, rgba(52,168,83,.20), transparent 30%),
+    radial-gradient(circle at 78% 82%, rgba(251,188,4,.14), transparent 32%),
+    linear-gradient(135deg,#f8fbff 0%,#eef4ff 42%,#f6fff9 100%)!important;
+  position:relative!important;
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  opacity:.62;
+  background-image:
+    linear-gradient(rgba(26,115,232,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26,115,232,.08) 1px, transparent 1px);
+  background-size:42px 42px;
+  mask-image:linear-gradient(180deg, rgba(0,0,0,.82), rgba(0,0,0,.22));
+}
+body:after{
+  content:"";
+  position:fixed;
+  inset:auto 8% 4% auto;
+  width:min(48vw,620px);
+  height:min(48vw,620px);
+  pointer-events:none;
+  z-index:-1;
+  opacity:.24;
+  border:1px solid rgba(26,115,232,.42);
+  border-radius:50%;
+  box-shadow:0 0 80px rgba(66,133,244,.25), inset 0 0 80px rgba(52,168,83,.12);
+  transform:rotate(-18deg);
+}
+.doc{
+  background:linear-gradient(180deg,rgba(255,255,255,.90),rgba(255,255,255,.78))!important;
+  backdrop-filter:blur(22px) saturate(145%)!important;
+}
+.doc:before{
+  box-shadow:0 0 24px rgba(66,133,244,.28)!important;
+}
+.toolbar.no-print{
+  background:linear-gradient(180deg,rgba(248,251,255,.82),rgba(248,251,255,.58))!important;
+}
+</style>
+<style id="rw-admin-pro-ui">
+.admin-shell{margin:12px 0 18px;display:grid;gap:14px}
+.admin-hero{position:relative;overflow:hidden;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px;border:1px solid rgba(26,115,232,.16);border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.88),rgba(238,244,255,.74));box-shadow:0 18px 44px rgba(31,74,204,.12);backdrop-filter:blur(22px) saturate(145%)}
+.admin-hero:before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#4285f4,#34a853,#fbbc04,#ea4335)}
+.admin-title-block{position:relative;z-index:1}.admin-kicker{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:#e8f0fe;color:#174ea6;font-size:12px;font-weight:850;letter-spacing:.02em}.admin-title-block h2{margin:10px 0 4px;font-size:clamp(24px,2.5vw,38px);line-height:1.05;letter-spacing:0;color:#0f172a}.admin-title-block p{margin:0;color:#64748b;font-weight:600;max-width:720px}.admin-health{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;border:1px solid rgba(15,157,88,.18);border-radius:999px;padding:8px 12px;background:#e6f4ea;color:#0f7f47;font-weight:850}.health-dot{width:9px;height:9px;border-radius:999px;background:#0f9d58;box-shadow:0 0 0 5px rgba(15,157,88,.14)}
+.admin-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.admin-card{position:relative;overflow:hidden;min-height:112px;border:1px solid rgba(15,23,42,.10);border-radius:16px;padding:14px;background:rgba(255,255,255,.86);box-shadow:0 10px 28px rgba(15,23,42,.07)}.admin-card:after{content:"";position:absolute;right:-26px;top:-26px;width:90px;height:90px;border-radius:50%;opacity:.16;background:var(--admin-accent,#4285f4)}.admin-card span{display:block;color:#64748b;font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.04em}.admin-card strong{display:block;margin-top:8px;color:#0f172a;font-size:clamp(22px,2vw,31px);line-height:1.05;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.admin-card small{display:block;margin-top:8px;color:#64748b;font-weight:650}.accent-blue{--admin-accent:#4285f4}.accent-green{--admin-accent:#34a853}.accent-yellow{--admin-accent:#fbbc04}.accent-red{--admin-accent:#ea4335}
+.admin-workbench{display:grid;grid-template-columns:minmax(260px,.85fr) minmax(360px,1.15fr);gap:12px}.admin-actions-panel,.admin-saved-panel{border:1px solid rgba(15,23,42,.10);border-radius:16px;padding:14px;background:rgba(255,255,255,.86);box-shadow:0 10px 28px rgba(15,23,42,.06)}.admin-actions-panel h3,.admin-saved-panel h3{margin:0 0 10px;color:#174ea6;font-size:15px;font-weight:900}.admin-action-row{display:flex;flex-wrap:wrap;gap:8px}.admin-chip,.admin-mini{border:1px solid rgba(26,115,232,.18);border-radius:999px;background:#fff;color:#174ea6;font-weight:850;cursor:pointer;min-height:34px;padding:7px 11px;box-shadow:0 3px 10px rgba(15,23,42,.06)}.admin-chip:hover,.admin-mini:hover{background:#eef4ff}.saved-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.saved-list{display:grid;gap:8px;max-height:230px;overflow:auto;padding-right:4px}.saved-empty{padding:12px;border:1px dashed rgba(100,116,139,.25);border-radius:12px;color:#64748b;background:#f8fbff}.saved-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border:1px solid rgba(15,23,42,.08);border-radius:12px;padding:10px;background:#fff}.saved-title{font-weight:900;color:#0f172a}.saved-meta{margin-top:3px;color:#64748b;font-size:12px}.saved-actions{display:flex;gap:6px}.saved-actions button{border:0;border-radius:999px;padding:7px 10px;font-weight:850;cursor:pointer}.saved-load{background:#e8f0fe;color:#174ea6}.saved-delete{background:#fce8e6;color:#b3261e}
+body.admin-compact .admin-shell{display:none}
+@media(max-width:980px){.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-workbench{grid-template-columns:1fr}.admin-hero{flex-direction:column}.admin-health{white-space:normal}}
+@media(max-width:620px){.admin-grid{grid-template-columns:1fr}.saved-item{grid-template-columns:1fr}.saved-actions{justify-content:flex-start}}
+@media print{.admin-shell{display:none!important}}
+</style>
+<script id="rwAdminProLogic">
+(function(){
+  const STORE_KEY = 'rfw_invoices_v1';
+  function qs(id){ return document.getElementById(id); }
+  function safeText(el){ return (el && (el.value || el.textContent) || '').trim(); }
+  function parseStore(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; }catch(e){ return {}; } }
+  function writeStore(data){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(data || {})); }catch(e){} }
+  function statusLabel(){
+    const select = qs('doc_status');
+    if(!select) return '—';
+    const option = select.options[select.selectedIndex];
+    return option ? option.textContent.trim() : select.value;
+  }
+  function contactLine(data){
+    const parts = [data.client_email, data.client_phone].filter(Boolean);
+    return parts.length ? parts.join(' • ') : 'Uzupełnij kontakt';
+  }
+  function updateAdmin(){
+    const store = parseStore();
+    const docNo = safeText(qs('doc_no')) || '—';
+    const client = safeText(qs('client_name')) || 'Brak danych';
+    const total = safeText(qs('sum_total')) || safeText(qs('tax_total_inc')) || '—';
+    const email = safeText(qs('client_email'));
+    const phone = safeText(qs('client_phone'));
+    if(qs('admin_doc_no')) qs('admin_doc_no').textContent = docNo;
+    if(qs('admin_doc_status')) qs('admin_doc_status').textContent = statusLabel();
+    if(qs('admin_client')) qs('admin_client').textContent = client;
+    if(qs('admin_client_contact')) qs('admin_client_contact').textContent = contactLine({client_email:email, client_phone:phone});
+    if(qs('admin_total')) qs('admin_total').textContent = total;
+    if(qs('admin_saved_count')) qs('admin_saved_count').textContent = Object.keys(store).length;
+    if(qs('admin_save_state')) qs('admin_save_state').textContent = 'Autosave aktywny';
+    renderSaved(store);
+  }
+  function renderSaved(store){
+    const list = qs('admin_saved_list');
+    if(!list) return;
+    const entries = Object.entries(store || {}).sort((a,b)=>String(b[1]._saved_at || '').localeCompare(String(a[1]._saved_at || '')));
+    if(!entries.length){
+      list.innerHTML = '<div class="saved-empty">Brak zapisanych dokumentów.</div>';
+      return;
+    }
+    list.innerHTML = entries.map(([no,data]) => {
+      const client = data.client_name || 'Bez klienta';
+      const date = data._saved_at ? new Date(data._saved_at).toLocaleString('nl-NL') : 'brak daty';
+      const amount = data._admin_total || data.sum_total || '';
+      const safeNo = String(no).replace(/"/g,'&quot;');
+      return '<article class="saved-item" data-saved-no="' + safeNo + '"><div><div class="saved-title">#' + escapeHtml(no) + ' · ' + escapeHtml(client) + '</div><div class="saved-meta">' + escapeHtml(date) + (amount ? ' · ' + escapeHtml(amount) : '') + '</div></div><div class="saved-actions"><button class="saved-load" type="button" data-load-doc="' + safeNo + '">Załaduj</button><button class="saved-delete" type="button" data-delete-doc="' + safeNo + '">Usuń</button></div></article>';
+    }).join('');
+  }
+  function escapeHtml(value){ return String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+  function patchSave(){
+    if(window.__rwAdminSavePatched) return;
+    window.__rwAdminSavePatched = true;
+    const original = window.saveInvoice;
+    if(typeof original === 'function'){
+      window.saveInvoice = function(showToast){
+        const ok = original.call(this, showToast);
+        try{
+          const no = safeText(qs('doc_no'));
+          if(no){
+            const store = parseStore();
+            if(store[no]){
+              store[no]._admin_total = safeText(qs('sum_total')) || safeText(qs('tax_total_inc')) || '';
+              writeStore(store);
+            }
+          }
+        }catch(e){}
+        updateAdmin();
+        return ok;
+      };
+    }
+  }
+  function loadDoc(no){
+    if(typeof window.loadByNumber === 'function'){
+      if(qs('doc_no')) qs('doc_no').value = no;
+      window.loadByNumber(no);
+      setTimeout(updateAdmin, 120);
+    }
+  }
+  function deleteDoc(no){
+    const store = parseStore();
+    if(!store[no]) return;
+    if(!confirm('Usunąć zapisany dokument #' + no + '?')) return;
+    delete store[no];
+    writeStore(store);
+    updateAdmin();
+  }
+  function boot(){
+    patchSave();
+    document.addEventListener('input', updateAdmin, true);
+    document.addEventListener('change', updateAdmin, true);
+    document.addEventListener('click', function(event){
+      const load = event.target.closest('[data-load-doc]');
+      if(load){ loadDoc(load.getAttribute('data-load-doc')); return; }
+      const del = event.target.closest('[data-delete-doc]');
+      if(del){ deleteDoc(del.getAttribute('data-delete-doc')); return; }
+      const focus = event.target.closest('[data-admin-focus]');
+      if(focus){ const el = qs(focus.getAttribute('data-admin-focus')); if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(()=>el.focus(), 250); } return; }
+      const scroll = event.target.closest('[data-admin-scroll]');
+      if(scroll){ const el = qs(scroll.getAttribute('data-admin-scroll')); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+      if(event.target.closest('#admin_refresh_saved')) updateAdmin();
+    }, true);
+    setTimeout(updateAdmin, 80);
+    setTimeout(updateAdmin, 500);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+<script id="rwProfessionalMailHandler">
+(function(){
+  const ACCOUNT = 'fotodisogno@gmail.com';
+
+  function qs(id){ return document.getElementById(id); }
+  function val(id){ return (qs(id)?.value || qs(id)?.textContent || '').trim(); }
+  function lang(){
+    const selected = (val('lang_select') || document.documentElement.lang || 'pl').toLowerCase();
+    return ['pl','nl','en'].includes(selected) ? selected : 'pl';
+  }
+  function selectedText(id){
+    const el = qs(id);
+    if(!el) return '';
+    if(el.options && el.selectedIndex >= 0){
+      return (el.options[el.selectedIndex]?.textContent || '').trim();
+    }
+    return val(id);
+  }
+  function money(){
+    return val('sum_total') || val('tax_total_inc') || val('total') || '-';
+  }
+  function serviceDescription(){
+    return val('desc') || selectedText('service_type') || 'uslugi fotograficzne';
+  }
+  function docStatus(){
+    return val('doc_status') === 'bewijs' ? 'receipt' : 'request';
+  }
+  function emailValid(address){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address || '');
+  }
+
+  function buildProfessionalMailContent(langOverride){
+    const l = (langOverride || lang()).toLowerCase();
+    const no = val('doc_no') || '-';
+    const issue = val('date_issu') || '-';
+    const client = val('client_name') || '-';
+    const total = money();
+    const method = selectedText('pay_method') || '-';
+    const work = serviceDescription();
+    const tikkie = val('tikkie_url');
+    const isReceipt = docStatus() === 'receipt';
+
+    const common = {
+      no, issue, client, total, method, work, tikkie,
+      provider: val('person_name') || 'Rafal Wilk',
+      email: ACCOUNT
+    };
+
+    const clientLinePL = client && client !== '-' ? `Klient: ${common.client}` : '';
+    const clientLineNL = client && client !== '-' ? `Opdrachtgever: ${common.client}` : '';
+    const clientLineEN = client && client !== '-' ? `Client: ${common.client}` : '';
+
+    const templates = {
+      pl: {
+        missing: 'Wpisz prawidłowy adres e-mail klienta przed wysłaniem wiadomości.',
+        subject: isReceipt
+          ? `Potwierdzenie płatności ${no} - usługi fotograficzne`
+          : `Informacja o płatności ${no} - usługi fotograficzne`,
+        body: isReceipt
+          ? [
+              'Dzień dobry,',
+              '',
+              `potwierdzam otrzymanie płatności za dokument nr ${common.no} dotyczący wykonanych usług fotograficznych.`,
+              '',
+              'Dane dokumentu:',
+              clientLinePL,
+              `Numer dokumentu: ${common.no}`,
+              `Data dokumentu: ${common.issue}`,
+              `Opis usługi: ${common.work}`,
+              '',
+              'Rozliczenie:',
+              `Kwota: ${common.total}`,
+              '',
+              'Dziękuję za współpracę.',
+              '',
+              'Z poważaniem,',
+              common.provider,
+              common.email
+            ].filter(Boolean).join('\n')
+          : [
+              'Dzień dobry,',
+              '',
+              `w związku z wykonanymi usługami fotograficznymi przesyłam dokument nr ${common.no} wraz z informacją dotyczącą płatności.`,
+              '',
+              'Dane dokumentu:',
+              clientLinePL,
+              `Numer dokumentu: ${common.no}`,
+              `Data dokumentu: ${common.issue}`,
+              `Opis usługi: ${common.work}`,
+              '',
+              'Płatność:',
+              `Kwota do zapłaty: ${common.total}`,
+              `Sposób płatności: ${common.method}`,
+              common.tikkie ? `Link do płatności: ${common.tikkie}` : '',
+              'Termin płatności: 14 dni od otrzymania wiadomości, chyba że ustalono inaczej na piśmie.',
+              '',
+              'Uprzejmie proszę o uregulowanie należności w podanym terminie. Jeżeli płatność została już wykonana, proszę potraktować tę wiadomość jako nieaktualną.',
+              '',
+              'Z poważaniem,',
+              common.provider,
+              common.email
+            ].filter(Boolean).join('\n')
+      },
+      nl: {
+        missing: 'Vul eerst een geldig e-mailadres van de opdrachtgever in.',
+        subject: isReceipt
+          ? `Betalingsbevestiging ${no} - fotografiediensten`
+          : `Betalingsinformatie ${no} - fotografiediensten`,
+        body: isReceipt
+          ? [
+              'Geachte heer/mevrouw,',
+              '',
+              `Hierbij bevestig ik de ontvangst van de betaling voor document ${common.no} met betrekking tot de uitgevoerde fotografiediensten.`,
+              '',
+              'Documentgegevens:',
+              clientLineNL,
+              `Documentnummer: ${common.no}`,
+              `Documentdatum: ${common.issue}`,
+              `Omschrijving: ${common.work}`,
+              '',
+              'Betaling:',
+              `Bedrag: ${common.total}`,
+              '',
+              'Hartelijk dank voor de samenwerking.',
+              '',
+              'Met vriendelijke groet,',
+              common.provider,
+              common.email
+            ].filter(Boolean).join('\n')
+          : [
+              'Geachte heer/mevrouw,',
+              '',
+              `Naar aanleiding van de uitgevoerde fotografiediensten ontvangt u hierbij de betalingsinformatie voor document ${common.no}.`,
+              '',
+              'Documentgegevens:',
+              clientLineNL,
+              `Documentnummer: ${common.no}`,
+              `Documentdatum: ${common.issue}`,
+              `Omschrijving: ${common.work}`,
+              '',
+              'Betaling:',
+              `Te betalen bedrag: ${common.total}`,
+              `Betaalwijze: ${common.method}`,
+              common.tikkie ? `Betaallink: ${common.tikkie}` : '',
+              'Betaaltermijn: 14 dagen na ontvangst, tenzij schriftelijk anders overeengekomen.',
+              '',
+              'Ik verzoek u vriendelijk het openstaande bedrag binnen de genoemde termijn te voldoen. Indien de betaling inmiddels is uitgevoerd, kunt u dit bericht als niet verzonden beschouwen.',
+              '',
+              'Met vriendelijke groet,',
+              common.provider,
+              common.email
+            ].filter(Boolean).join('\n')
+      },
+      en: {
+        missing: 'Please enter a valid client e-mail address before sending.',
+        subject: isReceipt
+          ? `Payment confirmation ${no} - photography services`
+          : `Payment information ${no} - photography services`,
+        body: isReceipt
+          ? [
+              'Dear Sir/Madam,',
+              '',
+              `I hereby confirm receipt of payment for document ${common.no} regarding the completed photography services.`,
+              '',
+              'Document details:',
+              clientLineEN,
+              `Document number: ${common.no}`,
+              `Document date: ${common.issue}`,
+              `Description: ${common.work}`,
+              '',
+              'Payment:',
+              `Amount: ${common.total}`,
+              '',
+              'Thank you for your cooperation.',
+              '',
+              'Kind regards,',
+              common.provider,
+              common.email
+            ].filter(Boolean).join('\n')
+          : [
+              'Dear Sir/Madam,',
+              '',
+              `Following the completed photography services, I am sending the payment information for document ${common.no}.`,
+              '',
+              'Document details:',
+              clientLineEN,
+              `Document number: ${common.no}`,
+              `Document date: ${common.issue}`,
+              `Description: ${common.work}`,
+              '',
+              'Payment:',
+              `Amount due: ${common.total}`,
+              `Payment method: ${common.method}`,
+              common.tikkie ? `Payment link: ${common.tikkie}` : '',
+              'Payment term: 14 days after receipt, unless agreed otherwise in writing.',
+              '',
+              'I kindly ask you to settle the outstanding amount within the stated term. If payment has already been made, please disregard this message.',
+              '',
+              'Kind regards,',
+              common.provider,
+              common.email
+            ].filter(Boolean).join('\n')
+      }
+    };
+
+    return templates[l] || templates.pl;
+  }
+
+  window.buildProfessionalMailContent = buildProfessionalMailContent;
+  window.buildMailContent = buildProfessionalMailContent;
+
+  window.openProfessionalEmail = function(event){
+    if(event){
+      event.preventDefault();
+      event.stopPropagation();
+      if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+
+    const to = val('client_email');
+    const content = buildProfessionalMailContent();
+    if(!emailValid(to)){
+      alert(content.missing);
+      qs('client_email')?.focus();
+      return false;
+    }
+
+    const gmailURL = 'https://mail.google.com/mail/u/' + encodeURIComponent(ACCOUNT) + '/?view=cm&fs=1'
+      + '&to=' + encodeURIComponent(to)
+      + '&su=' + encodeURIComponent(content.subject)
+      + '&body=' + encodeURIComponent(content.body)
+      + '&authuser=' + encodeURIComponent(ACCOUNT);
+
+    let opened = null;
+    try { opened = window.open(gmailURL, '_blank', 'noopener'); } catch(_e) {}
+    if(!opened){ window.location.assign(gmailURL); }
+    return false;
+  };
+
+  window.openEmail = window.openProfessionalEmail;
+
+  function bind(){
+    const btn = qs('btn-mail');
+    if(!btn || btn.__rwProfessionalMailHandler) return;
+    btn.__rwProfessionalMailHandler = true;
+    btn.removeAttribute('href');
+    btn.setAttribute('type', 'button');
+    btn.style.cursor = 'pointer';
+    btn.addEventListener('click', window.openProfessionalEmail, true);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', bind);
+  } else {
+    bind();
+  }
+  document.addEventListener('click', function(event){
+    const target = event.target && event.target.closest ? event.target.closest('#btn-mail, a[href^="mailto:"]') : null;
+    if(!target) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+    window.openProfessionalEmail();
+    return false;
+  }, true);
+  setTimeout(bind, 250);
+  setTimeout(bind, 1000);
+})();
+</script>
+
+
+<script id="rw-module-i18n-normalizer">
+(function(){
+  if (window.__rwModuleI18NNormalizer) return;
+  window.__rwModuleI18NNormalizer = true;
+
+  const STORE_KEY = 'rw_lang';
+  const STRINGS = {
+    home: { pl:'← Powrót do startu', en:'← Back to start', nl:'← Terug naar start',
+      v:['powrót do startu','powrot do startu','back to start','terug naar start','terug naar de start','← powrót do startu','← back to start','← terug naar start'] },
+    open: { pl:'Otwórz', en:'Open', nl:'Openen', v:['otwórz','otworz','open','openen'] },
+    openPlatform: { pl:'Otwórz w platformie', en:'Open in platform', nl:'Openen in platform', v:['otwórz w platformie','otworz w platformie','open in platform','openen in platform'] },
+    language: { pl:'Język', en:'Language', nl:'Taal', v:['język','jezyk','language','taal'] },
+    newDoc: { pl:'Nowy', en:'New', nl:'Nieuw', v:['nowy','new','nieuw'] },
+    save: { pl:'Zapisz', en:'Save', nl:'Opslaan', v:['zapisz','save','opslaan'] },
+    sendClient: { pl:'Wyślij do klienta', en:'Send to client', nl:'Verzenden naar klant', v:['wyślij do klienta','wyslij do klienta','send to client','verzenden naar klant'] },
+    printPdf: { pl:'Drukuj / PDF', en:'Print / PDF', nl:'Afdrukken / PDF', v:['drukuj / pdf','print / pdf','afdrukken / pdf'] },
+    clear: { pl:'Wyczyść', en:'Clear', nl:'Wissen', v:['wyczyść','wyczysc','clear','wissen'] },
+    clearAll: { pl:'Wyczyść wszystko', en:'Clear all', nl:'Alles wissen', v:['wyczyść wszystko','wyczysc wszystko','clear all','alles wissen'] },
+    refresh: { pl:'Odśwież', en:'Refresh', nl:'Vernieuwen', v:['odśwież','odswiez','refresh','vernieuwen'] },
+    load: { pl:'Załaduj', en:'Load', nl:'Laden', v:['załaduj','zaladuj','load','laden','laad'] },
+    delete: { pl:'Usuń', en:'Delete', nl:'Verwijderen', v:['usuń','usun','delete','verwijder','verwijderen'] },
+    cancel: { pl:'Anuluj', en:'Cancel', nl:'Annuleren', v:['anuluj','cancel','annuleren'] },
+    unlock: { pl:'Odblokuj', en:'Unlock', nl:'Ontgrendelen', v:['odblokuj','unlock','ontgrendelen'] },
+    enterPin: { pl:'Wpisz PIN', en:'Enter PIN', nl:'Voer pincode in', v:['wpisz pin','enter pin','voer pincode in'] },
+    myProjects: { pl:'Moje projekty', en:'My Projects', nl:'Mijn projecten', v:['moje projekty','my projects','mijn projecten'] },
+    adminSaved: { pl:'Zapisane dokumenty', en:'Saved documents', nl:'Opgeslagen documenten', v:['zapisane dokumenty','saved documents','opgeslagen documenten'] },
+    adminEmpty: { pl:'Brak zapisanych dokumentów.', en:'No saved documents.', nl:'Geen opgeslagen documenten.', v:['brak zapisanych dokumentów.','brak zapisanych dokumentow.','no saved documents.','geen opgeslagen documenten.'] },
+    autosave: { pl:'Autosave aktywny', en:'Autosave active', nl:'Autosave actief', v:['autosave aktywny','autosave active','autosave actief'] },
+    archive: { pl:'Archiwum', en:'Archive', nl:'Archief', v:['archiwum','archive','archief'] },
+    savedCount: { pl:'zapisanych dokumentów', en:'saved documents', nl:'opgeslagen documenten', v:['zapisanych dokumentów','zapisanych dokumentow','saved documents','opgeslagen documenten'] },
+    quickActions: { pl:'Szybkie akcje', en:'Quick actions', nl:'Snelle acties', v:['szybkie akcje','quick actions','snelle acties'] },
+    documentData: { pl:'Dane dokumentu', en:'Document details', nl:'Documentgegevens', v:['dane dokumentu','document details','documentgegevens'] },
+    payment: { pl:'Płatność', en:'Payment', nl:'Betaling', v:['płatność','platnosc','payment','betaling'] },
+    client: { pl:'Klient', en:'Client', nl:'Opdrachtgever', v:['klient','client','opdrachtgever'] },
+    noClient: { pl:'Bez klienta', en:'No client', nl:'Geen opdrachtgever', v:['bez klienta','no client','geen opdrachtgever'] },
+    noDate: { pl:'brak daty', en:'no date', nl:'geen datum', v:['brak daty','no date','geen datum'] },
+    chooseCv: { pl:'Wybierz CV', en:'Choose CV', nl:'CV kiezen', v:['wybierz cv','choose cv','cv kiezen'] },
+    pasteCv: { pl:'Wklej CV', en:'Paste CV', nl:'CV plakken', v:['wklej cv','paste cv','cv plakken'] },
+    dropCv: { pl:'Upuść CV tutaj', en:'Drop CV here', nl:'Sleep CV hierheen', v:['upuść cv tutaj','upusc cv tutaj','drop cv here','sleep cv hierheen'] },
+    jobDescription: { pl:'Opis stanowiska', en:'Job description', nl:'Functieomschrijving', v:['opis stanowiska','job description','functieomschrijving'] },
+    chooseJob: { pl:'Wybierz opis', en:'Choose description', nl:'Omschrijving kiezen', v:['wybierz opis','choose description','omschrijving kiezen'] },
+    pasteJob: { pl:'Wklej opis', en:'Paste description', nl:'Omschrijving plakken', v:['wklej opis','paste description','omschrijving plakken'] },
+    analyzeMatch: { pl:'Analizuj dopasowanie', en:'Analyze match', nl:'Match analyseren', v:['analizuj dopasowanie','analyze match','match analyseren'] },
+    demo: { pl:'Wstaw demo', en:'Insert demo', nl:'Demo invoegen', v:['wstaw demo','insert demo','demo invoegen'] },
+    noFile: { pl:'Nie wybrano pliku', en:'No file selected', nl:'Geen bestand gekozen', v:['nie wybrano pliku','no file selected','geen bestand gekozen'] }
+  };
+
+  const REVERSE = {};
+  Object.entries(STRINGS).forEach(([key, item]) => {
+    [item.pl, item.en, item.nl, ...(item.v || [])].forEach(value => {
+      REVERSE[norm(value)] = key;
+    });
+  });
+
+  function norm(value){
+    return String(value || '')
+      .replace(/\s+/g, ' ')
+      .replace(/[“”]/g, '"')
+      .replace(/[’]/g, "'")
+      .trim()
+      .toLowerCase();
+  }
+  function clean(value){
+    return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+  function validLang(lang){
+    lang = String(lang || '').toLowerCase().slice(0,2);
+    return lang === 'pl' || lang === 'en' || lang === 'nl' ? lang : 'pl';
+  }
+  function currentLang(){
+    return validLang(localStorage.getItem(STORE_KEY) || localStorage.getItem('doc_lang') || document.documentElement.lang || 'pl');
+  }
+  function translateElement(el, lang){
+    if (!el || el.children.length > 0 && !el.matches('button,a,option,summary')) return;
+    const text = clean(el.textContent || el.value || '');
+    if (!text) return;
+    const key = el.dataset.rwI18nKey || REVERSE[norm(text)];
+    if (!key || !STRINGS[key]) return;
+    el.dataset.rwI18nKey = key;
+    const translated = STRINGS[key][lang] || STRINGS[key].pl;
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = translated;
+    else el.textContent = translated;
+  }
+  function translatePlaceholder(el, lang){
+    if (!el || !('placeholder' in el)) return;
+    const key = el.dataset.rwI18nPlaceholder || REVERSE[norm(el.placeholder)];
+    if (!key || !STRINGS[key]) return;
+    el.dataset.rwI18nPlaceholder = key;
+    el.placeholder = STRINGS[key][lang] || STRINGS[key].pl;
+  }
+  function apply(lang){
+    lang = validLang(lang);
+    try{
+      localStorage.setItem(STORE_KEY, lang);
+      localStorage.setItem('doc_lang', lang);
+      localStorage.setItem('supplier_lang', lang);
+    }catch(_e){}
+    document.documentElement.lang = lang;
+    document.body && (document.body.dataset.lang = lang);
+
+    const selector = [
+      'button','a.btn','a[role="button"]','label','option','summary',
+      'h1','h2','h3','h4','legend','th',
+      '.btn','.title','.admin-mini','.admin-chip','.saved-empty','.saved-load','.saved-delete',
+      '#admin_save_state','#admin_saved_count + small'
+    ].join(',');
+    document.querySelectorAll(selector).forEach(el => translateElement(el, lang));
+    document.querySelectorAll('input, textarea').forEach(el => translatePlaceholder(el, lang));
+  }
+  window.__rwApplyModuleLang = apply;
+  window.addEventListener('message', function(event){
+    if (!event || !event.data) return;
+    if (event.data.type === 'rw:setLang') apply(event.data.lang);
+    if (event.data.type === 'rw:getLang' && event.source) {
+      try{ event.source.postMessage({ type:'rw:setLang', lang:currentLang() }, '*'); }catch(_e){}
+    }
+  });
+  document.addEventListener('change', function(event){
+    const target = event.target;
+    if (!target) return;
+    if (/lang|language/i.test(target.id || target.name || '')) {
+      setTimeout(() => apply(validLang(target.value)), 0);
+    } else {
+      setTimeout(() => apply(currentLang()), 0);
+    }
+  }, true);
+  document.addEventListener('click', function(){
+    setTimeout(() => apply(currentLang()), 40);
+    setTimeout(() => apply(currentLang()), 300);
+  }, true);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => apply(currentLang()));
+  } else {
+    apply(currentLang());
+  }
+  setInterval(() => apply(currentLang()), 1200);
+})();
+</script>
+</body>
+</html>

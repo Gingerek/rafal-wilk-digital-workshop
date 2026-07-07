@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rejestr spotkań z managerami | Rafal Wilk</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b1018;
+      --panel: rgba(19, 27, 40, 0.92);
+      --panel-soft: rgba(255,255,255,0.04);
+      --line: rgba(255,255,255,0.08);
+      --text: #f4f7fb;
+      --muted: #aeb9c8;
+      --accent: #f28c28;
+      --accent-strong: #22c55e;
+      --accent-dark: #6a8f3a;
+      --ok: #8fe0a5;
+      --info: #9fcbff;
+      --warn: #ffd58a;
+      --danger: #ff9c9c;
+      --radius-xl: 26px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --max: 1380px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: Inter, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(214,179,124,.18), transparent 22%),
+        radial-gradient(circle at bottom left, rgba(159,203,255,.10), transparent 25%),
+        linear-gradient(180deg, #0a0f17, #0d1420 42%, #0b1018 100%);
+      min-height: 100vh;
+    }
+
+    .shell {
+      width: min(var(--max), calc(100% - 28px));
+      margin: 18px auto 34px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.8px solid rgba(240,203,143,.9);
+      display: grid;
+      place-items: center;
+      color: var(--accent-strong);
+      background: rgba(214,179,124,.10);
+      font-size: 24px;
+      font-weight: 800;
+      box-shadow: inset 0 0 0 5px rgba(214,179,124,.05);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 36px);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      gap: 6px;
+      padding: 6px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+    }
+
+    .lang-btn,
+    .btn,
+    .icon-btn,
+    select,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .lang-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      min-width: 58px;
+    }
+
+    .lang-btn.active {
+      background: linear-gradient(180deg, var(--accent), #b58c4c);
+      color: #231603;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: .18s ease;
+    }
+
+    .btn:hover,
+    .icon-btn:hover,
+    .lang-btn:hover { transform: translateY(-1px); }
+
+    .btn.primary {
+      background: linear-gradient(180deg, var(--accent), #b58c4c);
+      color: #231603;
+      border-color: transparent;
+      box-shadow: var(--shadow);
+    }
+
+    .btn.soft {
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-main {
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 140px;
+    }
+
+    .hero-main h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-main p {
+      margin: 10px 0 0;
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 720px;
+      line-height: 1.55;
+    }
+
+    .hero-stats {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .mini-stat {
+      border-radius: 18px;
+      padding: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 108px;
+    }
+
+    .mini-stat .number {
+      font-size: clamp(24px, 4vw, 38px);
+      font-weight: 800;
+      line-height: 1;
+      margin-top: 8px;
+    }
+
+    .mini-stat .label {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 430px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel-inner {
+      padding: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .section-head h3 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-note {
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(8, 13, 21, 0.75);
+      color: var(--text);
+      padding: 13px 14px;
+      border-radius: 14px;
+      outline: none;
+      transition: .18s ease;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 92px;
+      line-height: 1.45;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(240,203,143,.7);
+      box-shadow: 0 0 0 4px rgba(214,179,124,.12);
+    }
+
+    .form-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1.2fr .7fr auto;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .meeting-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .meeting-card {
+      border-radius: 22px;
+      padding: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.07);
+      transition: .18s ease;
+    }
+
+    .meeting-card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(214,179,124,.35);
+    }
+
+    .meeting-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .meeting-title {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .meeting-title strong {
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .meeting-meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status-planned { background: rgba(159,203,255,.15); color: var(--info); }
+    .status-done { background: rgba(143,224,165,.16); color: var(--ok); }
+    .status-followup { background: rgba(255,213,138,.16); color: var(--warn); }
+
+    .meeting-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .info-box {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 16px;
+      padding: 12px;
+      min-height: 112px;
+    }
+
+    .info-box .k {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .info-box .v {
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .meeting-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .next-date {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .meeting-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .empty {
+      border: 1px dashed rgba(255,255,255,.12);
+      border-radius: 24px;
+      padding: 34px 18px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(255,255,255,.02);
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1180px) {
+      .hero,
+      .layout,
+      .meeting-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-stats {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 880px) {
+      .field-grid,
+      .form-actions,
+      .filters,
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+      .meeting-footer,
+      .meeting-top {
+        align-items: stretch;
+      }
+      .meeting-actions {
+        width: 100%;
+      }
+      .icon-btn,
+      .btn,
+      .lang-btn {
+        width: 100%;
+      }
+      .lang-switch,
+      .top-actions {
+        width: 100%;
+      }
+    }
+
+
+    /* v11: status/action/complete and unique-manager summary removed from manager meeting register */
+    .hero-stats .mini-stat:nth-child(n+2){display:none!important;}
+    .hero-stats{grid-template-columns:1fr!important;}
+    .badge-row{display:none!important;}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">R</div>
+        <div>
+          <h1 id="appTitle">Rejestr spotkań z managerami</h1>
+          <p id="appSubtitle">Wszystkie najważniejsze ustalenia w jednym miejscu</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="lang-switch">
+          <button class="lang-btn active" data-lang="pl">PL</button>
+          <button class="lang-btn" data-lang="nl">NL</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <button class="btn primary" id="exportBtn"></button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="panel hero-main">
+        <h2 id="heroTitle"></h2>
+        <p id="heroText"></p>
+      </div>
+
+      <div class="panel hero-stats">
+        <div class="mini-stat">
+          <div class="label" id="statAllLabel"></div>
+          <div class="number" id="statAll">0</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="panel panel-inner">
+        <div class="section-head">
+          <div>
+            <h3 id="formTitle"></h3>
+            <div class="section-note" id="formNote"></div>
+          </div>
+        </div>
+
+        <form id="meetingForm">
+          <input type="hidden" id="meetingId" />
+
+          <div class="field-grid">
+            <div class="field">
+              <label id="labelDate" for="meetingDate"></label>
+              <input type="date" id="meetingDate" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label id="labelManager" for="managerName"></label>
+            <input type="text" id="managerName" required />
+          </div>
+
+          <div class="field">
+            <label id="labelSubject" for="meetingSubject"></label>
+            <input type="text" id="meetingSubject" required />
+          </div>
+
+          <div class="field">
+            <label id="labelDiscussed" for="meetingDiscussed"></label>
+            <textarea id="meetingDiscussed" required></textarea>
+          </div>
+
+          <div class="field">
+            <label id="labelAgreed" for="meetingAgreed"></label>
+            <textarea id="meetingAgreed"></textarea>
+          </div>
+
+          <div class="field">
+            <label id="labelNextSteps" for="meetingNextSteps"></label>
+            <textarea id="meetingNextSteps"></textarea>
+          </div>
+
+          <div class="field">
+            <label id="labelNextMeeting" for="meetingNextDate"></label>
+            <input type="date" id="meetingNextDate" />
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn primary" id="saveBtn"></button>
+            <button type="button" class="btn soft" id="clearBtn"></button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel panel-inner">
+        <div class="section-head">
+          <div>
+            <h3 id="listTitle"></h3>
+            <div class="section-note" id="listNote"></div>
+          </div>
+        </div>
+
+        <div class="filters">
+          <input type="text" id="searchInput" />
+          <button class="btn soft" id="resetFiltersBtn" type="button"></button>
+        </div>
+
+        <div class="meeting-list" id="meetingList"></div>
+
+        <div class="footer">
+          <span id="footerText"></span>
+          <span>© Rafal Wilk</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  
+  <script>
+    const STORE_KEY = 'meeting_tracker_clean_v3';
+    const BACKUP_KEY = 'meeting_tracker_clean_v3_backup';
+    const DRAFT_KEY = 'meeting_tracker_clean_v3_draft';
+    const LANG_KEY = 'meeting_tracker_lang_v3';
+    const FILE_DB_NAME = 'meeting_tracker_file_db_v1';
+    const FILE_DB_STORE = 'handles';
+    const FILE_DB_KEY = 'excel-file-handle';
+
+    const i18n = {
+      pl: {
+        appTitle: 'Rejestr spotkań z managerami',
+        appSubtitle: 'Wszystkie najważniejsze ustalenia w jednym miejscu',
+        export: 'Zapisz Excel',
+        heroTitle: 'Przejrzysty rejestr spotkań z managerami',
+        heroText: 'Wpisy są trwale zapisywane lokalnie i zostają w aplikacji, dopóki sam ich nie usuniesz. Przy pierwszym zapisie wybierasz lokalizację pliku, a kolejne zapisy aktualizują ten sam Excel.',
+        statAllLabel: 'Wszystkie spotkania',
+        statDoneLabel: 'Zakończone',
+        statManagersLabel: 'Managerowie',
+        formTitle: 'Nowe spotkanie',
+        formNote: 'Dane zapisują się trwale lokalnie, a po zapisaniu trafiają też do Excela na dysku.',
+        labelDate: 'Data',
+        labelStatus: 'Status',
+        labelManager: 'Manager',
+        labelSubject: 'Temat',
+        labelDiscussed: 'Co zostało omówione',
+        labelAgreed: 'Ustalenia',
+        labelNextSteps: 'Dalsze kroki',
+        labelNextMeeting: 'Następne spotkanie',
+        save: 'Zapisz',
+        saveChanges: 'Zapisz zmiany',
+        clear: 'Wyczyść',
+        listTitle: 'Lista spotkań',
+        listNote: 'Szukaj, filtruj i edytuj.',
+        searchPlaceholder: 'Szukaj po managerze lub temacie',
+        filterAll: 'Wszystkie statusy',
+        resetFilters: 'Wyczyść filtry',
+        footerText: 'Prosty widok, szybki dostęp, gotowy raport.',
+        empty: 'Nie ma jeszcze żadnych spotkań.',
+        discussed: 'Omówione',
+        agreed: 'Ustalenia',
+        nextSteps: 'Dalsze kroki',
+        nextMeeting: 'Następne spotkanie',
+        edit: 'Edytuj',
+        delete: 'Usuń',
+        confirmDelete: 'Usunąć to spotkanie?',
+        required: 'Uzupełnij datę, managera, temat i omówione.',
+        planned: 'Zaplanowane',
+        done: 'Zakończone',
+        followup: 'Do działania',
+        exportSheet: 'Spotkania',
+        exportFile: 'rejestr_spotkan_managerowie',
+        dateUnknown: 'Brak daty',
+        savedToDisk: 'Spotkanie i plik Excel zostały zapisane.',
+        savedLocallyOnly: 'Spotkanie zostało zapisane w aplikacji. W tej przeglądarce automatyczny zapis do wybranego pliku Excel nie jest dostępny.',
+        saveCancelled: 'Spotkanie zostało zapisane w aplikacji, ale nie wybrano lokalizacji pliku Excel.',
+        saveError: 'Spotkanie zostało zapisane w aplikacji, ale nie udało się zapisać pliku Excel.',
+        chooseLocation: 'Wybierz lokalizację pliku Excel',
+        browserNoFs: 'Ta przeglądarka nie obsługuje stałego zapisu do wybranego pliku.',
+        reportTitle: 'Raport spotkań z managerami',
+        reportGenerated: 'Wygenerowano',
+        reportDashboardSheet: 'Dashboard',
+        reportWeeklySheet: 'Tygodniowo',
+        reportMonthlySheet: 'Miesięcznie',
+        reportYearlySheet: 'Rocznie',
+        reportQuarterlySheet: 'Kwartalnie',
+        reportOverview: 'Podsumowanie',
+        reportTotalMeetings: 'Liczba rozmów',
+        reportCompleted: 'Zakończone',
+        reportActionNeeded: 'Do działania',
+        reportPlanned: 'Zaplanowane',
+        reportManagers: 'Unikalni managerowie',
+        reportTopManagers: 'Najwięcej rozmów według managera',
+        reportManager: 'Manager',
+        reportCount: 'Liczba',
+        reportWeek: 'Tydzień',
+        reportMonth: 'Miesiąc',
+        reportYear: 'Rok',
+        reportQuarter: 'Kwartał',
+        reportChartWeekly: 'Rozmowy tygodniowo',
+        reportChartMonthly: 'Rozmowy miesięcznie',
+        reportChartYearly: 'Rozmowy rocznie',
+        reportChartQuarterly: 'Rozmowy kwartalnie',
+        reportVisualBar: 'Wykres słupkowy',
+        reportManagersSheet: 'Managerowie',
+        reportOpenItems: 'Otwarte punkty',
+        reportStatusSummary: 'Podsumowanie statusów',
+        reportWeekLabelPrefix: 'Tydzień'
+      },
+      nl: {
+        appTitle: 'Register van gesprekken met managers',
+        appSubtitle: 'Alle belangrijke afspraken op één plek',
+        export: 'Excel opslaan',
+        heroTitle: 'Overzicht van gesprekken met managers',
+        heroText: 'Ingevoerde gegevens worden blijvend lokaal bewaard en blijven staan totdat je ze zelf verwijdert. De eerste keer kies je een bestandslocatie en daarna wordt hetzelfde Excel-bestand automatisch bijgewerkt.',
+        statAllLabel: 'Alle gesprekken',
+        statDoneLabel: 'Afgerond',
+        statManagersLabel: 'Managers',
+        formTitle: 'Nieuw gesprek',
+        formNote: 'Gegevens blijven lokaal bewaard en worden na opslaan ook naar Excel op de schijf geschreven.',
+        labelDate: 'Datum',
+        labelStatus: 'Status',
+        labelManager: 'Manager',
+        labelSubject: 'Onderwerp',
+        labelDiscussed: 'Wat is besproken',
+        labelAgreed: 'Afspraken',
+        labelNextSteps: 'Vervolgstappen',
+        labelNextMeeting: 'Volgend gesprek',
+        save: 'Opslaan',
+        saveChanges: 'Wijzigingen opslaan',
+        clear: 'Leegmaken',
+        listTitle: 'Gesprekslijst',
+        listNote: 'Zoeken, filteren en aanpassen.',
+        searchPlaceholder: 'Zoek op manager of onderwerp',
+        filterAll: 'Alle statussen',
+        resetFilters: 'Filters wissen',
+        footerText: 'Rustig overzicht en direct een rapport.',
+        empty: 'Er zijn nog geen gesprekken.',
+        discussed: 'Besproken',
+        agreed: 'Afspraken',
+        nextSteps: 'Vervolgstappen',
+        nextMeeting: 'Volgend gesprek',
+        edit: 'Bewerken',
+        delete: 'Verwijderen',
+        confirmDelete: 'Dit gesprek verwijderen?',
+        required: 'Vul datum, manager, onderwerp en besproken punten in.',
+        planned: 'Gepland',
+        done: 'Afgerond',
+        followup: 'Actie nodig',
+        exportSheet: 'Gesprekken',
+        exportFile: 'manager_gesprekken_register',
+        dateUnknown: 'Geen datum',
+        savedToDisk: 'Gesprek en Excel-bestand zijn opgeslagen.',
+        savedLocallyOnly: 'Het gesprek is opgeslagen in de app. In deze browser is automatisch opslaan naar een gekozen Excel-bestand niet beschikbaar.',
+        saveCancelled: 'Het gesprek is opgeslagen in de app, maar er is geen locatie voor het Excel-bestand gekozen.',
+        saveError: 'Het gesprek is opgeslagen in de app, maar het Excel-bestand kon niet worden opgeslagen.',
+        chooseLocation: 'Kies de locatie van het Excel-bestand',
+        browserNoFs: 'Deze browser ondersteunt geen vaste opslag naar een gekozen bestand.',
+        reportTitle: 'Rapport managergesprekken',
+        reportGenerated: 'Gegenereerd op',
+        reportDashboardSheet: 'Dashboard',
+        reportWeeklySheet: 'Wekelijks',
+        reportMonthlySheet: 'Maandelijks',
+        reportYearlySheet: 'Jaarlijks',
+        reportQuarterlySheet: 'Per kwartaal',
+        reportOverview: 'Overzicht',
+        reportTotalMeetings: 'Aantal gesprekken',
+        reportCompleted: 'Afgerond',
+        reportActionNeeded: 'Actie nodig',
+        reportPlanned: 'Gepland',
+        reportManagers: 'Unieke managers',
+        reportTopManagers: 'Meeste gesprekken per manager',
+        reportManager: 'Manager',
+        reportCount: 'Aantal',
+        reportWeek: 'Week',
+        reportMonth: 'Maand',
+        reportYear: 'Jaar',
+        reportQuarter: 'Kwartaal',
+        reportChartWeekly: 'Gesprekken per week',
+        reportChartMonthly: 'Gesprekken per maand',
+        reportChartYearly: 'Gesprekken per jaar',
+        reportChartQuarterly: 'Gesprekken per kwartaal',
+        reportOpenItems: 'Open punten',
+        reportVisualBar: 'Staafdiagram',
+        reportManagersSheet: 'Managers',
+        reportStatusSummary: 'Statusoverzicht',
+        reportWeekLabelPrefix: 'Week'
+      },
+      en: {
+        appTitle: 'Manager meeting register',
+        appSubtitle: 'All key meeting points in one place',
+        export: 'Save Excel',
+        heroTitle: 'A clear tracker for manager meetings',
+        heroText: 'Everything entered is stored locally and stays in the app until you decide to remove it. On the first save you choose the file location and after that the same Excel file is updated automatically.',
+        statAllLabel: 'All meetings',
+        statDoneLabel: 'Completed',
+        statManagersLabel: 'Managers',
+        formTitle: 'New meeting',
+        formNote: 'Your data stays stored locally and is also written to Excel on your disk after saving.',
+        labelDate: 'Date',
+        labelStatus: 'Status',
+        labelManager: 'Manager',
+        labelSubject: 'Topic',
+        labelDiscussed: 'What was discussed',
+        labelAgreed: 'Agreements',
+        labelNextSteps: 'Next steps',
+        labelNextMeeting: 'Next meeting',
+        save: 'Save',
+        saveChanges: 'Save changes',
+        clear: 'Clear',
+        listTitle: 'Meeting list',
+        listNote: 'Search, filter and edit.',
+        searchPlaceholder: 'Search by manager or topic',
+        filterAll: 'All statuses',
+        resetFilters: 'Clear filters',
+        footerText: 'Clean view, quick access, ready report.',
+        empty: 'There are no meetings yet.',
+        discussed: 'Discussed',
+        agreed: 'Agreements',
+        nextSteps: 'Next steps',
+        nextMeeting: 'Next meeting',
+        edit: 'Edit',
+        delete: 'Delete',
+        confirmDelete: 'Delete this meeting?',
+        required: 'Please fill in date, manager, topic and discussed points.',
+        planned: 'Planned',
+        done: 'Completed',
+        followup: 'Action needed',
+        exportSheet: 'Meetings',
+        exportFile: 'manager_meeting_register',
+        dateUnknown: 'No date',
+        savedToDisk: 'Meeting and Excel file were saved.',
+        savedLocallyOnly: 'The meeting was saved in the app. This browser does not support automatic saving to a chosen Excel file.',
+        saveCancelled: 'The meeting was saved in the app, but no Excel file location was selected.',
+        saveError: 'The meeting was saved in the app, but the Excel file could not be saved.',
+        chooseLocation: 'Choose the Excel file location',
+        browserNoFs: 'This browser does not support persistent saving to a chosen file.',
+        reportTitle: 'Manager meeting report',
+        reportGenerated: 'Generated',
+        reportDashboardSheet: 'Dashboard',
+        reportWeeklySheet: 'Weekly',
+        reportMonthlySheet: 'Monthly',
+        reportYearlySheet: 'Yearly',
+        reportQuarterlySheet: 'Quarterly',
+        reportOverview: 'Overview',
+        reportTotalMeetings: 'Meeting count',
+        reportCompleted: 'Completed',
+        reportActionNeeded: 'Action needed',
+        reportPlanned: 'Planned',
+        reportManagers: 'Unique managers',
+        reportTopManagers: 'Most meetings by manager',
+        reportManager: 'Manager',
+        reportCount: 'Count',
+        reportWeek: 'Week',
+        reportMonth: 'Month',
+        reportYear: 'Year',
+        reportQuarter: 'Quarter',
+        reportChartWeekly: 'Meetings by week',
+        reportChartMonthly: 'Meetings by month',
+        reportChartYearly: 'Meetings by year',
+        reportChartQuarterly: 'Meetings by quarter',
+        reportOpenItems: 'Open items',
+        reportVisualBar: 'Bar chart',
+        reportManagersSheet: 'Managers',
+        reportStatusSummary: 'Status summary',
+        reportWeekLabelPrefix: 'Week'
+      }
+    };
+
+    const statusOptions = ['planned', 'done', 'followup'];
+    let currentLang = localStorage.getItem(LANG_KEY) || 'pl';
+    let meetings = readData();
+    let excelFileHandle = null;
+
+    const els = {
+      appTitle: document.getElementById('appTitle'),
+      appSubtitle: document.getElementById('appSubtitle'),
+      exportBtn: document.getElementById('exportBtn'),
+      heroTitle: document.getElementById('heroTitle'),
+      heroText: document.getElementById('heroText'),
+      statAllLabel: document.getElementById('statAllLabel'),
+      statDoneLabel: document.getElementById('statDoneLabel'),
+      statManagersLabel: document.getElementById('statManagersLabel'),
+      statAll: document.getElementById('statAll'),
+      statDone: document.getElementById('statDone'),
+      statManagers: document.getElementById('statManagers'),
+      formTitle: document.getElementById('formTitle'),
+      formNote: document.getElementById('formNote'),
+      labelDate: document.getElementById('labelDate'),
+      labelStatus: document.getElementById('labelStatus'),
+      labelManager: document.getElementById('labelManager'),
+      labelSubject: document.getElementById('labelSubject'),
+      labelDiscussed: document.getElementById('labelDiscussed'),
+      labelAgreed: document.getElementById('labelAgreed'),
+      labelNextSteps: document.getElementById('labelNextSteps'),
+      labelNextMeeting: document.getElementById('labelNextMeeting'),
+      saveBtn: document.getElementById('saveBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      listTitle: document.getElementById('listTitle'),
+      listNote: document.getElementById('listNote'),
+      searchInput: document.getElementById('searchInput'),
+      filterStatus: document.getElementById('filterStatus'),
+      resetFiltersBtn: document.getElementById('resetFiltersBtn'),
+      meetingList: document.getElementById('meetingList'),
+      footerText: document.getElementById('footerText'),
+      form: document.getElementById('meetingForm'),
+      id: document.getElementById('meetingId'),
+      date: document.getElementById('meetingDate'),
+      status: document.getElementById('meetingStatus'),
+      manager: document.getElementById('managerName'),
+      subject: document.getElementById('meetingSubject'),
+      discussed: document.getElementById('meetingDiscussed'),
+      agreed: document.getElementById('meetingAgreed'),
+      nextSteps: document.getElementById('meetingNextSteps'),
+      nextDate: document.getElementById('meetingNextDate')
+    };
+
+    init();
+
+    function t(key) {
+      return i18n[currentLang][key] || key;
+    }
+
+    async function init() {
+      restoreDraft();
+      setDefaultDate(true);
+      bindEvents();
+      updateLanguageButtons();
+      excelFileHandle = await loadStoredFileHandle();
+      renderAll();
+    }
+
+    function todayLocalIso() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function setDefaultDate(forceTodayForNewMeeting = false) {
+      if (forceTodayForNewMeeting && !els.id.value) {
+        els.date.value = todayLocalIso();
+        persistDraft();
+        return;
+      }
+      if (!els.date.value) {
+        els.date.value = todayLocalIso();
+      }
+    }
+
+    function bindEvents() {
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentLang = btn.dataset.lang;
+          localStorage.setItem(LANG_KEY, currentLang);
+          updateLanguageButtons();
+          renderAll();
+        });
+      });
+
+      els.form.addEventListener('submit', handleSubmit);
+      document.getElementById('clearBtn').addEventListener('click', resetForm);
+      document.getElementById('exportBtn').addEventListener('click', () => exportExcel(true));
+      document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
+      els.searchInput.addEventListener('input', renderMeetings);
+      if (els.filterStatus) els.filterStatus.addEventListener('change', renderMeetings);
+
+      els.form.querySelectorAll('input, textarea, select').forEach(field => {
+        field.addEventListener('input', persistDraft);
+        field.addEventListener('change', persistDraft);
+      });
+
+      window.addEventListener('beforeunload', persistDraft);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') persistDraft();
+      });
+    }
+
+    function updateLanguageButtons() {
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === currentLang);
+      });
+      document.documentElement.lang = currentLang;
+    }
+
+    function renderAll() {
+      renderText();
+      renderStatusSelects();
+      renderStats();
+      renderMeetings();
+    }
+
+    function renderText() {
+      els.appTitle.textContent = t('appTitle');
+      els.appSubtitle.textContent = t('appSubtitle');
+      els.exportBtn.textContent = t('export');
+      els.heroTitle.textContent = t('heroTitle');
+      els.heroText.textContent = t('heroText');
+      els.statAllLabel.textContent = t('statAllLabel');
+      if (els.statDoneLabel) els.statDoneLabel.textContent = t('statDoneLabel');
+      if (els.statManagersLabel) els.statManagersLabel.textContent = t('statManagersLabel');
+      els.formTitle.textContent = t('formTitle');
+      els.formNote.textContent = t('formNote');
+      els.labelDate.textContent = t('labelDate');
+      if (els.labelStatus) els.labelStatus.textContent = t('labelStatus');
+      els.labelManager.textContent = t('labelManager');
+      els.labelSubject.textContent = t('labelSubject');
+      els.labelDiscussed.textContent = t('labelDiscussed');
+      els.labelAgreed.textContent = t('labelAgreed');
+      els.labelNextSteps.textContent = t('labelNextSteps');
+      els.labelNextMeeting.textContent = t('labelNextMeeting');
+      els.saveBtn.textContent = els.id.value ? t('saveChanges') : t('save');
+      els.clearBtn.textContent = t('clear');
+      els.listTitle.textContent = t('listTitle');
+      els.listNote.textContent = t('listNote');
+      els.searchInput.placeholder = t('searchPlaceholder');
+      els.resetFiltersBtn.textContent = t('resetFilters');
+      els.footerText.textContent = t('footerText');
+    }
+
+    function renderStatusSelects() {
+      if (els.status) els.status.value = 'planned';
+      if (els.filterStatus) els.filterStatus.value = 'all';
+    }
+
+    function readData() {
+      try {
+        const primary = localStorage.getItem(STORE_KEY);
+        if (primary) return JSON.parse(primary) || [];
+      } catch {}
+      try {
+        const backup = localStorage.getItem(BACKUP_KEY);
+        if (backup) return JSON.parse(backup) || [];
+      } catch {}
+      return [];
+    }
+
+    function saveData() {
+      const payload = JSON.stringify(meetings);
+      localStorage.setItem(STORE_KEY, payload);
+      localStorage.setItem(BACKUP_KEY, payload);
+    }
+
+    function getDraft() {
+      return {
+        id: els.id.value || '',
+        date: els.date.value || '',
+        status: 'planned',
+        manager: els.manager.value || '',
+        subject: els.subject.value || '',
+        discussed: els.discussed.value || '',
+        agreed: els.agreed.value || '',
+        nextSteps: els.nextSteps.value || '',
+        nextDate: els.nextDate.value || ''
+      };
+    }
+
+    function persistDraft() {
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(getDraft()));
+      } catch {}
+    }
+
+    function restoreDraft() {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return;
+        const draft = JSON.parse(raw);
+        els.id.value = draft.id || '';
+        els.date.value = draft.date || '';
+        if (els.status) els.status.value = 'planned';
+        els.manager.value = draft.manager || '';
+        els.subject.value = draft.subject || '';
+        els.discussed.value = draft.discussed || '';
+        els.agreed.value = draft.agreed || '';
+        els.nextSteps.value = draft.nextSteps || '';
+        els.nextDate.value = draft.nextDate || '';
+      } catch {}
+      setDefaultDate();
+    }
+
+    function clearDraft() {
+      localStorage.removeItem(DRAFT_KEY);
+    }
+
+    function makeId() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+
+      const item = {
+        id: els.id.value || makeId(),
+        date: els.date.value,
+        status: els.status.value,
+        manager: els.manager.value.trim(),
+        subject: els.subject.value.trim(),
+        discussed: els.discussed.value.trim(),
+        agreed: els.agreed.value.trim(),
+        nextSteps: els.nextSteps.value.trim(),
+        nextDate: els.nextDate.value,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      if (!item.date || !item.manager || !item.subject || !item.discussed) {
+        alert(t('required'));
+        return;
+      }
+
+      const existingIndex = meetings.findIndex(m => m.id === item.id);
+
+      if (existingIndex >= 0) {
+        item.createdAt = meetings[existingIndex].createdAt;
+        meetings[existingIndex] = item;
+      } else {
+        meetings.unshift(item);
+      }
+
+      saveData();
+      renderAll();
+
+      const saveResult = await saveWorkbookToDisk(false);
+
+      if (saveResult.status === 'cancelled') {
+        alert(t('saveCancelled'));
+      } else if (saveResult.status === 'error') {
+        alert(t('saveError'));
+      } else if (saveResult.status === 'local-only') {
+        alert(t('savedLocallyOnly'));
+      }
+
+      els.id.value = item.id;
+      persistDraft();
+      renderAll();
+    }
+
+    function resetForm() {
+      els.form.reset();
+      els.id.value = '';
+      setDefaultDate();
+      if (els.status) els.status.value = 'planned';
+      clearDraft();
+      renderText();
+    }
+
+    function resetFilters() {
+      els.searchInput.value = '';
+      if (els.filterStatus) els.filterStatus.value = 'all';
+      renderMeetings();
+    }
+
+    function filteredMeetings() {
+      const query = els.searchInput.value.trim().toLowerCase();
+      const filter = 'all';
+
+      return [...meetings]
+        .filter(item => {
+          const matchQuery = !query || [item.manager, item.subject, item.discussed, item.agreed, item.nextSteps]
+            .join(' ')
+            .toLowerCase()
+            .includes(query);
+          return matchQuery;
+        })
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    function allMeetingsSorted() {
+      return [...meetings].sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    function renderStats() {
+      const all = meetings.length;
+      els.statAll.textContent = all;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return t('dateUnknown');
+      return new Date(dateStr + 'T00:00:00').toLocaleDateString(
+        currentLang === 'pl' ? 'pl-PL' : currentLang === 'nl' ? 'nl-NL' : 'en-GB'
+      );
+    }
+
+    function escapeHtml(str = '') {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function renderMeetings() {
+      const data = filteredMeetings();
+
+      if (!data.length) {
+        els.meetingList.innerHTML = `<div class="empty">${t('empty')}</div>`;
+        return;
+      }
+
+      els.meetingList.innerHTML = data.map(item => `
+        <article class="meeting-card">
+          <div class="meeting-top">
+            <div class="meeting-title">
+              <strong>${escapeHtml(item.manager)}</strong>
+              <div class="meeting-meta">${formatDate(item.date)} · ${escapeHtml(item.subject)}</div>
+            </div>
+            <div class="badge-row">
+              <span class="badge status-${item.status}">${t(item.status)}</span>
+            </div>
+          </div>
+
+          <div class="meeting-grid">
+            <div class="info-box">
+              <div class="k">${t('discussed')}</div>
+              <div class="v">${escapeHtml(item.discussed || '—')}</div>
+            </div>
+            <div class="info-box">
+              <div class="k">${t('agreed')}</div>
+              <div class="v">${escapeHtml(item.agreed || '—')}</div>
+            </div>
+            <div class="info-box">
+              <div class="k">${t('nextSteps')}</div>
+              <div class="v">${escapeHtml(item.nextSteps || '—')}</div>
+            </div>
+          </div>
+
+          <div class="meeting-footer">
+            <div class="next-date">${t('nextMeeting')}: ${item.nextDate ? formatDate(item.nextDate) : '—'}</div>
+            <div class="meeting-actions">
+              <button class="icon-btn" onclick="editMeeting('${item.id}')">${t('edit')}</button>
+              <button class="icon-btn" onclick="deleteMeeting('${item.id}')">${t('delete')}</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    window.editMeeting = function(id) {
+      const item = meetings.find(m => m.id === id);
+      if (!item) return;
+      els.id.value = item.id;
+      els.date.value = item.date || '';
+      if (els.status) els.status.value = 'planned';
+      els.manager.value = item.manager || '';
+      els.subject.value = item.subject || '';
+      els.discussed.value = item.discussed || '';
+      els.agreed.value = item.agreed || '';
+      els.nextSteps.value = item.nextSteps || '';
+      els.nextDate.value = item.nextDate || '';
+      persistDraft();
+      renderText();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.deleteMeeting = async function(id) {
+      if (!confirm(t('confirmDelete'))) return;
+      meetings = meetings.filter(m => m.id !== id);
+      saveData();
+      renderAll();
+      await saveWorkbookToDisk(false);
+    };
+
+    
+    function buildExportRows(sourceMeetings) {
+      return sourceMeetings.map((item, index) => ({
+        '#': index + 1,
+        [t('labelDate')]: formatDate(item.date),
+        [t('labelManager')]: item.manager,
+        [t('labelSubject')]: item.subject,
+        [t('labelDiscussed')]: item.discussed,
+        [t('labelAgreed')]: item.agreed,
+        [t('labelNextSteps')]: item.nextSteps,
+        [t('labelNextMeeting')]: item.nextDate ? formatDate(item.nextDate) : ''
+      }));
+    }
+
+    function safeSheetName(value) {
+      return String(value || 'Sheet').replace(/[\/?*\[\]:]/g, ' ').trim().slice(0, 31) || 'Sheet';
+    }
+
+    function pad2(value) {
+      return String(value).padStart(2, '0');
+    }
+
+    function parseTrackerDate(value) {
+      if (!value) return null;
+      const [year, month, day] = String(value).split('-').map(Number);
+      if (!year || !month || !day) return null;
+      return new Date(year, month - 1, day);
+    }
+
+    function toIsoDate(date) {
+      return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+    }
+
+    function startOfIsoWeek(date) {
+      const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      const day = d.getDay() || 7;
+      if (day !== 1) d.setDate(d.getDate() - day + 1);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
+
+    function getIsoWeekInfo(date) {
+      const temp = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNum = temp.getUTCDay() || 7;
+      temp.setUTCDate(temp.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(temp.getUTCFullYear(), 0, 1));
+      const week = Math.ceil((((temp - yearStart) / 86400000) + 1) / 7);
+      return {
+        year: temp.getUTCFullYear(),
+        week,
+        monday: startOfIsoWeek(date)
+      };
+    }
+
+    function formatWeekLabel(info) {
+      return `${t('reportWeekLabelPrefix')} ${info.week} · ${info.year}`;
+    }
+
+    function formatMonthLabel(date) {
+      return new Intl.DateTimeFormat(currentLang, { month: 'short', year: 'numeric' }).format(date);
+    }
+
+    function addPeriodCount(map, key, factory, status) {
+      if (!map.has(key)) map.set(key, factory());
+      const bucket = map.get(key);
+      bucket.count += 1;
+      bucket.completed = bucket.completed || 0;
+      bucket.planned = bucket.planned || 0;
+      bucket.followup = bucket.followup || 0;
+      bucket.open = bucket.open || 0;
+      if (status === 'done') bucket.completed += 1;
+      else if (status === 'followup') bucket.followup += 1;
+      else {
+        bucket.planned += 1;
+        bucket.open += 1;
+      }
+    }
+
+    function buildMeetingSummaries(sourceMeetings) {
+      const weeklyMap = new Map();
+      const monthlyMap = new Map();
+      const quarterlyMap = new Map();
+      const yearlyMap = new Map();
+      const statusMap = new Map();
+      const totals = { all: 0, completed: 0, planned: 0, followup: 0, open: 0 };
+
+      (sourceMeetings || []).forEach(item => {
+        const date = parseTrackerDate(item.date);
+        if (!date) return;
+        const status = statusOptions.includes(item.status) ? item.status : 'planned';
+        totals.all += 1;
+        if (status === 'done') totals.completed += 1;
+        else if (status === 'followup') { totals.followup += 1; totals.open += 1; }
+        else { totals.planned += 1; totals.open += 1; }
+
+        statusMap.set(status, (statusMap.get(status) || 0) + 1);
+
+        const weekInfo = getIsoWeekInfo(date);
+        addPeriodCount(weeklyMap, `${weekInfo.year}-W${pad2(weekInfo.week)}`, () => ({
+          label: formatWeekLabel(weekInfo),
+          periodStart: toIsoDate(weekInfo.monday),
+          count: 0
+        }), status);
+
+        const monthKey = `${date.getFullYear()}-${pad2(date.getMonth() + 1)}`;
+        addPeriodCount(monthlyMap, monthKey, () => ({
+          label: formatMonthLabel(date),
+          periodStart: `${monthKey}-01`,
+          count: 0
+        }), status);
+
+        const quarter = Math.floor(date.getMonth() / 3) + 1;
+        addPeriodCount(quarterlyMap, `${date.getFullYear()}-Q${quarter}`, () => ({
+          label: `Q${quarter} ${date.getFullYear()}`,
+          periodStart: `${date.getFullYear()}-${pad2((quarter - 1) * 3 + 1)}-01`,
+          count: 0
+        }), status);
+
+        addPeriodCount(yearlyMap, String(date.getFullYear()), () => ({
+          label: String(date.getFullYear()),
+          periodStart: `${date.getFullYear()}-01-01`,
+          count: 0
+        }), status);
+      });
+
+      const byPeriod = map => Array.from(map.values()).sort((a, b) => String(a.periodStart || '').localeCompare(String(b.periodStart || '')));
+      return {
+        totals,
+        weekly: byPeriod(weeklyMap),
+        monthly: byPeriod(monthlyMap),
+        quarterly: byPeriod(quarterlyMap),
+        yearly: byPeriod(yearlyMap),
+        statuses: Array.from(statusMap, ([status, count]) => ({ status, count }))
+      };
+    }
+
+
+    function loadExternalScript(srcUrl) {
+      return new Promise((resolve, reject) => {
+        const existing = Array.from(document.scripts).find(script => script.src === srcUrl);
+        if (existing) {
+          if (existing.dataset.loaded === 'true') resolve();
+          existing.addEventListener('load', () => resolve(), { once: true });
+          existing.addEventListener('error', () => reject(new Error('Script failed: ' + srcUrl)), { once: true });
+          return;
+        }
+        const script = document.createElement('script');
+        script.src = srcUrl;
+        script.async = true;
+        script.dataset.dynamicLoader = 'true';
+        script.onload = () => { script.dataset.loaded = 'true'; resolve(); };
+        script.onerror = () => reject(new Error('Script failed: ' + srcUrl));
+        document.head.appendChild(script);
+      });
+    }
+
+    async function ensureExcelJSLoaded() {
+      if (window.ExcelJS) return true;
+      const sources = [
+        'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js',
+        'https://unpkg.com/exceljs@4.4.0/dist/exceljs.min.js'
+      ];
+      for (const srcUrl of sources) {
+        try {
+          await loadExternalScript(srcUrl);
+          if (window.ExcelJS) return true;
+        } catch (error) {
+          console.warn(error);
+        }
+      }
+      return false;
+    }
+
+        function xmlEscape(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+    }
+
+    function xmlSheetName(value) {
+      return xmlEscape(String(value || 'Sheet').replace(/[\\/*?:\[\]]/g, ' ').slice(0, 31));
+    }
+
+    function xmlCell(value, style = 'Text', mergeAcross = 0, type = null) {
+      const numeric = typeof value === 'number' && Number.isFinite(value);
+      const cellType = type || (numeric ? 'Number' : 'String');
+      const merge = mergeAcross ? ` ss:MergeAcross="${mergeAcross}"` : '';
+      return `<Cell ss:StyleID="${style}"${merge}><Data ss:Type="${cellType}">${xmlEscape(value)}</Data></Cell>`;
+    }
+
+    function xmlEmptyCell(style = 'Text') {
+      return `<Cell ss:StyleID="${style}"/>`;
+    }
+
+    function xmlRow(cells, height = null) {
+      const h = height ? ` ss:AutoFitHeight="0" ss:Height="${height}"` : '';
+      return `<Row${h}>${cells.join('')}</Row>`;
+    }
+
+    function xmlWorksheet(name, rows, columns = []) {
+      const colXml = columns.map(width => `<Column ss:Width="${width}"/>`).join('');
+      return `<Worksheet ss:Name="${xmlSheetName(name)}"><Table>${colXml}${rows.join('')}</Table><WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>4</SplitHorizontal><TopRowBottomPane>4</TopRowBottomPane><ActivePane>2</ActivePane><Panes><Pane><Number>3</Number></Pane><Pane><Number>2</Number></Pane></Panes><ProtectObjects>False</ProtectObjects><ProtectScenarios>False</ProtectScenarios></WorksheetOptions></Worksheet>`;
+    }
+
+    function chartBlock(title, items, colorStyle = 'ChartGreen') {
+      const cleanItems = (items || []).slice(-12).filter(item => item && item.label);
+      const rows = [];
+      rows.push(xmlRow([xmlCell(title, 'Section', Math.max(4, cleanItems.length * 3 - 1))], 24));
+      if (!cleanItems.length) {
+        rows.push(xmlRow([xmlCell('-', 'Text')], 20));
+        return rows;
+      }
+      const max = Math.max(1, ...cleanItems.flatMap(item => [Number(item.count) || 0, Number(item.completed) || 0, Number(item.followup) || 0]));
+      const chartHeight = 10;
+      const labelCells = [xmlEmptyCell('Text')];
+      cleanItems.forEach(item => {
+        labelCells.push(xmlCell(item.label, 'ChartLabel', 2));
+      });
+      rows.push(xmlRow(labelCells, 24));
+      for (let level = chartHeight; level >= 1; level -= 1) {
+        const valueLabel = Math.ceil((max / chartHeight) * level);
+        const cells = [xmlCell(valueLabel, 'Axis')];
+        cleanItems.forEach(item => {
+          const totalH = Math.round(((Number(item.count) || 0) / max) * chartHeight);
+          const doneH = Math.round(((Number(item.completed) || 0) / max) * chartHeight);
+          const followH = Math.round(((Number(item.followup) || 0) / max) * chartHeight);
+          cells.push(level <= totalH ? xmlCell('', colorStyle) : xmlEmptyCell('ChartBlank'));
+          cells.push(level <= doneH ? xmlCell('', 'ChartBlue') : xmlEmptyCell('ChartBlank'));
+          cells.push(level <= followH ? xmlCell('', 'ChartRed') : xmlEmptyCell('ChartBlank'));
+        });
+        rows.push(xmlRow(cells, 16));
+      }
+      const legend = [xmlCell('', 'Text'), xmlCell('', colorStyle), xmlCell(t('reportTotalMeetings'), 'Legend')];
+      rows.push(xmlRow(legend, 20));
+      rows.push(xmlRow([xmlCell('', 'Text')], 12));
+      return rows;
+    }
+
+    function metricRow(label, value, style = 'MetricValue') {
+      return xmlRow([xmlCell(label, 'MetricLabel'), xmlCell(value, style, 1)], 30);
+    }
+
+    function buildXmlDashboard(summary, generatedAt) {
+      const rows = [];
+      rows.push(xmlRow([xmlCell(t('reportTitle'), 'Title', 12)], 34));
+      rows.push(xmlRow([xmlCell(t('reportGenerated'), 'SubTitle'), xmlCell(generatedAt, 'SubTitle', 3)], 24));
+      rows.push(xmlRow([xmlCell('', 'Text')], 10));
+      rows.push(xmlRow([xmlCell(t('reportOverview'), 'Section', 12)], 25));
+      rows.push(metricRow(t('reportTotalMeetings'), summary.totals.all, 'MetricGreen'));
+      rows.push(xmlRow([xmlCell('', 'Text')], 14));
+      rows.push(...chartBlock(t('reportChartMonthly'), summary.monthly, 'ChartGreen'));
+      rows.push(...chartBlock(t('reportChartQuarterly'), summary.quarterly, 'ChartOrange'));
+      rows.push(...chartBlock(t('reportChartWeekly'), summary.weekly, 'ChartGreen'));
+      rows.push(...chartBlock(t('reportChartYearly'), summary.yearly, 'ChartGreen'));
+      return xmlWorksheet(t('reportDashboardSheet'), rows, [52, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48]);
+    }
+
+    function buildXmlPeriodSheet(name, title, labelKey, items, generatedAt, colorStyle = 'ChartGreen') {
+      const rows = [];
+      rows.push(xmlRow([xmlCell(title, 'Title', 8)], 34));
+      rows.push(xmlRow([xmlCell(t('reportGenerated'), 'SubTitle'), xmlCell(generatedAt, 'SubTitle', 2)], 22));
+      rows.push(xmlRow([xmlCell('', 'Text')], 10));
+      rows.push(...chartBlock(title, items, colorStyle));
+      rows.push(xmlRow([xmlCell(t(labelKey), 'Header'), xmlCell(t('reportTotalMeetings'), 'Header')], 26));
+      [...items].sort((a, b) => String(b.periodStart || '').localeCompare(String(a.periodStart || ''))).forEach((item, idx) => {
+        rows.push(xmlRow([
+          xmlCell(item.label, idx % 2 ? 'Text' : 'AltText'),
+          xmlCell(item.count, idx % 2 ? 'Number' : 'AltNumber')
+        ], 24));
+      });
+      return xmlWorksheet(name, rows, [120, 110, 110, 120, 110, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40]);
+    }
+
+    function buildXmlMeetingsSheet(rows, generatedAt) {
+      const headers = rows.length ? Object.keys(rows[0]) : [];
+      const xmlRows = [];
+      xmlRows.push(xmlRow([xmlCell(t('exportSheet'), 'Title', Math.max(1, headers.length - 1))], 34));
+      xmlRows.push(xmlRow([xmlCell(t('reportGenerated'), 'SubTitle'), xmlCell(generatedAt, 'SubTitle', 2)], 22));
+      xmlRows.push(xmlRow([xmlCell('', 'Text')], 10));
+      xmlRows.push(xmlRow(headers.map(h => xmlCell(h, 'Header')), 30));
+      rows.forEach((item, rowIndex) => {
+        xmlRows.push(xmlRow(headers.map(header => xmlCell(item[header] || '', rowIndex % 2 ? 'WrapText' : 'AltWrapText')), 58));
+      });
+      return xmlWorksheet(t('exportSheet'), xmlRows, [40, 90, 140, 170, 330, 280, 280, 120, 120]);
+    }
+
+    function buildCorporateSpreadsheetXml(sourceMeetings = allMeetingsSorted()) {
+      const rows = buildExportRows(sourceMeetings);
+      if (!rows.length) return null;
+      const summary = buildMeetingSummaries(sourceMeetings);
+      const generatedAt = new Intl.DateTimeFormat(currentLang, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date());
+      const workbook = `<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Author>Rafal Wilk</Author><Company>Rafal Wilk</Company><Title>${xmlEscape(t('reportTitle'))}</Title><Created>${new Date().toISOString()}</Created></DocumentProperties><Styles><Style ss:ID="Default" ss:Name="Normal"><Alignment ss:Vertical="Center"/><Font ss:FontName="Calibri" ss:Size="11"/></Style><Style ss:ID="Title"><Font ss:FontName="Calibri" ss:Size="18" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#17324D" ss:Pattern="Solid"/><Alignment ss:Horizontal="Left" ss:Vertical="Center"/></Style><Style ss:ID="SubTitle"><Font ss:FontName="Calibri" ss:Size="11" ss:Color="#44546A"/><Interior ss:Color="#EAF1F8" ss:Pattern="Solid"/></Style><Style ss:ID="Section"><Font ss:FontName="Calibri" ss:Size="13" ss:Bold="1" ss:Color="#17324D"/><Interior ss:Color="#D9EAD3" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#9EADCC"/></Borders></Style><Style ss:ID="Header"><Font ss:FontName="Calibri" ss:Size="11" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#305496" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style><Style ss:ID="Text"><Alignment ss:Vertical="Top" ss:WrapText="1"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#D9E2F3"/></Borders></Style><Style ss:ID="AltText"><Alignment ss:Vertical="Top" ss:WrapText="1"/><Interior ss:Color="#F4F7FB" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#D9E2F3"/></Borders></Style><Style ss:ID="WrapText"><Alignment ss:Vertical="Top" ss:WrapText="1"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#D9E2F3"/></Borders></Style><Style ss:ID="AltWrapText"><Alignment ss:Vertical="Top" ss:WrapText="1"/><Interior ss:Color="#F4F7FB" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#D9E2F3"/></Borders></Style><Style ss:ID="Number"><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#D9E2F3"/></Borders></Style><Style ss:ID="AltNumber"><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Interior ss:Color="#F4F7FB" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#D9E2F3"/></Borders></Style><Style ss:ID="MetricLabel"><Font ss:Bold="1" ss:Size="12"/><Interior ss:Color="#F2F2F2" ss:Pattern="Solid"/></Style><Style ss:ID="MetricGreen"><Font ss:Bold="1" ss:Size="16" ss:Color="#FFFFFF"/><Interior ss:Color="#548235" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="MetricBlue"><Font ss:Bold="1" ss:Size="16" ss:Color="#FFFFFF"/><Interior ss:Color="#4472C4" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="MetricRed"><Font ss:Bold="1" ss:Size="16" ss:Color="#FFFFFF"/><Interior ss:Color="#C00000" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="MetricDark"><Font ss:Bold="1" ss:Size="16" ss:Color="#FFFFFF"/><Interior ss:Color="#17324D" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style><Style ss:ID="ChartLabel"><Font ss:Size="10" ss:Bold="1"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style><Style ss:ID="Axis"><Font ss:Size="8" ss:Color="#666666"/><Alignment ss:Horizontal="Right" ss:Vertical="Center"/></Style><Style ss:ID="ChartBlank"><Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#EEF2F7"/></Borders></Style><Style ss:ID="ChartGreen"><Interior ss:Color="#70AD47" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#FFFFFF"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#FFFFFF"/></Borders></Style><Style ss:ID="ChartBlue"><Interior ss:Color="#4472C4" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#FFFFFF"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#FFFFFF"/></Borders></Style><Style ss:ID="ChartRed"><Interior ss:Color="#C00000" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#FFFFFF"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#FFFFFF"/></Borders></Style><Style ss:ID="ChartOrange"><Interior ss:Color="#ED7D31" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#FFFFFF"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#FFFFFF"/></Borders></Style><Style ss:ID="Legend"><Font ss:Size="10"/><Alignment ss:Vertical="Center"/></Style></Styles>${buildXmlDashboard(summary, generatedAt)}${buildXmlPeriodSheet(t('reportWeeklySheet'), t('reportChartWeekly'), 'reportWeek', summary.weekly, generatedAt, 'ChartGreen')}${buildXmlPeriodSheet(t('reportMonthlySheet'), t('reportChartMonthly'), 'reportMonth', summary.monthly, generatedAt, 'ChartBlue')}${buildXmlPeriodSheet(t('reportQuarterlySheet'), t('reportChartQuarterly'), 'reportQuarter', summary.quarterly, generatedAt, 'ChartOrange')}${buildXmlPeriodSheet(t('reportYearlySheet'), t('reportChartYearly'), 'reportYear', summary.yearly, generatedAt, 'ChartGreen')}${buildXmlMeetingsSheet(rows, generatedAt)}</Workbook>`;
+      return workbook;
+    }
+
+    async function ensureXlsxReady() {
+      if (window.XLSX && XLSX.utils && XLSX.writeFile) return true;
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js';
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('SheetJS could not be loaded'));
+        document.head.appendChild(script);
+      });
+      return !!window.XLSX;
+    }
+
+    function addStableSheet(wb, name, aoa, widths) {
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      ws['!cols'] = (widths || []).map(wch => ({ wch }));
+      XLSX.utils.book_append_sheet(wb, ws, safeSheetName(name));
+      return ws;
+    }
+
+    function makePeriodRows(sourceMeetings, mode) {
+      const map = new Map();
+      sourceMeetings.forEach(item => {
+        const date = parseTrackerDate(item.date);
+        if (!date) return;
+        let key = '', label = '', start = '';
+        if (mode === 'week') {
+          const info = getIsoWeekInfo(date);
+          key = `${info.year}-W${pad2(info.week)}`;
+          label = formatWeekLabel(info);
+          start = toIsoDate(info.monday);
+        } else if (mode === 'month') {
+          key = `${date.getFullYear()}-${pad2(date.getMonth() + 1)}`;
+          label = formatMonthLabel(date);
+          start = `${key}-01`;
+        } else if (mode === 'quarter') {
+          const q = Math.floor(date.getMonth() / 3) + 1;
+          key = `${date.getFullYear()}-Q${q}`;
+          label = `Q${q} ${date.getFullYear()}`;
+          start = `${date.getFullYear()}-${pad2((q - 1) * 3 + 1)}-01`;
+        } else {
+          key = String(date.getFullYear());
+          label = key;
+          start = `${key}-01-01`;
+        }
+        if (!map.has(key)) map.set(key, { label, count: 0, start });
+        map.get(key).count += 1;
+      });
+      return Array.from(map.values()).sort((a, b) => String(a.start).localeCompare(String(b.start)));
+    }
+
+    function createStableXlsxWorkbook(sourceMeetings = allMeetingsSorted()) {
+      const rows = buildExportRows(sourceMeetings);
+      if (!rows.length) return null;
+      const wb = XLSX.utils.book_new();
+      wb.Props = { Title: t('reportTitle'), Subject: t('reportTitle'), Author: 'Rafal Wilk', Company: 'Rafal Wilk', CreatedDate: new Date() };
+      const generatedAt = new Intl.DateTimeFormat(currentLang, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date());
+      const weekly = makePeriodRows(sourceMeetings, 'week');
+      const monthly = makePeriodRows(sourceMeetings, 'month');
+      const quarterly = makePeriodRows(sourceMeetings, 'quarter');
+      const yearly = makePeriodRows(sourceMeetings, 'year');
+      addStableSheet(wb, t('reportDashboardSheet'), [
+        [t('reportTitle')], [t('reportGenerated'), generatedAt], [], [t('reportOverview')], [t('reportTotalMeetings'), sourceMeetings.length], [],
+        [t('reportChartWeekly')], [t('reportWeek'), t('reportCount')], ...weekly.map(item => [item.label, item.count]), [],
+        [t('reportChartMonthly')], [t('reportMonth'), t('reportCount')], ...monthly.map(item => [item.label, item.count]), [],
+        [t('reportChartQuarterly')], [t('reportQuarter'), t('reportCount')], ...quarterly.map(item => [item.label, item.count]), [],
+        [t('reportChartYearly')], [t('reportYear'), t('reportCount')], ...yearly.map(item => [item.label, item.count])
+      ], [34, 18, 18, 18]);
+      const appendPeriodSheet = (name, title, label, data) => addStableSheet(wb, name, [[title], [t('reportGenerated'), generatedAt], [], [label, t('reportCount')], ...data.map(item => [item.label, item.count])], [28, 18]);
+      appendPeriodSheet(t('reportWeeklySheet'), t('reportChartWeekly'), t('reportWeek'), weekly);
+      appendPeriodSheet(t('reportMonthlySheet'), t('reportChartMonthly'), t('reportMonth'), monthly);
+      appendPeriodSheet(t('reportQuarterlySheet'), t('reportChartQuarterly'), t('reportQuarter'), quarterly);
+      appendPeriodSheet(t('reportYearlySheet'), t('reportChartYearly'), t('reportYear'), yearly);
+      const headers = rows.length ? Object.keys(rows[0]) : [];
+      addStableSheet(wb, t('exportSheet'), [[t('exportSheet')], [t('reportGenerated'), generatedAt], [], headers, ...rows.map(row => headers.map(header => row[header] || ''))], [6, 16, 24, 30, 55, 45, 45, 18]);
+      return wb;
+    }
+
+    function getCleanMeetingRows(sourceMeetings = allMeetingsSorted()) {
+      const labels = { no: '#', date: t('labelDate') || 'Date', manager: t('labelManager') || 'Manager', subject: t('labelSubject') || 'Topic', discussed: t('labelDiscussed') || 'What was discussed', agreed: t('labelAgreed') || 'Agreements', nextSteps: t('labelNextSteps') || 'Next steps', nextMeeting: t('labelNextMeeting') || 'Next meeting' };
+      return sourceMeetings.map((item, index) => ({ [labels.no]: index + 1, [labels.date]: item.date || '', [labels.manager]: item.manager || '', [labels.subject]: item.subject || '', [labels.discussed]: item.discussed || '', [labels.agreed]: item.agreed || '', [labels.nextSteps]: item.nextSteps || '', [labels.nextMeeting]: item.nextMeeting || '' }));
+    }
+    async function ensureExcelJsReady() {
+      if (window.ExcelJS && window.ExcelJS.Workbook) return true;
+      await new Promise((resolve, reject) => { const script = document.createElement('script'); script.src = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js'; script.onload = () => resolve(); script.onerror = () => reject(new Error('ExcelJS could not be loaded')); document.head.appendChild(script); });
+      return !!(window.ExcelJS && window.ExcelJS.Workbook);
+    }
+    function applyTitleCell(cell, fillColor = '6A8F3A') { cell.font = { name: 'Calibri', bold: true, size: 18, color: { argb: 'FFFFFFFF' } }; cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + fillColor } }; cell.alignment = { vertical: 'middle', horizontal: 'left' }; }
+    function applyHeaderCell(cell, fillColor = 'F28C28') { cell.font = { name: 'Calibri', bold: true, size: 11, color: { argb: 'FFFFFFFF' } }; cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + fillColor } }; cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }; cell.border = { top: { style: 'thin', color: { argb: 'FFFFFFFF' } }, left: { style: 'thin', color: { argb: 'FFFFFFFF' } }, bottom: { style: 'thin', color: { argb: 'FFFFFFFF' } }, right: { style: 'thin', color: { argb: 'FFFFFFFF' } } }; }
+    function applyBodyCell(cell, alt = false) { cell.font = { name: 'Calibri', size: 10, color: { argb: 'FF172033' } }; cell.alignment = { vertical: 'top', horizontal: 'left', wrapText: true }; cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: alt ? 'FFFFF7E8' : 'FFFFFFFF' } }; cell.border = { top: { style: 'thin', color: { argb: 'FFE5E7EB' } }, left: { style: 'thin', color: { argb: 'FFE5E7EB' } }, bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } }, right: { style: 'thin', color: { argb: 'FFE5E7EB' } } }; }
+    function addPeriodBlock(ws, title, labelTitle, data, startRow, color) {
+      ws.mergeCells(startRow, 1, startRow, 8); applyTitleCell(ws.getCell(startRow, 1), color); ws.getCell(startRow, 1).value = title; ws.getRow(startRow).height = 25;
+      const headerRow = ws.getRow(startRow + 1); headerRow.values = [null, labelTitle, t('reportCount') || 'Count', '', '', '', '', '', '']; for (let c = 1; c <= 8; c++) applyHeaderCell(headerRow.getCell(c), color);
+      const maxCount = Math.max(1, ...data.map(x => x.count || 0)); const chartBase = startRow + 2; const visible = data.slice(0, 8); if (!visible.length) visible.push({ label: '-', count: 0 });
+      visible.forEach((item, idx) => { const row = ws.getRow(chartBase + idx); row.height = 24; row.getCell(1).value = item.label; row.getCell(2).value = item.count; applyBodyCell(row.getCell(1), idx % 2 === 1); applyBodyCell(row.getCell(2), idx % 2 === 1); row.getCell(2).alignment = { horizontal: 'center', vertical: 'middle' }; const filled = item.count ? Math.max(1, Math.round(((item.count || 0) / maxCount) * 6)) : 0; for (let c = 3; c <= 8; c++) { const cell = row.getCell(c); cell.value = ''; cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: c - 2 <= filled ? ('FF' + color) : 'FFFFFFFF' } }; cell.border = { top: { style: 'thin', color: { argb: 'FFFFFFFF' } }, left: { style: 'thin', color: { argb: 'FFFFFFFF' } }, bottom: { style: 'thin', color: { argb: 'FFFFFFFF' } }, right: { style: 'thin', color: { argb: 'FFFFFFFF' } } }; } });
+      return chartBase + Math.max(visible.length, 1) + 2;
+    }
+    async function createCleanCorporateWorkbook(sourceMeetings = allMeetingsSorted()) {
+      await ensureExcelJsReady(); const workbook = new ExcelJS.Workbook(); workbook.creator = 'Rafal Wilk'; workbook.company = 'Rafal Wilk'; workbook.created = new Date(); workbook.modified = new Date(); workbook.subject = t('reportTitle') || 'Manager meetings report'; workbook.title = t('reportTitle') || 'Manager meetings report';
+      const generatedAt = new Intl.DateTimeFormat(currentLang, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date()); const weekly = makePeriodRows(sourceMeetings, 'week'); const monthly = makePeriodRows(sourceMeetings, 'month'); const quarterly = makePeriodRows(sourceMeetings, 'quarter'); const yearly = makePeriodRows(sourceMeetings, 'year'); const colors = { green: '22C55E', olive: '6A8F3A', orange: 'F28C28', lime: '84CC16' };
+      const dashboard = workbook.addWorksheet(t('reportDashboardSheet') || 'Dashboard', { views: [{ state: 'frozen', ySplit: 2 }] }); dashboard.columns = [{ width: 24 }, { width: 14 }, { width: 6 }, { width: 6 }, { width: 6 }, { width: 6 }, { width: 6 }, { width: 6 }]; dashboard.mergeCells('A1:H1'); applyTitleCell(dashboard.getCell('A1'), colors.olive); dashboard.getCell('A1').value = t('reportTitle') || 'Manager meetings report'; dashboard.getRow(1).height = 32; dashboard.getCell('A2').value = t('reportGenerated') || 'Generated'; dashboard.getCell('B2').value = generatedAt; dashboard.getCell('A4').value = t('reportTotalMeetings') || 'Total meetings'; dashboard.getCell('B4').value = sourceMeetings.length; dashboard.getCell('A4').font = { bold: true, size: 13, color: { argb: 'FF172033' } }; dashboard.getCell('B4').font = { bold: true, size: 20, color: { argb: 'FFFFFFFF' } }; dashboard.getCell('B4').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF22C55E' } }; dashboard.getCell('B4').alignment = { horizontal: 'center', vertical: 'middle' }; dashboard.getRow(4).height = 30;
+      let row = 7; row = addPeriodBlock(dashboard, t('reportChartWeekly') || 'Meetings per week', t('reportWeek') || 'Week', weekly, row, colors.green); row = addPeriodBlock(dashboard, t('reportChartMonthly') || 'Meetings per month', t('reportMonth') || 'Month', monthly, row, colors.orange); row = addPeriodBlock(dashboard, t('reportChartQuarterly') || 'Meetings per quarter', t('reportQuarter') || 'Quarter', quarterly, row, colors.olive); row = addPeriodBlock(dashboard, t('reportChartYearly') || 'Meetings per year', t('reportYear') || 'Year', yearly, row, colors.lime);
+      function addPeriodSheet(sheetName, title, labelTitle, data, color) { const ws = workbook.addWorksheet(safeSheetName(sheetName)); ws.columns = [{ width: 28 }, { width: 16 }, { width: 12 }, { width: 12 }, { width: 12 }, { width: 12 }, { width: 12 }, { width: 12 }]; ws.mergeCells('A1:H1'); applyTitleCell(ws.getCell('A1'), color); ws.getCell('A1').value = title; ws.getCell('A2').value = t('reportGenerated') || 'Generated'; ws.getCell('B2').value = generatedAt; addPeriodBlock(ws, title, labelTitle, data, 4, color); }
+      addPeriodSheet(t('reportWeeklySheet') || 'Weekly', t('reportChartWeekly') || 'Meetings per week', t('reportWeek') || 'Week', weekly, colors.green); addPeriodSheet(t('reportMonthlySheet') || 'Monthly', t('reportChartMonthly') || 'Meetings per month', t('reportMonth') || 'Month', monthly, colors.orange); addPeriodSheet(t('reportQuarterlySheet') || 'Quarterly', t('reportChartQuarterly') || 'Meetings per quarter', t('reportQuarter') || 'Quarter', quarterly, colors.olive); addPeriodSheet(t('reportYearlySheet') || 'Yearly', t('reportChartYearly') || 'Meetings per year', t('reportYear') || 'Year', yearly, colors.lime);
+      const meetingRows = getCleanMeetingRows(sourceMeetings); const headers = meetingRows.length ? Object.keys(meetingRows[0]) : ['#', t('labelDate'), t('labelManager'), t('labelSubject'), t('labelDiscussed'), t('labelAgreed'), t('labelNextSteps'), t('labelNextMeeting')]; const ws = workbook.addWorksheet(t('exportSheet') || 'Meetings', { views: [{ state: 'frozen', ySplit: 4 }] }); ws.columns = [{ width: 6 }, { width: 15 }, { width: 24 }, { width: 30 }, { width: 54 }, { width: 42 }, { width: 42 }, { width: 18 }]; ws.mergeCells('A1:H1'); applyTitleCell(ws.getCell('A1'), colors.olive); ws.getCell('A1').value = t('exportSheet') || 'Meetings'; ws.getCell('A2').value = t('reportGenerated') || 'Generated'; ws.getCell('B2').value = generatedAt; const hr = ws.getRow(4); headers.forEach((h, idx) => { const cell = hr.getCell(idx + 1); cell.value = h; applyHeaderCell(cell, colors.orange); }); meetingRows.forEach((obj, rIdx) => { const er = ws.getRow(5 + rIdx); er.height = 60; headers.forEach((h, cIdx) => { const cell = er.getCell(cIdx + 1); cell.value = obj[h] == null ? '' : obj[h]; applyBodyCell(cell, rIdx % 2 === 1); if (cIdx === 0 || cIdx === 1) cell.alignment = { horizontal: 'center', vertical: 'top', wrapText: true }; }); }); ws.autoFilter = { from: 'A4', to: 'H4' }; return workbook;
+    }
+    function saveBufferAsFile(buffer, fileName) { const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = fileName; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000); }
+    async function exportExcel(forceChooseLocation = false) {
+      try { const sourceMeetings = allMeetingsSorted(); if (!sourceMeetings.length) { alert(t('emptyState') || 'No meetings to export.'); return; } const workbook = await createCleanCorporateWorkbook(sourceMeetings); const buffer = await workbook.xlsx.writeBuffer(); const fileName = `${t('exportFile')}_EXCEL_${new Date().toISOString().slice(0, 10)}.xlsx`; saveBufferAsFile(buffer, fileName); }
+      catch (error) { console.error('ExcelJS export failed. Trying simple SheetJS fallback.', error); try { await ensureXlsxReady(); const sourceMeetings = allMeetingsSorted(); const rows = getCleanMeetingRows(sourceMeetings); const wb = XLSX.utils.book_new(); const generatedAt = new Intl.DateTimeFormat(currentLang, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date()); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([[t('reportTitle') || 'Report'], [t('reportGenerated') || 'Generated', generatedAt], [], [t('reportTotalMeetings') || 'Total meetings', sourceMeetings.length]]), safeSheetName(t('reportDashboardSheet') || 'Dashboard')); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), safeSheetName(t('exportSheet') || 'Meetings')); XLSX.writeFile(wb, `${t('exportFile')}_EXCEL_${new Date().toISOString().slice(0, 10)}.xlsx`, { bookType: 'xlsx', compression: false }); } catch (fallbackError) { console.error('Excel export failed.', fallbackError); alert(currentLang === 'pl' ? 'Nie udało się wygenerować pliku Excel.' : currentLang === 'nl' ? 'Het Excel-bestand kon niet worden gemaakt.' : 'The Excel file could not be created.'); } }
+    }
+
+    async function saveWorkbookToDisk(forceChooseLocation = false, workbook = null) {
+      try {
+        await ensureXlsxReady();
+        const wb = workbook || createStableXlsxWorkbook();
+        if (!wb) return { status: 'empty' };
+        if (!window.showSaveFilePicker) return { status: 'local-only' };
+        const handle = await ensureWritableFileHandle(forceChooseLocation);
+        if (!handle) return { status: 'cancelled' };
+        const output = XLSX.write(wb, { bookType: 'xlsx', type: 'array', compression: true });
+        const blob = new Blob([output], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return { status: 'saved' };
+      } catch (error) {
+        console.error(error);
+        return { status: error && error.name === 'AbortError' ? 'cancelled' : 'error' };
+      }
+    }
+
+    async function ensureWritableFileHandle(forceChooseLocation = false) {
+      if (!window.showSaveFilePicker) return null;
+
+      if (!forceChooseLocation && !excelFileHandle) {
+        excelFileHandle = await loadStoredFileHandle();
+      }
+
+      if (!forceChooseLocation && excelFileHandle) {
+        const hasPermission = await verifyPermission(excelFileHandle, true);
+        if (hasPermission) return excelFileHandle;
+      }
+
+      const suggestedName = `${t('exportFile')}.xlsx`;
+      const pickedHandle = await window.showSaveFilePicker({
+        suggestedName,
+        types: [{
+          description: t('chooseLocation'),
+          accept: {
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']
+          }
+        }]
+      });
+
+      const granted = await verifyPermission(pickedHandle, true);
+      if (!granted) return null;
+
+      excelFileHandle = pickedHandle;
+      await saveFileHandleToDb(pickedHandle);
+      return excelFileHandle;
+    }
+
+    async function verifyPermission(handle, readWrite = false) {
+      if (!handle) return false;
+      const options = readWrite ? { mode: 'readwrite' } : {};
+      if ((await handle.queryPermission(options)) === 'granted') return true;
+      if ((await handle.requestPermission(options)) === 'granted') return true;
+      return false;
+    }
+
+    function openHandleDb() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          resolve(null);
+          return;
+        }
+
+        const request = indexedDB.open(FILE_DB_NAME, 1);
+
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(FILE_DB_STORE)) {
+            db.createObjectStore(FILE_DB_STORE);
+          }
+        };
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function saveFileHandleToDb(handle) {
+      try {
+        const db = await openHandleDb();
+        if (!db) return;
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction(FILE_DB_STORE, 'readwrite');
+          tx.objectStore(FILE_DB_STORE).put(handle, FILE_DB_KEY);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+        db.close();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function loadStoredFileHandle() {
+      try {
+        const db = await openHandleDb();
+        if (!db) return null;
+        const handle = await new Promise((resolve, reject) => {
+          const tx = db.transaction(FILE_DB_STORE, 'readonly');
+          const request = tx.objectStore(FILE_DB_STORE).get(FILE_DB_KEY);
+          request.onsuccess = () => resolve(request.result || null);
+          request.onerror = () => reject(request.error);
+        });
+        db.close();
+        return handle;
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    }
+  </script>
+
+</body>
+</html>

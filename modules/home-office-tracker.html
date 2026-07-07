@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home Office Tracker</title>
+  <style>
+    :root {
+      --bg: #f8fafd;
+      --card: #ffffff;
+      --text: #202124;
+      --muted: #5f6368;
+      --border: #dadce0;
+      --soft-border: #eef0f4;
+      --blue: #1a73e8;
+      --blue-soft: #e8f0fe;
+      --green: #188038;
+      --green-soft: #e6f4ea;
+      --yellow: #f9ab00;
+      --yellow-soft: #fef7e0;
+      --red: #d93025;
+      --red-soft: #fce8e6;
+      --gray-soft: #f1f3f4;
+      --shadow: 0 1px 2px rgba(60, 64, 67, 0.12), 0 2px 8px rgba(60, 64, 67, 0.08);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .app {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, #1a73e8 0 25%, #34a853 25% 50%, #fbbc04 50% 75%, #ea4335 75% 100%);
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(26px, 4vw, 40px);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .language-switcher {
+      display: flex;
+      gap: 6px;
+      padding: 5px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+
+    .language-switcher button {
+      border: 0;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .language-switcher button.active {
+      background: var(--blue);
+      color: white;
+    }
+
+    .info-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .info-box {
+      background: white;
+      border: 1px solid var(--soft-border);
+      border-radius: 18px;
+      padding: 15px 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .info-box strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .info-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 410px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--soft-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 22px 22px 0;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+    }
+
+    .card-description {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .card-body {
+      padding: 20px 22px 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: #3c4043;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 15px;
+      background: white;
+      color: var(--text);
+      font-size: 17px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.14);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 82px;
+      font-size: 15px;
+    }
+
+    .help {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .result-card {
+      margin-top: 18px;
+      border-radius: 20px;
+      border: 1px solid #cfe0ff;
+      background: var(--blue-soft);
+      padding: 18px;
+    }
+
+    .result-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      margin-bottom: 15px;
+    }
+
+    .result-label {
+      display: block;
+      color: #174ea6;
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .result-number {
+      display: block;
+      color: var(--blue);
+      font-weight: 900;
+      font-size: 64px;
+      line-height: 0.88;
+      letter-spacing: -0.07em;
+    }
+
+    .result-percent {
+      text-align: right;
+      color: #174ea6;
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    .formula {
+      margin-top: 8px;
+      color: #174ea6;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .progress {
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #d2e3fc;
+      margin: 14px 0 14px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--blue);
+      border-radius: inherit;
+      transition: width 0.2s ease;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .metric {
+      border-radius: 15px;
+      background: white;
+      border: 1px solid #d7e3ff;
+      padding: 13px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 7px;
+    }
+
+    .metric strong {
+      font-size: 27px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 13px 17px;
+      background: var(--blue);
+      color: white;
+      font-weight: 900;
+      font-size: 14px;
+      box-shadow: 0 6px 14px rgba(26, 115, 232, 0.22);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      background: #1765cc;
+    }
+
+    .btn.secondary {
+      background: var(--gray-soft);
+      color: #3c4043;
+      box-shadow: none;
+    }
+
+    .btn.secondary:hover {
+      background: #e8eaed;
+    }
+
+    .btn.danger {
+      background: var(--red-soft);
+      color: var(--red);
+      box-shadow: none;
+    }
+
+    .btn.danger:hover {
+      background: #fad2cf;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 22px 22px 0;
+    }
+
+    .history-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 11px;
+    }
+
+    .month-row {
+      display: grid;
+      grid-template-columns: minmax(170px, 1fr) minmax(320px, 1.4fr) auto;
+      gap: 14px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      background: white;
+    }
+
+    .month-name {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 900;
+      text-transform: capitalize;
+      letter-spacing: -0.02em;
+    }
+
+    .month-date {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .chip.green {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .chip.blue {
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .chip.yellow {
+      background: var(--yellow-soft);
+      color: #8a5b00;
+    }
+
+    .chip.gray {
+      background: var(--gray-soft);
+      color: #3c4043;
+    }
+
+    .note {
+      grid-column: 1 / 3;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+      margin-top: -5px;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 7px;
+      justify-content: flex-end;
+    }
+
+    .small-btn {
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 9px 12px;
+      background: var(--gray-soft);
+      color: #3c4043;
+    }
+
+    .small-btn.delete {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .empty {
+      border: 1px dashed #c7ccd4;
+      background: #fafbff;
+      border-radius: 18px;
+      padding: 30px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .empty strong {
+      display: block;
+      color: var(--text);
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 11px;
+      margin-top: 17px;
+    }
+
+    .summary-card {
+      background: #fafbff;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      padding: 15px;
+    }
+
+    .summary-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+
+    .summary-card strong {
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(12px);
+      opacity: 0;
+      pointer-events: none;
+      background: #202124;
+      color: white;
+      border-radius: 999px;
+      padding: 13px 18px;
+      font-size: 14px;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+      transition: 0.18s ease;
+      z-index: 100;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 940px) {
+      .layout,
+      .info-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .month-row {
+        grid-template-columns: 1fr;
+      }
+
+      .note {
+        grid-column: auto;
+        margin-top: 0;
+      }
+
+      .row-actions {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 620px) {
+      body {
+        padding: 14px;
+      }
+
+      .topbar,
+      .history-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .brand {
+        align-items: flex-start;
+      }
+
+      .language-switcher,
+      .history-actions {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .metrics,
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .result-main {
+        display: block;
+      }
+
+      .result-percent {
+        text-align: left;
+        margin-top: 12px;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1 data-i18n="appTitle">Home Office Tracker</h1>
+          <p class="subtitle" data-i18n="appSubtitle">Czytelny licznik dni pracy z domu w trzech językach.</p>
+        </div>
+      </div>
+
+      <div class="language-switcher" aria-label="Language">
+        <button type="button" data-lang="pl" class="active">PL</button>
+        <button type="button" data-lang="nl">NL</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+    </header>
+
+    <section class="info-strip">
+      <div class="info-box">
+        <strong data-i18n="step1Title">1. Wybierz miesiąc</strong>
+        <span data-i18n="step1Text">System sam policzy dni robocze od poniedziałku do piątku.</span>
+      </div>
+      <div class="info-box">
+        <strong data-i18n="step2Title">2. Wpisz dni w biurze</strong>
+        <span data-i18n="step2Text">Podajesz tylko ile razy byłeś w biurze w tym miesiącu.</span>
+      </div>
+      <div class="info-box">
+        <strong data-i18n="step3Title">3. Zapisz wynik</strong>
+        <span data-i18n="step3Text">Każdy miesiąc zostaje zapisany w historii w tej przeglądarce.</span>
+      </div>
+    </section>
+
+    <section class="layout">
+      <article class="card">
+        <div class="card-header">
+          <h2 class="card-title" data-i18n="formTitle">Oblicz miesiąc</h2>
+          <p class="card-description" data-i18n="formDescription">Prosty wzór: dni robocze minus dni w biurze minus urlop/święta.</p>
+        </div>
+
+        <div class="card-body">
+          <div class="form-grid">
+            <div>
+              <label for="month" data-i18n="monthLabel">Miesiąc</label>
+              <input type="month" id="month" />
+            </div>
+
+            <div>
+              <label for="officeDays" data-i18n="officeLabel">Ile razy byłeś w biurze?</label>
+              <input type="number" id="officeDays" min="0" step="1" value="0" />
+              <div class="help" data-i18n="officeHelp">Przykład: jeśli byłeś w biurze 6 razy, wpisz 6.</div>
+            </div>
+
+            <div>
+              <label for="offDays" data-i18n="offLabel">Urlop, święta albo inne dni bez pracy</label>
+              <input type="number" id="offDays" min="0" step="1" value="0" />
+              <div class="help" data-i18n="offHelp">Opcjonalnie. Jeśli nie chcesz nic odejmować, zostaw 0.</div>
+            </div>
+
+            <div>
+              <label for="note" data-i18n="noteLabel">Notatka</label>
+              <textarea id="note" data-i18n-placeholder="notePlaceholder" placeholder="Np. urlop, choroba, delegacja, korekta..."></textarea>
+            </div>
+          </div>
+
+          <div class="result-card">
+            <div class="result-main">
+              <div>
+                <span class="result-label" data-i18n="homeResultLabel">Dni pracy z domu</span>
+                <strong class="result-number" id="homeOut">0</strong>
+              </div>
+              <div class="result-percent">
+                <div id="ratioOut">0%</div>
+                <div data-i18n="homePercentText">z dni roboczych</div>
+              </div>
+            </div>
+
+            <div class="progress">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="metrics">
+              <div class="metric">
+                <span data-i18n="workdaysMetric">Dni robocze</span>
+                <strong id="workdaysOut">0</strong>
+              </div>
+              <div class="metric">
+                <span data-i18n="officeMetric">Biuro</span>
+                <strong id="officeOut">0</strong>
+              </div>
+              <div class="metric">
+                <span data-i18n="offMetric">Bez pracy</span>
+                <strong id="offOut">0</strong>
+              </div>
+            </div>
+
+            <div class="formula" id="formulaOut"></div>
+          </div>
+
+          <div class="buttons">
+            <button class="btn" id="saveBtn" data-i18n="saveBtn">Zapisz miesiąc</button>
+            <button class="btn secondary" id="clearFormBtn" data-i18n="clearFormBtn">Wyczyść formularz</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="history-header">
+          <div>
+            <h2 class="card-title" data-i18n="historyTitle">Zapisane miesiące</h2>
+            <p class="card-description" data-i18n="historyDescription">Tu widzisz wszystkie zapisane wyniki.</p>
+          </div>
+
+          <div class="history-actions">
+            <button class="btn secondary" id="exportBtn" data-i18n="exportBtn">Eksport CSV</button>
+            <button class="btn danger" id="clearAllBtn" data-i18n="clearAllBtn">Usuń wszystko</button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div id="history" class="history-list"></div>
+
+          <div class="summary">
+            <div class="summary-card">
+              <span data-i18n="summaryHome">Suma z domu</span>
+              <strong id="totalHome">0</strong>
+            </div>
+            <div class="summary-card">
+              <span data-i18n="summaryOffice">Suma w biurze</span>
+              <strong id="totalOffice">0</strong>
+            </div>
+            <div class="summary-card">
+              <span data-i18n="summaryMonths">Miesiące</span>
+              <strong id="totalMonths">0</strong>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">OK</div>
+
+  <script>
+    const STORAGE_KEYS = [
+      "licznik-pracy-z-domu-v3-readable-multilang",
+      "licznik-pracy-z-domu-v2",
+      "licznik-pracy-z-domu-v1"
+    ];
+    const STORAGE_KEY = STORAGE_KEYS[0];
+    const LANG_KEY = "home-office-tracker-language";
+
+    const translations = {
+      pl: {
+        appTitle: "Home Office Tracker",
+        appSubtitle: "Czytelny licznik dni pracy z domu w trzech językach.",
+        step1Title: "1. Wybierz miesiąc",
+        step1Text: "System sam policzy dni robocze od poniedziałku do piątku.",
+        step2Title: "2. Wpisz dni w biurze",
+        step2Text: "Podajesz tylko ile razy byłeś w biurze w tym miesiącu.",
+        step3Title: "3. Zapisz wynik",
+        step3Text: "Każdy miesiąc zostaje zapisany w historii w tej przeglądarce.",
+        formTitle: "Oblicz miesiąc",
+        formDescription: "Prosty wzór: dni robocze minus dni w biurze minus urlop/święta.",
+        monthLabel: "Miesiąc",
+        officeLabel: "Ile razy byłeś w biurze?",
+        officeHelp: "Przykład: jeśli byłeś w biurze 6 razy, wpisz 6.",
+        offLabel: "Urlop, święta albo inne dni bez pracy",
+        offHelp: "Opcjonalnie. Jeśli nie chcesz nic odejmować, zostaw 0.",
+        noteLabel: "Notatka",
+        notePlaceholder: "Np. urlop, choroba, delegacja, korekta...",
+        homeResultLabel: "Dni pracy z domu",
+        homePercentText: "z dni roboczych",
+        workdaysMetric: "Dni robocze",
+        officeMetric: "Biuro",
+        offMetric: "Bez pracy",
+        formula: "{workdays} dni robocze - {office} biuro - {off} bez pracy = {home} dni z domu",
+        saveBtn: "Zapisz miesiąc",
+        clearFormBtn: "Wyczyść formularz",
+        historyTitle: "Zapisane miesiące",
+        historyDescription: "Tu widzisz wszystkie zapisane wyniki.",
+        exportBtn: "Eksport CSV",
+        clearAllBtn: "Usuń wszystko",
+        summaryHome: "Suma z domu",
+        summaryOffice: "Suma w biurze",
+        summaryMonths: "Miesiące",
+        noRecordsTitle: "Brak zapisanych miesięcy",
+        noRecordsText: "Wpisz pierwszy miesiąc i kliknij „Zapisz miesiąc”.",
+        chipHome: "Dom",
+        chipOffice: "Biuro",
+        chipOff: "Bez pracy",
+        chipWorkdays: "Robocze",
+        noNote: "Brak notatki",
+        edit: "Edytuj",
+        delete: "Usuń",
+        saved: "Zapisano miesiąc",
+        updated: "Zaktualizowano miesiąc",
+        deleted: "Usunięto miesiąc",
+        formCleared: "Formularz wyczyszczony",
+        allDeleted: "Usunięto całą historię",
+        exportReady: "Eksport CSV gotowy",
+        emptyExport: "Brak danych do eksportu.",
+        confirmDeleteAll: "Na pewno usunąć wszystkie zapisane miesiące?",
+        invalidDays: "Dni w biurze + dni bez pracy nie mogą być większe niż liczba dni roboczych w miesiącu.",
+        csvMonth: "Miesiac",
+        csvWorkdays: "Dni robocze",
+        csvOffice: "Dni w biurze",
+        csvHome: "Dni z domu",
+        csvOff: "Urlop/swieto/inne",
+        csvPercent: "Procent z domu",
+        csvNote: "Notatka"
+      },
+      nl: {
+        appTitle: "Home Office Tracker",
+        appSubtitle: "Een duidelijk overzicht van thuiswerkdagen in drie talen.",
+        step1Title: "1. Kies de maand",
+        step1Text: "Het systeem telt automatisch de werkdagen van maandag tot en met vrijdag.",
+        step2Title: "2. Vul kantoordagen in",
+        step2Text: "Je vult alleen in hoe vaak je die maand op kantoor was.",
+        step3Title: "3. Sla het resultaat op",
+        step3Text: "Elke maand wordt opgeslagen in de geschiedenis van deze browser.",
+        formTitle: "Maand berekenen",
+        formDescription: "Simpele formule: werkdagen min kantoordagen min vakantie/feestdagen.",
+        monthLabel: "Maand",
+        officeLabel: "Hoe vaak was je op kantoor?",
+        officeHelp: "Voorbeeld: als je 6 keer op kantoor was, vul je 6 in.",
+        offLabel: "Vakantie, feestdagen of andere niet-werkdagen",
+        offHelp: "Optioneel. Laat 0 staan als je niets wilt aftrekken.",
+        noteLabel: "Notitie",
+        notePlaceholder: "Bijv. vakantie, ziekte, zakenreis, correctie...",
+        homeResultLabel: "Thuiswerkdagen",
+        homePercentText: "van de werkdagen",
+        workdaysMetric: "Werkdagen",
+        officeMetric: "Kantoor",
+        offMetric: "Niet gewerkt",
+        formula: "{workdays} werkdagen - {office} kantoor - {off} niet gewerkt = {home} thuiswerkdagen",
+        saveBtn: "Maand opslaan",
+        clearFormBtn: "Formulier wissen",
+        historyTitle: "Opgeslagen maanden",
+        historyDescription: "Hier zie je alle opgeslagen resultaten.",
+        exportBtn: "CSV exporteren",
+        clearAllBtn: "Alles verwijderen",
+        summaryHome: "Totaal thuis",
+        summaryOffice: "Totaal kantoor",
+        summaryMonths: "Maanden",
+        noRecordsTitle: "Nog geen opgeslagen maanden",
+        noRecordsText: "Vul de eerste maand in en klik op „Maand opslaan”.",
+        chipHome: "Thuis",
+        chipOffice: "Kantoor",
+        chipOff: "Niet gewerkt",
+        chipWorkdays: "Werkdagen",
+        noNote: "Geen notitie",
+        edit: "Bewerken",
+        delete: "Verwijderen",
+        saved: "Maand opgeslagen",
+        updated: "Maand bijgewerkt",
+        deleted: "Maand verwijderd",
+        formCleared: "Formulier gewist",
+        allDeleted: "Volledige geschiedenis verwijderd",
+        exportReady: "CSV export is klaar",
+        emptyExport: "Geen gegevens om te exporteren.",
+        confirmDeleteAll: "Weet je zeker dat je alle opgeslagen maanden wilt verwijderen?",
+        invalidDays: "Kantoordagen + niet-werkdagen mogen niet hoger zijn dan het aantal werkdagen in deze maand.",
+        csvMonth: "Maand",
+        csvWorkdays: "Werkdagen",
+        csvOffice: "Kantoordagen",
+        csvHome: "Thuiswerkdagen",
+        csvOff: "Vakantie/feestdag/anders",
+        csvPercent: "Percentage thuis",
+        csvNote: "Notitie"
+      },
+      en: {
+        appTitle: "Home Office Tracker",
+        appSubtitle: "A clear home-office day calculator in three languages.",
+        step1Title: "1. Select the month",
+        step1Text: "The system automatically counts weekdays from Monday to Friday.",
+        step2Title: "2. Enter office days",
+        step2Text: "You only enter how many times you were in the office that month.",
+        step3Title: "3. Save the result",
+        step3Text: "Each month is saved in this browser’s history.",
+        formTitle: "Calculate month",
+        formDescription: "Simple formula: weekdays minus office days minus holidays/days off.",
+        monthLabel: "Month",
+        officeLabel: "How many times were you in the office?",
+        officeHelp: "Example: if you were in the office 6 times, enter 6.",
+        offLabel: "Holiday, public holiday or other non-working days",
+        offHelp: "Optional. Leave 0 if you do not want to subtract anything.",
+        noteLabel: "Note",
+        notePlaceholder: "E.g. holiday, sickness, business trip, correction...",
+        homeResultLabel: "Home-office days",
+        homePercentText: "of working days",
+        workdaysMetric: "Working days",
+        officeMetric: "Office",
+        offMetric: "Days off",
+        formula: "{workdays} working days - {office} office - {off} days off = {home} home-office days",
+        saveBtn: "Save month",
+        clearFormBtn: "Clear form",
+        historyTitle: "Saved months",
+        historyDescription: "All saved results are shown here.",
+        exportBtn: "Export CSV",
+        clearAllBtn: "Delete all",
+        summaryHome: "Total home",
+        summaryOffice: "Total office",
+        summaryMonths: "Months",
+        noRecordsTitle: "No saved months yet",
+        noRecordsText: "Enter the first month and click “Save month”.",
+        chipHome: "Home",
+        chipOffice: "Office",
+        chipOff: "Days off",
+        chipWorkdays: "Working days",
+        noNote: "No note",
+        edit: "Edit",
+        delete: "Delete",
+        saved: "Month saved",
+        updated: "Month updated",
+        deleted: "Month deleted",
+        formCleared: "Form cleared",
+        allDeleted: "Full history deleted",
+        exportReady: "CSV export ready",
+        emptyExport: "No data to export.",
+        confirmDeleteAll: "Are you sure you want to delete all saved months?",
+        invalidDays: "Office days + days off cannot be higher than the number of working days in this month.",
+        csvMonth: "Month",
+        csvWorkdays: "Working days",
+        csvOffice: "Office days",
+        csvHome: "Home-office days",
+        csvOff: "Holiday/public holiday/other",
+        csvPercent: "Home percentage",
+        csvNote: "Note"
+      }
+    };
+
+    const monthInput = document.getElementById("month");
+    const officeInput = document.getElementById("officeDays");
+    const offInput = document.getElementById("offDays");
+    const noteInput = document.getElementById("note");
+
+    const workdaysOut = document.getElementById("workdaysOut");
+    const officeOut = document.getElementById("officeOut");
+    const offOut = document.getElementById("offOut");
+    const homeOut = document.getElementById("homeOut");
+    const ratioOut = document.getElementById("ratioOut");
+    const progressFill = document.getElementById("progressFill");
+    const formulaOut = document.getElementById("formulaOut");
+    const historyEl = document.getElementById("history");
+    const toast = document.getElementById("toast");
+
+    const totalHomeEl = document.getElementById("totalHome");
+    const totalOfficeEl = document.getElementById("totalOffice");
+    const totalMonthsEl = document.getElementById("totalMonths");
+
+    let currentLang = localStorage.getItem(LANG_KEY) || "pl";
+
+    function t(key) {
+      return translations[currentLang][key] || translations.pl[key] || key;
+    }
+
+    function pad(number) {
+      return String(number).padStart(2, "0");
+    }
+
+    function getCurrentMonthValue() {
+      const now = new Date();
+      return `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
+    }
+
+    function parseMonth(value) {
+      const [year, month] = value.split("-").map(Number);
+      return { year, month };
+    }
+
+    function countWeekdays(year, month) {
+      const lastDay = new Date(year, month, 0).getDate();
+      let count = 0;
+
+      for (let day = 1; day <= lastDay; day++) {
+        const date = new Date(year, month - 1, day);
+        const weekday = date.getDay();
+        if (weekday >= 1 && weekday <= 5) count++;
+      }
+
+      return count;
+    }
+
+    function getLocale() {
+      if (currentLang === "nl") return "nl-NL";
+      if (currentLang === "en") return "en-US";
+      return "pl-PL";
+    }
+
+    function formatMonth(value) {
+      const { year, month } = parseMonth(value);
+      const date = new Date(year, month - 1, 1);
+      return date.toLocaleDateString(getLocale(), { month: "long", year: "numeric" });
+    }
+
+    function readNumber(input) {
+      const value = Number(input.value);
+      if (!Number.isFinite(value) || value < 0) return 0;
+      return Math.floor(value);
+    }
+
+    function getRecords() {
+      for (const key of STORAGE_KEYS) {
+        try {
+          const records = JSON.parse(localStorage.getItem(key));
+          if (Array.isArray(records) && records.length) {
+            if (key !== STORAGE_KEY) {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+            }
+            return records;
+          }
+        } catch {}
+      }
+      return [];
+    }
+
+    function setRecords(records) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timeout);
+      showToast.timeout = window.setTimeout(() => {
+        toast.classList.remove("show");
+      }, 1800);
+    }
+
+    function calculate() {
+      const selectedMonth = monthInput.value || getCurrentMonthValue();
+      const { year, month } = parseMonth(selectedMonth);
+      const workdays = countWeekdays(year, month);
+      const officeDays = readNumber(officeInput);
+      const offDays = readNumber(offInput);
+      const homeDays = Math.max(workdays - officeDays - offDays, 0);
+      const ratio = workdays ? Math.round((homeDays / workdays) * 100) : 0;
+
+      workdaysOut.textContent = workdays;
+      officeOut.textContent = officeDays;
+      offOut.textContent = offDays;
+      homeOut.textContent = homeDays;
+      ratioOut.textContent = `${ratio}%`;
+      progressFill.style.width = `${Math.min(ratio, 100)}%`;
+
+      formulaOut.textContent = t("formula")
+        .replace("{workdays}", workdays)
+        .replace("{office}", officeDays)
+        .replace("{off}", offDays)
+        .replace("{home}", homeDays);
+
+      return {
+        month: selectedMonth,
+        workdays,
+        officeDays,
+        offDays,
+        homeDays,
+        ratio,
+        note: noteInput.value.trim(),
+        savedAt: new Date().toISOString()
+      };
+    }
+
+    function saveRecord() {
+      const record = calculate();
+
+      if (record.officeDays + record.offDays > record.workdays) {
+        alert(t("invalidDays"));
+        return;
+      }
+
+      const records = getRecords();
+      const existingIndex = records.findIndex(item => item.month === record.month);
+
+      if (existingIndex >= 0) {
+        records[existingIndex] = record;
+        showToast(t("updated"));
+      } else {
+        records.push(record);
+        showToast(t("saved"));
+      }
+
+      records.sort((a, b) => b.month.localeCompare(a.month));
+      setRecords(records);
+      renderHistory();
+    }
+
+    function loadRecord(month) {
+      const record = getRecords().find(item => item.month === month);
+      if (!record) return;
+
+      monthInput.value = record.month;
+      officeInput.value = record.officeDays;
+      offInput.value = record.offDays;
+      noteInput.value = record.note || "";
+      calculate();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function deleteRecord(month) {
+      const records = getRecords().filter(item => item.month !== month);
+      setRecords(records);
+      renderHistory();
+      showToast(t("deleted"));
+    }
+
+    function renderHistory() {
+      const records = getRecords();
+
+      if (!records.length) {
+        historyEl.innerHTML = `
+          <div class="empty">
+            <strong>${t("noRecordsTitle")}</strong>
+            <span>${t("noRecordsText")}</span>
+          </div>
+        `;
+      } else {
+        historyEl.innerHTML = records.map(record => {
+          const safeNote = escapeHtml(record.note || t("noNote"));
+          return `
+            <div class="month-row">
+              <div>
+                <h3 class="month-name">${formatMonth(record.month)}</h3>
+                <div class="month-date">${record.month}</div>
+              </div>
+
+              <div class="chips">
+                <span class="chip green">${t("chipHome")}: ${record.homeDays}</span>
+                <span class="chip blue">${t("chipOffice")}: ${record.officeDays}</span>
+                <span class="chip yellow">${t("chipOff")}: ${record.offDays}</span>
+                <span class="chip gray">${t("chipWorkdays")}: ${record.workdays}</span>
+              </div>
+
+              <div class="row-actions">
+                <button class="small-btn" onclick="loadRecord('${record.month}')">${t("edit")}</button>
+                <button class="small-btn delete" onclick="deleteRecord('${record.month}')">${t("delete")}</button>
+              </div>
+
+              <div class="note">${safeNote}</div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      totalHomeEl.textContent = records.reduce((sum, item) => sum + item.homeDays, 0);
+      totalOfficeEl.textContent = records.reduce((sum, item) => sum + item.officeDays, 0);
+      totalMonthsEl.textContent = records.length;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function clearForm() {
+      monthInput.value = getCurrentMonthValue();
+      officeInput.value = 0;
+      offInput.value = 0;
+      noteInput.value = "";
+      calculate();
+      showToast(t("formCleared"));
+    }
+
+    function clearAll() {
+      if (!confirm(t("confirmDeleteAll"))) return;
+      localStorage.removeItem(STORAGE_KEY);
+      renderHistory();
+      showToast(t("allDeleted"));
+    }
+
+    function exportCsv() {
+      const records = getRecords();
+      if (!records.length) {
+        alert(t("emptyExport"));
+        return;
+      }
+
+      const header = [
+        t("csvMonth"),
+        t("csvWorkdays"),
+        t("csvOffice"),
+        t("csvHome"),
+        t("csvOff"),
+        t("csvPercent"),
+        t("csvNote")
+      ];
+
+      const rows = records.map(record => [
+        record.month,
+        record.workdays,
+        record.officeDays,
+        record.homeDays,
+        record.offDays,
+        `${record.ratio || 0}%`,
+        record.note || ""
+      ]);
+
+      const csv = [header, ...rows]
+        .map(row => row.map(cell => `"${String(cell).replaceAll('"', '""')}"`).join(";"))
+        .join("\n");
+
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "home_office_tracker.csv";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast(t("exportReady"));
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem(LANG_KEY, lang);
+      document.documentElement.lang = lang;
+
+      document.querySelectorAll("[data-i18n]").forEach(element => {
+        const key = element.getAttribute("data-i18n");
+        element.textContent = t(key);
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+        const key = element.getAttribute("data-i18n-placeholder");
+        element.setAttribute("placeholder", t(key));
+      });
+
+      document.querySelectorAll(".language-switcher button").forEach(button => {
+        button.classList.toggle("active", button.dataset.lang === lang);
+      });
+
+      calculate();
+      renderHistory();
+    }
+
+    monthInput.value = getCurrentMonthValue();
+
+    document.querySelectorAll(".language-switcher button").forEach(button => {
+      button.addEventListener("click", () => applyLanguage(button.dataset.lang));
+    });
+
+    [monthInput, officeInput, offInput, noteInput].forEach(input => {
+      input.addEventListener("input", calculate);
+    });
+
+    document.getElementById("saveBtn").addEventListener("click", saveRecord);
+    document.getElementById("clearFormBtn").addEventListener("click", clearForm);
+    document.getElementById("clearAllBtn").addEventListener("click", clearAll);
+    document.getElementById("exportBtn").addEventListener("click", exportCsv);
+
+    applyLanguage(currentLang);
+  </script>
+
+<script id="rw-home-office-platform-bridge">
+(function(){
+  function normalize(lang){
+    lang = String(lang || '').toLowerCase().slice(0,2);
+    return ['pl','nl','en'].includes(lang) ? lang : 'pl';
+  }
+  window.addEventListener('message', function(event){
+    if (!event || !event.data) return;
+    if (event.data.type === 'rw:setLang' && typeof window.applyLanguage === 'function') {
+      window.applyLanguage(normalize(event.data.lang));
+    }
+  });
+  try { if (window.parent && window.parent !== window) window.parent.postMessage({type:'rw:getLang'}, '*'); } catch(e) {}
+})();
+</script>
+
+</body>
+</html>
