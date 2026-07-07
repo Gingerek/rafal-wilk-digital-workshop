@@ -105,14 +105,12 @@
   }
   function syncBrand(){
     document.querySelectorAll('.rw-brand-main').forEach((el) => {
-      el.textContent = 'Rafal Wilk';
+      el.textContent = 'Rafal Wilk Digital Workshop';
     });
     document.querySelectorAll('.rw-title').forEach((el) => {
-      el.setAttribute('aria-label', 'Rafal Wilk Private Command Center');
+      el.setAttribute('aria-label', 'Rafal Wilk Digital Workshop');
     });
-    if (document.title.includes('Rafal Wilk Digital Workshop')) {
-      document.title = document.title.replace('Rafal Wilk Digital Workshop ©', 'Rafal Wilk Private Command Center');
-    }
+    document.title = 'Rafal Wilk Digital Workshop';
   }
   function ensureShell(){
     const main = document.querySelector('main.wrap');
@@ -130,55 +128,16 @@
   function renderHero(){
     const hero = document.querySelector('.rw-v2-hero');
     if (!hero) return;
-    hero.innerHTML = `<div class="rw-v2-hero-inner">
-      <div class="rw-v2-hero-copy">
-        <div class="rw-v2-eyebrow">${t('eyebrow')}</div>
-        <h2>${t('headline')}</h2>
-        <p>${t('intro')}</p>
-        <div class="rw-v2-owner-note">${t('ownerNote')}</div>
-        <div class="rw-v2-hero-actions">
-          <button class="rw-v2-primary" type="button" data-rw-v2-open-first>${t('openFirst')}</button>
-          <button class="rw-v2-secondary" type="button" data-rw-v2-view-all>${t('viewAll')}</button>
-        </div>
-      </div>
-      <div class="rw-v2-visual" aria-hidden="true">
-        <div class="rw-v2-light-beam"></div>
-        <div class="rw-v2-orb rw-v2-orb-a"></div>
-        <div class="rw-v2-orb rw-v2-orb-b"></div>
-        <div class="rw-v2-command-ui">
-          <div class="rw-v2-command-top">
-            <span></span><span></span><span></span>
-            <strong>RW OS</strong>
-          </div>
-          <div class="rw-v2-command-body">
-            <aside>
-              <i></i><i></i><i></i><i></i>
-            </aside>
-            <section>
-              <div class="rw-v2-scan-line"></div>
-              <div class="rw-v2-ui-kicker">private intelligence layer</div>
-              <div class="rw-v2-ui-title">Module control</div>
-              <div class="rw-v2-ui-row wide"></div>
-              <div class="rw-v2-ui-row"></div>
-              <div class="rw-v2-ui-grid">
-                <b></b><b></b><b></b>
-              </div>
-            </section>
-          </div>
-        </div>
-        <div class="rw-v2-energy-card">
-          <span></span><span></span><span></span>
-        </div>
-      </div>
+    hero.innerHTML = `<div class="rw-v2-hero-poster">
+      <h2>Rafal Wilk Digital Workshop</h2>
     </div>`;
   }
   function renderToolbar(){
     const toolbar = document.querySelector('.rw-v2-toolbar');
     if (!toolbar) return;
-    toolbar.innerHTML = `<div class="rw-v2-toolbar-title"><strong>${t('library')}</strong><span>${t('librarySub')}</span></div>
-      <div class="rw-v2-filters" role="group" aria-label="Module categories">
-        ${categories.map(c => `<button class="rw-v2-filter" type="button" data-filter="${c.id}" aria-pressed="${activeFilter === c.id}">${c.label[lang()]}</button>`).join('')}
-      </div>`;
+    activeFilter = 'all';
+    toolbar.hidden = true;
+    toolbar.innerHTML = '';
   }
   function enhanceCards(){
     document.querySelectorAll('main.wrap .grid .card').forEach((card) => {
@@ -191,20 +150,26 @@
         icon.className = 'rw-v2-icon';
         card.insertBefore(icon, card.firstChild);
       }
+      let dots = card.querySelector('.rw-v2-window-dots');
+      if (!dots) {
+        dots = document.createElement('div');
+        dots.className = 'rw-v2-window-dots';
+        dots.innerHTML = '<span></span><span></span><span></span><span></span>';
+        card.insertBefore(dots, icon);
+      }
       icon.innerHTML = icons[meta.icon] || icons.project;
       card.querySelector('.rw-v2-card-meta')?.remove();
-      let desc = card.querySelector('.rw-v2-card-desc');
-      if (!desc) {
-        desc = document.createElement('div');
-        desc.className = 'rw-v2-card-desc';
-        const title = card.querySelector('.title');
-        title && title.insertAdjacentElement('afterend', desc);
-      }
+      card.querySelector('.rw-v2-card-desc')?.remove();
       const title = card.querySelector('.title');
       if (title) title.textContent = meta.title[lang()] || meta.title.pl;
-      desc.textContent = meta.desc[lang()] || meta.desc.pl;
       const btn = card.querySelector('.btn');
-      if (btn) btn.textContent = btn.dataset.idx ? t('openPlatform') : t('open');
+      if (btn) {
+        const label = `${t('open')} ${meta.title[lang()] || meta.title.pl}`;
+        btn.classList.add('rw-v2-card-open');
+        btn.setAttribute('aria-label', label);
+        btn.setAttribute('title', label);
+        btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg>';
+      }
       card.hidden = activeFilter !== 'all' && meta.category !== activeFilter;
     });
   }
