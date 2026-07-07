@@ -388,11 +388,11 @@
   }
   const premiumModuleTheme = `
     :root{
-      --rw-bg:#f8fbff; --rw-panel:rgba(255,255,255,.78); --rw-panel-2:rgba(242,248,255,.88);
-      --rw-line:rgba(52,104,160,.18); --rw-line-strong:rgba(14,165,233,.36);
+      --rw-bg:#f8fbff; --rw-panel:rgba(255,255,255,.74); --rw-panel-2:rgba(245,250,255,.82);
+      --rw-line:rgba(52,104,160,.14); --rw-line-strong:rgba(14,165,233,.24);
       --rw-text:#10233f; --rw-muted:#64748b; --rw-blue:#0ea5e9; --rw-violet:#8b5cf6;
       --rw-cyan:#14b8a6; --rw-danger:#e11d48; --rw-ok:#059669;
-      --rw-shadow:0 24px 70px rgba(36,76,128,.14), 0 0 42px rgba(14,165,233,.08);
+      --rw-shadow:0 18px 52px rgba(36,76,128,.10), 0 0 26px rgba(14,165,233,.045);
       color-scheme:light;
     }
     @media screen{
@@ -400,8 +400,8 @@
       body{
         color:var(--rw-text)!important;
         background:
-          linear-gradient(115deg, transparent 0 38%, rgba(14,165,233,.10) 43%, transparent 50% 100%),
-          linear-gradient(75deg, transparent 0 68%, rgba(139,92,246,.07) 74%, transparent 82% 100%),
+          linear-gradient(115deg, transparent 0 38%, rgba(14,165,233,.055) 43%, transparent 50% 100%),
+          linear-gradient(75deg, transparent 0 68%, rgba(139,92,246,.040) 74%, transparent 82% 100%),
           linear-gradient(135deg,#f8fbff 0%,#eef7ff 52%,#e6f0fb 100%)!important;
       }
       body::before{
@@ -409,7 +409,7 @@
         background:
           linear-gradient(rgba(32,88,142,.055) 1px, transparent 1px),
           linear-gradient(90deg, rgba(32,88,142,.042) 1px, transparent 1px);
-        background-size:54px 54px; mask-image:linear-gradient(to bottom, #000, transparent 82%);
+        background-size:54px 54px; opacity:.62; mask-image:linear-gradient(to bottom, #000, transparent 82%);
       }
       .app,.shell,.page{max-width:1380px!important;}
       .topbar,.toolbar,.brand,.top-actions{color:var(--rw-text)!important;}
@@ -421,7 +421,7 @@
       h1,h2,h3,.card-title,.brand h1,.title{color:var(--rw-text)!important; letter-spacing:-.02em!important;}
       p,.subtitle,.card-description,.section-note,.small,.help,.muted,.meta,.footer{color:var(--rw-muted)!important;}
       .card,.panel,.panel-inner,.doc,.stamp,.note,.info-box,.summary-card,.result-card,.tile,.month-row,.meeting-card,.saved-item,.totals .box,.stat-card,.metric,.empty,.history-list,.pro-receipt{
-        background:linear-gradient(145deg, rgba(255,255,255,.84), rgba(244,249,255,.64))!important;
+        background:linear-gradient(145deg, rgba(255,255,255,.82), rgba(247,251,255,.58))!important;
         border:1px solid var(--rw-line)!important;
         border-radius:8px!important;
         box-shadow:var(--rw-shadow)!important;
@@ -445,7 +445,7 @@
         border-radius:8px!important;
         background:linear-gradient(180deg,#ffffff,#dbeafe 52%,#7dd3fc)!important;
         color:#08243d!important;
-        box-shadow:0 13px 34px rgba(14,165,233,.16), inset 0 1px 0 rgba(255,255,255,.86)!important;
+        box-shadow:0 10px 26px rgba(14,165,233,.10), inset 0 1px 0 rgba(255,255,255,.86)!important;
       }
       .btn.secondary,.btn.soft,.small-btn,.icon-btn{
         background:rgba(255,255,255,.72)!important;
@@ -454,7 +454,7 @@
       .language-switcher,.lang-switch,.rw-tool-lang-ui{
         background:rgba(255,255,255,.74)!important;
         border:1px solid var(--rw-line)!important;
-        box-shadow:0 18px 50px rgba(36,76,128,.12)!important;
+        box-shadow:0 14px 38px rgba(36,76,128,.08)!important;
       }
       .language-switcher button.active,.lang-btn.active,.lang-btn[aria-pressed="true"]{
         background:linear-gradient(180deg,#ffffff,#bfdbfe 54%,#38bdf8)!important;
@@ -463,7 +463,7 @@
       table{border-collapse:separate!important; border-spacing:0!important; overflow:hidden!important;}
       th,td{border-color:rgba(52,104,160,.14)!important; color:var(--rw-text)!important;}
       th{background:rgba(14,165,233,.08)!important;}
-      .progress,.progress-fill{box-shadow:0 0 24px rgba(14,165,233,.16)!important;}
+      .progress,.progress-fill{box-shadow:0 0 16px rgba(14,165,233,.08)!important;}
       .progress-fill{background:linear-gradient(90deg,var(--rw-cyan),var(--rw-blue))!important;}
       .chip,.badge{
         border:1px solid rgba(14,165,233,.18)!important;
