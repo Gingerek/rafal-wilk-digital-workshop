@@ -4359,14 +4359,14 @@ body.rw-v2-ready main.wrap .card.rw-v2-card-clickable:focus-visible .btn.rw-v2-c
 /* Brand chip should feel like part of the control layer, not a headline. */
 body.rw-v2-ready .rw-v2-hero-poster .rw-v2-brand-lockup{
   position:absolute!important;
-  top:clamp(18px, 2.2vw, 32px)!important;
+  top:clamp(58px, 5vw, 72px)!important;
   left:clamp(18px, 2.2vw, 32px)!important;
   z-index:7!important;
   width:auto!important;
-  max-width:min(270px, calc(100% - 210px))!important;
-  min-height:30px!important;
+  max-width:min(300px, calc(100% - 210px))!important;
+  min-height:36px!important;
   margin:0!important;
-  padding:4px 9px 4px 12px!important;
+  padding:5px 10px 6px 13px!important;
   display:inline-flex!important;
   align-items:center!important;
   justify-content:flex-start!important;
@@ -4379,18 +4379,20 @@ body.rw-v2-ready .rw-v2-hero-poster .rw-v2-brand-lockup{
   backdrop-filter:blur(16px) saturate(130%)!important;
   font-family:"Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
   font-size:11px!important;
-  line-height:1!important;
+  line-height:1.28!important;
   font-weight:650!important;
   letter-spacing:.02em!important;
   text-shadow:none!important;
+  overflow:visible!important;
 }
 
 body.rw-v2-ready .rw-v2-hero-poster .rw-v2-brand-lockup span:first-child{
   display:block!important;
   min-width:0!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
   white-space:nowrap!important;
+  line-height:1.28!important;
 }
 
 body.rw-v2-ready .rw-v2-hero-poster .rw-v2-copy-mark{
@@ -4406,11 +4408,11 @@ body.rw-v2-ready .rw-v2-hero-poster .rw-v2-copy-mark{
 
 @media (max-width:640px){
   body.rw-v2-ready .rw-v2-hero-poster .rw-v2-brand-lockup{
-    top:18px!important;
+    top:58px!important;
     left:18px!important;
     max-width:calc(100% - 132px)!important;
-    min-height:28px!important;
-    padding:4px 8px 4px 10px!important;
+    min-height:32px!important;
+    padding:5px 8px 6px 10px!important;
     font-size:10px!important;
     gap:6px!important;
   }
