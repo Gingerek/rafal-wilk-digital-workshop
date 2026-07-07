@@ -46,11 +46,11 @@
   ];
 
   const copy = {
-    eyebrow:{pl:'Private Command Center', en:'Private Command Center', nl:'Private Command Center'},
-    headline:{pl:'Rafal Wilk Command Center.', en:'Rafal Wilk Command Center.', nl:'Rafal Wilk Command Center.'},
-    intro:{pl:'Elegancka przestrzeń operacyjna dla prywatnych modułów pracy.',
-      en:'An elegant operations space for private work modules.',
-      nl:'Een elegante operationele ruimte voor private werkmodules.'},
+    eyebrow:{pl:'Platforma modułów pracy', en:'Work modules platform', nl:'Platform voor werkmodules'},
+    headline:{pl:'Private Command Center.', en:'Private Command Center.', nl:'Private Command Center.'},
+    intro:{pl:'Prywatne centrum operacyjne Rafała Wilka.',
+      en:'Rafal Wilk private operations center.',
+      nl:'Prive operationeel centrum van Rafal Wilk.'},
     ownerNote:{pl:'Dostęp do modułów ma wyłącznie właściciel.',
       en:'Module access is reserved for the owner.',
       nl:'Moduletoegang is alleen voor de eigenaar.'},
