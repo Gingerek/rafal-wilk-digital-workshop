@@ -3930,3 +3930,10 @@ body.rw-v2-ready .rw-v2-energy-card{
     font-size:24px!important;
   }
 }
+
+/* Do not duplicate homepage information */
+body.rw-v2-ready:not(.app-open) .rw-v2-stats,
+body.rw-v2-ready:not(.app-open) .rw-v2-card-meta,
+body.rw-v2-ready:not(.app-open) .rw-v2-side-card{
+  display:none!important;
+}

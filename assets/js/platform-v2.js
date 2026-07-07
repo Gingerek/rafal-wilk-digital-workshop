@@ -48,9 +48,9 @@
   const copy = {
     eyebrow:{pl:'Platforma modułów pracy', en:'Work modules platform', nl:'Platform voor werkmodules'},
     headline:{pl:'Private Command Center.', en:'Private Command Center.', nl:'Private Command Center.'},
-    intro:{pl:'Prywatne centrum operacyjne Rafała Wilka.',
-      en:'Rafal Wilk private operations center.',
-      nl:'Prive operationeel centrum van Rafal Wilk.'},
+    intro:{pl:'Prywatne centrum operacyjne.',
+      en:'Private operations center.',
+      nl:'Prive operationeel centrum.'},
     ownerNote:{pl:'Dostęp do modułów ma wyłącznie właściciel.',
       en:'Module access is reserved for the owner.',
       nl:'Moduletoegang is alleen voor de eigenaar.'},
@@ -140,11 +140,6 @@
           <button class="rw-v2-primary" type="button" data-rw-v2-open-first>${t('openFirst')}</button>
           <button class="rw-v2-secondary" type="button" data-rw-v2-view-all>${t('viewAll')}</button>
         </div>
-        <div class="rw-v2-stats">
-          <div class="rw-v2-stat"><strong>${modules.length}</strong><span>${t('protected')}</span></div>
-          <div class="rw-v2-stat"><strong>${categories.length - 1}</strong><span>${t('categories')}</span></div>
-          <div class="rw-v2-stat"><strong>PL/EN/NL</strong><span>${t('languages')}</span></div>
-        </div>
       </div>
       <div class="rw-v2-visual" aria-hidden="true">
         <div class="rw-v2-light-beam"></div>
@@ -170,11 +165,6 @@
               </div>
             </section>
           </div>
-        </div>
-        <div class="rw-v2-side-card">
-          <span></span>
-          <strong>4685</strong>
-          <small>secured access</small>
         </div>
         <div class="rw-v2-energy-card">
           <span></span><span></span><span></span>
@@ -202,13 +192,7 @@
         card.insertBefore(icon, card.firstChild);
       }
       icon.innerHTML = icons[meta.icon] || icons.project;
-      let chip = card.querySelector('.rw-v2-card-meta');
-      if (!chip) {
-        chip = document.createElement('div');
-        chip.className = 'rw-v2-card-meta';
-        card.insertBefore(chip, card.querySelector('.btn'));
-      }
-      chip.textContent = 'PIN';
+      card.querySelector('.rw-v2-card-meta')?.remove();
       let desc = card.querySelector('.rw-v2-card-desc');
       if (!desc) {
         desc = document.createElement('div');
