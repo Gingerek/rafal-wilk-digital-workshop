@@ -139,11 +139,38 @@
         </div>
       </div>
       <div class="rw-v2-visual" aria-hidden="true">
-        <div class="rw-v2-visual-photo"></div>
-        <div class="rw-v2-ring rw-v2-ring-a"></div>
-        <div class="rw-v2-ring rw-v2-ring-b"></div>
-        <div class="rw-v2-dash rw-v2-dash-a"></div>
-        <div class="rw-v2-dash rw-v2-dash-b"></div>
+        <div class="rw-v2-light-beam"></div>
+        <div class="rw-v2-orb rw-v2-orb-a"></div>
+        <div class="rw-v2-orb rw-v2-orb-b"></div>
+        <div class="rw-v2-command-ui">
+          <div class="rw-v2-command-top">
+            <span></span><span></span><span></span>
+            <strong>RW OS</strong>
+          </div>
+          <div class="rw-v2-command-body">
+            <aside>
+              <i></i><i></i><i></i><i></i>
+            </aside>
+            <section>
+              <div class="rw-v2-scan-line"></div>
+              <div class="rw-v2-ui-kicker">private intelligence layer</div>
+              <div class="rw-v2-ui-title">Module control</div>
+              <div class="rw-v2-ui-row wide"></div>
+              <div class="rw-v2-ui-row"></div>
+              <div class="rw-v2-ui-grid">
+                <b></b><b></b><b></b>
+              </div>
+            </section>
+          </div>
+        </div>
+        <div class="rw-v2-side-card">
+          <span></span>
+          <strong>4685</strong>
+          <small>secured access</small>
+        </div>
+        <div class="rw-v2-energy-card">
+          <span></span><span></span><span></span>
+        </div>
       </div>
     </div>`;
   }
@@ -348,6 +375,124 @@
       el.style.setProperty('display', 'none', 'important');
     });
   }
+  const premiumModuleTheme = `
+    :root{
+      --rw-bg:#05040f; --rw-panel:rgba(17,15,35,.82); --rw-panel-2:rgba(28,23,54,.72);
+      --rw-line:rgba(184,155,255,.20); --rw-line-strong:rgba(139,92,246,.42);
+      --rw-text:#f7f4ff; --rw-muted:#a9a2c7; --rw-purple:#8b5cf6; --rw-violet:#a78bfa;
+      --rw-cyan:#5eead4; --rw-pink:#f0abfc; --rw-danger:#fb7185; --rw-ok:#34d399;
+      --rw-shadow:0 24px 70px rgba(0,0,0,.48), 0 0 42px rgba(124,58,237,.18);
+      color-scheme:dark;
+    }
+    @media screen{
+      html{background:#05040f!important;}
+      body{
+        color:var(--rw-text)!important;
+        background:
+          radial-gradient(circle at 82% 2%, rgba(139,92,246,.34), transparent 27%),
+          radial-gradient(circle at 12% 18%, rgba(45,212,191,.13), transparent 28%),
+          linear-gradient(135deg,#05040f 0%,#09071a 48%,#11122a 100%)!important;
+      }
+      body::before{
+        content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
+        background:
+          linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+        background-size:54px 54px; mask-image:linear-gradient(to bottom, #000, transparent 82%);
+      }
+      .app,.shell,.page{max-width:1380px!important;}
+      .topbar,.toolbar,.brand,.top-actions{color:var(--rw-text)!important;}
+      .logo{
+        background:radial-gradient(circle at 35% 28%, #fff, #a78bfa 22%, #4c1d95 64%, #070513 100%)!important;
+        border:1px solid rgba(216,180,254,.48)!important;
+        box-shadow:0 0 32px rgba(167,139,250,.38)!important;
+      }
+      h1,h2,h3,.card-title,.brand h1,.title{color:var(--rw-text)!important; letter-spacing:-.02em!important;}
+      p,.subtitle,.card-description,.section-note,.small,.help,.muted,.meta,.footer{color:var(--rw-muted)!important;}
+      .card,.panel,.panel-inner,.doc,.stamp,.note,.info-box,.summary-card,.result-card,.tile,.month-row,.meeting-card,.saved-item,.totals .box,.stat-card,.metric,.empty,.history-list,.pro-receipt{
+        background:
+          linear-gradient(145deg, rgba(255,255,255,.105), rgba(255,255,255,.035))!important;
+        border:1px solid var(--rw-line)!important;
+        border-radius:18px!important;
+        box-shadow:var(--rw-shadow)!important;
+        backdrop-filter:blur(18px)!important;
+      }
+      .hero,.layout,.grid-2,.grid-3,.field-grid,.form-grid,.info-strip{gap:18px!important;}
+      input,select,textarea{
+        background:rgba(5,4,15,.72)!important;
+        border:1px solid rgba(184,155,255,.24)!important;
+        color:var(--rw-text)!important;
+        border-radius:13px!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
+      }
+      input:focus,select:focus,textarea:focus{
+        outline:none!important; border-color:rgba(167,139,250,.78)!important;
+        box-shadow:0 0 0 4px rgba(139,92,246,.18), 0 0 28px rgba(139,92,246,.18)!important;
+      }
+      label,th{color:#dcd5ff!important;}
+      button,.btn,.icon-btn,.small-btn,.lang-btn{
+        border:1px solid rgba(184,155,255,.26)!important;
+        border-radius:14px!important;
+        background:linear-gradient(180deg, rgba(139,92,246,.95), rgba(76,29,149,.92))!important;
+        color:#fff!important;
+        box-shadow:0 13px 34px rgba(76,29,149,.32), inset 0 1px 0 rgba(255,255,255,.20)!important;
+      }
+      .btn.secondary,.btn.soft,.small-btn,.icon-btn{
+        background:rgba(255,255,255,.075)!important;
+      }
+      .btn.danger,.small-btn.delete{background:linear-gradient(180deg, #fb7185, #9f1239)!important;}
+      .language-switcher,.lang-switch,.rw-tool-lang-ui{
+        background:rgba(255,255,255,.07)!important;
+        border:1px solid var(--rw-line)!important;
+        box-shadow:0 18px 50px rgba(0,0,0,.30)!important;
+      }
+      .language-switcher button.active,.lang-btn.active,.lang-btn[aria-pressed="true"]{
+        background:linear-gradient(180deg,#ddd6fe,#8b5cf6)!important;
+        color:#10091f!important;
+      }
+      table{border-collapse:separate!important; border-spacing:0!important; overflow:hidden!important;}
+      th,td{border-color:rgba(184,155,255,.18)!important; color:var(--rw-text)!important;}
+      th{background:rgba(139,92,246,.16)!important;}
+      .progress,.progress-fill{box-shadow:0 0 24px rgba(94,234,212,.24)!important;}
+      .progress-fill{background:linear-gradient(90deg,var(--rw-cyan),var(--rw-violet))!important;}
+      .chip,.badge{
+        border:1px solid rgba(184,155,255,.22)!important;
+        background:rgba(139,92,246,.14)!important;
+        color:#eee9ff!important;
+      }
+      .empty,.history-list .empty,.saved-empty{
+        background:rgba(255,255,255,.055)!important;
+        border:1px solid rgba(184,155,255,.18)!important;
+        color:var(--rw-text)!important;
+      }
+      .tile *{
+        color:var(--rw-text)!important;
+      }
+      .empty *,.history-list .empty *,.saved-empty *{
+        color:var(--rw-text)!important;
+      }
+      .toast{background:#120e2a!important;color:#fff!important;border:1px solid var(--rw-line-strong)!important;}
+    }
+    @media print{
+      body{background:#fff!important;color:#111!important;}
+      .doc,.pro-receipt{background:#fff!important;color:#111!important;box-shadow:none!important;}
+    }`;
+  function applyPremiumModuleTheme(frame){
+    try {
+      const doc = frame?.contentDocument;
+      if (!doc || !doc.documentElement) return;
+      doc.documentElement.classList.add('rw-premium-module-root');
+      if (doc.body) doc.body.classList.add('rw-premium-module');
+      if (doc.getElementById('rw-premium-module-theme')) return;
+      const style = doc.createElement('style');
+      style.id = 'rw-premium-module-theme';
+      style.textContent = premiumModuleTheme;
+      doc.head?.appendChild(style);
+    } catch (e) {}
+  }
+  function skinModuleFrames(){
+    document.querySelectorAll('iframe').forEach(applyPremiumModuleTheme);
+  }
   function init(){
     document.body.classList.add('rw-v2-ready');
     ensureShell();
@@ -358,6 +503,10 @@
     hideStageWidgets();
     new MutationObserver(hideStageWidgets).observe(document.body, { childList:true, subtree:true });
     setInterval(hideStageWidgets, 1200);
+    skinModuleFrames();
+    document.querySelectorAll('iframe').forEach(frame => frame.addEventListener('load', () => applyPremiumModuleTheme(frame)));
+    new MutationObserver(skinModuleFrames).observe(document.body, { childList:true, subtree:true });
+    setInterval(skinModuleFrames, 1200);
     applyLanguage();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
