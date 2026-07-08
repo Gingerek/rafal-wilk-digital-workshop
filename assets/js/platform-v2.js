@@ -43,7 +43,6 @@
     { id:'table', label:'Monthly revenue panel' },
     { id:'calculations', label:'Calculations panel' },
     { id:'activity', label:'Global activity panel' },
-    { id:'pin', label:'PIN panel' },
     { id:'footer', label:'Footer links panel' }
   ];
 
@@ -219,6 +218,14 @@
         `<button type="button" class="rw-v2-hotspot rw-v2-hotspot-${item.id}" data-rw-hotspot="${item.id}" title="${item.label}"></button>`
       ).join('');
       shell.appendChild(hotspots);
+    }
+    if (!shell.querySelector('.rw-v2-floating-lang')) {
+      const langControls = document.createElement('div');
+      langControls.className = 'rw-v2-floating-lang';
+      langControls.setAttribute('role', 'group');
+      langControls.setAttribute('aria-label', 'Language');
+      langControls.innerHTML = '<button type="button" data-rw-home-lang="pl">PL</button><button type="button" data-rw-home-lang="en">EN</button><button type="button" data-rw-home-lang="nl">NL</button>';
+      shell.appendChild(langControls);
     }
   }
   function renderHero(){
