@@ -4708,3 +4708,146 @@ body.rw-v2-ready:not(.app-open) .rw-v2-contact-form button:disabled{
     grid-template-columns:1fr!important;
   }
 }
+
+/* Full-screen command-center background with functional hotspot cards */
+body.rw-v2-ready:not(.app-open){
+  background:#030913!important;
+  overflow-x:hidden!important;
+}
+
+body.rw-v2-ready:not(.app-open)::before{
+  display:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap{
+  width:100%!important;
+  min-height:100vh!important;
+  margin:0!important;
+  padding:0!important;
+  background:#030913 url("../images/private-command-center-full.webp") center top / cover no-repeat fixed!important;
+  overflow:hidden!important;
+}
+
+body.rw-v2-ready .rw-v2-shell{
+  position:relative!important;
+  width:100%!important;
+  min-height:100vh!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  background:#030913 url("../images/private-command-center-full.webp") center top / cover no-repeat!important;
+}
+
+body.rw-v2-ready .rw-v2-hero{
+  position:absolute!important;
+  inset:0!important;
+  z-index:8!important;
+  width:100%!important;
+  min-height:100vh!important;
+  background:transparent!important;
+  pointer-events:none!important;
+}
+
+body.rw-v2-ready .rw-v2-hero-poster{
+  position:absolute!important;
+  inset:0!important;
+  background:transparent!important;
+  pointer-events:none!important;
+}
+
+body.rw-v2-ready .rw-v2-hero-poster .rw-v2-brand-lockup{
+  display:none!important;
+}
+
+body.rw-v2-ready .rw-v2-home-lang{
+  position:absolute!important;
+  top:4.1%!important;
+  right:15.4%!important;
+  z-index:12!important;
+  min-height:30px!important;
+  padding:0!important;
+  display:flex!important;
+  gap:18px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  pointer-events:auto!important;
+}
+
+body.rw-v2-ready .rw-v2-home-lang button{
+  min-width:26px!important;
+  width:26px!important;
+  height:28px!important;
+  min-height:28px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:rgba(255,255,255,.01)!important;
+  box-shadow:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid{
+  position:absolute!important;
+  z-index:10!important;
+  left:5.05%!important;
+  top:42.55%!important;
+  width:62.45%!important;
+  height:44.45%!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(5, 1fr)!important;
+  grid-template-rows:repeat(2, 1fr)!important;
+  gap:2.9% 1.1%!important;
+  pointer-events:auto!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card.rw-v2-card-clickable{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+  border:0!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.01)!important;
+  box-shadow:none!important;
+  opacity:.01!important;
+  transform:none!important;
+  cursor:pointer!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card > *{
+  visibility:hidden!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:hover,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-visible{
+  opacity:.08!important;
+  outline:2px solid rgba(125,200,255,.48)!important;
+  outline-offset:-2px!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-toolbar,
+body.rw-v2-ready:not(.app-open) .rw-v2-contact{
+  display:none!important;
+}
+
+@media (max-width:900px){
+  body.rw-v2-ready:not(.app-open) main.wrap,
+  body.rw-v2-ready .rw-v2-shell,
+  body.rw-v2-ready .rw-v2-hero{
+    min-height:100svh!important;
+    background-position:center top!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) main.wrap .grid{
+    left:4.8%!important;
+    top:43%!important;
+    width:63%!important;
+    height:43%!important;
+  }
+}
