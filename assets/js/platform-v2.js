@@ -174,12 +174,17 @@
     });
   }
   function findMeta(card){
+    const storedIndex = Number(card?.dataset?.rwModuleIndex);
+    if (Number.isInteger(storedIndex) && modules[storedIndex]) return modules[storedIndex];
     const title = card.querySelector('.title');
     const key = title?.dataset.titleKey || title?.textContent || '';
-    return modules.find((m) => {
+    const foundIndex = modules.findIndex((m) => {
       const matches = Array.isArray(m.match) ? m.match : [m.match];
       return matches.some((match) => key.includes(match) || String(title?.textContent || '').includes(match));
-    }) || modules[0];
+    });
+    const nextIndex = foundIndex >= 0 ? foundIndex : 0;
+    if (card) card.dataset.rwModuleIndex = String(nextIndex);
+    return modules[nextIndex];
   }
   function syncBrand(){
     document.querySelectorAll('.rw-brand-main').forEach((el) => {
