@@ -1,6 +1,6 @@
 window.RW_CONTACT_ENDPOINT = '';
 (function installRafalWorkshopHeroBackground(){
-  var heroUrl = 'assets/images/private-command-center-hero.webp?v=20260708-main-hero-final-1';
+  var heroUrl = '/rafal-wilk-digital-workshop/assets/images/private-command-center-hero.webp?v=20260708-main-hero-final-2';
   var css = `
 html{background:#05080d!important;}
 body.rw-v2-ready:not(.app-open){
@@ -38,12 +38,14 @@ body.rw-v2-ready:not(.app-open) .rw-v2-shell{display:grid!important;gap:24px!imp
 body.rw-v2-ready:not(.app-open) .rw-v2-hero{
   display:block!important;position:relative!important;width:100%!important;aspect-ratio:1672/941!important;min-height:0!important;height:auto!important;max-height:calc(100vh - 52px)!important;
   border-radius:0!important;overflow:hidden!important;border:1px solid rgba(255,255,255,.16)!important;
-  background:linear-gradient(90deg,rgba(2,6,14,.10) 0%,rgba(2,6,14,.02) 45%,rgba(2,6,14,0) 100%),url("${heroUrl}") center center/cover no-repeat,#05080d!important;
-  box-shadow:0 38px 120px rgba(0,0,0,.46)!important;
+  background:#05080d!important;box-shadow:0 38px 120px rgba(0,0,0,.46)!important;
+}
+body.rw-v2-ready:not(.app-open) .rw-v2-main-hero-img{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important;display:block!important;z-index:0!important;
 }
 body.rw-v2-ready:not(.app-open) .rw-v2-hero::before{
   content:""!important;display:block!important;position:absolute!important;inset:0!important;pointer-events:none!important;z-index:1!important;
-  background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,0) 28%,rgba(0,0,0,.16) 100%),radial-gradient(circle at 76% 18%,rgba(120,180,230,.10),transparent 28%)!important;
+  background:linear-gradient(90deg,rgba(2,6,14,.10) 0%,rgba(2,6,14,.02) 45%,rgba(2,6,14,0) 100%),linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,0) 28%,rgba(0,0,0,.16) 100%),radial-gradient(circle at 76% 18%,rgba(120,180,230,.10),transparent 28%)!important;
 }
 body.rw-v2-ready:not(.app-open) .rw-v2-hero::after{
   content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:1px!important;z-index:2!important;
@@ -64,7 +66,8 @@ body.rw-v2-ready:not(.app-open) .rw-v2-contact{margin-top:4px!important;}
   body.rw-v2-ready:not(.app-open) .rw-header{top:12px!important;width:calc(100vw - 28px)!important;max-width:calc(100vw - 28px)!important;}
   body.rw-v2-ready:not(.app-open) .rw-brand{max-width:calc(100vw - 188px)!important;}
   body.rw-v2-ready:not(.app-open) main.wrap{width:calc(100vw - 28px)!important;max-width:calc(100vw - 28px)!important;margin-top:16px!important;}
-  body.rw-v2-ready:not(.app-open) .rw-v2-hero{aspect-ratio:auto!important;min-height:560px!important;background-size:auto 100%!important;background-position:60% center!important;}
+  body.rw-v2-ready:not(.app-open) .rw-v2-hero{aspect-ratio:auto!important;min-height:560px!important;}
+  body.rw-v2-ready:not(.app-open) .rw-v2-main-hero-img{object-fit:cover!important;object-position:60% center!important;}
   body.rw-v2-ready:not(.app-open) main.wrap .grid{grid-template-columns:1fr!important;}
 }
 @media (max-width:560px){
@@ -73,13 +76,30 @@ body.rw-v2-ready:not(.app-open) .rw-v2-contact{margin-top:4px!important;}
   body.rw-v2-ready:not(.app-open) .rw-title,body.rw-v2-ready:not(.app-open) .rw-brand-main{font-size:12px!important;}
   body.rw-v2-ready:not(.app-open) .rw-lang-btn{min-width:36px!important;height:30px!important;padding:0 7px!important;font-size:11px!important;}
   body.rw-v2-ready:not(.app-open) main.wrap{width:calc(100vw - 18px)!important;max-width:calc(100vw - 18px)!important;}
-  body.rw-v2-ready:not(.app-open) .rw-v2-hero{min-height:520px!important;background-size:auto 100%!important;background-position:64% center!important;}
+  body.rw-v2-ready:not(.app-open) .rw-v2-hero{min-height:520px!important;}
+  body.rw-v2-ready:not(.app-open) .rw-v2-main-hero-img{object-position:64% center!important;}
 }
   `;
   function applyStyle(){var oldStyle=document.getElementById('rw-workshop-hero-background');if(oldStyle)oldStyle.remove();var style=document.createElement('style');style.id='rw-workshop-hero-background';style.textContent=css;document.head.appendChild(style);}
-  applyStyle();
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyStyle,{once:true});
-  window.addEventListener('load',applyStyle,{once:true});
-  window.setTimeout(applyStyle,300);
-  window.setTimeout(applyStyle,1200);
+  function installHeroImage(){
+    var hero=document.querySelector('.rw-v2-hero');
+    if(!hero) return;
+    var old=hero.querySelector('.rw-v2-main-hero-img');
+    if(old && old.getAttribute('src')===heroUrl) return;
+    if(old) old.remove();
+    var img=document.createElement('img');
+    img.className='rw-v2-main-hero-img';
+    img.alt='Rafal Wilk Digital Workshop dashboard hero';
+    img.decoding='async';
+    img.fetchPriority='high';
+    img.src=heroUrl;
+    hero.prepend(img);
+  }
+  function applyAll(){applyStyle();installHeroImage();}
+  applyAll();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyAll,{once:true});
+  window.addEventListener('load',applyAll,{once:true});
+  window.setTimeout(applyAll,300);
+  window.setTimeout(applyAll,1200);
+  window.setTimeout(applyAll,2500);
 })();
