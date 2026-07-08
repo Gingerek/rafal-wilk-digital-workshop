@@ -109,6 +109,9 @@
       localStorage.setItem('supplier_lang', activeLangOverride);
     } catch(_e) {}
     document.documentElement.lang = activeLangOverride;
+    syncLegacyLangButtons(activeLangOverride);
+    pushLanguageToModules(activeLangOverride);
+    try { window.dispatchEvent(new CustomEvent('rwLanguageChanged', { detail:{ lang:activeLangOverride } })); } catch(_e) {}
     scheduleLanguagePush(activeLangOverride);
   }
   function t(key){ return copy[key]?.[lang()] || copy[key]?.pl || key; }
@@ -118,6 +121,14 @@
   function syncHomeLang(){
     document.querySelectorAll('[data-rw-home-lang]').forEach((btn) => {
       btn.setAttribute('aria-pressed', btn.dataset.rwHomeLang === lang() ? 'true' : 'false');
+    });
+  }
+  function syncLegacyLangButtons(nextLang){
+    const current = normalizePlatformLang(nextLang || lang());
+    document.querySelectorAll('.rw-lang-btn').forEach((btn) => {
+      const active = normalizePlatformLang(btn.dataset.lang || '') === current;
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.classList.toggle('active', active);
     });
   }
   function normalizePlatformLang(value){
@@ -345,8 +356,6 @@
     bar.querySelectorAll('[data-lang]').forEach(btn => btn.addEventListener('click', () => {
       const nextLang = normalizePlatformLang(btn.dataset.lang || 'pl');
       setPlatformLang(nextLang);
-      document.querySelector(`.rw-lang-btn[data-lang="${nextLang}"]`)?.click();
-      scheduleLanguagePush(nextLang);
       applyLanguage();
     }));
   }
@@ -378,9 +387,6 @@
         event.preventDefault();
         const nextLang = homeLang.dataset.rwHomeLang || 'pl';
         setPlatformLang(nextLang);
-        document.querySelector(`.rw-lang-btn[data-lang="${nextLang}"]`)?.click();
-        window.dispatchEvent(new CustomEvent('rwLanguageChanged'));
-        scheduleLanguagePush(nextLang);
         applyLanguage();
         setTimeout(applyLanguage, 120);
         setTimeout(applyLanguage, 700);
@@ -420,7 +426,6 @@
       if (globalLangBtn) {
         if (globalLangBtn.dataset.lang) {
           setPlatformLang(globalLangBtn.dataset.lang);
-          scheduleLanguagePush(globalLangBtn.dataset.lang);
         }
         setTimeout(applyLanguage, 40);
       }

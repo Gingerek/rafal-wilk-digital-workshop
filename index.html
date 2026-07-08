@@ -1228,6 +1228,7 @@ body.app-open .rw-header{display:none !important;}
     return raw.startsWith('en') ? 'en' : raw.startsWith('nl') ? 'nl' : 'pl';
   }
   function apply(){
+    if (window.__rwPlatformV2 || document.body.classList.contains('rw-v2-ready')) return;
     const title = document.querySelector('main.wrap .btn[data-idx="2"]')?.closest('.card')?.querySelector('.title');
     if (!title) return;
     title.setAttribute('data-title-key', 'Urządzenie kalkulacyjne');
@@ -4063,6 +4064,11 @@ function openApp(id, title){
     document.querySelectorAll('.rw-lang-btn').forEach(b=>{
       b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false');
     });
+    if (window.__rwPlatformV2 || document.body.classList.contains('rw-v2-ready')) {
+      document.documentElement.lang = lang;
+      broadcastLang(lang);
+      return;
+    }
 
     // Home page buttons label patcher (keep your existing behavior but translate)
     const selectors = 'main.wrap .grid .btn, main.wrap .card .btn, main.wrap .btn[data-idx]';
@@ -4196,6 +4202,12 @@ function openApp(id, title){
     const T = STRINGS[l] || STRINGS.pl;
     document.documentElement.lang = l;
     document.querySelectorAll('.rw-lang-btn').forEach(btn => btn.setAttribute('aria-pressed', btn.dataset.lang === l ? 'true' : 'false'));
+    if (window.__rwPlatformV2 || document.body.classList.contains('rw-v2-ready')) {
+      document.querySelectorAll('iframe').forEach(frame => {
+        try{ frame.contentWindow && frame.contentWindow.postMessage({ type:'rw:setLang', lang:l }, '*'); }catch(_e){}
+      });
+      return;
+    }
     const home = document.getElementById('rw_home_btn');
     if (home) {
       home.textContent = T.home;
@@ -6302,6 +6314,7 @@ ${moduleBrain ? [summarizeBrainList(moduleBrain.rules,8),summarizeBrainList(modu
     return raw.startsWith('nl') ? 'nl' : raw.startsWith('en') ? 'en' : 'pl';
   }
   function apply(){
+    if (window.__rwPlatformV2 || document.body.classList.contains('rw-v2-ready')) return;
     const L = TXT[lang()] || TXT.pl;
     document.querySelectorAll("a.btn[onclick*='homeofficetracker'], a.btn[onclick*='managermeetingtracker']").forEach(btn => {
       btn.textContent = L.open;
@@ -6505,5 +6518,5 @@ ${moduleBrain ? [summarizeBrainList(moduleBrain.rules,8),summarizeBrainList(modu
   setTimeout(install, 2200);
 })();
 </script>
-<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260708-1">
-<script src="assets/js/platform-v2.js?v=20260708-1"></script>
+<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260708-2">
+<script src="assets/js/platform-v2.js?v=20260708-2"></script>
