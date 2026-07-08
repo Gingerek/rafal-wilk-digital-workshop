@@ -109,6 +109,7 @@
       localStorage.setItem('supplier_lang', activeLangOverride);
     } catch(_e) {}
     document.documentElement.lang = activeLangOverride;
+    scheduleLanguagePush(activeLangOverride);
   }
   function t(key){ return copy[key]?.[lang()] || copy[key]?.pl || key; }
   function moduleTitle(meta){
@@ -117,6 +118,28 @@
   function syncHomeLang(){
     document.querySelectorAll('[data-rw-home-lang]').forEach((btn) => {
       btn.setAttribute('aria-pressed', btn.dataset.rwHomeLang === lang() ? 'true' : 'false');
+    });
+  }
+  function normalizePlatformLang(value){
+    const raw = String(value || '').toLowerCase().slice(0, 2);
+    return ['pl', 'en', 'nl'].includes(raw) ? raw : 'pl';
+  }
+  function pushLanguageToModules(nextLang){
+    const requestedLang = normalizePlatformLang(nextLang || lang());
+    if (typeof window.__rwPushLang === 'function') {
+      window.__rwPushLang(requestedLang);
+      return;
+    }
+    document.querySelectorAll('iframe').forEach((frame) => {
+      try {
+        frame.contentWindow?.postMessage({ type:'rw:setLang', lang:requestedLang }, '*');
+      } catch(_e) {}
+    });
+  }
+  function scheduleLanguagePush(nextLang){
+    const requestedLang = normalizePlatformLang(nextLang || lang());
+    [0, 80, 360, 900].forEach((delay) => {
+      setTimeout(() => pushLanguageToModules(requestedLang), delay);
     });
   }
   function findMeta(card){
@@ -320,8 +343,10 @@
     document.body.appendChild(bar);
     bar.querySelector('.rw-v2-back').addEventListener('click', () => document.getElementById('rw_home_btn')?.click());
     bar.querySelectorAll('[data-lang]').forEach(btn => btn.addEventListener('click', () => {
-      localStorage.setItem(LS_LANG, btn.dataset.lang);
-      document.querySelector(`.rw-lang-btn[data-lang="${btn.dataset.lang}"]`)?.click();
+      const nextLang = normalizePlatformLang(btn.dataset.lang || 'pl');
+      setPlatformLang(nextLang);
+      document.querySelector(`.rw-lang-btn[data-lang="${nextLang}"]`)?.click();
+      scheduleLanguagePush(nextLang);
       applyLanguage();
     }));
   }
@@ -355,6 +380,7 @@
         setPlatformLang(nextLang);
         document.querySelector(`.rw-lang-btn[data-lang="${nextLang}"]`)?.click();
         window.dispatchEvent(new CustomEvent('rwLanguageChanged'));
+        scheduleLanguagePush(nextLang);
         applyLanguage();
         setTimeout(applyLanguage, 120);
         setTimeout(applyLanguage, 700);
@@ -388,8 +414,14 @@
         const card = moduleButton.closest('.card');
         const meta = card && findMeta(card);
         activeModuleTitle = meta ? (meta.title[lang()] || meta.title.pl) : '';
+        scheduleLanguagePush(lang());
       }
-      if (event.target.closest('.rw-lang-btn')) {
+      const globalLangBtn = event.target.closest('.rw-lang-btn');
+      if (globalLangBtn) {
+        if (globalLangBtn.dataset.lang) {
+          setPlatformLang(globalLangBtn.dataset.lang);
+          scheduleLanguagePush(globalLangBtn.dataset.lang);
+        }
         setTimeout(applyLanguage, 40);
       }
     }, true);
@@ -399,6 +431,8 @@
       if (!document.body.classList.contains('app-open')) {
         syncHomeLang();
         enhanceCards();
+      } else {
+        pushLanguageToModules(lang());
       }
     }, 1600);
     document.addEventListener('keydown', (event) => {
@@ -555,7 +589,10 @@
     new MutationObserver(hideStageWidgets).observe(document.body, { childList:true, subtree:true });
     setInterval(hideStageWidgets, 1200);
     skinModuleFrames();
-    document.querySelectorAll('iframe').forEach(frame => frame.addEventListener('load', () => applyPremiumModuleTheme(frame)));
+    document.querySelectorAll('iframe').forEach(frame => frame.addEventListener('load', () => {
+      applyPremiumModuleTheme(frame);
+      scheduleLanguagePush(lang());
+    }));
     new MutationObserver(skinModuleFrames).observe(document.body, { childList:true, subtree:true });
     setInterval(skinModuleFrames, 1200);
     applyLanguage();

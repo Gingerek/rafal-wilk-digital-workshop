@@ -1243,6 +1243,8 @@
 
       calculate();
       renderHistory();
+      document.documentElement.setAttribute("lang", lang);
+      document.body.dataset.lang = lang;
     }
 
     monthInput.value = getCurrentMonthValue();
@@ -1260,6 +1262,8 @@
     document.getElementById("clearAllBtn").addEventListener("click", clearAll);
     document.getElementById("exportBtn").addEventListener("click", exportCsv);
 
+    window.applyLanguage = applyLanguage;
+    window.__rwApplyModuleLang = applyLanguage;
     applyLanguage(currentLang);
   </script>
 
@@ -1269,13 +1273,26 @@
     lang = String(lang || '').toLowerCase().slice(0,2);
     return ['pl','nl','en'].includes(lang) ? lang : 'pl';
   }
+  function syncLangMarker(){
+    const active = document.querySelector('.language-switcher button.active');
+    const nextLang = normalize(active?.dataset.lang || localStorage.getItem('home-office-tracker-language') || document.documentElement.lang || 'pl');
+    document.documentElement.lang = nextLang;
+    try { localStorage.setItem('home-office-tracker-language', nextLang); } catch(e) {}
+  }
   window.addEventListener('message', function(event){
     if (!event || !event.data) return;
-    if (event.data.type === 'rw:setLang' && typeof window.applyLanguage === 'function') {
-      window.applyLanguage(normalize(event.data.lang));
+    if (event.data.type === 'rw:setLang' && typeof window.__rwApplyModuleLang === 'function') {
+      window.__rwApplyModuleLang(normalize(event.data.lang));
+      setTimeout(syncLangMarker, 0);
+      setTimeout(syncLangMarker, 120);
     }
   });
+  document.addEventListener('click', function(){
+    setTimeout(syncLangMarker, 40);
+    setTimeout(syncLangMarker, 220);
+  }, true);
   try { if (window.parent && window.parent !== window) window.parent.postMessage({type:'rw:getLang'}, '*'); } catch(e) {}
+  setInterval(syncLangMarker, 800);
 })();
 </script>
 

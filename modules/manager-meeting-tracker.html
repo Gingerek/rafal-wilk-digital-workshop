@@ -973,6 +973,8 @@
         btn.classList.toggle('active', btn.dataset.lang === currentLang);
       });
       document.documentElement.lang = currentLang;
+      document.documentElement.setAttribute('lang', currentLang);
+      document.body.dataset.lang = currentLang;
     }
 
     function renderAll() {
@@ -1777,6 +1779,31 @@
         return null;
       }
     }
+
+    function applyPlatformLanguage(lang) {
+      const normalized = ['pl', 'en', 'nl'].includes(String(lang || '').toLowerCase().slice(0, 2))
+        ? String(lang).toLowerCase().slice(0, 2)
+        : 'pl';
+      currentLang = normalized;
+      localStorage.setItem(LANG_KEY, currentLang);
+      localStorage.setItem('rw_lang', currentLang);
+      localStorage.setItem('doc_lang', currentLang);
+      localStorage.setItem('supplier_lang', currentLang);
+      updateLanguageButtons();
+      renderAll();
+    }
+
+    window.__rwApplyModuleLang = applyPlatformLanguage;
+    window.addEventListener('message', event => {
+      if (!event || !event.data) return;
+      if (event.data.type === 'rw:setLang') applyPlatformLanguage(event.data.lang);
+      if (event.data.type === 'rw:getLang' && event.source) {
+        try { event.source.postMessage({ type:'rw:setLang', lang:currentLang }, '*'); } catch {}
+      }
+    });
+    try {
+      if (window.parent && window.parent !== window) window.parent.postMessage({ type:'rw:getLang' }, '*');
+    } catch {}
   </script>
 
 </body>
