@@ -577,8 +577,20 @@
   function skinModuleFrames(){
     document.querySelectorAll('iframe').forEach(applyPremiumModuleTheme);
   }
+  function refreshHomeView(){
+    document.body.classList.add('rw-v2-ready');
+    ensureShell();
+    renderHero();
+    renderToolbar();
+    enhanceCards();
+    patchPinTexts();
+    updateModuleBar();
+    syncHomeLang();
+    hideStageWidgets();
+  }
   function init(){
     document.body.classList.add('rw-v2-ready');
+    window.__rwPlatformV2RefreshHome = refreshHomeView;
     syncBrand();
     ensureShell();
     enhancePin();

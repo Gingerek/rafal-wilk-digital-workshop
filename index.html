@@ -4003,19 +4003,32 @@ function openApp(id, title){
   window.addEventListener('resize', ()=>{ measureHome(); }, {passive:true});
 
   function goHome(){
+    document.body.classList.add('rw-v2-ready', 'rw-v2-home-transition');
     try{ if (window.__rwClearActiveModule) window.__rwClearActiveModule(); }catch(_e){}
     try{
-      const url = new URL(window.location.href);
-      url.hash = '';
-      const clean = url.toString();
-      if (clean === window.location.href){
-        window.location.reload();
-      } else {
-        window.location.href = clean;
+      document.querySelectorAll('iframe').forEach(function(frame){
+        frame.classList.remove('show');
+        frame.style.boxShadow = '';
+      });
+      document.querySelector('.viewport')?.classList.remove('active');
+      document.body.classList.remove('app-open');
+      window.__rwActiveAppTitle = '';
+      window.__rwActiveAppId = '';
+      window.__rwActiveAppLang = '';
+      document.title = 'Rafal Wilk Digital Workshop';
+      if (window.__rwSetHomeLabel) window.__rwSetHomeLabel('', '', '');
+      if (window.__rwMeasureHome) window.__rwMeasureHome();
+      if (window.__rwPlatformV2RefreshHome) window.__rwPlatformV2RefreshHome();
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
       }
-    }catch(_e){
-      window.location.href = window.location.href.split('#')[0];
-    }
+    }catch(_e){}
+    const finish = function(){
+      try{ if (window.__rwPlatformV2RefreshHome) window.__rwPlatformV2RefreshHome(); }catch(_e){}
+      document.body.classList.remove('rw-v2-home-transition');
+    };
+    requestAnimationFrame(function(){ requestAnimationFrame(finish); });
+    setTimeout(finish, 220);
   }
 
   btn.addEventListener('click', goHome);
@@ -6492,5 +6505,5 @@ ${moduleBrain ? [summarizeBrainList(moduleBrain.rules,8),summarizeBrainList(modu
   setTimeout(install, 2200);
 })();
 </script>
-<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260707-5">
-<script src="assets/js/platform-v2.js?v=20260707-5"></script>
+<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260708-1">
+<script src="assets/js/platform-v2.js?v=20260708-1"></script>

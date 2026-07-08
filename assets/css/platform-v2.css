@@ -4423,3 +4423,33 @@ body.rw-v2-ready .rw-v2-hero-poster .rw-v2-copy-mark{
     font-size:10px!important;
   }
 }
+
+/* Guard against older inline homepage skins flashing during module-to-home return. */
+body.rw-v2-ready:not(.app-open) .rw-future-hero,
+body.rw-v2-ready:not(.app-open) main.wrap::before,
+body.rw-v2-ready:not(.app-open) main.wrap::after,
+body.rw-v2-ready:not(.app-open) main.wrap .grid::before,
+body.rw-v2-ready:not(.app-open) main.wrap .grid::after{
+  display:none!important;
+  content:""!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+
+body.rw-v2-home-transition{
+  background:#eef6ff!important;
+}
+
+body.rw-v2-home-transition:not(.app-open) main.wrap{
+  visibility:hidden!important;
+}
+
+body.rw-v2-home-transition .viewport{
+  opacity:0!important;
+  pointer-events:none!important;
+}
