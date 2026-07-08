@@ -497,6 +497,17 @@
     syncHomeLang();
   }
   function bindEvents(){
+    window.addEventListener('message', (event) => {
+      if (!event || !event.data || event.data.type !== 'rw:setLang') return;
+      const nextLang = normalizePlatformLang(event.data.lang || 'pl');
+      if (nextLang === lang()) {
+        syncLegacyLangButtons(nextLang);
+        updateModuleBar();
+        return;
+      }
+      setPlatformLang(nextLang);
+      applyLanguage();
+    });
     document.addEventListener('click', (event) => {
       const homeLang = event.target.closest('[data-rw-home-lang]');
       if (homeLang) {
@@ -566,7 +577,7 @@
         syncHomeLang();
         enhanceCards();
       } else {
-        pushLanguageToModules(lang());
+        updateModuleBar();
       }
     }, 1600);
     document.addEventListener('keydown', (event) => {

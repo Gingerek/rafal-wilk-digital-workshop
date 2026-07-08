@@ -1841,7 +1841,14 @@ applyPlaceholders();
       const el=qs('#'+id); if(el){ el.addEventListener('input', recalc); el.addEventListener('change', recalc); }
     });
     const ds = qs('#doc_status'); if(ds){ ds.addEventListener('change', applyLang); }
-    const ls = qs('#lang_select'); if(ls){ ls.addEventListener('change', (e)=> setLang(e.target.value)); }
+    const ls = qs('#lang_select'); if(ls){ ls.addEventListener('change', (e)=> {
+      setLang(e.target.value);
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type:'rw:setLang', lang:e.target.value }, '*');
+        }
+      } catch(_e){}
+    }); }
 
     qs('#btn-print').addEventListener('click', exportPDF);
     const qrb = qs('#btn-qr'); if(qrb){ qrb.addEventListener('click', generateQR); }
@@ -3730,6 +3737,7 @@ body.admin-compact .admin-shell{display:none}
     lang = validLang(lang);
     try{
       localStorage.setItem(STORE_KEY, lang);
+      localStorage.setItem('rw_lang', lang);
       localStorage.setItem('doc_lang', lang);
       localStorage.setItem('supplier_lang', lang);
     }catch(_e){}

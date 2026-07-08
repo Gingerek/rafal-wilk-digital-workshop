@@ -4043,12 +4043,18 @@ function openApp(id, title){
 (function(){
   const I18N = {"pl": {"open_in_platform": "Otwórz w platformie", "open": "Otwórz", "my_projects": "Moje Projekty", "enter_pin": "Wpisz PIN", "pin_hint": "Aby otworzyć <b>Moje Projekty</b>, wpisz 4‑cyfrowy kod.", "incorrect_pin": "Nieprawidłowy kod. Spróbuj ponownie.", "cancel": "Anuluj", "unlock": "Odblokuj", "legal_prefix": "Legal & Privacy:"}, "en": {"open_in_platform": "Open in platform", "open": "Open", "my_projects": "My Projects", "enter_pin": "Enter PIN", "pin_hint": "To open <b>My Projects</b>, enter the 4‑digit code.", "incorrect_pin": "Incorrect code. Try again.", "cancel": "Cancel", "unlock": "Unlock", "legal_prefix": "Legal & Privacy:"}, "nl": {"open_in_platform": "Openen in platform", "open": "Openen", "my_projects": "Mijn projecten", "enter_pin": "Voer pincode in", "pin_hint": "Om <b>Mijn projecten</b> te openen, voer de 4‑cijferige code in.", "incorrect_pin": "Onjuiste code. Probeer opnieuw.", "cancel": "Annuleren", "unlock": "Ontgrendelen", "legal_prefix": "Juridisch & Privacy:"}};
   const LS_KEY = 'rw_lang';
-  function getLang(){
-    const v = (localStorage.getItem(LS_KEY) || 'pl').toLowerCase();
+  function normalizeLang(lang){
+    const v = String(lang || 'pl').toLowerCase().slice(0, 2);
     return (v === 'en' || v === 'nl' || v === 'pl') ? v : 'pl';
   }
+  function getLang(){
+    return normalizeLang(localStorage.getItem(LS_KEY) || 'pl');
+  }
   function setLang(lang){
+    lang = normalizeLang(lang);
     localStorage.setItem(LS_KEY, lang);
+    localStorage.setItem('doc_lang', lang);
+    localStorage.setItem('supplier_lang', lang);
     applyLang(lang);
     attachIframeLangSync();
     broadcastLang(lang);
@@ -4133,6 +4139,10 @@ function openApp(id, title){
   // Reply to tools asking for current language
   window.addEventListener('message', (e)=>{
     if (!e || !e.data) return;
+    if (e.data.type === 'rw:setLang') {
+      if (normalizeLang(e.data.lang) !== getLang()) setLang(e.data.lang);
+      return;
+    }
     if (e.data.type === 'rw:getLang') {
       try { e.source.postMessage({type:'rw:setLang', lang: getLang()}, '*'); } catch(err){}
     }
@@ -4203,9 +4213,6 @@ function openApp(id, title){
     document.documentElement.lang = l;
     document.querySelectorAll('.rw-lang-btn').forEach(btn => btn.setAttribute('aria-pressed', btn.dataset.lang === l ? 'true' : 'false'));
     if (window.__rwPlatformV2 || document.body.classList.contains('rw-v2-ready')) {
-      document.querySelectorAll('iframe').forEach(frame => {
-        try{ frame.contentWindow && frame.contentWindow.postMessage({ type:'rw:setLang', lang:l }, '*'); }catch(_e){}
-      });
       return;
     }
     const home = document.getElementById('rw_home_btn');
@@ -6518,6 +6525,6 @@ ${moduleBrain ? [summarizeBrainList(moduleBrain.rules,8),summarizeBrainList(modu
   setTimeout(install, 2200);
 })();
 </script>
-<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260708-15">
-<script src="assets/js/contact-config.js?v=20260708-15"></script>
-<script src="assets/js/platform-v2.js?v=20260708-15"></script>
+<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260708-16">
+<script src="assets/js/contact-config.js?v=20260708-16"></script>
+<script src="assets/js/platform-v2.js?v=20260708-16"></script>

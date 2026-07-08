@@ -1225,6 +1225,9 @@
     function applyLanguage(lang) {
       currentLang = lang;
       localStorage.setItem(LANG_KEY, lang);
+      localStorage.setItem("rw_lang", lang);
+      localStorage.setItem("doc_lang", lang);
+      localStorage.setItem("supplier_lang", lang);
       document.documentElement.lang = lang;
 
       document.querySelectorAll("[data-i18n]").forEach(element => {
@@ -1249,8 +1252,19 @@
 
     monthInput.value = getCurrentMonthValue();
 
+    function notifyParentLang(lang) {
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: "rw:setLang", lang }, "*");
+        }
+      } catch (error) {}
+    }
+
     document.querySelectorAll(".language-switcher button").forEach(button => {
-      button.addEventListener("click", () => applyLanguage(button.dataset.lang));
+      button.addEventListener("click", () => {
+        applyLanguage(button.dataset.lang);
+        notifyParentLang(button.dataset.lang);
+      });
     });
 
     [monthInput, officeInput, offInput, noteInput].forEach(input => {
@@ -1278,6 +1292,11 @@
     const nextLang = normalize(active?.dataset.lang || localStorage.getItem('home-office-tracker-language') || document.documentElement.lang || 'pl');
     document.documentElement.lang = nextLang;
     try { localStorage.setItem('home-office-tracker-language', nextLang); } catch(e) {}
+    try {
+      localStorage.setItem('rw_lang', nextLang);
+      localStorage.setItem('doc_lang', nextLang);
+      localStorage.setItem('supplier_lang', nextLang);
+    } catch(e) {}
   }
   window.addEventListener('message', function(event){
     if (!event || !event.data) return;

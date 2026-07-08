@@ -943,10 +943,8 @@
     function bindEvents() {
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          currentLang = btn.dataset.lang;
-          localStorage.setItem(LANG_KEY, currentLang);
-          updateLanguageButtons();
-          renderAll();
+          applyPlatformLanguage(btn.dataset.lang);
+          notifyParentLanguage(currentLang);
         });
       });
 
@@ -1791,6 +1789,14 @@
       localStorage.setItem('supplier_lang', currentLang);
       updateLanguageButtons();
       renderAll();
+    }
+
+    function notifyParentLanguage(lang) {
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'rw:setLang', lang }, '*');
+        }
+      } catch (error) {}
     }
 
     window.__rwApplyModuleLang = applyPlatformLanguage;
