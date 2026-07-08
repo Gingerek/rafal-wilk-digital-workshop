@@ -77,7 +77,10 @@
     contactName:{pl:'Imię', en:'Name', nl:'Naam'},
     contactEmail:{pl:'Twój email', en:'Your email', nl:'Je e-mail'},
     contactMessage:{pl:'Wiadomość', en:'Message', nl:'Bericht'},
-    contactSend:{pl:'Wyślij wiadomość', en:'Send message', nl:'Bericht verzenden'}
+    contactSend:{pl:'Wyślij wiadomość', en:'Send message', nl:'Bericht verzenden'},
+    contactSending:{pl:'Wysyłanie...', en:'Sending...', nl:'Verzenden...'},
+    contactSent:{pl:'Twój mail został wysłany. Naciśnij OK, aby wrócić do startu.', en:'Your email has been sent. Press OK to return to start.', nl:'Je e-mail is verzonden. Druk op OK om terug te keren naar start.'},
+    contactFallback:{pl:'Nie udało się wysłać automatycznie. Otwieram gotową wiadomość email.', en:'Automatic sending failed. Opening a prepared email message.', nl:'Automatisch verzenden is niet gelukt. Ik open een voorbereide e-mail.'}
   };
 
   const icons = {
@@ -228,7 +231,7 @@
       <a href="mailto:rafalw898@gmail.com">rafalw898@gmail.com</a>
       <p>${t('contactIntro')}</p>
     </div>
-    <form class="rw-v2-contact-form" action="https://formsubmit.co/rafalw898@gmail.com" method="POST">
+    <form class="rw-v2-contact-form" action="https://formsubmit.co/ajax/rafalw898@gmail.com" method="POST">
       <input type="hidden" name="_subject" value="Rafal Wilk Digital Workshop - contact request">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_captcha" value="false">
@@ -238,6 +241,39 @@
       <label class="rw-v2-contact-message"><span>${t('contactMessage')}</span><textarea name="message" rows="4" required></textarea></label>
       <button type="submit">${t('contactSend')}</button>
     </form>`;
+  }
+  function contactMailto(form){
+    const data = new FormData(form);
+    const subject = encodeURIComponent('Rafal Wilk Digital Workshop - contact request');
+    const body = encodeURIComponent(`Imie: ${data.get('name') || ''}\nEmail: ${data.get('email') || ''}\n\n${data.get('message') || ''}`);
+    window.location.href = `mailto:rafalw898@gmail.com?subject=${subject}&body=${body}`;
+  }
+  async function submitContactForm(form){
+    const button = form.querySelector('button[type="submit"]');
+    const original = button?.textContent || t('contactSend');
+    if (button) {
+      button.disabled = true;
+      button.textContent = t('contactSending');
+    }
+    try {
+      const response = await fetch(form.action, {
+        method:'POST',
+        headers:{ Accept:'application/json' },
+        body:new FormData(form)
+      });
+      if (!response.ok) throw new Error('contact-send-failed');
+      form.reset();
+      window.alert(t('contactSent'));
+      window.scrollTo({ top:0, behavior:'smooth' });
+    } catch(_error) {
+      window.alert(t('contactFallback'));
+      contactMailto(form);
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = original;
+      }
+    }
   }
   function enhanceCards(){
     document.querySelectorAll('main.wrap .grid .card').forEach((card) => {
@@ -464,6 +500,12 @@
         setTimeout(applyLanguage, 40);
       }
     }, true);
+    document.addEventListener('submit', (event) => {
+      const form = event.target.closest?.('.rw-v2-contact-form');
+      if (!form) return;
+      event.preventDefault();
+      submitContactForm(form);
+    });
     window.addEventListener('storage', applyLanguage);
     window.addEventListener('rwLanguageChanged', applyLanguage);
     setInterval(() => {
