@@ -36,6 +36,16 @@
       title:{pl:'Moje projekty', en:'My Projects', nl:'Mijn projecten'},
       desc:{pl:'Twoja przestrzeń na dokumenty, projekty i rozliczenia.', en:'Your workspace for projects, documents, and billing.', nl:'Je werkruimte voor projecten, documenten en facturatie.'}}
   ];
+  const commandHotspots = [
+    { id:'revenue', label:'Total revenue panel' },
+    { id:'analytics', label:'Analytics panel' },
+    { id:'kpi', label:'KPI panel' },
+    { id:'table', label:'Monthly revenue panel' },
+    { id:'calculations', label:'Calculations panel' },
+    { id:'activity', label:'Global activity panel' },
+    { id:'pin', label:'PIN panel' },
+    { id:'footer', label:'Footer links panel' }
+  ];
 
   const categories = [
     { id:'all', label:{pl:'Wszystkie', en:'All', nl:'Alles'} },
@@ -200,6 +210,15 @@
       const contact = document.createElement('section');
       contact.className = 'rw-v2-contact';
       shell.appendChild(contact);
+    }
+    if (!shell.querySelector('.rw-v2-hotspots')) {
+      const hotspots = document.createElement('div');
+      hotspots.className = 'rw-v2-hotspots';
+      hotspots.setAttribute('aria-hidden', 'true');
+      hotspots.innerHTML = commandHotspots.map((item) =>
+        `<button type="button" class="rw-v2-hotspot rw-v2-hotspot-${item.id}" data-rw-hotspot="${item.id}" title="${item.label}"></button>`
+      ).join('');
+      shell.appendChild(hotspots);
     }
   }
   function renderHero(){
@@ -476,6 +495,13 @@
         setTimeout(applyLanguage, 120);
         setTimeout(applyLanguage, 700);
         setTimeout(applyLanguage, 1700);
+        return;
+      }
+      const hotspot = event.target.closest('.rw-v2-hotspot');
+      if (hotspot) {
+        event.preventDefault();
+        hotspot.classList.add('rw-v2-hotspot-pulse');
+        setTimeout(() => hotspot.classList.remove('rw-v2-hotspot-pulse'), 520);
         return;
       }
       const filter = event.target.closest('.rw-v2-filter');
