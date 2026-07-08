@@ -1219,9 +1219,9 @@ body.app-open .rw-header{display:none !important;}
 <script id="rw-v18-home-tile-i18n">
 (function(){
   const names = {
-    pl: 'Urządzenie kalkulacyjne',
-    en: 'Calculation device',
-    nl: 'Rekeninstrument'
+    pl: 'Rekentool',
+    en: 'Rekentool',
+    nl: 'Rekentool'
   };
   function lang(){
     const raw = String(localStorage.getItem('rw_lang') || document.documentElement.lang || 'pl').toLowerCase();
@@ -1231,7 +1231,7 @@ body.app-open .rw-header{display:none !important;}
     if (window.__rwPlatformV2 || document.body.classList.contains('rw-v2-ready')) return;
     const title = document.querySelector('main.wrap .btn[data-idx="2"]')?.closest('.card')?.querySelector('.title');
     if (!title) return;
-    title.setAttribute('data-title-key', 'Urządzenie kalkulacyjne');
+    title.setAttribute('data-title-key', 'Rekentool');
     title.textContent = names[lang()] || names.pl;
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
@@ -3063,7 +3063,7 @@ body.app-open .rw-header{display:none !important;}
 <button class="btn" data-idx="1" type="button">Open in platform</button>
 </article>
 <article class="card">
-<div class="title" data-title-key="Urządzenie kalkulacyjne">Urządzenie kalkulacyjne</div>
+<div class="title" data-title-key="Rekentool">Rekentool</div>
 <button class="btn" data-idx="2" type="button">Open in platform</button>
 </article>
 <article class="card">
@@ -6525,6 +6525,6 @@ ${moduleBrain ? [summarizeBrainList(moduleBrain.rules,8),summarizeBrainList(modu
   setTimeout(install, 2200);
 })();
 </script>
-<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260708-16">
-<script src="assets/js/contact-config.js?v=20260708-16"></script>
-<script src="assets/js/platform-v2.js?v=20260708-16"></script>
+<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260708-17">
+<script src="assets/js/contact-config.js?v=20260708-17"></script>
+<script src="assets/js/platform-v2.js?v=20260708-17"></script>
