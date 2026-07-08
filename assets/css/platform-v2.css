@@ -4464,13 +4464,12 @@ body.rw-v2-ready:not(.app-open){
 
 body.rw-v2-ready:not(.app-open){
   background:
-    linear-gradient(180deg, rgba(238,247,255,.10) 0%, rgba(238,247,255,.82) 58%, rgba(238,247,255,.94) 100%),
-    linear-gradient(90deg, rgba(2,8,23,.58) 0%, rgba(2,8,23,.12) 42%, rgba(238,247,255,.16) 100%),
-    url("../images/private-command-center-hero.webp") center top / cover fixed no-repeat!important;
+    linear-gradient(180deg, rgba(238,247,255,.08) 0%, rgba(238,247,255,.78) 48%, rgba(238,247,255,.92) 100%),
+    url("../images/module-section-bg.webp") center bottom / cover fixed no-repeat!important;
 }
 
 body.rw-v2-ready:not(.app-open)::before{
-  background:linear-gradient(180deg, rgba(3,9,24,.22), rgba(238,247,255,.72) 70%, rgba(238,247,255,.96))!important;
+  background:linear-gradient(180deg, rgba(3,9,24,.14) 0%, rgba(238,247,255,.18) 34%, rgba(238,247,255,.78) 100%)!important;
   background-size:cover!important;
   opacity:1!important;
 }
