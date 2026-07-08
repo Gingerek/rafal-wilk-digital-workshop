@@ -1,0 +1,1 @@
+window.RW_CONTACT_ENDPOINT = '';

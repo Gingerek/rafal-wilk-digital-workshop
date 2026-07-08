@@ -3,6 +3,7 @@
   window.__rwPlatformV2 = true;
 
   const LS_LANG = 'rw_lang';
+  const CONTACT_ENDPOINT = String(window.RW_CONTACT_ENDPOINT || '').trim();
   const modules = [
     { match:'Contract Budget Calculator', icon:'calculator', category:'finance',
       title:{pl:'Kalkulator budżetu kontraktu', en:'Contract Budget Calculator', nl:'Contractbudget calculator'},
@@ -78,7 +79,10 @@
     contactEmail:{pl:'Twój email', en:'Your email', nl:'Je e-mail'},
     contactMessage:{pl:'Wiadomość', en:'Message', nl:'Bericht'},
     contactSend:{pl:'Wyślij wiadomość', en:'Send message', nl:'Bericht verzenden'},
-    contactSent:{pl:'Gotowa wiadomość email została otwarta. Kliknij Wyślij w poczcie, a potem OK, aby wrócić do startu.', en:'A prepared email message has been opened. Click Send in your mail app, then OK to return to start.', nl:'Een voorbereide e-mail is geopend. Klik op Verzenden in je mail-app en daarna op OK om terug te keren naar start.'}
+    contactSending:{pl:'Wysyłanie...', en:'Sending...', nl:'Verzenden...'},
+    contactSent:{pl:'Twój mail został wysłany. Naciśnij OK, aby wrócić do startu.', en:'Your email has been sent. Press OK to return to start.', nl:'Je e-mail is verzonden. Druk op OK om terug te keren naar start.'},
+    contactError:{pl:'Nie udało się wysłać wiadomości. Spróbuj ponownie za chwilę.', en:'The message could not be sent. Try again in a moment.', nl:'Het bericht kon niet worden verzonden. Probeer het later opnieuw.'},
+    contactFallback:{pl:'Formularz serwerowy nie jest jeszcze aktywny. Otwieram gotową wiadomość email.', en:'The server contact form is not active yet. Opening a prepared email message.', nl:'Het serverformulier is nog niet actief. Ik open een voorbereide e-mail.'}
   };
 
   const icons = {
@@ -229,26 +233,62 @@
       <a href="mailto:rafalw898@gmail.com">rafalw898@gmail.com</a>
       <p>${t('contactIntro')}</p>
     </div>
-    <form class="rw-v2-contact-form" action="mailto:rafalw898@gmail.com" method="POST">
+    <form class="rw-v2-contact-form" action="${CONTACT_ENDPOINT || '#'}" method="POST">
       <label><span>${t('contactName')}</span><input name="name" autocomplete="name" required></label>
       <label><span>${t('contactEmail')}</span><input type="email" name="email" autocomplete="email" required></label>
       <label class="rw-v2-contact-message"><span>${t('contactMessage')}</span><textarea name="message" rows="4" required></textarea></label>
+      <label class="rw-v2-contact-honeypot"><span>Website</span><input name="website" autocomplete="off" tabindex="-1"></label>
       <button type="submit">${t('contactSend')}</button>
     </form>`;
+  }
+  function getContactEndpoint(){
+    return String(window.RW_CONTACT_ENDPOINT || CONTACT_ENDPOINT || '').trim();
   }
   function contactMailto(form){
     const data = new FormData(form);
     const subject = encodeURIComponent('Rafal Wilk Digital Workshop - contact request');
     const body = encodeURIComponent(`Imie: ${data.get('name') || ''}\nEmail: ${data.get('email') || ''}\n\n${data.get('message') || ''}`);
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=rafalw898@gmail.com&su=${subject}&body=${body}`;
-    const opened = window.open(gmailUrl, '_blank', 'noopener,noreferrer');
-    if (!opened) window.location.href = `mailto:rafalw898@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:rafalw898@gmail.com?subject=${subject}&body=${body}`;
   }
-  function submitContactForm(form){
-    contactMailto(form);
-    form.reset();
-    window.alert(t('contactSent'));
-    window.scrollTo({ top:0, behavior:'smooth' });
+  async function submitContactForm(form){
+    const data = new FormData(form);
+    if (data.get('website')) return;
+    const endpoint = getContactEndpoint();
+    if (!endpoint) {
+      window.alert(t('contactFallback'));
+      contactMailto(form);
+      return;
+    }
+    const button = form.querySelector('button[type="submit"]');
+    const original = button?.textContent || t('contactSend');
+    if (button) {
+      button.disabled = true;
+      button.textContent = t('contactSending');
+    }
+    try {
+      const response = await fetch(endpoint, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', Accept:'application/json' },
+        body:JSON.stringify({
+          name:String(data.get('name') || '').trim(),
+          email:String(data.get('email') || '').trim(),
+          message:String(data.get('message') || '').trim(),
+          lang:lang(),
+          page:window.location.href
+        })
+      });
+      if (!response.ok) throw new Error('contact-send-failed');
+      form.reset();
+      window.alert(t('contactSent'));
+      window.scrollTo({ top:0, behavior:'smooth' });
+    } catch(_error) {
+      window.alert(t('contactError'));
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = original;
+      }
+    }
   }
   function enhanceCards(){
     document.querySelectorAll('main.wrap .grid .card').forEach((card) => {

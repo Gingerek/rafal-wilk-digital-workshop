@@ -1,0 +1,8 @@
+name = "rafal-wilk-contact"
+main = "src/worker.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+CONTACT_TO = "rafalw898@gmail.com"
+CONTACT_FROM = "Rafal Wilk Digital Workshop <onboarding@resend.dev>"
+ALLOWED_ORIGINS = "https://gingerek.github.io,http://127.0.0.1:4317,http://localhost:4317"
