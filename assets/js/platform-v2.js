@@ -71,7 +71,13 @@
     back:{pl:'Powrót', en:'Back', nl:'Terug'},
     saved:{pl:'Autosave aktywny', en:'Autosave active', nl:'Autosave actief'},
     apiOn:{pl:'AI aktywne', en:'AI active', nl:'AI actief'},
-    apiOff:{pl:'AI nieaktywne', en:'AI inactive', nl:'AI inactief'}
+    apiOff:{pl:'AI nieaktywne', en:'AI inactive', nl:'AI inactief'},
+    contactTitle:{pl:'Kontakt', en:'Contact', nl:'Contact'},
+    contactIntro:{pl:'W razie pytań lub zgłoszeń do platformy wyślij krótką wiadomość.', en:'For platform questions or requests, send a short message.', nl:'Stuur een kort bericht voor vragen of verzoeken over het platform.'},
+    contactName:{pl:'Imię', en:'Name', nl:'Naam'},
+    contactEmail:{pl:'Twój email', en:'Your email', nl:'Je e-mail'},
+    contactMessage:{pl:'Wiadomość', en:'Message', nl:'Bericht'},
+    contactSend:{pl:'Wyślij wiadomość', en:'Send message', nl:'Bericht verzenden'}
   };
 
   const icons = {
@@ -173,15 +179,23 @@
   function ensureShell(){
     const main = document.querySelector('main.wrap');
     const grid = main?.querySelector('.grid');
-    if (!main || !grid || main.querySelector('.rw-v2-shell')) return;
-    const shell = document.createElement('div');
-    shell.className = 'rw-v2-shell';
-    const hero = document.createElement('section');
-    hero.className = 'rw-v2-hero';
-    const toolbar = document.createElement('section');
-    toolbar.className = 'rw-v2-toolbar';
-    main.insertBefore(shell, grid);
-    shell.append(hero, toolbar, grid);
+    if (!main || !grid) return;
+    let shell = main.querySelector('.rw-v2-shell');
+    if (!shell) {
+      shell = document.createElement('div');
+      shell.className = 'rw-v2-shell';
+      const hero = document.createElement('section');
+      hero.className = 'rw-v2-hero';
+      const toolbar = document.createElement('section');
+      toolbar.className = 'rw-v2-toolbar';
+      main.insertBefore(shell, grid);
+      shell.append(hero, toolbar, grid);
+    }
+    if (!shell.querySelector('.rw-v2-contact')) {
+      const contact = document.createElement('section');
+      contact.className = 'rw-v2-contact';
+      shell.appendChild(contact);
+    }
   }
   function renderHero(){
     const hero = document.querySelector('.rw-v2-hero');
@@ -205,6 +219,25 @@
     activeFilter = 'all';
     toolbar.hidden = true;
     toolbar.innerHTML = '';
+  }
+  function renderContact(){
+    const contact = document.querySelector('.rw-v2-contact');
+    if (!contact) return;
+    contact.innerHTML = `<div class="rw-v2-contact-copy">
+      <span>${t('contactTitle')}</span>
+      <a href="mailto:rafalw898@gmail.com">rafalw898@gmail.com</a>
+      <p>${t('contactIntro')}</p>
+    </div>
+    <form class="rw-v2-contact-form" action="https://formsubmit.co/rafalw898@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="Rafal Wilk Digital Workshop - contact request">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://gingerek.github.io/rafal-wilk-digital-workshop/?sent=1">
+      <label><span>${t('contactName')}</span><input name="name" autocomplete="name" required></label>
+      <label><span>${t('contactEmail')}</span><input type="email" name="email" autocomplete="email" required></label>
+      <label class="rw-v2-contact-message"><span>${t('contactMessage')}</span><textarea name="message" rows="4" required></textarea></label>
+      <button type="submit">${t('contactSend')}</button>
+    </form>`;
   }
   function enhanceCards(){
     document.querySelectorAll('main.wrap .grid .card').forEach((card) => {
@@ -375,6 +408,7 @@
   function applyLanguage(){
     renderHero();
     renderToolbar();
+    renderContact();
     enhanceCards();
     patchPinTexts();
     updateModuleBar();
@@ -587,6 +621,7 @@
     ensureShell();
     renderHero();
     renderToolbar();
+    renderContact();
     enhanceCards();
     patchPinTexts();
     updateModuleBar();
