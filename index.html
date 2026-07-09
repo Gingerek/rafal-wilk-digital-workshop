@@ -3166,6 +3166,18 @@ function __rwApplyLangToFrame(frame, requestedLang){
       if (!active && typeof btn.click === 'function') btn.click();
       btn.setAttribute('aria-pressed', 'true');
     });
+
+    Array.from(doc.querySelectorAll('iframe')).forEach(function(nestedFrame){
+      __rwApplyLangToFrame(nestedFrame, lang);
+      if (!nestedFrame.__rwNestedLangBound){
+        nestedFrame.__rwNestedLangBound = true;
+        nestedFrame.addEventListener('load', function(){
+          [40, 180, 600].forEach(function(delay){
+            setTimeout(function(){ __rwApplyLangToFrame(nestedFrame, lang); }, delay);
+          });
+        }, true);
+      }
+    });
   }catch(e){}
 }
 function __rwPushLang(requestedLang){
@@ -3223,6 +3235,11 @@ function openMyCompany(){
       try{ return atob(b64); }catch(e2){ return ''; }
     }
   }
+
+  const __rwMeritApp = APPS.find(function(app){
+    return app && /merit increase 2026/i.test(app.title || '');
+  });
+  window.__rwMeritModuleHtml = __rwMeritApp ? b64ToUtf8(__rwMeritApp.b64) : '';
 
   // Detect module language from its HTML (<html lang="..">) so the Home button matches the module, not the platform UI.
   function __rwDetectLangFromHtml(html){
@@ -6538,4 +6555,4 @@ ${moduleBrain ? [summarizeBrainList(moduleBrain.rules,8),summarizeBrainList(modu
 </script>
 <link rel="stylesheet" href="assets/css/platform-v2.css?v=20260709-24">
 <script src="assets/js/contact-config.js?v=20260708-18"></script>
-<script src="assets/js/platform-v2.js?v=20260709-20"></script>
+<script src="assets/js/platform-v2.js?v=20260709-25"></script>

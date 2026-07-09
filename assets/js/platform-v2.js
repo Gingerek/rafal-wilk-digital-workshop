@@ -706,6 +706,145 @@
       body{background:#fff!important;color:#111!important;}
       .doc,.pro-receipt{background:#fff!important;color:#111!important;box-shadow:none!important;}
     }`;
+  function rekentoolMeritHtml(){
+    let html = String(window.__rwMeritModuleHtml || '');
+    if (!html) return '';
+    const colors = {
+      '#1a73e8':'#fb8c00',
+      '#0b57d0':'#c56a00',
+      '#4285f4':'#fb8c00',
+      '#0d47a1':'#9a3412',
+      '#174ea6':'#9a3412',
+      '#e8f0fe':'#fff3e0',
+      '#d4e3fb':'#fed7aa'
+    };
+    Object.entries(colors).forEach(([from, to]) => {
+      html = html.replace(new RegExp(from, 'gi'), to);
+    });
+    const theme = `<style id="rw-rekentool-merit-theme">
+      html,body{background:#f5f6f8!important;color:#111827!important;font-family:Inter,Arial,Helvetica,sans-serif!important;}
+      body{min-height:0!important;overflow-x:hidden!important;}
+      .topbar{display:none!important;}
+      .hero{
+        padding:28px 24px 50px!important;
+        background:linear-gradient(135deg,#111827 0%,#273449 72%,#9a3412 100%)!important;
+        border-bottom:3px solid #fb8c00!important;
+      }
+      .hero h1{font-family:Inter,Arial,Helvetica,sans-serif!important;font-weight:800!important;letter-spacing:0!important;}
+      main{max-width:none!important;margin:-28px auto 0!important;padding:0 18px 24px!important;}
+      .card{
+        border:1px solid rgba(17,24,39,.10)!important;
+        border-radius:16px!important;
+        box-shadow:0 8px 24px rgba(15,23,42,.08)!important;
+      }
+      .card-header{font-family:Inter,Arial,Helvetica,sans-serif!important;}
+      .step-chip{
+        color:#9a3412!important;
+        background:#fff3e0!important;
+        border:1px solid #fed7aa!important;
+      }
+      button,.md-select,input,select{font-family:Inter,Arial,Helvetica,sans-serif!important;}
+      button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(251,140,0,.24)!important;outline-offset:2px!important;}
+      @media(max-width:720px){
+        .hero{padding:24px 16px 44px!important;}
+        main{padding-left:10px!important;padding-right:10px!important;}
+      }
+    </style>`;
+    return html.replace('</head>', `${theme}</head>`);
+  }
+
+  function integrateRekentoolMerit(frame){
+    try {
+      const outerDoc = frame?.contentDocument;
+      const innerFrame = outerDoc?.getElementById('toolFrame');
+      if (!innerFrame || !window.__rwMeritModuleHtml) return;
+
+      const install = () => {
+        try {
+          const doc = innerFrame.contentDocument;
+          const oldPanel = doc?.querySelector('section.merit-panel');
+          if (!doc || !oldPanel || doc.getElementById('rwMerit2026Replacement')) return;
+
+          let bridgeStyle = doc.getElementById('rw-merit-replacement-style');
+          if (!bridgeStyle) {
+            bridgeStyle = doc.createElement('style');
+            bridgeStyle.id = 'rw-merit-replacement-style';
+            bridgeStyle.textContent = `
+              section.merit-panel[data-rw-merit-replaced="true"]{display:none!important;}
+              .rw-merit-2026-panel{
+                display:block!important;
+                margin-top:0!important;
+                padding:0!important;
+                overflow:hidden!important;
+                background:#f5f6f8!important;
+                border:1px solid rgba(17,24,39,.10)!important;
+                border-radius:18px!important;
+                box-shadow:0 12px 30px rgba(15,23,42,.09)!important;
+              }
+              .rw-merit-2026-frame{
+                display:block!important;
+                width:100%!important;
+                min-height:1180px!important;
+                margin:0!important;
+                padding:0!important;
+                border:0!important;
+                background:#f5f6f8!important;
+              }`;
+            doc.head?.appendChild(bridgeStyle);
+          }
+
+          oldPanel.setAttribute('data-rw-merit-replaced', 'true');
+          const section = doc.createElement('section');
+          section.id = 'rwMerit2026Replacement';
+          section.className = 'panel rw-merit-2026-panel';
+          section.setAttribute('aria-label', 'Merit increase 2026');
+
+          const meritFrame = doc.createElement('iframe');
+          meritFrame.className = 'rw-merit-2026-frame';
+          meritFrame.title = 'Merit increase 2026';
+          meritFrame.srcdoc = rekentoolMeritHtml();
+          section.appendChild(meritFrame);
+          oldPanel.insertAdjacentElement('afterend', section);
+
+          meritFrame.addEventListener('load', () => {
+            const childDoc = meritFrame.contentDocument;
+            const childWin = meritFrame.contentWindow;
+            if (!childDoc || !childWin) return;
+
+            const resize = () => {
+              const height = Math.max(
+                childDoc.documentElement?.scrollHeight || 0,
+                childDoc.body?.scrollHeight || 0,
+                1180
+              );
+              meritFrame.style.height = `${height}px`;
+            };
+            resize();
+            [80, 300, 900].forEach(delay => setTimeout(resize, delay));
+            if (childWin.ResizeObserver) {
+              const observer = new childWin.ResizeObserver(resize);
+              observer.observe(childDoc.documentElement);
+            }
+
+            const currentLang = lang();
+            try { childWin.postMessage({type:'rw:setLang', lang:currentLang}, '*'); } catch (_e) {}
+            try {
+              if (typeof childWin.__rwApplyModuleLang === 'function') childWin.__rwApplyModuleLang(currentLang);
+            } catch (_e) {}
+          });
+        } catch (_e) {}
+      };
+
+      install();
+      if (!innerFrame.__rwMeritReplacementBound) {
+        innerFrame.__rwMeritReplacementBound = true;
+        innerFrame.addEventListener('load', () => {
+          [40, 180, 600].forEach(delay => setTimeout(install, delay));
+        });
+      }
+    } catch (_e) {}
+  }
+
   function applyPremiumModuleTheme(frame){
     try {
       const doc = frame?.contentDocument;
@@ -769,6 +908,7 @@
         doc.__rwLanguageDedupeObserver = new MutationObserver(hideEmbeddedLanguageControls);
         doc.__rwLanguageDedupeObserver.observe(doc.body, { childList:true, subtree:true });
       }
+      integrateRekentoolMerit(frame);
       if (doc.getElementById('rw-premium-module-theme')) return;
       const style = doc.createElement('style');
       style.id = 'rw-premium-module-theme';
