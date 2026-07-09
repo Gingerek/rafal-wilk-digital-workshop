@@ -32,6 +32,8 @@ body:not(.app-open)>header{
   width:min(1220px,calc(100vw - 64px))!important;max-width:calc(100vw - 64px)!important;margin:0!important;z-index:9999!important;
   background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;
 }
+body:not(.app-open) .rw-header{display:block!important;visibility:visible!important;opacity:1!important;}
+body:not(.app-open)>header:not(.rw-header){display:none!important;}
 body:not(.app-open) .rw-header .rw-wrap,
 body:not(.app-open)>header .rw-wrap,
 body:not(.app-open)>header .wrap{
@@ -39,10 +41,17 @@ body:not(.app-open)>header .wrap{
 }
 body:not(.app-open) .rw-brand,
 body:not(.app-open) .rw-title{
+  display:inline-flex!important;align-items:center!important;visibility:visible!important;opacity:1!important;
   max-width:min(520px,calc(100vw - 260px))!important;padding:10px 15px!important;border-radius:999px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
   color:#fff!important;background:rgba(5,10,18,.58)!important;border:1px solid rgba(255,255,255,.24)!important;box-shadow:0 14px 34px rgba(0,0,0,.28)!important;backdrop-filter:blur(16px)!important;
+  font-size:13px!important;line-height:1.2!important;font-weight:650!important;letter-spacing:0!important;
 }
-body:not(.app-open) .rw-brand-main{color:#fff!important;white-space:nowrap!important;}
+body:not(.app-open) .rw-brand-copy,
+body:not(.app-open) .rw-brand-line,
+body:not(.app-open) .rw-brand-main{
+  display:inline-flex!important;align-items:center!important;visibility:visible!important;opacity:1!important;
+}
+body:not(.app-open) .rw-brand-main{color:#fff!important;white-space:nowrap!important;font-size:13px!important;line-height:1.2!important;font-weight:650!important;}
 body:not(.app-open) .rw-owner-mark{flex:0 0 auto!important;}
 body:not(.app-open) .rw-lang{
   flex:0 0 auto!important;padding:5px!important;border-radius:999px!important;background:rgba(5,10,18,.52)!important;border:1px solid rgba(255,255,255,.22)!important;box-shadow:0 14px 34px rgba(0,0,0,.28)!important;backdrop-filter:blur(16px)!important;
@@ -50,6 +59,7 @@ body:not(.app-open) .rw-lang{
 body:not(.app-open) .rw-lang-btn{color:#eaf6ff!important;border-radius:999px!important;}
 body:not(.app-open) .rw-lang-btn[aria-pressed="true"],
 body:not(.app-open) .rw-lang-btn.active{color:#10233f!important;background:rgba(255,255,255,.90)!important;}
+body:not(.app-open) .rw-v2-floating-lang{display:none!important;}
 body:not(.app-open) main,
 body:not(.app-open) main.wrap{
   display:block!important;height:auto!important;min-height:auto!important;overflow:visible!important;

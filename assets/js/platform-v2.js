@@ -711,7 +711,41 @@
       const doc = frame?.contentDocument;
       if (!doc || !doc.documentElement) return;
       doc.documentElement.classList.add('rw-premium-module-root');
+      doc.documentElement.classList.add('rw-platform-embedded');
       if (doc.body) doc.body.classList.add('rw-premium-module');
+      let dedupeStyle = doc.getElementById('rw-platform-language-dedup');
+      if (!dedupeStyle) {
+        dedupeStyle = doc.createElement('style');
+        dedupeStyle.id = 'rw-platform-language-dedup';
+        dedupeStyle.textContent = `
+          html.rw-platform-embedded .language-switcher,
+          html.rw-platform-embedded .lang-switch,
+          html.rw-platform-embedded .language-controls,
+          html.rw-platform-embedded .lang-controls,
+          html.rw-platform-embedded .language-selector,
+          html.rw-platform-embedded .lang-selector,
+          html.rw-platform-embedded [data-rw-embedded-lang-control="true"]{
+            display:none!important;
+            visibility:hidden!important;
+          }`;
+        doc.head?.appendChild(dedupeStyle);
+      }
+      const languageButtons = Array.from(doc.querySelectorAll(
+        'button[data-lang],button[data-language],button[data-locale],button.lang-btn,button.language-btn'
+      ));
+      new Set(languageButtons.map(button => button.parentElement).filter(Boolean)).forEach(group => {
+        const count = group.querySelectorAll(
+          'button[data-lang],button[data-language],button[data-locale],button.lang-btn,button.language-btn'
+        ).length;
+        if (count >= 3) group.setAttribute('data-rw-embedded-lang-control', 'true');
+      });
+      doc.querySelectorAll('select').forEach(select => {
+        const marker = `${select.id || ''} ${select.name || ''} ${select.className || ''} ${select.getAttribute('aria-label') || ''}`.toLowerCase();
+        if (/(lang|language|taal|jezyk|język)/.test(marker)) {
+          (select.closest('.field,.form-field,.control,.input-group') || select.parentElement || select)
+            .setAttribute('data-rw-embedded-lang-control', 'true');
+        }
+      });
       if (doc.getElementById('rw-premium-module-theme')) return;
       const style = doc.createElement('style');
       style.id = 'rw-premium-module-theme';
