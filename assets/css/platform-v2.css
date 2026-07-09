@@ -769,6 +769,89 @@ body.rw-v2-ready:not(.app-open) #rwPlatformApiStatus .rwValue{color:#f8fafc!impo
   }
 }
 
+/* Final homepage brand: keep it visible and aligned with the language controls. */
+body.rw-v2-ready:not(.app-open) header.rw-header{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:fixed!important;
+  inset:3.2% auto auto 4.5%!important;
+  width:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  z-index:40!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  pointer-events:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) header.rw-header .rw-wrap{
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+body.rw-v2-ready:not(.app-open) header.rw-header .rw-brand,
+body.rw-v2-ready:not(.app-open) header.rw-header .rw-title{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  width:auto!important;
+  max-width:none!important;
+  min-height:36px!important;
+  margin:0!important;
+  padding:7px 12px!important;
+  overflow:visible!important;
+  color:rgba(248,251,255,.90)!important;
+  background:rgba(7,18,38,.32)!important;
+  border:1px solid rgba(255,255,255,.20)!important;
+  border-radius:999px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 16px 36px rgba(0,0,0,.20)!important;
+  backdrop-filter:blur(18px) saturate(135%)!important;
+  white-space:nowrap!important;
+}
+
+body.rw-v2-ready:not(.app-open) header.rw-header .rw-brand-main{
+  display:inline!important;
+  visibility:visible!important;
+  opacity:1!important;
+  color:inherit!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:600!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+}
+
+body.rw-v2-ready:not(.app-open) header.rw-header .rw-owner-mark{
+  display:inline-flex!important;
+  width:22px!important;
+  height:22px!important;
+  min-width:22px!important;
+  min-height:22px!important;
+  font-size:11px!important;
+}
+
+body.rw-v2-ready:not(.app-open) header.rw-header .rw-lang,
+body.rw-v2-ready:not(.app-open) header.rw-header .rw-brand-sub{
+  display:none!important;
+}
+
+@media (max-width:760px){
+  body.rw-v2-ready:not(.app-open) header.rw-header{
+    inset:3.2% auto auto 4.5%!important;
+  }
+  body.rw-v2-ready:not(.app-open) header.rw-header .rw-brand-main{
+    font-size:11px!important;
+  }
+}
+
 /* Ownership notice and proportion pass */
 .rw-v2-hero{
   min-height:392px!important;
