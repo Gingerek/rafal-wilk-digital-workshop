@@ -4863,7 +4863,7 @@ body.rw-v2-ready:not(.app-open) main.wrap{
   min-height:100vh!important;
   margin:0!important;
   padding:0!important;
-  background:#030913 url("../images/private-command-center-full.webp?v=20260708-14") center top / cover no-repeat fixed!important;
+  background:#030913 url("../images/private-command-center-hero-bracelets.webp?v=20260709-bracelets-2") center top / cover no-repeat fixed!important;
   overflow:hidden!important;
 }
 
@@ -4874,7 +4874,7 @@ body.rw-v2-ready .rw-v2-shell{
   margin:0!important;
   padding:0!important;
   overflow:hidden!important;
-  background:#030913 url("../images/private-command-center-full.webp?v=20260708-14") center top / cover no-repeat!important;
+  background:#030913 url("../images/private-command-center-hero-bracelets.webp?v=20260709-bracelets-2") center top / cover no-repeat!important;
 }
 
 body.rw-v2-ready .rw-v2-hero{
@@ -5287,7 +5287,7 @@ body.rw-v2-ready:not(.app-open) main.wrap{
   border:0!important;
   border-radius:0!important;
   overflow:hidden!important;
-  background:#020812 url("../images/private-command-center-full.webp?v=20260708-14") center center / cover no-repeat fixed!important;
+  background:#020812 url("../images/private-command-center-hero-bracelets.webp?v=20260709-bracelets-2") center center / cover no-repeat fixed!important;
 }
 
 body.rw-v2-ready .rw-v2-shell{
@@ -5296,7 +5296,7 @@ body.rw-v2-ready .rw-v2-shell{
   min-height:100svh!important;
   margin:0!important;
   padding:0!important;
-  background:#020812 url("../images/private-command-center-full.webp?v=20260708-14") center center / cover no-repeat!important;
+  background:#020812 url("../images/private-command-center-hero-bracelets.webp?v=20260709-bracelets-2") center center / cover no-repeat!important;
   overflow:hidden!important;
 }
 
