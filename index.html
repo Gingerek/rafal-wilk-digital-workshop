@@ -3088,6 +3088,10 @@ body.app-open .rw-header{display:none !important;}
 <div class="title" data-title-key="Merit increase 2026">Merit increase 2026</div>
 <button class="btn" data-idx="6" type="button">Open in platform</button>
 </article>
+<article class="card">
+<div class="title" data-title-key="Merit bulk 2026">Merit bulk 2026</div>
+<a class="btn" onclick="openApp('meritbulkcalculator', this.parentElement.querySelector('.title').textContent)">Open</a>
+</article>
 
 <article class="card">
 <div class="title" data-title-key="Przegląd agencji">Przegląd agencji</div>
@@ -3106,6 +3110,7 @@ body.app-open .rw-header{display:none !important;}
 <section class="viewport">
 <iframe id="appframe" title="Aplikacja"></iframe>
 <iframe id="managermeetingtracker" title="Rejestr spotkań z managerami" src="modules/manager-meeting-tracker.html"></iframe>
+<iframe id="meritbulkcalculator" title="Merit bulk 2026" src="modules/merit-bulk-calculator.html"></iframe>
 
 <iframe id="homeofficetracker" title="Home Office Tracker" src="modules/home-office-tracker.html"></iframe>
 <iframe id="mycompany" src="modules/my-company.html" title="My Projects"></iframe></section>
