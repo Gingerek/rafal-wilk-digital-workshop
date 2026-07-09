@@ -877,6 +877,37 @@ html body.rw-v2-ready:not(.app-open) header.rw-header .rw-brand-main{
   clip-path:none!important;
 }
 
+html body.rw-v2-ready:not(.app-open) header.rw-header .rw-owner-mark{
+  position:static!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 22px!important;
+  width:22px!important;
+  height:22px!important;
+  min-width:22px!important;
+  min-height:22px!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  transform:none!important;
+  translate:none!important;
+  color:rgba(248,251,255,.82)!important;
+  background:rgba(255,255,255,.07)!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  border-radius:50%!important;
+  box-shadow:none!important;
+  font-size:11px!important;
+  line-height:1!important;
+  font-weight:600!important;
+}
+
+html body.rw-v2-ready:not(.app-open) header.rw-header .rw-owner-mark::before,
+html body.rw-v2-ready:not(.app-open) header.rw-header .rw-owner-mark::after{
+  display:none!important;
+  content:none!important;
+}
+
 /* Ownership notice and proportion pass */
 .rw-v2-hero{
   min-height:392px!important;
