@@ -724,28 +724,51 @@
           html.rw-platform-embedded .lang-controls,
           html.rw-platform-embedded .language-selector,
           html.rw-platform-embedded .lang-selector,
-          html.rw-platform-embedded [data-rw-embedded-lang-control="true"]{
+          html.rw-platform-embedded [data-rw-embedded-lang-control="true"],
+          html.rw-platform-embedded [data-rw-embedded-lang-button="true"]{
             display:none!important;
             visibility:hidden!important;
           }`;
         doc.head?.appendChild(dedupeStyle);
       }
-      const languageButtons = Array.from(doc.querySelectorAll(
-        'button[data-lang],button[data-language],button[data-locale],button.lang-btn,button.language-btn'
-      ));
-      new Set(languageButtons.map(button => button.parentElement).filter(Boolean)).forEach(group => {
-        const count = group.querySelectorAll(
-          'button[data-lang],button[data-language],button[data-locale],button.lang-btn,button.language-btn'
-        ).length;
-        if (count >= 3) group.setAttribute('data-rw-embedded-lang-control', 'true');
-      });
-      doc.querySelectorAll('select').forEach(select => {
-        const marker = `${select.id || ''} ${select.name || ''} ${select.className || ''} ${select.getAttribute('aria-label') || ''}`.toLowerCase();
-        if (/(lang|language|taal|jezyk|język)/.test(marker)) {
-          (select.closest('.field,.form-field,.control,.input-group') || select.parentElement || select)
-            .setAttribute('data-rw-embedded-lang-control', 'true');
-        }
-      });
+      const hideEmbeddedLanguageControls = () => {
+        const candidates = Array.from(doc.querySelectorAll('button,a,[role="button"]'));
+        const languageButtons = candidates.filter(element =>
+          /^(PL|EN|NL)$/.test((element.textContent || '').trim().toUpperCase())
+        );
+
+        languageButtons.forEach(button => {
+          let group = button.parentElement;
+          let matchedGroup = null;
+          for (let depth = 0; group && depth < 5; depth += 1, group = group.parentElement) {
+            const labels = Array.from(group.querySelectorAll('button,a,[role="button"]'))
+              .map(element => (element.textContent || '').trim().toUpperCase())
+              .filter(label => /^(PL|EN|NL)$/.test(label));
+            if (new Set(labels).size === 3) {
+              matchedGroup = group;
+              break;
+            }
+          }
+          if (matchedGroup) {
+            matchedGroup.setAttribute('data-rw-embedded-lang-control', 'true');
+          } else {
+            button.setAttribute('data-rw-embedded-lang-button', 'true');
+          }
+        });
+
+        doc.querySelectorAll('select').forEach(select => {
+          const marker = `${select.id || ''} ${select.name || ''} ${select.className || ''} ${select.getAttribute('aria-label') || ''}`.toLowerCase();
+          if (/(lang|language|taal|jezyk|język)/.test(marker)) {
+            (select.closest('.field,.form-field,.control,.input-group') || select.parentElement || select)
+              .setAttribute('data-rw-embedded-lang-control', 'true');
+          }
+        });
+      };
+      hideEmbeddedLanguageControls();
+      if (!doc.__rwLanguageDedupeObserver && doc.body) {
+        doc.__rwLanguageDedupeObserver = new MutationObserver(hideEmbeddedLanguageControls);
+        doc.__rwLanguageDedupeObserver.observe(doc.body, { childList:true, subtree:true });
+      }
       if (doc.getElementById('rw-premium-module-theme')) return;
       const style = doc.createElement('style');
       style.id = 'rw-premium-module-theme';
