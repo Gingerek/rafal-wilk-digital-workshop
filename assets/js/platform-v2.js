@@ -470,7 +470,10 @@
       </div>
     </div>`;
     document.body.appendChild(bar);
-    bar.querySelector('.rw-v2-back').addEventListener('click', () => document.getElementById('rw_home_btn')?.click());
+    bar.querySelector('.rw-v2-back').addEventListener('click', () => {
+      markHomeReturn();
+      document.getElementById('rw_home_btn')?.click();
+    });
     bar.querySelectorAll('[data-lang]').forEach(btn => btn.addEventListener('click', () => {
       const nextLang = normalizePlatformLang(btn.dataset.lang || 'pl');
       setPlatformLang(nextLang);
@@ -489,6 +492,18 @@
     document.querySelectorAll('.rw-v2-module-lang [data-lang]').forEach(btn => {
       btn.setAttribute('aria-pressed', btn.dataset.lang === lang() ? 'true' : 'false');
     });
+  }
+  function markModuleLaunch(card){
+    document.body.classList.add('rw-v2-opening-module');
+    card?.classList.add('rw-v2-launching');
+    window.setTimeout(() => {
+      document.body.classList.remove('rw-v2-opening-module');
+      card?.classList.remove('rw-v2-launching');
+    }, 900);
+  }
+  function markHomeReturn(){
+    document.body.classList.add('rw-v2-returning-home');
+    window.setTimeout(() => document.body.classList.remove('rw-v2-returning-home'), 700);
   }
   function applyLanguage(){
     renderHero();
@@ -557,6 +572,7 @@
         const card = moduleButton.closest('.card');
         const meta = card && findMeta(card);
         activeModuleTitle = meta ? (meta.title[lang()] || meta.title.pl) : '';
+        markModuleLaunch(card);
         scheduleLanguagePush(lang());
       }
       const globalLangBtn = event.target.closest('.rw-lang-btn');
@@ -704,6 +720,70 @@
         color:var(--rw-text)!important;
       }
       .toast{background:#ffffff!important;color:#10233f!important;border:1px solid var(--rw-line-strong)!important;}
+      html.rw-premium-module-root body{
+        animation:rwPremiumModuleIn .34s cubic-bezier(.2,.8,.2,1) both;
+        min-height:100vh!important;
+      }
+      html.rw-premium-module-root body::after{
+        content:"";
+        position:fixed;
+        inset:auto 8% 0 8%;
+        height:38vh;
+        pointer-events:none;
+        z-index:-1;
+        background:
+          radial-gradient(circle at 18% 30%, rgba(14,165,233,.18), transparent 34%),
+          radial-gradient(circle at 78% 54%, rgba(139,92,246,.13), transparent 35%);
+        filter:blur(24px);
+        opacity:.72;
+      }
+      .topbar,.toolbar,.header,.hero,.page-header{
+        background:linear-gradient(135deg, rgba(255,255,255,.80), rgba(226,242,255,.52))!important;
+        border:1px solid rgba(87,143,196,.16)!important;
+        border-radius:8px!important;
+        box-shadow:0 16px 42px rgba(13,42,74,.07)!important;
+        backdrop-filter:blur(18px)!important;
+      }
+      .card,.panel,.panel-inner,.doc,.stamp,.note,.info-box,.summary-card,.result-card,.tile,.month-row,.meeting-card,.saved-item,.totals .box,.stat-card,.metric,.empty,.history-list,.pro-receipt,
+      button,.btn,.icon-btn,.small-btn,.lang-btn,input,select,textarea{
+        transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease, color .18s ease!important;
+      }
+      .card:hover,.panel:hover,.tile:hover,.summary-card:hover,.result-card:hover,.meeting-card:hover,.saved-item:hover,.metric:hover{
+        transform:translateY(-2px)!important;
+        border-color:rgba(14,165,233,.30)!important;
+        box-shadow:0 22px 60px rgba(31,79,125,.13), 0 0 34px rgba(14,165,233,.07)!important;
+      }
+      button:hover,.btn:hover,.icon-btn:hover,.small-btn:hover,.lang-btn:hover{
+        transform:translateY(-1px)!important;
+        border-color:rgba(14,165,233,.38)!important;
+        box-shadow:0 14px 34px rgba(14,165,233,.15), inset 0 1px 0 rgba(255,255,255,.90)!important;
+      }
+      button:active,.btn:active,.icon-btn:active,.small-btn:active,.lang-btn:active{
+        transform:translateY(0) scale(.99)!important;
+      }
+      th{
+        background:linear-gradient(180deg, rgba(8,35,61,.94), rgba(12,55,88,.90))!important;
+        color:#f7fbff!important;
+        border-color:rgba(125,211,252,.18)!important;
+      }
+      td{
+        background:rgba(255,255,255,.52)!important;
+      }
+      tr:nth-child(even) td{
+        background:rgba(238,247,255,.68)!important;
+      }
+      @keyframes rwPremiumModuleIn{
+        from{opacity:.72; transform:translateY(8px) scale(.996);}
+        to{opacity:1; transform:translateY(0) scale(1);}
+      }
+    }
+    @media (prefers-reduced-motion:reduce){
+      html.rw-premium-module-root body,
+      .card,.panel,.panel-inner,.doc,.stamp,.note,.info-box,.summary-card,.result-card,.tile,.month-row,.meeting-card,.saved-item,.totals .box,.stat-card,.metric,.empty,.history-list,.pro-receipt,
+      button,.btn,.icon-btn,.small-btn,.lang-btn,input,select,textarea{
+        animation:none!important;
+        transition:none!important;
+      }
     }
     @media print{
       body{background:#fff!important;color:#111!important;}

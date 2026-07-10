@@ -5564,3 +5564,201 @@ body.rw-v2-ready main.wrap .card .btn.rw-v2-card-open svg{
     font-size:12px!important;
   }
 }
+
+/* Premium visual pass: unified motion and module polish only. */
+body.rw-v2-ready:not(.app-open) main.wrap,
+body.rw-v2-ready .rw-v2-shell{
+  isolation:isolate!important;
+}
+
+body.rw-v2-ready .rw-v2-shell::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:2!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(90deg, rgba(2,8,18,.18) 0%, rgba(2,8,18,.02) 42%, rgba(2,8,18,.10) 100%),
+    radial-gradient(circle at 28% 26%, rgba(57,172,230,.10), transparent 24%),
+    radial-gradient(circle at 64% 28%, rgba(139,92,246,.08), transparent 22%),
+    linear-gradient(rgba(127,215,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127,215,255,.018) 1px, transparent 1px)!important;
+  background-size:auto, auto, auto, 64px 64px, 64px 64px!important;
+  opacity:.88!important;
+  animation:rwPremiumAmbient 12s ease-in-out infinite alternate!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid{
+  z-index:25!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card{
+  animation:rwPremiumCardIn .52s cubic-bezier(.2,.8,.2,1) both!important;
+  will-change:transform, opacity!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(1){animation-delay:.03s!important;}
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(2){animation-delay:.06s!important;}
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(3){animation-delay:.09s!important;}
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(4){animation-delay:.12s!important;}
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(5){animation-delay:.15s!important;}
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(6){animation-delay:.18s!important;}
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(7){animation-delay:.21s!important;}
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(8){animation-delay:.24s!important;}
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(9){animation-delay:.27s!important;}
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(10){animation-delay:.30s!important;}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  border-radius:inherit!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.10), transparent 34%),
+    radial-gradient(circle at 84% 18%, rgba(137,216,255,.12), transparent 32%)!important;
+  opacity:.62!important;
+  transition:opacity .22s ease, transform .22s ease!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:hover::before,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-visible::before,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card.rw-v2-launching::before{
+  opacity:1!important;
+  transform:translateY(-2px)!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:hover .rw-v2-icon,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-visible .rw-v2-icon,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card.rw-v2-launching .rw-v2-icon{
+  color:#dff7ff!important;
+  border-color:rgba(137,216,255,.50)!important;
+  background:rgba(91,174,231,.24)!important;
+  box-shadow:0 0 24px rgba(91,174,231,.18)!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:hover .btn.rw-v2-card-open,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-visible .btn.rw-v2-card-open,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card.rw-v2-launching .btn.rw-v2-card-open{
+  background:linear-gradient(180deg, rgba(163,230,255,.34), rgba(45,150,217,.28))!important;
+  border-color:rgba(180,235,255,.60)!important;
+  transform:translateY(-1px) scale(1.05)!important;
+  box-shadow:0 16px 34px rgba(0,0,0,.26), 0 0 22px rgba(91,174,231,.22)!important;
+}
+
+body.rw-v2-ready.rw-v2-opening-module:not(.app-open) main.wrap .grid .card:not(.rw-v2-launching){
+  opacity:.38!important;
+  transform:scale(.985)!important;
+  filter:saturate(.82) brightness(.82)!important;
+}
+
+body.rw-v2-ready.rw-v2-opening-module:not(.app-open) main.wrap .grid .card.rw-v2-launching{
+  z-index:80!important;
+  transform:translateY(-8px) scale(1.045)!important;
+  border-color:rgba(180,235,255,.76)!important;
+  box-shadow:0 38px 86px rgba(0,0,0,.44), 0 0 48px rgba(91,174,231,.24)!important;
+}
+
+body.rw-v2-ready.rw-v2-opening-module .rw-v2-shell::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:120!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 36% 62%, rgba(138,220,255,.34), transparent 18%),
+    linear-gradient(90deg, transparent, rgba(202,241,255,.16), transparent)!important;
+  animation:rwPremiumOpenWash .46s ease both!important;
+}
+
+body.rw-v2-ready.rw-v2-returning-home:not(.app-open) .rw-v2-shell{
+  animation:rwPremiumHomeReturn .42s cubic-bezier(.2,.8,.2,1) both!important;
+}
+
+body.rw-v2-ready .rw-v2-modulebar{
+  min-height:60px!important;
+  background:linear-gradient(90deg, rgba(3,13,25,.92), rgba(8,25,43,.86))!important;
+  border-bottom:1px solid rgba(137,216,255,.16)!important;
+  color:#f7fbff!important;
+  box-shadow:0 16px 48px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05)!important;
+  backdrop-filter:blur(18px) saturate(130%)!important;
+}
+
+body.rw-v2-ready .rw-v2-module-title,
+body.rw-v2-ready .rw-v2-save{
+  color:rgba(247,251,255,.88)!important;
+}
+
+body.rw-v2-ready .rw-v2-back,
+body.rw-v2-ready .rw-v2-module-lang button{
+  border:1px solid rgba(137,216,255,.20)!important;
+  background:rgba(255,255,255,.07)!important;
+  color:rgba(247,251,255,.92)!important;
+  border-radius:10px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important;
+  transition:transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease!important;
+}
+
+body.rw-v2-ready .rw-v2-back:hover,
+body.rw-v2-ready .rw-v2-module-lang button:hover,
+body.rw-v2-ready .rw-v2-module-lang button[aria-pressed="true"]{
+  transform:translateY(-1px)!important;
+  background:rgba(91,174,231,.20)!important;
+  border-color:rgba(137,216,255,.48)!important;
+  box-shadow:0 0 24px rgba(91,174,231,.14), inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+
+body.rw-v2-ready.app-open .viewport,
+body.rw-v2-ready.app-open .viewport.active{
+  top:60px!important;
+  min-height:calc(100vh - 60px)!important;
+  padding:10px!important;
+  background:
+    radial-gradient(circle at 22% 0%, rgba(14,165,233,.12), transparent 28%),
+    linear-gradient(135deg, #020812, #061426 56%, #081d31)!important;
+}
+
+body.rw-v2-ready.app-open .viewport iframe.show{
+  border:1px solid rgba(137,216,255,.16)!important;
+  border-radius:12px!important;
+  box-shadow:0 26px 90px rgba(0,0,0,.30), 0 0 42px rgba(91,174,231,.10)!important;
+  animation:rwPremiumFrameIn .34s cubic-bezier(.2,.8,.2,1) both!important;
+  overflow:hidden!important;
+}
+
+@keyframes rwPremiumAmbient{
+  from{opacity:.74; transform:translate3d(-8px,-4px,0) scale(1);}
+  to{opacity:.94; transform:translate3d(8px,4px,0) scale(1.012);}
+}
+
+@keyframes rwPremiumCardIn{
+  from{opacity:0; transform:translateY(14px) scale(.985);}
+  to{opacity:1; transform:translateY(0) scale(1);}
+}
+
+@keyframes rwPremiumOpenWash{
+  0%{opacity:0; transform:translateX(-18%) scaleX(.78);}
+  45%{opacity:1;}
+  100%{opacity:0; transform:translateX(28%) scaleX(1.18);}
+}
+
+@keyframes rwPremiumHomeReturn{
+  from{opacity:.70; transform:scale(1.008); filter:blur(2px);}
+  to{opacity:1; transform:scale(1); filter:blur(0);}
+}
+
+@keyframes rwPremiumFrameIn{
+  from{opacity:.58; transform:translateY(10px) scale(.992);}
+  to{opacity:1; transform:translateY(0) scale(1);}
+}
+
+@media (prefers-reduced-motion:reduce){
+  body.rw-v2-ready .rw-v2-shell::before,
+  body.rw-v2-ready:not(.app-open) main.wrap .grid .card,
+  body.rw-v2-ready.rw-v2-opening-module .rw-v2-shell::after,
+  body.rw-v2-ready.rw-v2-returning-home:not(.app-open) .rw-v2-shell,
+  body.rw-v2-ready.app-open .viewport iframe.show{
+    animation:none!important;
+    transition:none!important;
+  }
+}
