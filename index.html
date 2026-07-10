@@ -3090,7 +3090,7 @@ body.app-open .rw-header{display:none !important;}
 </article>
 <article class="card">
 <div class="title" data-title-key="Merit Excel 350">Merit Excel 350</div>
-<a class="btn" href="downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx" download>Download Excel</a>
+<a class="btn" href="downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx" download="Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx" data-excel-download type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">Download Excel</a>
 </article>
 
 <article class="card">
@@ -3114,6 +3114,35 @@ body.app-open .rw-header{display:none !important;}
 <iframe id="homeofficetracker" title="Home Office Tracker" src="modules/home-office-tracker.html"></iframe>
 <iframe id="mycompany" src="modules/my-company.html" title="My Projects"></iframe></section>
 </main>
+
+<script id="rw-force-xlsx-download">
+(function(){
+  document.addEventListener('click', async function(event){
+    const link = event.target.closest('[data-excel-download]');
+    if(!link) return;
+    event.preventDefault();
+    const fileUrl = link.getAttribute('href');
+    const fileName = link.getAttribute('download') || fileUrl.split('/').pop();
+    try {
+      const response = await fetch(fileUrl, { cache: 'no-store' });
+      if(!response.ok) throw new Error('Download failed');
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(new Blob([blob], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }));
+      const temp = document.createElement('a');
+      temp.href = objectUrl;
+      temp.download = fileName;
+      document.body.appendChild(temp);
+      temp.click();
+      temp.remove();
+      window.setTimeout(function(){ URL.revokeObjectURL(objectUrl); }, 1500);
+    } catch (error) {
+      window.location.href = fileUrl;
+    }
+  });
+})();
+</script>
 
 <script id="rw-push-lang-helper">
 function __rwNormalizePlatformLang(value){
