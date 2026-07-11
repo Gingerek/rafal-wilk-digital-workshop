@@ -6307,3 +6307,11 @@ body.rw-v2-ready .rw-v2-command-empty{
     display:none!important;
   }
 }
+
+/* Hide legacy standalone home button; module navigation uses the premium module bar. */
+#rw_home_btn.rw-home{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
