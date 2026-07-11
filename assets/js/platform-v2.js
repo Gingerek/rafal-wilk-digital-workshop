@@ -397,7 +397,7 @@
   }
   function renderCommandUi(){
     const trigger = document.querySelector('.rw-v2-command-trigger');
-    if (trigger) trigger.innerHTML = `<span>${uiText('command')}</span><kbd>Ctrl K</kbd>`;
+    if (trigger) trigger.innerHTML = `<span>${uiText('command')}</span>`;
     const palette = document.querySelector('.rw-v2-command-palette');
     const title = palette?.querySelector('.rw-v2-command-head strong');
     const input = palette?.querySelector('.rw-v2-command-input');
