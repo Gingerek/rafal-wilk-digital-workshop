@@ -298,6 +298,13 @@
       depth.innerHTML = '<span></span><span></span><span></span><span></span><span></span>';
       shell.appendChild(depth);
     }
+    if (!shell.querySelector('.rw-v2-wall-clock')) {
+      const clock = document.createElement('div');
+      clock.className = 'rw-v2-wall-clock';
+      clock.setAttribute('aria-hidden', 'true');
+      clock.innerHTML = '<span class="rw-v2-wall-clock-time"></span><span class="rw-v2-wall-clock-date"></span>';
+      shell.appendChild(clock);
+    }
     if (!shell.querySelector('.rw-v2-command-trigger')) {
       const trigger = document.createElement('button');
       trigger.type = 'button';
@@ -341,6 +348,7 @@
       </div>
     </div>`;
     syncHomeLang();
+    updateWallClock();
     renderCommandUi();
   }
   function renderToolbar(){
@@ -396,6 +404,16 @@
     if (title) title.textContent = uiText('commandTitle');
     if (input) input.placeholder = uiText('commandHint');
     renderSystemStrip();
+  }
+  function updateWallClock(){
+    const clock = document.querySelector('.rw-v2-wall-clock');
+    if (!clock) return;
+    const now = new Date();
+    const locale = lang() === 'nl' ? 'nl-NL' : lang() === 'en' ? 'en-GB' : 'pl-PL';
+    const time = new Intl.DateTimeFormat(locale, { hour:'2-digit', minute:'2-digit' }).format(now);
+    const date = new Intl.DateTimeFormat(locale, { weekday:'short', day:'2-digit', month:'short', year:'numeric' }).format(now);
+    clock.querySelector('.rw-v2-wall-clock-time').textContent = time;
+    clock.querySelector('.rw-v2-wall-clock-date').textContent = date.replace(/\.$/, '');
   }
   function openCommandPalette(){
     const palette = document.querySelector('.rw-v2-command-palette');
@@ -668,6 +686,7 @@
     patchPinTexts();
     updateModuleBar();
     syncHomeLang();
+    updateWallClock();
   }
   function bindEvents(){
     window.addEventListener('message', (event) => {
@@ -1287,6 +1306,8 @@
     syncBrand();
     ensureShell();
     bindPremiumPointer();
+    updateWallClock();
+    setInterval(updateWallClock, 15000);
     enhancePin();
     patchPinGateHooks();
     ensureModuleBar();
