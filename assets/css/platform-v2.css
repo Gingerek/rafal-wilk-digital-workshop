@@ -6658,3 +6658,111 @@ body.rw-v2-ready .rw-v2-city-lights{
     radial-gradient(circle at 82% 58%, rgba(255,197,88,.60) 0 1px, transparent 2px)!important;
   background-size:auto!important;
 }
+
+/* Final clock placement: compact futuristic HUD under the Rafal Wilk mark. */
+body.rw-v2-ready .rw-v2-wall-clock{
+  left:3.0%!important;
+  top:9.35%!important;
+  z-index:76!important;
+  width:258px!important;
+  min-height:46px!important;
+  display:grid!important;
+  grid-template-columns:auto 1fr!important;
+  align-items:center!important;
+  gap:3px 12px!important;
+  padding:8px 13px 9px!important;
+  border-radius:14px!important;
+  border:1px solid rgba(135,216,255,.22)!important;
+  background:
+    linear-gradient(120deg, rgba(4,15,27,.46), rgba(13,42,66,.25) 58%, rgba(135,216,255,.065)),
+    radial-gradient(circle at 96% 18%, rgba(135,216,255,.14), transparent 36%)!important;
+  color:rgba(236,249,255,.88)!important;
+  font-family:"Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
+  letter-spacing:0!important;
+  text-shadow:0 0 14px rgba(91,174,231,.24)!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.09), 0 0 20px rgba(91,174,231,.08)!important;
+  backdrop-filter:blur(12px) saturate(124%)!important;
+  mix-blend-mode:normal!important;
+  opacity:.96!important;
+  transform:none!important;
+  filter:none!important;
+  pointer-events:none!important;
+}
+
+body.rw-v2-ready .rw-v2-wall-clock::before{
+  left:13px!important;
+  right:13px!important;
+  bottom:7px!important;
+  height:1px!important;
+  opacity:.62!important;
+  background:linear-gradient(90deg, rgba(135,216,255,.62), transparent 42%, rgba(185,166,255,.32), transparent)!important;
+}
+
+body.rw-v2-ready .rw-v2-wall-clock::after{
+  left:auto!important;
+  right:11px!important;
+  top:9px!important;
+  width:5px!important;
+  height:5px!important;
+  border-radius:999px!important;
+  opacity:.72!important;
+  background:#8bd8ff!important;
+  box-shadow:0 0 12px rgba(139,216,255,.72), 0 0 24px rgba(139,216,255,.18)!important;
+}
+
+body.rw-v2-ready .rw-v2-wall-clock-kicker{
+  grid-column:1 / 3!important;
+  display:block!important;
+  margin:0 0 1px!important;
+  color:rgba(184,232,255,.55)!important;
+  font-size:7px!important;
+  font-weight:760!important;
+  line-height:1!important;
+  letter-spacing:.22em!important;
+  text-transform:uppercase!important;
+}
+
+body.rw-v2-ready .rw-v2-wall-clock-time{
+  grid-column:1!important;
+  display:flex!important;
+  align-items:baseline!important;
+  color:rgba(247,251,255,.92)!important;
+  font-family:"Cascadia Mono","Consolas","Segoe UI Mono",monospace!important;
+  font-size:20px!important;
+  font-weight:650!important;
+  line-height:1!important;
+  letter-spacing:.035em!important;
+}
+
+body.rw-v2-ready .rw-v2-wall-clock-date{
+  grid-column:2!important;
+  justify-self:end!important;
+  display:block!important;
+  max-width:126px!important;
+  color:rgba(220,239,255,.58)!important;
+  font-size:8px!important;
+  font-weight:760!important;
+  line-height:1.15!important;
+  text-align:right!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+}
+
+@media (max-width:760px){
+  body.rw-v2-ready .rw-v2-wall-clock{
+    left:4.5%!important;
+    top:9.4%!important;
+    width:218px!important;
+    min-height:42px!important;
+    padding:7px 11px 8px!important;
+  }
+
+  body.rw-v2-ready .rw-v2-wall-clock-time{
+    font-size:17px!important;
+  }
+
+  body.rw-v2-ready .rw-v2-wall-clock-date{
+    max-width:104px!important;
+    font-size:7px!important;
+  }
+}

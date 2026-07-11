@@ -309,7 +309,7 @@
       const clock = document.createElement('div');
       clock.className = 'rw-v2-wall-clock';
       clock.setAttribute('aria-hidden', 'true');
-      clock.innerHTML = '<span class="rw-v2-wall-clock-kicker">LOCAL TIME</span><span class="rw-v2-wall-clock-time"><span class="rw-v2-wall-clock-hour"></span><span class="rw-v2-wall-clock-colon">:</span><span class="rw-v2-wall-clock-minute"></span></span><span class="rw-v2-wall-clock-date"></span>';
+      clock.innerHTML = '<span class="rw-v2-wall-clock-kicker">LOCAL // TIME</span><span class="rw-v2-wall-clock-time"><span class="rw-v2-wall-clock-hour"></span><span class="rw-v2-wall-clock-colon">:</span><span class="rw-v2-wall-clock-minute"></span></span><span class="rw-v2-wall-clock-date"></span>';
       shell.appendChild(clock);
     }
     if (!shell.querySelector('.rw-v2-command-trigger')) {
@@ -431,7 +431,7 @@
     const clock = document.querySelector('.rw-v2-wall-clock');
     if (!clock) return;
     if (!clock.querySelector('.rw-v2-wall-clock-hour')) {
-      clock.innerHTML = '<span class="rw-v2-wall-clock-kicker">LOCAL TIME</span><span class="rw-v2-wall-clock-time"><span class="rw-v2-wall-clock-hour"></span><span class="rw-v2-wall-clock-colon">:</span><span class="rw-v2-wall-clock-minute"></span></span><span class="rw-v2-wall-clock-date"></span>';
+      clock.innerHTML = '<span class="rw-v2-wall-clock-kicker">LOCAL // TIME</span><span class="rw-v2-wall-clock-time"><span class="rw-v2-wall-clock-hour"></span><span class="rw-v2-wall-clock-colon">:</span><span class="rw-v2-wall-clock-minute"></span></span><span class="rw-v2-wall-clock-date"></span>';
     }
     const now = new Date();
     updateDaylightScene(now);
