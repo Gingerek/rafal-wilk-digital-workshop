@@ -6191,14 +6191,17 @@ body.rw-v2-ready.app-open .viewport iframe.show{
 /* Premium shell controls: command palette and compact system dashboard. */
 body.rw-v2-ready .rw-v2-command-trigger{
   position:absolute!important;
-  right:4.2%!important;
-  top:9.2%!important;
+  left:81.3%!important;
+  right:auto!important;
+  top:8.9%!important;
   z-index:85!important;
   display:inline-flex!important;
   align-items:center!important;
+  justify-content:center!important;
   gap:10px!important;
   height:34px!important;
-  padding:0 10px!important;
+  min-width:86px!important;
+  padding:0 14px!important;
   border-radius:999px!important;
   border:1px solid rgba(137,216,255,.20)!important;
   background:rgba(4,15,27,.34)!important;
@@ -6207,11 +6210,12 @@ body.rw-v2-ready .rw-v2-command-trigger{
   box-shadow:0 14px 32px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.08)!important;
   backdrop-filter:blur(12px) saturate(125%)!important;
   cursor:pointer!important;
+  transform:translateX(-50%)!important;
   transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease!important;
 }
 
 body.rw-v2-ready .rw-v2-command-trigger:hover{
-  transform:translateY(-1px)!important;
+  transform:translateX(-50%) translateY(-1px)!important;
   border-color:rgba(165,230,255,.54)!important;
   background:rgba(91,174,231,.18)!important;
   box-shadow:0 20px 42px rgba(0,0,0,.30), 0 0 24px rgba(91,174,231,.14)!important;
@@ -6393,10 +6397,13 @@ body.rw-v2-ready .rw-v2-command-empty{
 
 @media (max-width:760px){
   body.rw-v2-ready .rw-v2-command-trigger{
+    left:auto!important;
     right:4.5%!important;
     top:8.8%!important;
     height:30px!important;
+    min-width:74px!important;
     font-size:11px!important;
+    transform:none!important;
   }
   body.rw-v2-ready .rw-v2-command-trigger kbd{
     display:none!important;
@@ -6459,10 +6466,10 @@ body.rw-v2-phase-sunset .rw-v2-shell{
 }
 
 body.rw-v2-phase-night .rw-v2-shell{
-  --rw-sky-a:rgba(17,55,102,.17);
-  --rw-sky-b:rgba(92,147,255,.10);
-  --rw-sky-c:rgba(7,16,38,.30);
-  --rw-window-dim:rgba(0,4,12,.26);
+  --rw-sky-a:rgba(4,16,38,.58);
+  --rw-sky-b:rgba(10,31,68,.46);
+  --rw-sky-c:rgba(0,4,14,.68);
+  --rw-window-dim:rgba(0,4,12,.52);
 }
 
 body.rw-v2-ready .rw-v2-daylight-system{
@@ -6490,6 +6497,27 @@ body.rw-v2-ready .rw-v2-sky-wash{
   mask-image:linear-gradient(90deg, transparent 0 68%, rgba(0,0,0,.25) 72%, #000 80%, #000 100%)!important;
   -webkit-mask-image:linear-gradient(90deg, transparent 0 68%, rgba(0,0,0,.25) 72%, #000 80%, #000 100%)!important;
   transition:background .8s ease, opacity .8s ease!important;
+}
+
+body.rw-v2-phase-night .rw-v2-sky-wash{
+  background:
+    linear-gradient(118deg, transparent 0 66%, rgba(0,4,13,.42) 72%, rgba(4,16,38,.66) 83%, rgba(1,5,16,.82) 100%),
+    radial-gradient(circle at 88% 28%, rgba(46,103,170,.18), transparent 28%),
+    linear-gradient(180deg, transparent 0 38%, rgba(0,4,12,.48) 100%)!important;
+  mix-blend-mode:normal!important;
+  opacity:.88!important;
+}
+
+body.rw-v2-phase-dawn .rw-v2-sky-wash{
+  opacity:.96!important;
+}
+
+body.rw-v2-phase-day .rw-v2-sky-wash{
+  opacity:.82!important;
+}
+
+body.rw-v2-phase-sunset .rw-v2-sky-wash{
+  opacity:.90!important;
 }
 
 body.rw-v2-ready .rw-v2-window-sun{
@@ -6550,6 +6578,10 @@ body.rw-v2-ready .rw-v2-city-lights{
   transition:opacity .8s ease!important;
 }
 
+body.rw-v2-phase-night .rw-v2-city-lights{
+  filter:drop-shadow(0 0 5px rgba(255,205,112,.45)) drop-shadow(0 0 10px rgba(95,194,255,.18))!important;
+}
+
 body.rw-v2-ready .rw-v2-window-reflection{
   inset:0!important;
   z-index:5!important;
@@ -6560,6 +6592,24 @@ body.rw-v2-ready .rw-v2-window-reflection{
   mix-blend-mode:screen!important;
   mask-image:linear-gradient(90deg, transparent 0 70%, #000 78%, #000 100%)!important;
   -webkit-mask-image:linear-gradient(90deg, transparent 0 70%, #000 78%, #000 100%)!important;
+}
+
+body.rw-v2-ready .rw-v2-shell::before{
+  background:
+    linear-gradient(90deg, rgba(2,8,18,.16) 0%, rgba(2,8,18,.02) 42%, rgba(2,8,18,.08) 100%),
+    radial-gradient(circle at 28% 26%, rgba(57,172,230,.08), transparent 24%),
+    radial-gradient(circle at 64% 28%, rgba(139,92,246,.055), transparent 22%)!important;
+  background-size:auto!important;
+  opacity:.50!important;
+  animation:none!important;
+}
+
+body.rw-v2-ready .rw-v2-depth-field::before{
+  opacity:.18!important;
+}
+
+body.rw-v2-ready .rw-v2-depth-field{
+  display:none!important;
 }
 
 @keyframes rwWindowSunBreath{

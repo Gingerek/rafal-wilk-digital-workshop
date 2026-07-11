@@ -411,6 +411,21 @@
     if (title) title.textContent = uiText('commandTitle');
     if (input) input.placeholder = uiText('commandHint');
     renderSystemStrip();
+    positionCommandTrigger();
+  }
+  function positionCommandTrigger(){
+    const trigger = document.querySelector('.rw-v2-command-trigger');
+    const langControls = document.querySelector('.rw-v2-floating-lang');
+    const shell = document.querySelector('.rw-v2-shell');
+    if (!trigger || !langControls || !shell || document.body.classList.contains('app-open')) return;
+    const shellRect = shell.getBoundingClientRect();
+    const langRect = langControls.getBoundingClientRect();
+    const centerX = langRect.left - shellRect.left + langRect.width / 2;
+    const top = langRect.bottom - shellRect.top + 7;
+    trigger.style.setProperty('left', `${Math.round(centerX)}px`, 'important');
+    trigger.style.setProperty('right', 'auto', 'important');
+    trigger.style.setProperty('top', `${Math.round(top)}px`, 'important');
+    trigger.style.setProperty('transform', 'translateX(-50%)', 'important');
   }
   function updateWallClock(){
     const clock = document.querySelector('.rw-v2-wall-clock');
@@ -1354,6 +1369,7 @@
     bindPremiumPointer();
     updateWallClock();
     setInterval(updateWallClock, 1000);
+    window.addEventListener('resize', () => window.requestAnimationFrame(positionCommandTrigger), { passive:true });
     enhancePin();
     patchPinGateHooks();
     ensureModuleBar();
