@@ -48,6 +48,41 @@
     { id:'activity', label:'Global activity panel' },
     { id:'footer', label:'Footer links panel' }
   ];
+  const legacyVisualStyleIds = [
+    'rw-header-style',
+    'platform-autumn-skin',
+    'force-clean-ui',
+    'remove-orange-frame-keep-layout',
+    'remove-viewport-border',
+    'force-no-border',
+    'sticky-privacy-footer',
+    'privacy-hide-helper',
+    'rw-home-btn-transparent-orange-v5',
+    'rw-home-button-style',
+    'rw-home-override-orange',
+    'rw-home-safe-area',
+    'rw-fix-header-overlay',
+    'rw-lang-style',
+    'rw-brand-modern-final',
+    'rw-ownership-mark-final',
+    'rw-subtle-brand-final',
+    'rw-futuristic-home-v16',
+    'rw-futuristic-clean-v17',
+    'rw-v18-active-visual',
+    'rw-professional-final-v2',
+    'rw-v20-molecular-visual',
+    'rw-v21-fit-home-no-overlap',
+    'rw-v22-composed-home',
+    'rw-v24-single-card-accent',
+    'rw-correct-platform-name',
+    'rw-fullscreen-keyboard-bg-style',
+    'rw-agent-hide-header-text',
+    'rw-agent-buttons-relayout-fix',
+    'rw-hide-auto-lang-text',
+    'rw-futuristic-dock-style',
+    'rw-professional-platform-v1',
+    'rw-voice-agent-style'
+  ];
 
   const categories = [
     { id:'all', label:{pl:'Wszystkie', en:'All', nl:'Alles'} },
@@ -199,6 +234,15 @@
     });
     document.title = 'Rafal Wilk Digital Workshop';
   }
+  function retireLegacyVisualLayers(){
+    legacyVisualStyleIds.forEach((id) => {
+      const style = document.getElementById(id);
+      if (!style || style.dataset.rwRetired === 'true') return;
+      style.dataset.rwRetired = 'true';
+      style.setAttribute('media', 'not all');
+      style.disabled = true;
+    });
+  }
   function ensureShell(){
     const main = document.querySelector('main.wrap');
     const grid = main?.querySelector('.grid');
@@ -235,6 +279,13 @@
       langControls.setAttribute('aria-label', 'Language');
       langControls.innerHTML = '<button type="button" data-rw-home-lang="pl">PL</button><button type="button" data-rw-home-lang="en">EN</button><button type="button" data-rw-home-lang="nl">NL</button>';
       shell.appendChild(langControls);
+    }
+    if (!shell.querySelector('.rw-v2-depth-field')) {
+      const depth = document.createElement('div');
+      depth.className = 'rw-v2-depth-field';
+      depth.setAttribute('aria-hidden', 'true');
+      depth.innerHTML = '<span></span><span></span><span></span><span></span><span></span>';
+      shell.appendChild(depth);
     }
   }
   function renderHero(){
@@ -612,6 +663,25 @@
     const bodyObserver = new MutationObserver(updateModuleBar);
     bodyObserver.observe(document.body, { attributes:true, attributeFilter:['class'] });
     setInterval(updateModuleBar, 3000);
+  }
+  let premiumPointerBound = false;
+  function bindPremiumPointer(){
+    if (premiumPointerBound) return;
+    premiumPointerBound = true;
+    let raf = 0;
+    let nextX = 55;
+    let nextY = 38;
+    const update = () => {
+      raf = 0;
+      document.documentElement.style.setProperty('--rw-pointer-x', `${nextX}%`);
+      document.documentElement.style.setProperty('--rw-pointer-y', `${nextY}%`);
+    };
+    window.addEventListener('pointermove', (event) => {
+      if (document.body.classList.contains('app-open')) return;
+      nextX = Math.max(0, Math.min(100, (event.clientX / Math.max(1, window.innerWidth)) * 100));
+      nextY = Math.max(0, Math.min(100, (event.clientY / Math.max(1, window.innerHeight)) * 100));
+      if (!raf) raf = window.requestAnimationFrame(update);
+    }, { passive:true });
   }
   function hideStageWidgets(){
     ['rwPlatformApiStatus', 'rwVoiceLauncher', 'rwLauncherDock'].forEach((id) => {
@@ -1074,6 +1144,7 @@
   }
   function refreshHomeView(){
     document.body.classList.add('rw-v2-ready');
+    retireLegacyVisualLayers();
     ensureShell();
     renderHero();
     renderToolbar();
@@ -1087,8 +1158,10 @@
   function init(){
     document.body.classList.add('rw-v2-ready');
     window.__rwPlatformV2RefreshHome = refreshHomeView;
+    retireLegacyVisualLayers();
     syncBrand();
     ensureShell();
+    bindPremiumPointer();
     enhancePin();
     patchPinGateHooks();
     ensureModuleBar();
