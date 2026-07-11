@@ -6421,6 +6421,152 @@ body.rw-v2-ready .rw-v2-command-empty{
   }
 }
 
+/* Time-aware window atmosphere: subtle daylight, sunset and night city lights. */
+body.rw-v2-ready .rw-v2-shell{
+  --rw-sun-x:84%;
+  --rw-sun-y:22%;
+  --rw-sun-opacity:.58;
+  --rw-sun-glow-a:.16;
+  --rw-sun-glow-b:.08;
+  --rw-reflection-sun:.05;
+  --rw-moon-opacity:0;
+  --rw-city-light-opacity:.08;
+  --rw-sky-a:rgba(98,168,224,.11);
+  --rw-sky-b:rgba(255,192,122,.08);
+  --rw-sky-c:rgba(122,216,255,.08);
+  --rw-window-dim:rgba(2,8,18,.02);
+}
+
+body.rw-v2-phase-dawn .rw-v2-shell{
+  --rw-sky-a:rgba(255,154,102,.18);
+  --rw-sky-b:rgba(255,214,148,.17);
+  --rw-sky-c:rgba(112,195,255,.10);
+  --rw-window-dim:rgba(2,8,18,.05);
+}
+
+body.rw-v2-phase-day .rw-v2-shell{
+  --rw-sky-a:rgba(106,188,255,.12);
+  --rw-sky-b:rgba(255,226,174,.10);
+  --rw-sky-c:rgba(178,224,255,.10);
+  --rw-window-dim:rgba(2,8,18,.01);
+}
+
+body.rw-v2-phase-sunset .rw-v2-shell{
+  --rw-sky-a:rgba(255,122,92,.22);
+  --rw-sky-b:rgba(255,184,98,.20);
+  --rw-sky-c:rgba(119,116,255,.13);
+  --rw-window-dim:rgba(2,8,18,.07);
+}
+
+body.rw-v2-phase-night .rw-v2-shell{
+  --rw-sky-a:rgba(17,55,102,.17);
+  --rw-sky-b:rgba(92,147,255,.10);
+  --rw-sky-c:rgba(7,16,38,.30);
+  --rw-window-dim:rgba(0,4,12,.26);
+}
+
+body.rw-v2-ready .rw-v2-daylight-system{
+  position:absolute!important;
+  inset:0!important;
+  z-index:3!important;
+  pointer-events:none!important;
+  overflow:hidden!important;
+}
+
+body.rw-v2-ready .rw-v2-daylight-system span{
+  position:absolute!important;
+  pointer-events:none!important;
+}
+
+body.rw-v2-ready .rw-v2-sky-wash{
+  inset:0!important;
+  z-index:1!important;
+  background:
+    radial-gradient(circle at var(--rw-sun-x) var(--rw-sun-y), rgba(255,244,205,var(--rw-sun-glow-a)) 0 4%, rgba(255,186,92,var(--rw-sun-glow-b)) 9%, transparent 22%),
+    linear-gradient(118deg, transparent 0 68%, var(--rw-sky-c) 74%, var(--rw-sky-a) 88%, var(--rw-sky-b) 100%),
+    linear-gradient(180deg, transparent 0 38%, var(--rw-window-dim) 100%)!important;
+  mix-blend-mode:screen!important;
+  opacity:.92!important;
+  mask-image:linear-gradient(90deg, transparent 0 68%, rgba(0,0,0,.25) 72%, #000 80%, #000 100%)!important;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0 68%, rgba(0,0,0,.25) 72%, #000 80%, #000 100%)!important;
+  transition:background .8s ease, opacity .8s ease!important;
+}
+
+body.rw-v2-ready .rw-v2-window-sun{
+  z-index:3!important;
+  left:var(--rw-sun-x)!important;
+  top:var(--rw-sun-y)!important;
+  width:clamp(70px, 9vw, 150px)!important;
+  height:clamp(70px, 9vw, 150px)!important;
+  margin-left:clamp(-75px, -4.5vw, -35px)!important;
+  margin-top:clamp(-75px, -4.5vw, -35px)!important;
+  border-radius:999px!important;
+  background:
+    radial-gradient(circle, rgba(255,255,232,.74) 0 8%, rgba(255,216,128,.36) 18%, rgba(255,153,88,.16) 34%, transparent 68%)!important;
+  opacity:var(--rw-sun-opacity)!important;
+  mix-blend-mode:screen!important;
+  filter:blur(.4px) saturate(112%)!important;
+  transition:left 1.2s ease, top 1.2s ease, opacity .8s ease!important;
+  animation:rwWindowSunBreath 7s ease-in-out infinite alternate!important;
+}
+
+body.rw-v2-ready .rw-v2-window-moon{
+  z-index:2!important;
+  right:7.5%!important;
+  top:10.5%!important;
+  width:clamp(32px, 3.5vw, 58px)!important;
+  height:clamp(32px, 3.5vw, 58px)!important;
+  border-radius:999px!important;
+  background:
+    radial-gradient(circle at 38% 35%, rgba(238,250,255,.72), rgba(172,218,255,.22) 42%, transparent 72%)!important;
+  opacity:var(--rw-moon-opacity)!important;
+  mix-blend-mode:screen!important;
+  filter:blur(.2px) drop-shadow(0 0 18px rgba(166,219,255,.18))!important;
+  transition:opacity .8s ease!important;
+}
+
+body.rw-v2-ready .rw-v2-city-lights{
+  inset:0!important;
+  z-index:4!important;
+  background:
+    radial-gradient(circle at 84% 44%, rgba(255,215,126,.92) 0 1px, transparent 2px),
+    radial-gradient(circle at 88% 39%, rgba(255,235,172,.80) 0 1px, transparent 2px),
+    radial-gradient(circle at 91% 47%, rgba(255,207,102,.88) 0 1px, transparent 2px),
+    radial-gradient(circle at 94% 42%, rgba(255,232,168,.70) 0 1px, transparent 2px),
+    radial-gradient(circle at 87% 54%, rgba(117,205,255,.65) 0 1px, transparent 2px),
+    radial-gradient(circle at 92% 57%, rgba(255,213,124,.74) 0 1px, transparent 2px),
+    radial-gradient(circle at 96% 51%, rgba(255,236,173,.72) 0 1px, transparent 2px),
+    radial-gradient(circle at 82% 58%, rgba(255,197,88,.60) 0 1px, transparent 2px),
+    repeating-linear-gradient(90deg, transparent 0 13px, rgba(255,218,142,.14) 14px 15px, transparent 16px 30px),
+    repeating-linear-gradient(180deg, transparent 0 17px, rgba(131,213,255,.10) 18px 19px, transparent 20px 36px)!important;
+  opacity:var(--rw-city-light-opacity)!important;
+  mix-blend-mode:screen!important;
+  mask-image:
+    linear-gradient(90deg, transparent 0 76%, #000 83%, #000 100%),
+    linear-gradient(180deg, transparent 0 30%, #000 42%, #000 73%, transparent 91%)!important;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0 76%, #000 83%, #000 100%),
+    linear-gradient(180deg, transparent 0 30%, #000 42%, #000 73%, transparent 91%)!important;
+  transition:opacity .8s ease!important;
+}
+
+body.rw-v2-ready .rw-v2-window-reflection{
+  inset:0!important;
+  z-index:5!important;
+  background:
+    linear-gradient(90deg, transparent 0 74%, rgba(255,255,255,.045) 75%, transparent 77%, transparent 84%, rgba(137,216,255,.040) 85%, transparent 87%),
+    radial-gradient(circle at var(--rw-sun-x) var(--rw-sun-y), rgba(255,255,255,var(--rw-reflection-sun)), transparent 18%)!important;
+  opacity:.82!important;
+  mix-blend-mode:screen!important;
+  mask-image:linear-gradient(90deg, transparent 0 70%, #000 78%, #000 100%)!important;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0 70%, #000 78%, #000 100%)!important;
+}
+
+@keyframes rwWindowSunBreath{
+  from{transform:scale(.985);}
+  to{transform:scale(1.035);}
+}
+
 /* Hide legacy standalone home button; module navigation uses the premium module bar. */
 #rw_home_btn.rw-home{
   display:none!important;

@@ -291,6 +291,13 @@
       langControls.innerHTML = '<button type="button" data-rw-home-lang="pl">PL</button><button type="button" data-rw-home-lang="en">EN</button><button type="button" data-rw-home-lang="nl">NL</button>';
       shell.appendChild(langControls);
     }
+    if (!shell.querySelector('.rw-v2-daylight-system')) {
+      const daylight = document.createElement('div');
+      daylight.className = 'rw-v2-daylight-system';
+      daylight.setAttribute('aria-hidden', 'true');
+      daylight.innerHTML = '<span class="rw-v2-sky-wash"></span><span class="rw-v2-window-sun"></span><span class="rw-v2-window-moon"></span><span class="rw-v2-city-lights"></span><span class="rw-v2-window-reflection"></span>';
+      shell.appendChild(daylight);
+    }
     if (!shell.querySelector('.rw-v2-depth-field')) {
       const depth = document.createElement('div');
       depth.className = 'rw-v2-depth-field';
@@ -412,11 +419,47 @@
       clock.innerHTML = '<span class="rw-v2-wall-clock-kicker">LOCAL TIME</span><span class="rw-v2-wall-clock-time"><span class="rw-v2-wall-clock-hour"></span><span class="rw-v2-wall-clock-colon">:</span><span class="rw-v2-wall-clock-minute"></span></span><span class="rw-v2-wall-clock-date"></span>';
     }
     const now = new Date();
+    updateDaylightScene(now);
     const locale = lang() === 'nl' ? 'nl-NL' : lang() === 'en' ? 'en-GB' : 'pl-PL';
     const date = new Intl.DateTimeFormat(locale, { weekday:'short', day:'2-digit', month:'short', year:'numeric' }).format(now);
     clock.querySelector('.rw-v2-wall-clock-hour').textContent = String(now.getHours()).padStart(2, '0');
     clock.querySelector('.rw-v2-wall-clock-minute').textContent = String(now.getMinutes()).padStart(2, '0');
     clock.querySelector('.rw-v2-wall-clock-date').textContent = date.replace(/\.$/, '');
+  }
+  function updateDaylightScene(now = new Date()){
+    const shell = document.querySelector('.rw-v2-shell');
+    if (!shell) return;
+    const start = new Date(now.getFullYear(), 0, 0);
+    const day = Math.floor((now - start) / 86400000);
+    const hour = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+    const daylightHours = 12 + 4.35 * Math.cos((2 * Math.PI * (day - 172)) / 365);
+    const solarNoon = 12.75;
+    const sunrise = solarNoon - daylightHours / 2;
+    const sunset = solarNoon + daylightHours / 2;
+    const dawnStart = sunrise - 1.15;
+    const duskEnd = sunset + 1.15;
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const dayProgress = clamp((hour - sunrise) / daylightHours, 0, 1);
+    const morningFade = clamp((hour - dawnStart) / Math.max(0.1, sunrise - dawnStart), 0, 1);
+    const eveningFade = clamp((duskEnd - hour) / Math.max(0.1, duskEnd - sunset), 0, 1);
+    const sunVisible = hour >= dawnStart && hour <= duskEnd ? clamp(Math.min(morningFade, eveningFade) * 1.15, 0, 1) : 0;
+    const nightAmount = hour < dawnStart ? 1 : hour > duskEnd ? 1 : 1 - sunVisible;
+    const sunX = 73 + dayProgress * 22;
+    const sunY = 45 - Math.sin(dayProgress * Math.PI) * 31;
+    const phase = hour < dawnStart || hour > duskEnd ? 'night'
+      : hour < sunrise + 1.2 ? 'dawn'
+      : hour > sunset - 1.45 ? 'sunset'
+      : 'day';
+    document.body.classList.remove('rw-v2-phase-night', 'rw-v2-phase-dawn', 'rw-v2-phase-day', 'rw-v2-phase-sunset');
+    document.body.classList.add(`rw-v2-phase-${phase}`);
+    shell.style.setProperty('--rw-sun-x', `${sunX.toFixed(2)}%`);
+    shell.style.setProperty('--rw-sun-y', `${sunY.toFixed(2)}%`);
+    shell.style.setProperty('--rw-sun-opacity', sunVisible.toFixed(3));
+    shell.style.setProperty('--rw-sun-glow-a', (sunVisible * 0.28).toFixed(3));
+    shell.style.setProperty('--rw-sun-glow-b', (sunVisible * 0.14).toFixed(3));
+    shell.style.setProperty('--rw-reflection-sun', (sunVisible * 0.09).toFixed(3));
+    shell.style.setProperty('--rw-moon-opacity', clamp(nightAmount * 0.46, 0, 0.46).toFixed(3));
+    shell.style.setProperty('--rw-city-light-opacity', clamp(nightAmount * 0.88, 0.06, 0.88).toFixed(3));
   }
   function openCommandPalette(){
     const palette = document.querySelector('.rw-v2-command-palette');
