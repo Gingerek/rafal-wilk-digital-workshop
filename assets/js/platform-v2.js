@@ -302,7 +302,7 @@
       const clock = document.createElement('div');
       clock.className = 'rw-v2-wall-clock';
       clock.setAttribute('aria-hidden', 'true');
-      clock.innerHTML = '<span class="rw-v2-wall-clock-time"></span><span class="rw-v2-wall-clock-date"></span>';
+      clock.innerHTML = '<span class="rw-v2-wall-clock-kicker">LOCAL TIME</span><span class="rw-v2-wall-clock-time"><span class="rw-v2-wall-clock-hour"></span><span class="rw-v2-wall-clock-colon">:</span><span class="rw-v2-wall-clock-minute"></span></span><span class="rw-v2-wall-clock-date"></span>';
       shell.appendChild(clock);
     }
     if (!shell.querySelector('.rw-v2-command-trigger')) {
@@ -408,11 +408,14 @@
   function updateWallClock(){
     const clock = document.querySelector('.rw-v2-wall-clock');
     if (!clock) return;
+    if (!clock.querySelector('.rw-v2-wall-clock-hour')) {
+      clock.innerHTML = '<span class="rw-v2-wall-clock-kicker">LOCAL TIME</span><span class="rw-v2-wall-clock-time"><span class="rw-v2-wall-clock-hour"></span><span class="rw-v2-wall-clock-colon">:</span><span class="rw-v2-wall-clock-minute"></span></span><span class="rw-v2-wall-clock-date"></span>';
+    }
     const now = new Date();
     const locale = lang() === 'nl' ? 'nl-NL' : lang() === 'en' ? 'en-GB' : 'pl-PL';
-    const time = new Intl.DateTimeFormat(locale, { hour:'2-digit', minute:'2-digit' }).format(now);
     const date = new Intl.DateTimeFormat(locale, { weekday:'short', day:'2-digit', month:'short', year:'numeric' }).format(now);
-    clock.querySelector('.rw-v2-wall-clock-time').textContent = time;
+    clock.querySelector('.rw-v2-wall-clock-hour').textContent = String(now.getHours()).padStart(2, '0');
+    clock.querySelector('.rw-v2-wall-clock-minute').textContent = String(now.getMinutes()).padStart(2, '0');
     clock.querySelector('.rw-v2-wall-clock-date').textContent = date.replace(/\.$/, '');
   }
   function openCommandPalette(){
@@ -1307,7 +1310,7 @@
     ensureShell();
     bindPremiumPointer();
     updateWallClock();
-    setInterval(updateWallClock, 15000);
+    setInterval(updateWallClock, 1000);
     enhancePin();
     patchPinGateHooks();
     ensureModuleBar();
