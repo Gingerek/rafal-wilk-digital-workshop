@@ -97,18 +97,19 @@
     contactFallback:{pl:'Formularz serwerowy nie jest jeszcze aktywny. Otwieram gotową wiadomość email.', en:'The server contact form is not active yet. Opening a prepared email message.', nl:'Het serverformulier is nog niet actief. Ik open een voorbereide e-mail.'}
   };
 
+  const iconSvg = (body) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
   const icons = {
-    calculator:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M16 15h0"/></svg>',
-    rate:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 4-4 3 3 5-7"/></svg>',
-    tool:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5 5L4 17v3h3l5.7-5.7a4 4 0 0 0 5-5l-2.8 2.8-2-2 2.8-2.8Z"/></svg>',
-    call:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.5 2.1L8 9.5a16 16 0 0 0 6.5 6.5l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.6.5 2.5.6a2 2 0 0 1 1.7 2Z"/></svg>',
-    cv:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>',
-    scan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M7 12h10"/></svg>',
-    document:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>',
-    agency:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg>',
-    meeting:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="M8 14h4M8 18h7"/></svg>',
-    home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>',
-    project:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h7l2 2h9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M3 7V5a2 2 0 0 1 2-2h4l2 2h4"/></svg>'
+    calculator:iconSvg('<rect x="6" y="3.5" width="12" height="17" rx="2.4"/><path d="M8.8 7.3h6.4M9 11h.1M12 11h.1M15 11h.1M9 14.5h.1M12 14.5h.1M15 14.5h.1M9 18h6"/>'),
+    rate:iconSvg('<path d="M4.5 19.5V5.2"/><path d="M4.5 19.5h15"/><path d="m7.2 15.5 3.8-4 3.1 2.6 4.7-7.2"/><path d="M16.2 6.9h2.6v2.7"/>'),
+    tool:iconSvg('<path d="M14.8 6.2a4.2 4.2 0 0 0-5.1 5.1L4.4 16.6v3h3l5.3-5.3a4.2 4.2 0 0 0 5.1-5.1l-2.9 2.9-2-2 2.9-2.9Z"/><path d="M6.2 18.1h.1"/>'),
+    call:iconSvg('<path d="M20.7 16.7v2.6a1.9 1.9 0 0 1-2.1 1.9 18 18 0 0 1-7.7-2.8 17.6 17.6 0 0 1-5.4-5.4 18 18 0 0 1-2.8-7.8 1.9 1.9 0 0 1 1.9-2h2.7a1.8 1.8 0 0 1 1.8 1.5c.1.8.3 1.5.5 2.2a1.9 1.9 0 0 1-.4 2L8 10a14.3 14.3 0 0 0 6 6l1.1-1.1a1.9 1.9 0 0 1 2-.4c.7.2 1.5.4 2.3.5a1.8 1.8 0 0 1 1.3 1.7Z"/>'),
+    cv:iconSvg('<path d="M7 3.2h7.3L19 7.9v12.9H7a2 2 0 0 1-2-2V5.2a2 2 0 0 1 2-2Z"/><path d="M14 3.5V8h4.5"/><path d="M8.5 12.5h7M8.5 16h5.2"/>'),
+    scan:iconSvg('<path d="M4.5 8V5.6a1.1 1.1 0 0 1 1.1-1.1H8M16 4.5h2.4a1.1 1.1 0 0 1 1.1 1.1V8M19.5 16v2.4a1.1 1.1 0 0 1-1.1 1.1H16M8 19.5H5.6a1.1 1.1 0 0 1-1.1-1.1V16"/><path d="M7.5 12h9"/>'),
+    document:iconSvg('<path d="M7 3.2h7.4L19 7.8v13H7a2 2 0 0 1-2-2V5.2a2 2 0 0 1 2-2Z"/><path d="M14 3.5V8h4.5"/><path d="M8.5 12.7h6.8M8.5 16.2h6.8"/>'),
+    agency:iconSvg('<path d="M3.5 20.5h17"/><path d="M5.5 20.5V8l6.5-4.2L18.5 8v12.5"/><path d="M9 20.5v-6h6v6"/><path d="M8.6 9.6h.1M15.3 9.6h.1"/>'),
+    meeting:iconSvg('<rect x="4" y="4.6" width="16" height="15.4" rx="2.2"/><path d="M8.2 3v4M15.8 3v4M4 9.4h16"/><path d="M8 13.4h4.5M8 16.8h7"/>'),
+    home:iconSvg('<path d="m3.8 11.2 8.2-7.3 8.2 7.3"/><path d="M6 10.5v9.2h12v-9.2"/><path d="M9.2 19.7v-5.6h5.6v5.6"/>'),
+    project:iconSvg('<path d="M3.8 7.2h6.7l1.9 2h7.8v9.6a2 2 0 0 1-2 2H5.8a2 2 0 0 1-2-2Z"/><path d="M3.8 7.2V5.4a2 2 0 0 1 2-2h3.7l1.9 1.9h3.5"/>')
   };
 
   let activeFilter = 'all';
@@ -442,7 +443,7 @@
     gate && pinTextObserver.observe(gate, { childList:true, characterData:true, subtree:true, attributes:true, attributeFilter:['style', 'class'] });
     setInterval(() => {
       if (gate && getComputedStyle(gate).display !== 'none') patchPinTexts();
-    }, 500);
+    }, 900);
     const mo = new MutationObserver(() => {
       if (err && err.textContent) {
         err.textContent = t('wrongPin');
@@ -598,7 +599,7 @@
       } else {
         updateModuleBar();
       }
-    }, 1600);
+    }, 3600);
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter' && event.key !== ' ') return;
       const card = event.target.closest?.('main.wrap .grid .card');
@@ -610,7 +611,7 @@
     });
     const bodyObserver = new MutationObserver(updateModuleBar);
     bodyObserver.observe(document.body, { attributes:true, attributeFilter:['class'] });
-    setInterval(updateModuleBar, 1200);
+    setInterval(updateModuleBar, 3000);
   }
   function hideStageWidgets(){
     ['rwPlatformApiStatus', 'rwVoiceLauncher', 'rwLauncherDock'].forEach((id) => {
@@ -771,6 +772,67 @@
       }
       tr:nth-child(even) td{
         background:rgba(238,247,255,.68)!important;
+      }
+      html.rw-premium-module-root .topbar,
+      html.rw-premium-module-root .toolbar,
+      html.rw-premium-module-root .header,
+      html.rw-premium-module-root .page-header{
+        position:relative!important;
+        overflow:hidden!important;
+      }
+      html.rw-premium-module-root .topbar::after,
+      html.rw-premium-module-root .toolbar::after,
+      html.rw-premium-module-root .header::after,
+      html.rw-premium-module-root .page-header::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        pointer-events:none;
+        background:linear-gradient(110deg, transparent 0 42%, rgba(14,165,233,.10) 48%, transparent 56% 100%);
+      }
+      html.rw-premium-module-root h1,
+      html.rw-premium-module-root h2,
+      html.rw-premium-module-root h3{
+        font-weight:760!important;
+        letter-spacing:-.018em!important;
+      }
+      html.rw-premium-module-root .card,
+      html.rw-premium-module-root .panel,
+      html.rw-premium-module-root .summary-card,
+      html.rw-premium-module-root .result-card,
+      html.rw-premium-module-root .metric,
+      html.rw-premium-module-root .tile{
+        position:relative!important;
+        overflow:hidden!important;
+      }
+      html.rw-premium-module-root .card::before,
+      html.rw-premium-module-root .panel::before,
+      html.rw-premium-module-root .summary-card::before,
+      html.rw-premium-module-root .result-card::before,
+      html.rw-premium-module-root .metric::before,
+      html.rw-premium-module-root .tile::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        pointer-events:none;
+        background:
+          linear-gradient(135deg, rgba(255,255,255,.34), transparent 32%),
+          radial-gradient(circle at 100% 0, rgba(14,165,233,.10), transparent 30%);
+        opacity:.54;
+      }
+      html.rw-premium-module-root input,
+      html.rw-premium-module-root select,
+      html.rw-premium-module-root textarea{
+        min-height:38px!important;
+      }
+      html.rw-premium-module-root table{
+        box-shadow:0 18px 46px rgba(36,76,128,.08)!important;
+        border-radius:8px!important;
+      }
+      html.rw-premium-module-root .btn.primary,
+      html.rw-premium-module-root button.primary,
+      html.rw-premium-module-root .btn:not(.secondary):not(.soft):not(.danger){
+        background:linear-gradient(180deg,#ffffff 0%,#d9f1ff 42%,#7dd3fc 100%)!important;
       }
       @keyframes rwPremiumModuleIn{
         from{opacity:.72; transform:translateY(8px) scale(.996);}
@@ -1002,6 +1064,14 @@
   function skinModuleFrames(){
     document.querySelectorAll('iframe').forEach(applyPremiumModuleTheme);
   }
+  let skinFrameRaf = 0;
+  function scheduleSkinModuleFrames(){
+    if (skinFrameRaf) return;
+    skinFrameRaf = window.requestAnimationFrame(() => {
+      skinFrameRaf = 0;
+      skinModuleFrames();
+    });
+  }
   function refreshHomeView(){
     document.body.classList.add('rw-v2-ready');
     ensureShell();
@@ -1024,15 +1094,15 @@
     ensureModuleBar();
     bindEvents();
     hideStageWidgets();
-    new MutationObserver(hideStageWidgets).observe(document.body, { childList:true, subtree:true });
-    setInterval(hideStageWidgets, 1200);
+    new MutationObserver(() => window.requestAnimationFrame(hideStageWidgets)).observe(document.body, { childList:true, subtree:true });
+    setInterval(hideStageWidgets, 4000);
     skinModuleFrames();
     document.querySelectorAll('iframe').forEach(frame => frame.addEventListener('load', () => {
       applyPremiumModuleTheme(frame);
       scheduleLanguagePush(lang());
     }));
-    new MutationObserver(skinModuleFrames).observe(document.body, { childList:true, subtree:true });
-    setInterval(skinModuleFrames, 1200);
+    new MutationObserver(scheduleSkinModuleFrames).observe(document.body, { childList:true, subtree:true });
+    setInterval(skinModuleFrames, 5000);
     applyLanguage();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
