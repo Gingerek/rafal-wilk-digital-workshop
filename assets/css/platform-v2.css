@@ -6624,3 +6624,37 @@ body.rw-v2-ready .rw-v2-depth-field{
   opacity:0!important;
   pointer-events:none!important;
 }
+
+/* Final grid kill switch: no full-page technical grid over the background. */
+body.rw-v2-ready .rw-v2-depth-field,
+body.rw-v2-ready .rw-v2-depth-field::before,
+body.rw-v2-ready .rw-v2-depth-field::after,
+body.rw-v2-ready .rw-v2-depth-field span{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  background:none!important;
+  background-image:none!important;
+}
+
+body.rw-v2-ready .rw-v2-shell::before{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  background:none!important;
+  background-image:none!important;
+  animation:none!important;
+}
+
+body.rw-v2-ready .rw-v2-city-lights{
+  background:
+    radial-gradient(circle at 84% 44%, rgba(255,215,126,.92) 0 1px, transparent 2px),
+    radial-gradient(circle at 88% 39%, rgba(255,235,172,.80) 0 1px, transparent 2px),
+    radial-gradient(circle at 91% 47%, rgba(255,207,102,.88) 0 1px, transparent 2px),
+    radial-gradient(circle at 94% 42%, rgba(255,232,168,.70) 0 1px, transparent 2px),
+    radial-gradient(circle at 87% 54%, rgba(117,205,255,.65) 0 1px, transparent 2px),
+    radial-gradient(circle at 92% 57%, rgba(255,213,124,.74) 0 1px, transparent 2px),
+    radial-gradient(circle at 96% 51%, rgba(255,236,173,.72) 0 1px, transparent 2px),
+    radial-gradient(circle at 82% 58%, rgba(255,197,88,.60) 0 1px, transparent 2px)!important;
+  background-size:auto!important;
+}
