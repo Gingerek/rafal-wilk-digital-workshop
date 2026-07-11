@@ -6766,3 +6766,10 @@ body.rw-v2-ready .rw-v2-wall-clock-date{
     font-size:7px!important;
   }
 }
+
+/* Remove loose light dots from the person/window area. */
+body.rw-v2-ready .rw-v2-city-lights{
+  display:none!important;
+  opacity:0!important;
+  background:none!important;
+}
