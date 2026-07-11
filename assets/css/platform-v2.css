@@ -6089,3 +6089,221 @@ body.rw-v2-ready.app-open .viewport iframe.show{
     transition:none!important;
   }
 }
+
+/* Premium shell controls: command palette and compact system dashboard. */
+body.rw-v2-ready .rw-v2-command-trigger{
+  position:absolute!important;
+  right:4.2%!important;
+  top:9.2%!important;
+  z-index:85!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  height:34px!important;
+  padding:0 10px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(137,216,255,.20)!important;
+  background:rgba(4,15,27,.34)!important;
+  color:rgba(247,251,255,.86)!important;
+  font:650 12px/1 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.08)!important;
+  backdrop-filter:blur(12px) saturate(125%)!important;
+  cursor:pointer!important;
+  transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease!important;
+}
+
+body.rw-v2-ready .rw-v2-command-trigger:hover{
+  transform:translateY(-1px)!important;
+  border-color:rgba(165,230,255,.54)!important;
+  background:rgba(91,174,231,.18)!important;
+  box-shadow:0 20px 42px rgba(0,0,0,.30), 0 0 24px rgba(91,174,231,.14)!important;
+}
+
+body.rw-v2-ready .rw-v2-command-trigger kbd{
+  min-width:38px!important;
+  padding:4px 6px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(137,216,255,.20)!important;
+  background:rgba(255,255,255,.08)!important;
+  color:rgba(247,251,255,.78)!important;
+  font:700 10px/1 "Segoe UI",system-ui,sans-serif!important;
+}
+
+body.rw-v2-ready .rw-v2-system-strip{
+  position:absolute!important;
+  left:3.0%!important;
+  bottom:3.2%!important;
+  z-index:45!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-height:30px!important;
+  padding:6px 10px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(137,216,255,.14)!important;
+  background:rgba(3,13,24,.24)!important;
+  color:rgba(247,251,255,.70)!important;
+  font:620 11px/1.15 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
+  backdrop-filter:blur(10px) saturate(120%)!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.18)!important;
+}
+
+body.rw-v2-ready .rw-v2-system-strip strong{
+  color:#dff7ff!important;
+  font-size:13px!important;
+}
+
+body.rw-v2-ready .rw-v2-command-palette[hidden]{
+  display:none!important;
+}
+
+body.rw-v2-ready .rw-v2-command-palette{
+  position:fixed!important;
+  inset:0!important;
+  z-index:20000!important;
+  display:grid!important;
+  place-items:start center!important;
+  padding-top:12vh!important;
+  background:rgba(1,7,14,.48)!important;
+  backdrop-filter:blur(14px) saturate(115%)!important;
+  animation:rwCommandFade .18s ease both!important;
+}
+
+body.rw-v2-ready .rw-v2-command-dialog{
+  width:min(560px, calc(100vw - 32px))!important;
+  max-height:min(620px, 76vh)!important;
+  overflow:hidden!important;
+  border-radius:18px!important;
+  border:1px solid rgba(137,216,255,.28)!important;
+  background:
+    linear-gradient(145deg, rgba(17,45,69,.92), rgba(4,14,26,.88)),
+    radial-gradient(circle at 84% 0, rgba(139,216,255,.12), transparent 30%)!important;
+  color:#f7fbff!important;
+  box-shadow:0 42px 110px rgba(0,0,0,.52), 0 0 56px rgba(91,174,231,.16), inset 0 1px 0 rgba(255,255,255,.10)!important;
+  backdrop-filter:blur(22px) saturate(130%)!important;
+}
+
+body.rw-v2-ready .rw-v2-command-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  padding:16px 16px 10px!important;
+}
+
+body.rw-v2-ready .rw-v2-command-head strong{
+  font:760 15px/1.1 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
+}
+
+body.rw-v2-ready .rw-v2-command-head button{
+  width:30px!important;
+  height:30px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(137,216,255,.20)!important;
+  background:rgba(255,255,255,.06)!important;
+  color:#f7fbff!important;
+  cursor:pointer!important;
+}
+
+body.rw-v2-ready .rw-v2-command-input{
+  width:calc(100% - 32px)!important;
+  height:42px!important;
+  margin:0 16px 12px!important;
+  padding:0 13px!important;
+  border-radius:12px!important;
+  border:1px solid rgba(137,216,255,.24)!important;
+  background:rgba(2,8,18,.42)!important;
+  color:#f7fbff!important;
+  outline:none!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+
+body.rw-v2-ready .rw-v2-command-input:focus{
+  border-color:rgba(165,230,255,.58)!important;
+  box-shadow:0 0 0 4px rgba(91,174,231,.10), inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+
+body.rw-v2-ready .rw-v2-command-list{
+  display:grid!important;
+  gap:8px!important;
+  max-height:440px!important;
+  overflow:auto!important;
+  padding:0 16px 16px!important;
+}
+
+body.rw-v2-ready .rw-v2-command-item{
+  display:grid!important;
+  grid-template-columns:38px 1fr auto!important;
+  align-items:center!important;
+  gap:12px!important;
+  width:100%!important;
+  min-height:50px!important;
+  padding:8px 10px!important;
+  border-radius:12px!important;
+  border:1px solid rgba(137,216,255,.13)!important;
+  background:rgba(255,255,255,.045)!important;
+  color:#f7fbff!important;
+  text-align:left!important;
+  cursor:pointer!important;
+  transition:transform .18s ease, border-color .18s ease, background .18s ease!important;
+}
+
+body.rw-v2-ready .rw-v2-command-item:hover,
+body.rw-v2-ready .rw-v2-command-item:focus-visible{
+  transform:translateY(-1px)!important;
+  border-color:rgba(165,230,255,.45)!important;
+  background:rgba(91,174,231,.13)!important;
+  outline:none!important;
+}
+
+body.rw-v2-ready .rw-v2-command-icon{
+  width:34px!important;
+  height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:10px!important;
+  border:1px solid rgba(137,216,255,.20)!important;
+  color:#8bd8ff!important;
+  background:rgba(139,216,255,.10)!important;
+}
+
+body.rw-v2-ready .rw-v2-command-icon svg{
+  width:18px!important;
+  height:18px!important;
+}
+
+body.rw-v2-ready .rw-v2-command-item span:not(.rw-v2-command-icon){
+  font:720 13px/1.2 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
+}
+
+body.rw-v2-ready .rw-v2-command-item small{
+  color:rgba(220,239,255,.58)!important;
+  font-size:11px!important;
+  text-transform:uppercase!important;
+}
+
+body.rw-v2-ready .rw-v2-command-empty{
+  padding:18px!important;
+  color:rgba(220,239,255,.64)!important;
+  text-align:center!important;
+}
+
+@keyframes rwCommandFade{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+@media (max-width:760px){
+  body.rw-v2-ready .rw-v2-command-trigger{
+    right:4.5%!important;
+    top:8.8%!important;
+    height:30px!important;
+    font-size:11px!important;
+  }
+  body.rw-v2-ready .rw-v2-command-trigger kbd{
+    display:none!important;
+  }
+  body.rw-v2-ready .rw-v2-system-strip{
+    display:none!important;
+  }
+}

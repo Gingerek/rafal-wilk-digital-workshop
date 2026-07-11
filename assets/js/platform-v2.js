@@ -174,6 +174,17 @@
     scheduleLanguagePush(activeLangOverride);
   }
   function t(key){ return copy[key]?.[lang()] || copy[key]?.pl || key; }
+  function uiText(key){
+    const texts = {
+      command:{pl:'Szukaj', en:'Command', nl:'Zoeken'},
+      commandTitle:{pl:'Command Center', en:'Command Center', nl:'Command Center'},
+      commandHint:{pl:'Wpisz nazwe modulu', en:'Type a module name', nl:'Typ een modulenaam'},
+      commandEmpty:{pl:'Brak wynikow', en:'No results', nl:'Geen resultaten'},
+      systemOnline:{pl:'System online', en:'System online', nl:'Systeem online'},
+      quickAccess:{pl:'Szybki dostep', en:'Quick access', nl:'Snelle toegang'}
+    };
+    return texts[key]?.[lang()] || texts[key]?.pl || key;
+  }
   function moduleTitle(meta){
     return meta?.title?.[lang()] || meta?.title?.pl || '';
   }
@@ -287,6 +298,33 @@
       depth.innerHTML = '<span></span><span></span><span></span><span></span><span></span>';
       shell.appendChild(depth);
     }
+    if (!shell.querySelector('.rw-v2-command-trigger')) {
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'rw-v2-command-trigger';
+      trigger.setAttribute('data-rw-command-open', 'true');
+      shell.appendChild(trigger);
+    }
+    if (!shell.querySelector('.rw-v2-system-strip')) {
+      const strip = document.createElement('div');
+      strip.className = 'rw-v2-system-strip';
+      strip.setAttribute('aria-hidden', 'true');
+      shell.appendChild(strip);
+    }
+    if (!shell.querySelector('.rw-v2-command-palette')) {
+      const palette = document.createElement('div');
+      palette.className = 'rw-v2-command-palette';
+      palette.setAttribute('hidden', '');
+      palette.innerHTML = `<div class="rw-v2-command-dialog" role="dialog" aria-modal="true">
+        <div class="rw-v2-command-head">
+          <strong></strong>
+          <button type="button" data-rw-command-close="true" aria-label="Close">x</button>
+        </div>
+        <input class="rw-v2-command-input" type="search" autocomplete="off">
+        <div class="rw-v2-command-list" role="listbox"></div>
+      </div>`;
+      shell.appendChild(palette);
+    }
   }
   function renderHero(){
     const hero = document.querySelector('.rw-v2-hero');
@@ -303,6 +341,7 @@
       </div>
     </div>`;
     syncHomeLang();
+    renderCommandUi();
   }
   function renderToolbar(){
     const toolbar = document.querySelector('.rw-v2-toolbar');
@@ -310,6 +349,70 @@
     activeFilter = 'all';
     toolbar.hidden = true;
     toolbar.innerHTML = '';
+    renderCommandUi();
+  }
+  function moduleCards(){
+    return Array.from(document.querySelectorAll('main.wrap .grid .card'));
+  }
+  function renderSystemStrip(){
+    const strip = document.querySelector('.rw-v2-system-strip');
+    if (!strip) return;
+    const count = moduleCards().filter(card => !card.hidden).length;
+    strip.innerHTML = `<span>${uiText('systemOnline')}</span><strong>${count}</strong><span>${uiText('quickAccess')}</span>`;
+  }
+  function commandRows(query = ''){
+    const q = query.trim().toLowerCase();
+    return moduleCards().map((card) => {
+      const meta = findMeta(card);
+      const title = meta.title[lang()] || meta.title.pl;
+      const haystack = `${title} ${meta.category}`.toLowerCase();
+      return { card, meta, title, visible:!card.hidden && (!q || haystack.includes(q)) };
+    }).filter(item => item.visible);
+  }
+  function renderCommandList(query = ''){
+    const list = document.querySelector('.rw-v2-command-list');
+    if (!list) return;
+    const rows = commandRows(query);
+    list.innerHTML = rows.length ? rows.map((item, index) => `
+      <button type="button" class="rw-v2-command-item" data-rw-command-index="${index}">
+        <span class="rw-v2-command-icon">${icons[item.meta.icon] || icons.project}</span>
+        <span>${item.title}</span>
+        <small>${item.meta.category}</small>
+      </button>`).join('') : `<div class="rw-v2-command-empty">${uiText('commandEmpty')}</div>`;
+    list.querySelectorAll('[data-rw-command-index]').forEach((button, index) => {
+      button.addEventListener('click', () => {
+        const item = rows[index];
+        closeCommandPalette();
+        item?.card?.querySelector('.btn')?.click();
+      });
+    });
+  }
+  function renderCommandUi(){
+    const trigger = document.querySelector('.rw-v2-command-trigger');
+    if (trigger) trigger.innerHTML = `<span>${uiText('command')}</span><kbd>Ctrl K</kbd>`;
+    const palette = document.querySelector('.rw-v2-command-palette');
+    const title = palette?.querySelector('.rw-v2-command-head strong');
+    const input = palette?.querySelector('.rw-v2-command-input');
+    if (title) title.textContent = uiText('commandTitle');
+    if (input) input.placeholder = uiText('commandHint');
+    renderSystemStrip();
+  }
+  function openCommandPalette(){
+    const palette = document.querySelector('.rw-v2-command-palette');
+    const input = palette?.querySelector('.rw-v2-command-input');
+    if (!palette || !input || document.body.classList.contains('app-open')) return;
+    palette.hidden = false;
+    palette.classList.add('is-open');
+    renderCommandUi();
+    renderCommandList('');
+    input.value = '';
+    setTimeout(() => input.focus(), 30);
+  }
+  function closeCommandPalette(){
+    const palette = document.querySelector('.rw-v2-command-palette');
+    if (!palette) return;
+    palette.classList.remove('is-open');
+    palette.hidden = true;
   }
   function renderContact(){
     const contact = document.querySelector('.rw-v2-contact');
@@ -590,6 +693,16 @@
         setTimeout(applyLanguage, 1700);
         return;
       }
+      if (event.target.closest('[data-rw-command-open]')) {
+        event.preventDefault();
+        openCommandPalette();
+        return;
+      }
+      if (event.target.closest('[data-rw-command-close]') || event.target.classList?.contains('rw-v2-command-palette')) {
+        event.preventDefault();
+        closeCommandPalette();
+        return;
+      }
       const hotspot = event.target.closest('.rw-v2-hotspot');
       if (hotspot) {
         event.preventDefault();
@@ -659,6 +772,18 @@
       if (!btn) return;
       event.preventDefault();
       btn.click();
+    });
+    document.addEventListener('input', (event) => {
+      if (!event.target.matches?.('.rw-v2-command-input')) return;
+      renderCommandList(event.target.value || '');
+    });
+    document.addEventListener('keydown', (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        openCommandPalette();
+        return;
+      }
+      if (event.key === 'Escape') closeCommandPalette();
     });
     const bodyObserver = new MutationObserver(updateModuleBar);
     bodyObserver.observe(document.body, { attributes:true, attributeFilter:['class'] });
