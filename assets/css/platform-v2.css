@@ -6838,7 +6838,7 @@ body.rw-v2-ready .rw-v2-window-reflection{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-clockcolon-1");
+  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-clockdots-1");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6853,27 +6853,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-dawn-phase.webp?v=20260712-clockcolon-1");
+  --rw-home-bg:url("../images/private-command-center-hero-dawn-phase.webp?v=20260712-clockdots-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-morning-phase.webp?v=20260712-clockcolon-1");
+  --rw-home-bg:url("../images/private-command-center-hero-morning-phase.webp?v=20260712-clockdots-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-clockcolon-1");
+  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-clockdots-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-afternoon-phase.webp?v=20260712-clockcolon-1");
+  --rw-home-bg:url("../images/private-command-center-hero-afternoon-phase.webp?v=20260712-clockdots-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-sunset-phase.webp?v=20260712-clockcolon-1");
+  --rw-home-bg:url("../images/private-command-center-hero-sunset-phase.webp?v=20260712-clockdots-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-night-phase.webp?v=20260712-clockcolon-1");
+  --rw-home-bg:url("../images/private-command-center-hero-night-phase.webp?v=20260712-clockdots-1");
 }
 
 body.rw-v2-ready:not(.app-open),
@@ -7646,10 +7646,10 @@ body.rw-v2-language-switching:not(.app-open) main.wrap .grid .card{
 /* Clock colon restore: keep the separator aligned and blinking. */
 body.rw-v2-ready .rw-v2-wall-clock-time{
   display:grid!important;
-  grid-template-columns:2ch .44ch 2ch!important;
+  grid-template-columns:2ch 10px 2ch!important;
   align-items:center!important;
-  column-gap:.02em!important;
-  min-width:4.5ch!important;
+  column-gap:2px!important;
+  min-width:5ch!important;
   font-variant-numeric:tabular-nums!important;
 }
 
@@ -7662,10 +7662,24 @@ body.rw-v2-ready .rw-v2-wall-clock-minute{
 }
 
 body.rw-v2-ready .rw-v2-wall-clock-colon{
-  display:block!important;
-  width:.44ch!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  width:10px!important;
+  height:20px!important;
+  align-self:center!important;
+  margin-top:1px!important;
   line-height:1!important;
-  text-align:center!important;
-  color:rgba(247,251,255,.82)!important;
   animation:rwWallClockColonBlink 1s steps(1,end) infinite!important;
+}
+
+body.rw-v2-ready .rw-v2-wall-clock-colon .rw-v2-clock-dot{
+  display:block!important;
+  width:4px!important;
+  height:4px!important;
+  border-radius:999px!important;
+  background:rgba(247,251,255,.82)!important;
+  box-shadow:0 0 8px rgba(139,216,255,.44)!important;
 }
