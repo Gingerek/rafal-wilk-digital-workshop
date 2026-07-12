@@ -165,7 +165,16 @@
     if (raw.startsWith('nl')) return 'nl';
     return 'pl';
   }
+  function markLanguageSwitch(){
+    if (document.body.classList.contains('app-open')) return;
+    document.body.classList.add('rw-v2-language-switching');
+    clearTimeout(window.__rwV2LanguageSwitchTimer);
+    window.__rwV2LanguageSwitchTimer = setTimeout(() => {
+      document.body.classList.remove('rw-v2-language-switching');
+    }, 520);
+  }
   function setPlatformLang(nextLang){
+    markLanguageSwitch();
     activeLangOverride = String(nextLang || 'pl').toLowerCase().slice(0, 2);
     if (!['pl', 'en', 'nl'].includes(activeLangOverride)) activeLangOverride = 'pl';
     try {
