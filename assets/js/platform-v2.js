@@ -511,6 +511,7 @@
     }
     time.querySelector('.rw-v2-wall-clock-hour').textContent = String(now.getHours()).padStart(2, '0');
     time.querySelector('.rw-v2-wall-clock-minute').textContent = String(now.getMinutes()).padStart(2, '0');
+    time.querySelector('.rw-v2-wall-clock-colon')?.classList.toggle('is-dim', now.getSeconds() % 2 === 1);
     clock.querySelector('.rw-v2-wall-clock-date').textContent = date.replace(/\.$/, '');
   }
 

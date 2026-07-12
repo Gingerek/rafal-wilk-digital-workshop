@@ -6838,7 +6838,7 @@ body.rw-v2-ready .rw-v2-window-reflection{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-penfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-clockblinkjs-1");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6853,27 +6853,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-dawn-phase.webp?v=20260712-penfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-dawn-phase.webp?v=20260712-clockblinkjs-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-morning-phase.webp?v=20260712-penfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-morning-phase.webp?v=20260712-clockblinkjs-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-penfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-clockblinkjs-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-afternoon-phase.webp?v=20260712-penfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-afternoon-phase.webp?v=20260712-clockblinkjs-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-sunset-phase-penfix.webp?v=20260712-penfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-sunset-phase-penfix.webp?v=20260712-clockblinkjs-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-night-phase.webp?v=20260712-penfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-night-phase.webp?v=20260712-clockblinkjs-1");
 }
 
 body.rw-v2-ready:not(.app-open),
@@ -7672,7 +7672,8 @@ body.rw-v2-ready .rw-v2-wall-clock-colon{
   align-self:center!important;
   margin-top:1px!important;
   line-height:1!important;
-  animation:rwWallClockColonBlink 1s steps(1,end) infinite!important;
+  opacity:1!important;
+  animation:none!important;
 }
 
 body.rw-v2-ready .rw-v2-wall-clock-colon .rw-v2-clock-dot{
@@ -7682,4 +7683,10 @@ body.rw-v2-ready .rw-v2-wall-clock-colon .rw-v2-clock-dot{
   border-radius:999px!important;
   background:rgba(247,251,255,.82)!important;
   box-shadow:0 0 8px rgba(139,216,255,.44)!important;
+  opacity:1!important;
+}
+
+body.rw-v2-ready .rw-v2-wall-clock-colon.is-dim .rw-v2-clock-dot{
+  opacity:.18!important;
+  box-shadow:0 0 3px rgba(139,216,255,.14)!important;
 }
