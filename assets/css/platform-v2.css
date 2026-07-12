@@ -6773,3 +6773,65 @@ body.rw-v2-ready .rw-v2-city-lights{
   opacity:0!important;
   background:none!important;
 }
+
+/* Time-of-day refinement: use atmospheric tint only, never draw a second sun. */
+body.rw-v2-ready .rw-v2-window-sun,
+body.rw-v2-ready .rw-v2-window-moon,
+body.rw-v2-ready .rw-v2-city-lights{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  background:none!important;
+  animation:none!important;
+}
+
+body.rw-v2-ready .rw-v2-sky-wash{
+  inset:0!important;
+  z-index:1!important;
+  background:
+    linear-gradient(118deg, transparent 0 61%, rgba(95,166,218,.08) 70%, rgba(255,190,116,.10) 100%),
+    linear-gradient(180deg, transparent 0 36%, rgba(2,8,18,.06) 100%)!important;
+  mix-blend-mode:soft-light!important;
+  opacity:.72!important;
+  mask-image:linear-gradient(90deg, transparent 0 55%, rgba(0,0,0,.35) 63%, #000 72%, #000 100%)!important;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0 55%, rgba(0,0,0,.35) 63%, #000 72%, #000 100%)!important;
+}
+
+body.rw-v2-phase-dawn .rw-v2-sky-wash{
+  background:
+    linear-gradient(118deg, transparent 0 58%, rgba(255,155,95,.14) 69%, rgba(255,214,151,.18) 100%),
+    linear-gradient(180deg, transparent 0 38%, rgba(34,15,30,.12) 100%)!important;
+  mix-blend-mode:soft-light!important;
+  opacity:.82!important;
+}
+
+body.rw-v2-phase-day .rw-v2-sky-wash{
+  background:
+    linear-gradient(118deg, transparent 0 58%, rgba(92,173,238,.12) 70%, rgba(196,229,255,.16) 100%),
+    linear-gradient(180deg, transparent 0 38%, rgba(0,18,38,.05) 100%)!important;
+  mix-blend-mode:screen!important;
+  opacity:.46!important;
+}
+
+body.rw-v2-phase-sunset .rw-v2-sky-wash{
+  background:
+    linear-gradient(118deg, transparent 0 58%, rgba(255,128,86,.16) 68%, rgba(255,187,104,.20) 100%),
+    linear-gradient(180deg, transparent 0 36%, rgba(36,12,28,.14) 100%)!important;
+  mix-blend-mode:soft-light!important;
+  opacity:.84!important;
+}
+
+body.rw-v2-phase-night .rw-v2-sky-wash{
+  background:
+    linear-gradient(118deg, transparent 0 58%, rgba(2,9,24,.68) 70%, rgba(1,5,16,.88) 100%),
+    linear-gradient(180deg, transparent 0 32%, rgba(0,4,12,.50) 100%)!important;
+  mix-blend-mode:normal!important;
+  opacity:.94!important;
+}
+
+body.rw-v2-ready .rw-v2-window-reflection{
+  background:
+    linear-gradient(90deg, transparent 0 72%, rgba(255,255,255,.038) 74%, transparent 76%, transparent 84%, rgba(137,216,255,.032) 86%, transparent 88%)!important;
+  opacity:.52!important;
+  mix-blend-mode:screen!important;
+}

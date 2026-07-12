@@ -295,9 +295,10 @@
       const daylight = document.createElement('div');
       daylight.className = 'rw-v2-daylight-system';
       daylight.setAttribute('aria-hidden', 'true');
-      daylight.innerHTML = '<span class="rw-v2-sky-wash"></span><span class="rw-v2-window-sun"></span><span class="rw-v2-window-moon"></span><span class="rw-v2-city-lights"></span><span class="rw-v2-window-reflection"></span>';
+      daylight.innerHTML = '<span class="rw-v2-sky-wash"></span><span class="rw-v2-window-reflection"></span>';
       shell.appendChild(daylight);
     }
+    shell.querySelectorAll('.rw-v2-window-sun,.rw-v2-window-moon,.rw-v2-city-lights').forEach((el) => el.remove());
     if (!shell.querySelector('.rw-v2-depth-field')) {
       const depth = document.createElement('div');
       depth.className = 'rw-v2-depth-field';
