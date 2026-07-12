@@ -187,12 +187,46 @@
       commandHint:{pl:'Wpisz nazwe modulu', en:'Type a module name', nl:'Typ een modulenaam'},
       commandEmpty:{pl:'Brak wynikow', en:'No results', nl:'Geen resultaten'},
       systemOnline:{pl:'System online', en:'System online', nl:'Systeem online'},
-      quickAccess:{pl:'Szybki dostep', en:'Quick access', nl:'Snelle toegang'}
+      quickAccess:{pl:'Szybki dostep', en:'Quick access', nl:'Snelle toegang'},
+      protected:{pl:'Chroniony', en:'Protected', nl:'Beveiligd'},
+      ready:{pl:'Gotowy', en:'Ready', nl:'Gereed'},
+      calculator:{pl:'Kalkulator', en:'Calculator', nl:'Rekentool'},
+      document:{pl:'Dokument', en:'Document', nl:'Document'},
+      workbook:{pl:'Excel', en:'Excel', nl:'Excel'},
+      workflow:{pl:'Proces', en:'Workflow', nl:'Workflow'},
+      tracker:{pl:'Tracker', en:'Tracker', nl:'Tracker'}
     };
     return texts[key]?.[lang()] || texts[key]?.pl || key;
   }
   function moduleTitle(meta){
     return meta?.title?.[lang()] || meta?.title?.pl || '';
+  }
+  function categoryLabel(id){
+    const found = categories.find((item) => item.id === id);
+    return found?.label?.[lang()] || found?.label?.pl || id || '';
+  }
+  function moduleStatus(meta){
+    const title = `${moduleTitle(meta)} ${Array.isArray(meta?.match) ? meta.match.join(' ') : meta?.match || ''}`.toLowerCase();
+    if (meta?.category === 'projects') return uiText('protected');
+    if (title.includes('excel')) return uiText('workbook');
+    if (meta?.category === 'finance') return uiText('calculator');
+    if (meta?.category === 'documents') return uiText('document');
+    if (meta?.category === 'tracking') return uiText('tracker');
+    if (meta?.category === 'recruitment') return uiText('workflow');
+    return uiText('ready');
+  }
+  function searchText(meta, title){
+    const matches = Array.isArray(meta?.match) ? meta.match : [meta?.match || ''];
+    const titles = Object.values(meta?.title || {});
+    const descs = Object.values(meta?.desc || {});
+    const keywords = {
+      finance:'finance budget bill rate margin rate calculator rekentool calculation cao salary pay',
+      recruitment:'recruitment intake call cv match candidate job',
+      documents:'document file workbook excel report pdf',
+      tracking:'tracker register meeting manager home office days',
+      projects:'project private protected files'
+    }[meta?.category] || '';
+    return `${title} ${titles.join(' ')} ${descs.join(' ')} ${matches.join(' ')} ${categoryLabel(meta?.category)} ${moduleStatus(meta)} ${keywords}`.toLowerCase();
   }
   function syncHomeLang(){
     document.querySelectorAll('[data-rw-home-lang]').forEach((btn) => {
@@ -387,26 +421,37 @@
     const strip = document.querySelector('.rw-v2-system-strip');
     if (!strip) return;
     const count = moduleCards().filter(card => !card.hidden).length;
-    strip.innerHTML = `<span>${uiText('systemOnline')}</span><strong>${count}</strong><span>${uiText('quickAccess')}</span>`;
+    const stamp = new Date().toLocaleTimeString(lang() === 'nl' ? 'nl-NL' : lang() === 'en' ? 'en-GB' : 'pl-PL', { hour:'2-digit', minute:'2-digit' });
+    strip.innerHTML = `<span class="rw-v2-strip-online"><i></i>${uiText('systemOnline')}</span><strong>${count}</strong><span>${uiText('quickAccess')}</span><span>${lang().toUpperCase()}</span><span>${stamp}</span>`;
   }
   function commandRows(query = ''){
-    const q = query.trim().toLowerCase();
+    const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
     return moduleCards().map((card) => {
       const meta = findMeta(card);
       const title = meta.title[lang()] || meta.title.pl;
-      const haystack = `${title} ${meta.category}`.toLowerCase();
-      return { card, meta, title, visible:!card.hidden && (!q || haystack.includes(q)) };
-    }).filter(item => item.visible);
+      const haystack = searchText(meta, title);
+      const visible = !card.hidden && (!tokens.length || tokens.every((token) => haystack.includes(token)));
+      let score = 0;
+      if (tokens.length) {
+        tokens.forEach((token) => {
+          if (title.toLowerCase().startsWith(token)) score += 20;
+          if (title.toLowerCase().includes(token)) score += 10;
+          if (meta.category.toLowerCase().includes(token)) score += 6;
+          if (haystack.includes(token)) score += 2;
+        });
+      }
+      return { card, meta, title, visible, score };
+    }).filter(item => item.visible).sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
   }
   function renderCommandList(query = ''){
     const list = document.querySelector('.rw-v2-command-list');
     if (!list) return;
     const rows = commandRows(query);
     list.innerHTML = rows.length ? rows.map((item, index) => `
-      <button type="button" class="rw-v2-command-item" data-rw-command-index="${index}">
+      <button type="button" class="rw-v2-command-item${index === 0 ? ' is-active' : ''}" data-rw-command-index="${index}">
         <span class="rw-v2-command-icon">${icons[item.meta.icon] || icons.project}</span>
-        <span>${item.title}</span>
-        <small>${item.meta.category}</small>
+        <span class="rw-v2-command-text"><span>${item.title}</span><small>${categoryLabel(item.meta.category)} / ${moduleStatus(item.meta)}</small></span>
+        <span class="rw-v2-command-arrow">&nearr;</span>
       </button>`).join('') : `<div class="rw-v2-command-empty">${uiText('commandEmpty')}</div>`;
     list.querySelectorAll('[data-rw-command-index]').forEach((button, index) => {
       button.addEventListener('click', () => {
@@ -652,10 +697,11 @@
     }
   }
   function enhanceCards(){
-    document.querySelectorAll('main.wrap .grid .card').forEach((card) => {
+    document.querySelectorAll('main.wrap .grid .card').forEach((card, index) => {
       const meta = findMeta(card);
       card.dataset.category = meta.category;
       card.dataset.moduleMatch = meta.match;
+      card.style.setProperty('--rw-card-index', index);
       let icon = card.querySelector('.rw-v2-icon');
       if (!icon) {
         icon = document.createElement('div');
@@ -675,6 +721,14 @@
       const title = card.querySelector('.title');
       const titleText = moduleTitle(meta);
       if (title) title.textContent = titleText;
+      let status = card.querySelector('.rw-v2-card-status');
+      if (!status) {
+        status = document.createElement('div');
+        status.className = 'rw-v2-card-status';
+        if (title) title.insertAdjacentElement('afterend', status);
+        else card.appendChild(status);
+      }
+      status.innerHTML = `<span>${moduleStatus(meta)}</span><span>${categoryLabel(meta.category)}</span>`;
       card.classList.add('rw-v2-card-clickable');
       card.setAttribute('role', 'button');
       card.setAttribute('tabindex', '0');
@@ -953,10 +1007,21 @@
     });
     document.addEventListener('keydown', (event) => {
       const palette = document.querySelector('.rw-v2-command-palette.is-open');
-      if (palette && event.key === 'Enter' && event.target.matches?.('.rw-v2-command-input')) {
-        event.preventDefault();
-        palette.querySelector('.rw-v2-command-item')?.click();
-        return;
+      if (palette && event.target.matches?.('.rw-v2-command-input')) {
+        const items = Array.from(palette.querySelectorAll('.rw-v2-command-item'));
+        if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && items.length) {
+          event.preventDefault();
+          const current = Math.max(0, items.findIndex((item) => item.classList.contains('is-active')));
+          const next = event.key === 'ArrowDown' ? (current + 1) % items.length : (current - 1 + items.length) % items.length;
+          items.forEach((item, index) => item.classList.toggle('is-active', index === next));
+          items[next].scrollIntoView({ block:'nearest' });
+          return;
+        }
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          (items.find((item) => item.classList.contains('is-active')) || items[0])?.click();
+          return;
+        }
       }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
