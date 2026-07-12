@@ -6838,7 +6838,7 @@ body.rw-v2-ready .rw-v2-window-reflection{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-clockfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-stripfix-1");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6853,27 +6853,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-dawn-phase.webp?v=20260712-clockfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-dawn-phase.webp?v=20260712-stripfix-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-morning-phase.webp?v=20260712-clockfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-morning-phase.webp?v=20260712-stripfix-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-clockfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-stripfix-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-afternoon-phase.webp?v=20260712-clockfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-afternoon-phase.webp?v=20260712-stripfix-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-sunset-phase.webp?v=20260712-clockfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-sunset-phase.webp?v=20260712-stripfix-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-night-phase.webp?v=20260712-clockfix-1");
+  --rw-home-bg:url("../images/private-command-center-hero-night-phase.webp?v=20260712-stripfix-1");
 }
 
 body.rw-v2-ready:not(.app-open),
@@ -7497,4 +7497,12 @@ body.rw-v2-ready .rw-v2-wall-clock-colon{
   transform:translateY(-.045em)!important;
   opacity:1!important;
   animation:none!important;
+}
+
+/* Hide homepage system status strip. */
+body.rw-v2-ready .rw-v2-system-strip{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
 }
