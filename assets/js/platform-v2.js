@@ -505,7 +505,7 @@
     updateDaylightScene(now);
     const locale = lang() === 'nl' ? 'nl-NL' : lang() === 'en' ? 'en-GB' : 'pl-PL';
     const date = new Intl.DateTimeFormat(locale, { weekday:'short', day:'2-digit', month:'short', year:'numeric' }).format(now);
-    clock.querySelector('.rw-v2-wall-clock-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    clock.querySelector('.rw-v2-wall-clock-time').innerHTML = `<span class="rw-v2-wall-clock-hour">${String(now.getHours()).padStart(2, '0')}</span><span class="rw-v2-wall-clock-colon">:</span><span class="rw-v2-wall-clock-minute">${String(now.getMinutes()).padStart(2, '0')}</span>`;
     clock.querySelector('.rw-v2-wall-clock-date').textContent = date.replace(/\.$/, '');
   }
 
