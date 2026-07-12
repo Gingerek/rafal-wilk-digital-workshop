@@ -6838,23 +6838,23 @@ body.rw-v2-ready .rw-v2-window-reflection{
 
 /* Premium time-of-day backgrounds: switch the real scene, keep CSS as subtle atmosphere only. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-sunset-phase.webp?v=20260712-bgphase-1");
+  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-bgphase-2");
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-morning-phase.webp?v=20260712-bgphase-1");
+  --rw-home-bg:url("../images/private-command-center-hero-morning-phase.webp?v=20260712-bgphase-2");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-bgphase-1");
+  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-bgphase-2");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-sunset-phase.webp?v=20260712-bgphase-1");
+  --rw-home-bg:url("../images/private-command-center-hero-sunset-phase.webp?v=20260712-bgphase-2");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-night-phase.webp?v=20260712-bgphase-1");
+  --rw-home-bg:url("../images/private-command-center-hero-night-phase.webp?v=20260712-bgphase-2");
 }
 
 body.rw-v2-ready:not(.app-open){
