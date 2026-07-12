@@ -898,8 +898,12 @@
     }, 900);
   }
   function markHomeReturn(){
+    clearTimeout(window.__rwV2HomeReturnTimer);
     document.body.classList.add('rw-v2-returning-home');
-    window.setTimeout(() => document.body.classList.remove('rw-v2-returning-home'), 700);
+    document.querySelector('.rw-v2-transition-veil')?.setAttribute('data-rw-loader', 'SYSTEM RE-SYNC');
+    window.__rwV2HomeReturnTimer = window.setTimeout(() => {
+      document.body.classList.remove('rw-v2-returning-home');
+    }, 3050);
   }
   function applyLanguage(){
     renderHero();
