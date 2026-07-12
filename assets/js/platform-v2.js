@@ -551,14 +551,14 @@
     shell.style.setProperty('--rw-sun-y', `${sunY.toFixed(2)}%`);
     shell.style.setProperty('--rw-moon-x', `${moonX.toFixed(2)}%`);
     shell.style.setProperty('--rw-moon-y', `${moonY.toFixed(2)}%`);
-    shell.style.setProperty('--rw-sun-opacity', (sunVisible * (.10 + sunElevation * .72) * weatherSun * hiddenByPerson).toFixed(3));
+    shell.style.setProperty('--rw-sun-opacity', (sunVisible * (.02 + sunElevation * .24) * weatherSun * hiddenByPerson).toFixed(3));
     shell.style.setProperty('--rw-sun-size', `${(54 + sunElevation * 48).toFixed(1)}px`);
-    shell.style.setProperty('--rw-cloud-opacity', clampNumber(.08 + weather.cloudCover * .62 + (weather.state === 'fog' ? .22 : 0), 0, .78).toFixed(3));
+    shell.style.setProperty('--rw-cloud-opacity', clampNumber(.025 + weather.cloudCover * .22 + (weather.state === 'fog' ? .10 : 0), 0, .30).toFixed(3));
     shell.style.setProperty('--rw-rain-opacity', clampNumber(weather.precipitation * .50 + (weather.state === 'rain' ? .18 : 0), 0, .58).toFixed(3));
     shell.style.setProperty('--rw-stars-opacity', clampNumber(nightAmount * (1 - weather.cloudCover * .72) * (1 - weather.precipitation), 0, .66).toFixed(3));
     shell.style.setProperty('--rw-moon-opacity', clampNumber(nightAmount * (1 - weather.cloudCover * .65) * .52, 0, .52).toFixed(3));
     shell.style.setProperty('--rw-window-night', clampNumber(nightAmount, 0, 1).toFixed(3));
-    shell.style.setProperty('--rw-reflection-sun', (sunVisible * weatherSun * 0.045).toFixed(3));
+    shell.style.setProperty('--rw-reflection-sun', (sunVisible * weatherSun * 0.020).toFixed(3));
   }
   function openCommandPalette(){
     const palette = document.querySelector('.rw-v2-command-palette');

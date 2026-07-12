@@ -6838,7 +6838,7 @@ body.rw-v2-ready .rw-v2-window-reflection{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-liveweather-2");
+  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-liveweather-4");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6853,27 +6853,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-dawn-phase.webp?v=20260712-liveweather-2");
+  --rw-home-bg:url("../images/private-command-center-hero-dawn-phase.webp?v=20260712-liveweather-4");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-morning-phase.webp?v=20260712-liveweather-2");
+  --rw-home-bg:url("../images/private-command-center-hero-morning-phase.webp?v=20260712-liveweather-4");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-liveweather-2");
+  --rw-home-bg:url("../images/private-command-center-hero-day-phase.webp?v=20260712-liveweather-4");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-afternoon-phase.webp?v=20260712-liveweather-2");
+  --rw-home-bg:url("../images/private-command-center-hero-afternoon-phase.webp?v=20260712-liveweather-4");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-sunset-phase.webp?v=20260712-liveweather-2");
+  --rw-home-bg:url("../images/private-command-center-hero-sunset-phase.webp?v=20260712-liveweather-4");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-night-phase.webp?v=20260712-liveweather-2");
+  --rw-home-bg:url("../images/private-command-center-hero-night-phase.webp?v=20260712-liveweather-4");
 }
 
 body.rw-v2-ready:not(.app-open),
@@ -6898,9 +6898,9 @@ body.rw-v2-ready .rw-v2-live-rain{
 
 body.rw-v2-ready .rw-v2-sky-wash{
   background:
-    linear-gradient(118deg, transparent 0 56%, rgba(122,190,238,.055) 68%, rgba(255,190,116,.055) 100%),
-    linear-gradient(180deg, transparent 0 36%, rgba(2,8,18,calc(.05 + var(--rw-window-night) * .30)) 100%)!important;
-  opacity:.62!important;
+    linear-gradient(118deg, transparent 0 58%, rgba(84,153,204,.032) 70%, rgba(174,203,226,.034) 100%),
+    linear-gradient(180deg, transparent 0 36%, rgba(1,7,16,calc(.08 + var(--rw-window-night) * .30)) 100%)!important;
+  opacity:.24!important;
 }
 
 body.rw-v2-ready.rw-v2-phase-night .rw-v2-sky-wash{
@@ -6920,10 +6920,10 @@ body.rw-v2-ready .rw-v2-live-sun{
   transform:translate(-50%,-50%)!important;
   border-radius:999px!important;
   background:
-    radial-gradient(circle, rgba(255,252,226,.92) 0 12%, rgba(255,221,138,.45) 22%, rgba(255,169,88,.20) 43%, transparent 70%)!important;
+    radial-gradient(circle, rgba(255,250,226,.58) 0 11%, rgba(255,221,154,.24) 23%, rgba(255,178,112,.09) 43%, transparent 70%)!important;
   opacity:var(--rw-sun-opacity)!important;
   mix-blend-mode:screen!important;
-  filter:blur(.3px) saturate(112%) drop-shadow(0 0 24px rgba(255,206,126,.22))!important;
+  filter:blur(.45px) saturate(102%) drop-shadow(0 0 18px rgba(255,206,126,.12))!important;
   transition:left 1.4s ease, top 1.4s ease, opacity .9s ease, width .9s ease, height .9s ease!important;
 }
 
@@ -6931,14 +6931,14 @@ body.rw-v2-ready .rw-v2-live-clouds{
   inset:0!important;
   z-index:5!important;
   background:
-    radial-gradient(ellipse at 72% 12%, rgba(225,238,246,.32), transparent 18%),
-    radial-gradient(ellipse at 84% 22%, rgba(218,226,237,.26), transparent 22%),
-    radial-gradient(ellipse at 92% 15%, rgba(235,238,242,.18), transparent 19%),
-    radial-gradient(ellipse at 74% 36%, rgba(174,187,203,.20), transparent 20%),
-    linear-gradient(118deg, transparent 0 58%, rgba(180,197,214,.10) 72%, rgba(42,61,86,.10) 100%)!important;
+    radial-gradient(ellipse at 72% 12%, rgba(211,225,235,.16), transparent 18%),
+    radial-gradient(ellipse at 84% 22%, rgba(204,214,226,.13), transparent 22%),
+    radial-gradient(ellipse at 92% 15%, rgba(226,230,236,.09), transparent 19%),
+    radial-gradient(ellipse at 74% 36%, rgba(150,165,184,.10), transparent 20%),
+    linear-gradient(118deg, transparent 0 58%, rgba(156,174,195,.045) 72%, rgba(24,39,58,.055) 100%)!important;
   opacity:var(--rw-cloud-opacity)!important;
   mix-blend-mode:screen!important;
-  filter:blur(7px)!important;
+  filter:blur(4px)!important;
   mask-image:linear-gradient(90deg, transparent 0 55%, #000 66%, #000 100%), linear-gradient(180deg, #000 0 54%, transparent 76%)!important;
   -webkit-mask-image:linear-gradient(90deg, transparent 0 55%, #000 66%, #000 100%), linear-gradient(180deg, #000 0 54%, transparent 76%)!important;
   animation:rwLiveCloudDrift 44s ease-in-out infinite alternate!important;
