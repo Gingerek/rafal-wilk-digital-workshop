@@ -332,6 +332,13 @@
       strip.setAttribute('aria-hidden', 'true');
       shell.appendChild(strip);
     }
+    if (!shell.querySelector('.rw-v2-transition-veil')) {
+      const veil = document.createElement('div');
+      veil.className = 'rw-v2-transition-veil';
+      veil.setAttribute('aria-hidden', 'true');
+      veil.innerHTML = '<span></span><span></span><span></span>';
+      shell.appendChild(veil);
+    }
     if (!shell.querySelector('.rw-v2-command-palette')) {
       const palette = document.createElement('div');
       palette.className = 'rw-v2-command-palette';
@@ -566,6 +573,7 @@
     if (!palette || !input || document.body.classList.contains('app-open')) return;
     palette.hidden = false;
     palette.classList.add('is-open');
+    document.body.classList.add('rw-v2-command-open');
     renderCommandUi();
     renderCommandList('');
     input.value = '';
@@ -575,6 +583,7 @@
     const palette = document.querySelector('.rw-v2-command-palette');
     if (!palette) return;
     palette.classList.remove('is-open');
+    document.body.classList.remove('rw-v2-command-open');
     palette.hidden = true;
   }
   function renderContact(){
@@ -814,6 +823,7 @@
   function markModuleLaunch(card){
     document.body.classList.add('rw-v2-opening-module');
     card?.classList.add('rw-v2-launching');
+    document.querySelector('.rw-v2-transition-veil')?.setAttribute('data-rw-module', activeModuleTitle || '');
     window.setTimeout(() => {
       document.body.classList.remove('rw-v2-opening-module');
       card?.classList.remove('rw-v2-launching');
@@ -942,6 +952,12 @@
       renderCommandList(event.target.value || '');
     });
     document.addEventListener('keydown', (event) => {
+      const palette = document.querySelector('.rw-v2-command-palette.is-open');
+      if (palette && event.key === 'Enter' && event.target.matches?.('.rw-v2-command-input')) {
+        event.preventDefault();
+        palette.querySelector('.rw-v2-command-item')?.click();
+        return;
+      }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
         openCommandPalette();
