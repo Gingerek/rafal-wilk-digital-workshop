@@ -7850,17 +7850,36 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink::before{
   content:""!important;
   position:absolute!important;
-  left:2%!important;
-  top:4%!important;
-  width:76%!important;
-  height:82%!important;
+  left:-2%!important;
+  top:-1%!important;
+  width:84%!important;
+  height:91%!important;
   border-radius:42% 44% 50% 48%!important;
   background:
-    radial-gradient(circle at 45% 42%, rgba(94,213,255,.14), transparent 22%),
-    radial-gradient(circle at 52% 55%, rgba(16,120,166,.12), transparent 54%)!important;
-  opacity:.34!important;
+    radial-gradient(circle at 45% 42%, rgba(94,213,255,.24), transparent 23%),
+    radial-gradient(circle at 51% 54%, rgba(16,120,166,.18), transparent 56%),
+    linear-gradient(180deg, transparent 0 18%, rgba(89,208,255,.10) 44%, transparent 74%)!important;
+  opacity:.42!important;
   mix-blend-mode:screen!important;
-  animation:rwAssistantAuraFloat 12s ease-in-out infinite!important;
+  filter:blur(.4px)!important;
+  animation:rwAssistantAuraFloat 10.5s ease-in-out infinite!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink::after{
+  content:""!important;
+  position:absolute!important;
+  left:1%!important;
+  top:7%!important;
+  width:79%!important;
+  height:80%!important;
+  border-radius:44% 46% 52% 50%!important;
+  background:
+    radial-gradient(ellipse at 49% 66%, rgba(0,221,255,.16), transparent 46%),
+    radial-gradient(ellipse at 49% 88%, rgba(0,22,34,.38), transparent 58%)!important;
+  opacity:.28!important;
+  mix-blend-mode:screen!important;
+  filter:blur(1.6px)!important;
+  animation:rwAssistantFaceDrift 10.5s ease-in-out infinite!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid{
@@ -7897,8 +7916,13 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-blinking .rw-v2-assist
 }
 
 @keyframes rwAssistantAuraFloat{
-  0%,100%{transform:translate3d(0,0,0) scale(1); opacity:.28;}
-  50%{transform:translate3d(0,-5px,0) scale(1.006); opacity:.42;}
+  0%,100%{transform:translate3d(0,5px,0); opacity:.32;}
+  50%{transform:translate3d(0,-14px,0); opacity:.58;}
+}
+
+@keyframes rwAssistantFaceDrift{
+  0%,100%{transform:translate3d(0,7px,0); opacity:.20;}
+  50%{transform:translate3d(0,-10px,0); opacity:.38;}
 }
 
 @media (min-aspect-ratio:1704/923){
