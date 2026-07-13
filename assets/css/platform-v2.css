@@ -7846,3 +7846,125 @@ body.rw-v2-ready.rw-v2-phase-afternoon:not(.app-open) .rw-v2-native-wall-canvas{
     display:none!important;
   }
 }
+
+/* PIN gate active state: make it obvious the dialog is waiting for input. */
+#mc_gate.rw-v2-pin-gate .panel{
+  overflow:hidden!important;
+}
+
+#mc_gate.rw-v2-pin-gate.rw-v2-pin-waiting .panel::before,
+#mc_gate.rw-v2-pin-gate.rw-v2-pin-typing .panel::before{
+  content:""!important;
+  position:absolute!important;
+  inset:-2px!important;
+  border-radius:20px!important;
+  pointer-events:none!important;
+  background:linear-gradient(120deg, transparent 0 18%, rgba(128,221,255,.72) 42%, rgba(255,255,255,.86) 50%, rgba(128,221,255,.72) 58%, transparent 82% 100%)!important;
+  opacity:.26!important;
+  transform:translateX(-72%)!important;
+  animation:rwPinActiveSweep 2.15s ease-in-out infinite!important;
+}
+
+#mc_gate.rw-v2-pin-gate.rw-v2-pin-waiting .panel::after,
+#mc_gate.rw-v2-pin-gate.rw-v2-pin-typing .panel::after{
+  content:""!important;
+  position:absolute!important;
+  inset:1px!important;
+  border-radius:18px!important;
+  pointer-events:none!important;
+  box-shadow:inset 0 0 0 1px rgba(134,217,255,.36), 0 0 34px rgba(84,190,255,.28)!important;
+  animation:rwPinActiveGlow 1.22s ease-in-out infinite alternate!important;
+}
+
+#mc_gate.rw-v2-pin-gate .rw-v2-pin-status{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  margin:14px 0 8px!important;
+  color:#9fe3ff!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+
+#mc_gate.rw-v2-pin-gate .rw-v2-pin-status::before{
+  content:""!important;
+  width:8px!important;
+  height:8px!important;
+  border-radius:999px!important;
+  background:#7ee7ff!important;
+  box-shadow:0 0 0 0 rgba(126,231,255,.58), 0 0 18px rgba(126,231,255,.72)!important;
+  animation:rwPinStatusPulse 1.05s ease-out infinite!important;
+}
+
+#mc_gate.rw-v2-pin-gate #mc_pin{
+  position:relative!important;
+  border-color:rgba(126,231,255,.70)!important;
+  background:rgba(2,12,24,.82)!important;
+  color:#f7fcff!important;
+  caret-color:#7ee7ff!important;
+  box-shadow:0 0 0 4px rgba(126,231,255,.12), inset 0 0 0 1px rgba(255,255,255,.08)!important;
+  animation:rwPinInputBreathe 1.4s ease-in-out infinite alternate!important;
+}
+
+#mc_gate.rw-v2-pin-gate #mc_pin:focus{
+  outline:none!important;
+  border-color:#9fe8ff!important;
+  box-shadow:0 0 0 5px rgba(126,231,255,.20), 0 0 30px rgba(126,231,255,.32), inset 0 0 0 1px rgba(255,255,255,.12)!important;
+}
+
+#mc_gate.rw-v2-pin-gate .rw-v2-pin-digit{
+  position:relative!important;
+  min-height:44px!important;
+  display:grid!important;
+  place-items:center!important;
+  font-size:22px!important;
+  font-weight:900!important;
+  border-color:rgba(126,231,255,.34)!important;
+  transition:transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease!important;
+}
+
+#mc_gate.rw-v2-pin-gate .rw-v2-pin-digit.is-active{
+  border-color:#9fe8ff!important;
+  background:rgba(126,231,255,.16)!important;
+  box-shadow:0 0 0 3px rgba(126,231,255,.13), 0 0 24px rgba(126,231,255,.24)!important;
+  animation:rwPinDigitActive .9s ease-in-out infinite alternate!important;
+}
+
+#mc_gate.rw-v2-pin-gate .rw-v2-pin-digit.is-filled{
+  border-color:rgba(118,255,205,.72)!important;
+  background:linear-gradient(145deg, rgba(30,210,178,.24), rgba(72,169,224,.18))!important;
+  color:#eafff8!important;
+  transform:translateY(-1px)!important;
+}
+
+#mc_gate.rw-v2-pin-gate.rw-v2-pin-complete .rw-v2-pin-status{
+  color:#9fffd9!important;
+}
+
+@keyframes rwPinActiveSweep{
+  0%{transform:translateX(-76%); opacity:.06;}
+  40%{opacity:.32;}
+  100%{transform:translateX(76%); opacity:.06;}
+}
+
+@keyframes rwPinActiveGlow{
+  from{opacity:.48;}
+  to{opacity:1;}
+}
+
+@keyframes rwPinStatusPulse{
+  0%{box-shadow:0 0 0 0 rgba(126,231,255,.58), 0 0 18px rgba(126,231,255,.72);}
+  100%{box-shadow:0 0 0 12px rgba(126,231,255,0), 0 0 24px rgba(126,231,255,.90);}
+}
+
+@keyframes rwPinInputBreathe{
+  from{filter:brightness(1);}
+  to{filter:brightness(1.12);}
+}
+
+@keyframes rwPinDigitActive{
+  from{transform:translateY(0) scale(1);}
+  to{transform:translateY(-1px) scale(1.035);}
+}

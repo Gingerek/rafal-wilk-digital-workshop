@@ -1175,8 +1175,14 @@
       digits.innerHTML = '<span class="rw-v2-pin-digit"></span><span class="rw-v2-pin-digit"></span><span class="rw-v2-pin-digit"></span><span class="rw-v2-pin-digit"></span>';
       input.insertAdjacentElement('afterend', digits);
     }
+    if (!panel.querySelector('.rw-v2-pin-status')) {
+      const status = document.createElement('div');
+      status.className = 'rw-v2-pin-status';
+      input.insertAdjacentElement('beforebegin', status);
+    }
     input.addEventListener('input', updatePinDigits);
     input.addEventListener('focus', updatePinDigits);
+    input.addEventListener('blur', updatePinDigits);
     gate.addEventListener('click', (event) => {
       if (!event.target.closest('button')) input.focus();
     });
@@ -1184,9 +1190,27 @@
   }
   function updatePinDigits(){
     const input = document.getElementById('mc_pin');
+    const gate = document.getElementById('mc_gate');
     const digits = document.querySelectorAll('.rw-v2-pin-digit');
     const value = String(input?.value || '').slice(0, 4);
-    digits.forEach((el, i) => { el.textContent = value[i] ? '*' : ''; });
+    const status = document.querySelector('.rw-v2-pin-status');
+    const focused = document.activeElement === input;
+    gate?.classList.toggle('rw-v2-pin-waiting', !value.length);
+    gate?.classList.toggle('rw-v2-pin-typing', value.length > 0 && value.length < 4);
+    gate?.classList.toggle('rw-v2-pin-complete', value.length === 4);
+    digits.forEach((el, i) => {
+      el.textContent = value[i] ? '*' : '';
+      el.classList.toggle('is-filled', Boolean(value[i]));
+      el.classList.toggle('is-active', focused && i === Math.min(value.length, 3));
+    });
+    if (status) {
+      const statusText = {
+        pl: value.length ? `Wpisano ${value.length}/4 cyfr` : 'Aktywne pole - wpisz PIN',
+        en: value.length ? `${value.length}/4 digits entered` : 'Active field - enter PIN',
+        nl: value.length ? `${value.length}/4 cijfers ingevoerd` : 'Actief veld - voer pincode in'
+      };
+      status.textContent = statusText[lang()] || statusText.pl;
+    }
   }
   function patchPinTexts(){
     const title = document.getElementById('mc_title');
@@ -1222,7 +1246,9 @@
         setTimeout(() => {
           patchPinTexts();
           updatePinDigits();
-          document.getElementById('mc_pin')?.focus();
+          const input = document.getElementById('mc_pin');
+          input?.focus();
+          input?.select?.();
         }, 20);
       };
     }
