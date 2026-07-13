@@ -7845,8 +7845,6 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
   --rw-upper-lid-height:.18%;
   --rw-lower-lid-height:0%;
   --rw-lid-opacity:0;
-  --rw-eye-opacity:.62;
-  --rw-eye-direct-opacity:.78;
   opacity:1!important;
   mix-blend-mode:normal!important;
   background:none!important;
@@ -7855,15 +7853,7 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-gaze{
-  position:absolute!important;
-  width:8.6%!important;
-  height:6.4%!important;
-  border-radius:999px!important;
-  overflow:hidden!important;
-  z-index:2!important;
-  background:
-    radial-gradient(ellipse at 50% 54%, rgba(154,231,255,.08) 0 24%, rgba(23,117,158,.04) 48%, transparent 76%)!important;
-  box-shadow:inset 0 0 3px rgba(174,235,255,.05)!important;
+  display:none!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-gaze-left{
@@ -7877,24 +7867,11 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-gaze-right{
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-gaze i{
-  position:absolute!important;
-  left:50%!important;
-  top:50%!important;
-  width:22%!important;
-  height:34%!important;
-  border-radius:50%!important;
-  transform:translate(calc(-50% + var(--rw-gaze-x)), calc(-50% + var(--rw-gaze-y)))!important;
-  transition:transform 1.65s cubic-bezier(.16,.72,.22,1), filter 1.65s ease, opacity 1.65s ease!important;
-  background:
-    radial-gradient(circle at 38% 31%, rgba(255,255,255,.50) 0 10%, transparent 11%),
-    radial-gradient(circle at 54% 52%, rgba(0,8,14,.72) 0 30%, rgba(5,39,58,.44) 31% 52%, rgba(66,190,230,.18) 53% 100%)!important;
-  box-shadow:0 0 3px rgba(70,211,255,.10), inset 0 0 3px rgba(219,250,255,.10)!important;
-  opacity:var(--rw-eye-opacity, .62)!important;
+  display:none!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-direct-gaze .rw-v2-assistant-gaze i{
-  filter:brightness(1.10) saturate(1.08)!important;
-  opacity:var(--rw-eye-direct-opacity, .78)!important;
+  display:none!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink::before{
@@ -7936,9 +7913,9 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink::after{
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid{
   position:absolute!important;
-  width:11.9%!important;
+  width:14.2%!important;
   height:0%!important;
-  border-radius:999px!important;
+  border-radius:999px 999px 58% 58%!important;
   overflow:hidden!important;
   z-index:3!important;
   opacity:var(--rw-lid-opacity, 0)!important;
@@ -7946,29 +7923,30 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid{
   transform-origin:center center!important;
   transition:none!important;
   background:
-    radial-gradient(ellipse at 50% 34%, rgba(67,157,184,.30) 0 24%, transparent 58%),
-    linear-gradient(180deg, rgba(2,15,25,.99) 0%, rgba(11,44,62,.98) 46%, rgba(2,13,22,.99) 100%),
-    repeating-linear-gradient(94deg, rgba(164,226,246,.10) 0 1px, transparent 1px 8px)!important;
-  box-shadow:inset 0 1px 2px rgba(151,232,255,.13), 0 0 7px rgba(52,190,238,.07)!important;
+    radial-gradient(ellipse at 50% 20%, rgba(79,170,198,.23) 0 18%, transparent 55%),
+    linear-gradient(180deg, rgba(2,13,23,.99) 0%, rgba(9,37,54,.99) 52%, rgba(1,10,18,.99) 100%),
+    repeating-linear-gradient(96deg, rgba(171,229,246,.07) 0 1px, transparent 1px 8px)!important;
+  box-shadow:inset 0 1px 2px rgba(151,232,255,.09), 0 0 5px rgba(52,190,238,.05)!important;
   will-change:height, top, opacity!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid-left{
-  left:34.05%!important;
+  left:35.2%!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid-right{
-  left:66.65%!important;
+  left:67.8%!important;
+  width:12.4%!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid-upper{
-  top:49.7%!important;
+  top:49.4%!important;
   height:var(--rw-upper-lid-height, 0%)!important;
   border-radius:60% 60% 52% 52%!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid-lower{
-  top:calc(56.0% - var(--rw-lower-lid-height, 0%))!important;
+  top:calc(56.6% - var(--rw-lower-lid-height, 0%))!important;
   height:var(--rw-lower-lid-height, 0%)!important;
   border-radius:52% 52% 62% 62%!important;
   background:

@@ -424,7 +424,6 @@
       shell.appendChild(palette);
     }
     startAssistantBlink(shell);
-    startAssistantGaze(shell);
   }
 
   function startAssistantBlink(shell){
@@ -434,13 +433,11 @@
     const ease = (t) => .5 - Math.cos(Math.max(0, Math.min(1, t)) * Math.PI) / 2;
     const setBlink = (progress) => {
       const p = Math.max(0, Math.min(1, progress));
-      const top = 0.15 + p * 5.9;
-      const bottom = p * 2.2;
+      const top = 0.12 + p * 4.7;
+      const bottom = p * 2.8;
       blink.style.setProperty('--rw-upper-lid-height', `${top.toFixed(3)}%`);
       blink.style.setProperty('--rw-lower-lid-height', `${bottom.toFixed(3)}%`);
       blink.style.setProperty('--rw-lid-opacity', (p * .98).toFixed(3));
-      blink.style.setProperty('--rw-eye-opacity', (.62 * (1 - p * .90)).toFixed(3));
-      blink.style.setProperty('--rw-eye-direct-opacity', (.78 * (1 - p * .90)).toFixed(3));
     };
     const animateBlink = (duration, done) => {
       const close = duration * .43;
@@ -482,33 +479,6 @@
     window.setTimeout(runBlink, 1800 + Math.random() * 4200);
   }
 
-  function startAssistantGaze(shell){
-    const gazeLayer = shell?.querySelector('.rw-v2-assistant-blink');
-    if (!gazeLayer || gazeLayer.dataset.rwGazeActive === 'true') return;
-    gazeLayer.dataset.rwGazeActive = 'true';
-    const positions = [
-      { x: 0, y: 0, hold: 2.4 },
-      { x: -3.2, y: -.8, hold: 2.9 },
-      { x: 3.4, y: -.4, hold: 2.7 },
-      { x: -1.5, y: 1.6, hold: 2.2 },
-      { x: 1.8, y: 1.3, hold: 2.1 },
-      { x: 1, y: -1, hold: 3.4, direct: true }
-    ];
-    let lastIndex = -1;
-    const choose = () => {
-      let index = Math.floor(Math.random() * positions.length);
-      if (index === lastIndex) index = (index + 1) % positions.length;
-      if (Math.random() < .28) index = positions.length - 1;
-      lastIndex = index;
-      const target = positions[index];
-      gazeLayer.style.setProperty('--rw-gaze-x', `${target.x}px`);
-      gazeLayer.style.setProperty('--rw-gaze-y', `${target.y}px`);
-      gazeLayer.classList.toggle('is-direct-gaze', !!target.direct);
-      const delay = (target.hold + Math.random() * 2.2) * 1000;
-      window.setTimeout(choose, delay);
-    };
-    window.setTimeout(choose, 900 + Math.random() * 1800);
-  }
   function renderHero(){
     const hero = document.querySelector('.rw-v2-hero');
     if (!hero) return;
