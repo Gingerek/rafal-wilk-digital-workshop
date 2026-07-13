@@ -353,6 +353,13 @@
       wallCanvas.setAttribute('aria-hidden', 'true');
       shell.appendChild(wallCanvas);
     }
+    if (!shell.querySelector('.rw-v2-assistant-blink')) {
+      const assistantBlink = document.createElement('div');
+      assistantBlink.className = 'rw-v2-assistant-blink';
+      assistantBlink.setAttribute('aria-hidden', 'true');
+      assistantBlink.innerHTML = '<span class="rw-v2-assistant-eye"></span><span class="rw-v2-assistant-eye"></span>';
+      shell.appendChild(assistantBlink);
+    }
     if (!shell.querySelector('.rw-v2-ambient-deck')) {
       const deck = document.createElement('div');
       deck.className = 'rw-v2-ambient-deck';
@@ -416,6 +423,28 @@
       </div>`;
       shell.appendChild(palette);
     }
+    startAssistantBlink(shell);
+  }
+
+  function startAssistantBlink(shell){
+    const blink = shell?.querySelector('.rw-v2-assistant-blink');
+    if (!blink || blink.dataset.rwBlinkActive === 'true') return;
+    blink.dataset.rwBlinkActive = 'true';
+    const runBlink = () => {
+      if (!document.body.classList.contains('app-open')) {
+        blink.classList.add('is-blinking');
+        window.setTimeout(() => blink.classList.remove('is-blinking'), 150);
+        if (Math.random() < .18) {
+          window.setTimeout(() => {
+            blink.classList.add('is-blinking');
+            window.setTimeout(() => blink.classList.remove('is-blinking'), 130);
+          }, 260);
+        }
+      }
+      const nextDelay = 2800 + Math.random() * 5200;
+      window.setTimeout(runBlink, nextDelay);
+    };
+    window.setTimeout(runBlink, 1800 + Math.random() * 2200);
   }
   function renderHero(){
     const hero = document.querySelector('.rw-v2-hero');

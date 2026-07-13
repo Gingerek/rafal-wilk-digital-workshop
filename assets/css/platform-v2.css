@@ -6838,7 +6838,7 @@ body.rw-v2-ready .rw-v2-window-reflection{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-surreal-art-wall.webp?v=20260713-surreal-art-1");
+  --rw-home-bg:url("../images/private-command-center-hero-ai-assistant.webp?v=20260713-ai-assistant-1");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6853,27 +6853,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-surreal-art-wall.webp?v=20260713-surreal-art-1");
+  --rw-home-bg:url("../images/private-command-center-hero-ai-assistant.webp?v=20260713-ai-assistant-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-surreal-art-wall.webp?v=20260713-surreal-art-1");
+  --rw-home-bg:url("../images/private-command-center-hero-ai-assistant.webp?v=20260713-ai-assistant-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-surreal-art-wall.webp?v=20260713-surreal-art-1");
+  --rw-home-bg:url("../images/private-command-center-hero-ai-assistant.webp?v=20260713-ai-assistant-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-surreal-art-wall.webp?v=20260713-surreal-art-1");
+  --rw-home-bg:url("../images/private-command-center-hero-ai-assistant.webp?v=20260713-ai-assistant-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-surreal-art-wall.webp?v=20260713-surreal-art-1");
+  --rw-home-bg:url("../images/private-command-center-hero-ai-assistant.webp?v=20260713-ai-assistant-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-surreal-art-wall.webp?v=20260713-surreal-art-1");
+  --rw-home-bg:url("../images/private-command-center-hero-ai-assistant.webp?v=20260713-ai-assistant-1");
 }
 
 body.rw-v2-ready:not(.app-open),
@@ -7832,6 +7832,74 @@ body.rw-v2-ready.rw-v2-phase-afternoon:not(.app-open) .rw-v2-native-wall-canvas{
   opacity:.23!important;
 }
 
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
+  position:absolute!important;
+  left:8.6vw!important;
+  top:25.8vh!important;
+  width:11vw!important;
+  height:4.2vh!important;
+  z-index:18!important;
+  pointer-events:none!important;
+  opacity:.88!important;
+  mix-blend-mode:normal!important;
+  transform:perspective(900px) rotateY(-2.5deg) rotateX(.4deg)!important;
+  transform-origin:center center!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye{
+  position:absolute!important;
+  top:28%!important;
+  width:clamp(26px, 2.3vw, 44px)!important;
+  height:clamp(12px, 1.08vw, 21px)!important;
+  border-radius:999px!important;
+  overflow:hidden!important;
+  background:radial-gradient(circle at 52% 48%, rgba(130,226,255,.72) 0 12%, rgba(23,126,177,.28) 30%, rgba(0,15,27,.08) 68%, transparent 100%)!important;
+  box-shadow:0 0 9px rgba(91,210,255,.26)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye:first-child{
+  left:-3%!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye:nth-child(2){
+  left:75%!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye::before,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye::after{
+  content:""!important;
+  position:absolute!important;
+  left:-8%!important;
+  width:116%!important;
+  height:58%!important;
+  background:linear-gradient(180deg, rgba(2,11,18,.95), rgba(15,56,70,.92))!important;
+  transform:scaleY(0)!important;
+  transition:transform 74ms cubic-bezier(.2,.8,.2,1)!important;
+  z-index:2!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye::before{
+  top:-3%!important;
+  transform-origin:top center!important;
+  border-radius:999px 999px 40% 40%!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye::after{
+  bottom:-3%!important;
+  transform-origin:bottom center!important;
+  border-radius:40% 40% 999px 999px!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-blinking .rw-v2-assistant-eye::before,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-blinking .rw-v2-assistant-eye::after{
+  transform:scaleY(1)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-blinking .rw-v2-assistant-eye{
+  background:linear-gradient(180deg, rgba(1,8,13,.96), rgba(6,26,36,.98) 46%, rgba(14,58,74,.88) 52%, rgba(2,12,19,.98) 58%, rgba(1,7,12,.96))!important;
+  box-shadow:0 0 5px rgba(91,210,255,.16)!important;
+}
+
 @media (max-width:1080px){
   body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
     left:31vw!important;
@@ -7843,6 +7911,10 @@ body.rw-v2-ready.rw-v2-phase-afternoon:not(.app-open) .rw-v2-native-wall-canvas{
 
 @media (max-width:760px){
   body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
+    display:none!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
     display:none!important;
   }
 }
