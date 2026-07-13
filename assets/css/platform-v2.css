@@ -7814,21 +7814,22 @@ body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
   aspect-ratio:1.58!important;
   z-index:13!important;
   pointer-events:none!important;
-  opacity:.24!important;
+  opacity:.28!important;
   mix-blend-mode:screen!important;
-  filter:saturate(108%) contrast(104%) drop-shadow(0 0 5px rgba(92,205,255,.08))!important;
+  filter:saturate(116%) contrast(112%) drop-shadow(0 0 7px rgba(92,205,255,.10))!important;
   transform:perspective(1600px) rotateY(-2deg) rotateX(.55deg) translateZ(0)!important;
   transform-origin:center center!important;
   image-rendering:auto!important;
+  will-change:opacity, filter!important;
 }
 
 body.rw-v2-ready.rw-v2-phase-night:not(.app-open) .rw-v2-native-wall-canvas{
-  opacity:.30!important;
+  opacity:.34!important;
 }
 
 body.rw-v2-ready.rw-v2-phase-day:not(.app-open) .rw-v2-native-wall-canvas,
 body.rw-v2-ready.rw-v2-phase-afternoon:not(.app-open) .rw-v2-native-wall-canvas{
-  opacity:.20!important;
+  opacity:.23!important;
 }
 
 @media (max-width:1080px){

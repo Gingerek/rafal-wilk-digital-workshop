@@ -468,7 +468,7 @@
     };
     function fitCanvas(){
       const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
+      const dpr = Math.min(3, Math.max(2, window.devicePixelRatio || 1));
       const width = Math.max(1, Math.round(rect.width * dpr));
       const height = Math.max(1, Math.round(rect.height * dpr));
       if (canvas.width !== width || canvas.height !== height) {
@@ -478,14 +478,13 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       return { w:rect.width, h:rect.height, dpr };
     }
-    function rgba(color, alpha){
-      return color.replace('ALPHA', String(alpha));
-    }
     function drawPanelGrid(x, y, w, h, alpha){
       ctx.save();
       ctx.globalAlpha = alpha;
-      ctx.strokeStyle = 'rgba(126,211,255,.20)';
-      ctx.lineWidth = .7;
+      ctx.strokeStyle = 'rgba(126,211,255,.17)';
+      ctx.lineWidth = .55;
+      ctx.strokeRect(x, y, w, h);
+      ctx.globalAlpha = alpha * .62;
       for (let i = 1; i < 5; i++) {
         const yy = y + (h / 5) * i;
         ctx.beginPath();
@@ -500,11 +499,55 @@
         ctx.lineTo(xx, y + h);
         ctx.stroke();
       }
+      ctx.globalAlpha = alpha * .30;
+      ctx.lineWidth = .35;
+      for (let i = 1; i < 18; i++) {
+        const xx = x + (w / 18) * i;
+        ctx.beginPath();
+        ctx.moveTo(xx, y);
+        ctx.lineTo(xx, y + h);
+        ctx.stroke();
+      }
+      for (let i = 1; i < 12; i++) {
+        const yy = y + (h / 12) * i;
+        ctx.beginPath();
+        ctx.moveTo(x, yy);
+        ctx.lineTo(x + w, yy);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    function drawMicroLabel(text, x, y, alpha = .24){
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = 'rgba(179,233,255,.82)';
+      ctx.font = '600 7px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+      ctx.letterSpacing = '0px';
+      ctx.fillText(text, x, y);
       ctx.restore();
     }
     function drawLine(points, box, time, color, width, phase){
       const [x, y, w, h] = box;
+      const sampled = points.map((value, index) => {
+        const px = x + (w * index) / Math.max(1, points.length - 1);
+        const wave = Math.sin(time * .0017 + index * .92 + phase) * h * .035;
+        const py = y + h - value * h + wave;
+        return [px, py];
+      });
       ctx.save();
+      const area = ctx.createLinearGradient(0, y, 0, y + h);
+      area.addColorStop(0, 'rgba(126,226,255,.125)');
+      area.addColorStop(1, 'rgba(24,120,180,0)');
+      ctx.fillStyle = area;
+      ctx.beginPath();
+      sampled.forEach(([px, py], index) => {
+        if (index === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      });
+      ctx.lineTo(x + w, y + h);
+      ctx.lineTo(x, y + h);
+      ctx.closePath();
+      ctx.fill();
       ctx.lineWidth = width;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
@@ -512,14 +555,23 @@
       ctx.shadowColor = color;
       ctx.strokeStyle = color;
       ctx.beginPath();
-      points.forEach((value, index) => {
-        const px = x + (w * index) / Math.max(1, points.length - 1);
-        const wave = Math.sin(time * .0017 + index * .92 + phase) * h * .035;
-        const py = y + h - value * h + wave;
+      sampled.forEach(([px, py], index) => {
         if (index === 0) ctx.moveTo(px, py);
         else ctx.lineTo(px, py);
       });
       ctx.stroke();
+      const probe = ((time * .00009 + phase * .07) % 1) * (sampled.length - 1);
+      const pi = Math.floor(probe);
+      const mix = probe - pi;
+      const a = sampled[pi] || sampled[0];
+      const b = sampled[pi + 1] || a;
+      const dx = a[0] + (b[0] - a[0]) * mix;
+      const dy = a[1] + (b[1] - a[1]) * mix;
+      ctx.fillStyle = 'rgba(219,249,255,.82)';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(dx, dy, 1.9, 0, Math.PI * 2);
+      ctx.fill();
       ctx.restore();
     }
     function drawBars(x, y, w, h, time){
@@ -550,6 +602,20 @@
       ctx.lineWidth = 1;
       ctx.shadowBlur = 7;
       ctx.shadowColor = 'rgba(91,174,231,.20)';
+      ctx.globalAlpha = .18;
+      for (let i = 1; i < 5; i++) {
+        ctx.beginPath();
+        ctx.moveTo(x, y + h * i / 5);
+        ctx.lineTo(x + w, y + h * i / 5);
+        ctx.stroke();
+      }
+      for (let i = 1; i < 7; i++) {
+        ctx.beginPath();
+        ctx.moveTo(x + w * i / 7, y);
+        ctx.lineTo(x + w * i / 7, y + h);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = .56;
       const land = [
         [[.05,.48],[.13,.38],[.24,.40],[.31,.50],[.24,.60],[.13,.61],[.05,.54]],
         [[.32,.43],[.43,.34],[.55,.39],[.58,.52],[.48,.61],[.37,.57]],
@@ -583,6 +649,17 @@
         ctx.setLineDash([6, 10]);
         ctx.lineDashOffset = -time * .018 - ri * 12;
         ctx.stroke();
+        const head = (time * .00012 + ri * .25) % 1;
+        const from = route[Math.max(0, Math.floor((route.length - 1) * head))];
+        const to = route[Math.min(route.length - 1, Math.floor((route.length - 1) * head) + 1)];
+        const local = (head * (route.length - 1)) % 1;
+        const hx = x + (from[0] + (to[0] - from[0]) * local) * w;
+        const hy = y + (from[1] + (to[1] - from[1]) * local) * h - Math.sin(local * Math.PI) * h * .08;
+        ctx.setLineDash([]);
+        ctx.fillStyle = 'rgba(228,252,255,.72)';
+        ctx.beginPath();
+        ctx.arc(hx, hy, 1.7, 0, Math.PI * 2);
+        ctx.fill();
       });
       ctx.setLineDash([]);
       state.nodes.slice(0, 5).forEach(([px, py, offset]) => {
@@ -636,6 +713,53 @@
       }
       ctx.restore();
     }
+    function drawMicroMatrix(x, y, w, h, time){
+      ctx.save();
+      ctx.font = '600 6px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+      ctx.fillStyle = 'rgba(162,228,255,.30)';
+      const rows = 9;
+      const cols = 7;
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const value = Math.abs(Math.sin(time * .0008 + row * 1.71 + col * .83));
+          const label = value > .66 ? `${Math.round(value * 97)}` : value > .42 ? '::' : '--';
+          ctx.globalAlpha = .08 + value * .16;
+          ctx.fillText(label, x + col * (w / cols), y + row * (h / rows));
+        }
+      }
+      ctx.restore();
+    }
+    function drawSpectralNoise(w, h, time){
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      for (let i = 0; i < 90; i++) {
+        const seed = Math.sin(i * 91.7) * 10000;
+        const px = (seed - Math.floor(seed)) * w;
+        const py = ((Math.sin(i * 47.3 + 2) * 10000) % 1 + 1) % 1 * h;
+        const pulse = (Math.sin(time * .0014 + i) + 1) / 2;
+        ctx.fillStyle = `rgba(160,231,255,${.012 + pulse * .022})`;
+        ctx.fillRect(px, py, 1.1, 1.1);
+      }
+      ctx.restore();
+    }
+    function drawScanPass(w, h, time){
+      ctx.save();
+      const y = (time * .018) % h;
+      const band = ctx.createLinearGradient(0, y - h * .08, 0, y + h * .08);
+      band.addColorStop(0, 'rgba(100,210,255,0)');
+      band.addColorStop(.5, 'rgba(166,235,255,.045)');
+      band.addColorStop(1, 'rgba(100,210,255,0)');
+      ctx.fillStyle = band;
+      ctx.fillRect(0, y - h * .08, w, h * .16);
+      ctx.globalAlpha = .09;
+      ctx.strokeStyle = 'rgba(174,237,255,.55)';
+      ctx.lineWidth = .8;
+      ctx.beginPath();
+      ctx.moveTo(w * .04, y);
+      ctx.lineTo(w * .95, y);
+      ctx.stroke();
+      ctx.restore();
+    }
     function drawNativeWallFrame(time){
       const { w, h } = fitCanvas();
       if (w < 10 || h < 10) return;
@@ -651,14 +775,20 @@
       drawPanelGrid(w * .05, h * .07, w * .30, h * .29, .55);
       drawPanelGrid(w * .40, h * .07, w * .25, h * .22, .42);
       drawPanelGrid(w * .09, h * .48, w * .28, h * .33, .45);
+      drawMicroLabel('OPS.THROUGHPUT // 24H', w * .06, h * .06, .22);
+      drawMicroLabel('LOAD BALANCE', w * .40, h * .06, .18);
+      drawMicroLabel('GLOBAL ROUTES', w * .54, h * .47, .20);
       drawLine(state.charts[0], [w * .06, h * .07, w * .28, h * .28], time, 'rgba(126,226,255,.48)', 1.55, 0);
       drawLine(state.charts[1], [w * .40, h * .08, w * .24, h * .20], time, 'rgba(160,232,255,.34)', 1.25, 1.4);
       drawLine(state.charts[2], [w * .09, h * .49, w * .27, h * .31], time, 'rgba(101,198,241,.38)', 1.2, 2.8);
       drawLine(state.charts[3], [w * .64, h * .68, w * .27, h * .18], time, 'rgba(120,220,255,.32)', 1.15, 1.1);
       drawBars(w * .05, h * .38, w * .26, h * .21, time);
       drawHeat(w * .39, h * .33, w * .23, h * .18, time);
+      drawMicroMatrix(w * .37, h * .55, w * .18, h * .24, time);
       drawNetwork(w * .43, h * .17, w * .38, h * .36, time);
       drawWorldMap(w * .53, h * .48, w * .40, h * .34, time);
+      drawSpectralNoise(w, h, time);
+      drawScanPass(w, h, time);
       ctx.strokeStyle = 'rgba(168,234,255,.16)';
       ctx.lineWidth = 1;
       ctx.setLineDash([w * .08, w * .9]);
