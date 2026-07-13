@@ -432,18 +432,12 @@
     const runBlink = () => {
       if (!document.body.classList.contains('app-open')) {
         blink.classList.add('is-blinking');
-        window.setTimeout(() => blink.classList.remove('is-blinking'), 150);
-        if (Math.random() < .18) {
-          window.setTimeout(() => {
-            blink.classList.add('is-blinking');
-            window.setTimeout(() => blink.classList.remove('is-blinking'), 130);
-          }, 260);
-        }
+        window.setTimeout(() => blink.classList.remove('is-blinking'), 520 + Math.random() * 180);
       }
-      const nextDelay = 2800 + Math.random() * 5200;
+      const nextDelay = 9000 + Math.random() * 8500;
       window.setTimeout(runBlink, nextDelay);
     };
-    window.setTimeout(runBlink, 1800 + Math.random() * 2200);
+    window.setTimeout(runBlink, 5200 + Math.random() * 4200);
   }
   function renderHero(){
     const hero = document.querySelector('.rw-v2-hero');

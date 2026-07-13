@@ -7840,15 +7840,29 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
   height:calc(100vh * 380 / 923)!important;
   z-index:18!important;
   pointer-events:none!important;
-  opacity:0!important;
+  opacity:1!important;
   mix-blend-mode:normal!important;
-  background:url("../images/assistant-face-blink-closed.webp?v=20260713-natural-blink-1") center / 100% 100% no-repeat!important;
-  transition:opacity 34ms linear!important;
-  will-change:opacity!important;
+  background:url("../images/assistant-face-open.webp?v=20260713-calm-float-1") center / 100% 100% no-repeat!important;
+  animation:rwAssistantLevitate 8.8s ease-in-out infinite!important;
+  will-change:transform!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-blinking{
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  background:url("../images/assistant-face-blink-closed.webp?v=20260713-calm-float-1") center / 100% 100% no-repeat!important;
+  opacity:0!important;
+  transition:opacity 180ms cubic-bezier(.22,.82,.24,1)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-blinking::after{
   opacity:1!important;
+}
+
+@keyframes rwAssistantLevitate{
+  0%,100%{transform:translate3d(0,0,0) scale(1);}
+  50%{transform:translate3d(0,-6px,0) scale(1.002);}
 }
 
 @media (min-aspect-ratio:1704/923){
