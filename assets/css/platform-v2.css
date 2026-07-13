@@ -7805,123 +7805,43 @@ body.rw-v2-ready.rw-v2-returning-home .rw-v2-transition-veil span:nth-child(3){
   100%{opacity:1; transform:scale(1); filter:blur(0) brightness(1);}
 }
 
-/* Native wall motion: subtle animations aligned to the existing world-map dashboard in the background image. */
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion{
+/* Native wall canvas: high-DPI cinematic visualizations blended into the existing background dashboard. */
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
   position:absolute!important;
   left:clamp(330px, 31.2vw, 650px)!important;
-  top:clamp(26px, 4.4vh, 72px)!important;
+  top:clamp(24px, 4.1vh, 68px)!important;
   width:clamp(520px, 44vw, 880px)!important;
   aspect-ratio:1.58!important;
   z-index:13!important;
   pointer-events:none!important;
-  opacity:.26!important;
+  opacity:.24!important;
   mix-blend-mode:screen!important;
-  filter:drop-shadow(0 0 6px rgba(92,205,255,.10)) saturate(106%)!important;
-  transform:perspective(1600px) rotateY(-2deg) rotateX(.6deg) translateZ(0)!important;
+  filter:saturate(108%) contrast(104%) drop-shadow(0 0 5px rgba(92,205,255,.08))!important;
+  transform:perspective(1600px) rotateY(-2deg) rotateX(.55deg) translateZ(0)!important;
   transform-origin:center center!important;
+  image-rendering:auto!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion svg{
-  width:100%!important;
-  height:100%!important;
-  display:block!important;
-  overflow:visible!important;
+body.rw-v2-ready.rw-v2-phase-night:not(.app-open) .rw-v2-native-wall-canvas{
+  opacity:.30!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion path,
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion polyline,
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion line{
-  fill:none!important;
-  stroke:rgba(130,218,255,.46)!important;
-  stroke-width:.9!important;
-  stroke-linecap:round!important;
-  stroke-linejoin:round!important;
-  vector-effect:non-scaling-stroke!important;
-  filter:url(#rwNativeWallGlow)!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-panel path{
-  stroke:rgba(128,205,244,.18)!important;
-  filter:none!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion polyline{
-  stroke:url(#rwNativeWallLine)!important;
-  stroke-width:1.2!important;
-  stroke-dasharray:320!important;
-  animation:rwNativeWallTrace 7.5s ease-in-out infinite alternate!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-soft{
-  stroke:rgba(91,174,231,.30)!important;
-  stroke-width:.9!important;
-  stroke-dasharray:8 12!important;
-  animation:rwNativeWallDash 8.8s linear infinite!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion circle{
-  fill:rgba(190,239,255,.55)!important;
-  filter:drop-shadow(0 0 4px rgba(125,211,252,.38))!important;
-  animation:rwNativeWallNode 3.8s ease-in-out infinite!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-map path{
-  stroke:rgba(112,204,245,.34)!important;
-  stroke-width:1.05!important;
-  stroke-dasharray:5 8!important;
-  animation:rwNativeWallDash 11s linear infinite reverse!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-network polyline{
-  animation-duration:6.8s!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-scan line{
-  stroke:rgba(151,229,255,.34)!important;
-  stroke-width:1!important;
-  stroke-dasharray:80 680!important;
-  animation:rwNativeWallScan 5.2s linear infinite!important;
-}
-
-@keyframes rwNativeWallTrace{
-  from{stroke-dashoffset:210; opacity:.48;}
-  to{stroke-dashoffset:0; opacity:.86;}
-}
-
-@keyframes rwNativeWallDash{
-  to{stroke-dashoffset:-90;}
-}
-
-@keyframes rwNativeWallNode{
-  0%,100%{opacity:.38; transform:scale(.82);}
-  50%{opacity:.92; transform:scale(1.18);}
-}
-
-@keyframes rwNativeWallScan{
-  from{stroke-dashoffset:760; opacity:.08;}
-  20%,72%{opacity:.44;}
-  to{stroke-dashoffset:0; opacity:.08;}
+body.rw-v2-ready.rw-v2-phase-day:not(.app-open) .rw-v2-native-wall-canvas,
+body.rw-v2-ready.rw-v2-phase-afternoon:not(.app-open) .rw-v2-native-wall-canvas{
+  opacity:.20!important;
 }
 
 @media (max-width:1080px){
-  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion{
+  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
     left:31vw!important;
-    top:38px!important;
+    top:36px!important;
     width:48vw!important;
-    opacity:.34!important;
+    opacity:.20!important;
   }
 }
 
 @media (max-width:760px){
-  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion{
+  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
     display:none!important;
-  }
-}
-
-@media (prefers-reduced-motion:reduce){
-  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion polyline,
-  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion circle,
-  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-scan line{
-    animation:none!important;
   }
 }

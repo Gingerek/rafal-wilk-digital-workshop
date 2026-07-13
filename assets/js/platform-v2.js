@@ -10,6 +10,9 @@
   let weatherState = null;
   let weatherRequest = null;
   let weatherLastAttempt = 0;
+  let nativeWallEngineStarted = false;
+  let nativeWallFrame = 0;
+  let nativeWallLastPaint = 0;
   const modules = [
     { match:'Contract Budget Calculator', icon:'calculator', category:'finance',
       title:{pl:'Kalkulator budżetu kontraktu', en:'Contract Budget Calculator', nl:'Contractbudget calculator'},
@@ -343,56 +346,11 @@
       langControls.innerHTML = '<button type="button" data-rw-home-lang="pl">PL</button><button type="button" data-rw-home-lang="en">EN</button><button type="button" data-rw-home-lang="nl">NL</button>';
       shell.appendChild(langControls);
     }
-    if (!shell.querySelector('.rw-v2-native-wall-motion')) {
-      const wallMotion = document.createElement('div');
-      wallMotion.className = 'rw-v2-native-wall-motion';
-      wallMotion.setAttribute('aria-hidden', 'true');
-      wallMotion.innerHTML = `
-        <svg viewBox="0 0 760 460" role="img" focusable="false">
-          <defs>
-            <filter id="rwNativeWallGlow" x="-25%" y="-25%" width="150%" height="150%">
-              <feGaussianBlur stdDeviation="2.2" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <linearGradient id="rwNativeWallLine" x1="0" x2="1" y1="0" y2="0">
-              <stop offset="0" stop-color="#66d9ff"/>
-              <stop offset=".52" stop-color="#8ee7ff"/>
-              <stop offset="1" stop-color="#9bdcff"/>
-            </linearGradient>
-          </defs>
-          <g class="rw-native-panel rw-native-panel-a">
-            <path d="M32 42H276M32 82H276M32 122H276M32 162H276"/>
-            <polyline points="42,152 72,136 104,142 136,108 168,94 200,70 232,60 264,38"/>
-            <polyline class="rw-native-soft" points="42,174 82,166 122,156 162,168 202,126 242,114 276,92"/>
-          </g>
-          <g class="rw-native-panel rw-native-panel-b">
-            <path d="M322 42H528M322 78H528M322 114H528"/>
-            <polyline points="328,118 360,76 392,102 424,54 456,86 488,50 522,72"/>
-          </g>
-          <g class="rw-native-panel rw-native-panel-c">
-            <path d="M44 244V386H286"/>
-            <line x1="74" y1="386" x2="74" y2="314"/><line x1="104" y1="386" x2="104" y2="286"/>
-            <line x1="134" y1="386" x2="134" y2="330"/><line x1="164" y1="386" x2="164" y2="260"/>
-            <line x1="194" y1="386" x2="194" y2="304"/><line x1="224" y1="386" x2="224" y2="276"/>
-            <polyline class="rw-native-soft" points="48,362 88,352 128,318 168,336 208,282 248,298 286,250"/>
-          </g>
-          <g class="rw-native-map">
-            <path d="M420 292c30-18 75-18 112-2 30 13 70 9 104-7 22 16 45 31 76 25"/>
-            <path d="M426 326c34 9 63 3 90-12 41 28 87 29 142 2"/>
-            <circle cx="462" cy="294" r="2"/><circle cx="512" cy="310" r="2"/><circle cx="574" cy="286" r="2"/>
-            <circle cx="618" cy="328" r="2"/><circle cx="682" cy="304" r="2"/>
-          </g>
-          <g class="rw-native-network">
-            <polyline points="392,158 430,122 468,150 510,104 550,132 594,88 634,118"/>
-            <polyline class="rw-native-soft" points="392,206 438,188 482,216 526,174 572,190 620,152"/>
-            <circle cx="430" cy="122" r="2"/><circle cx="510" cy="104" r="2"/><circle cx="594" cy="88" r="2"/>
-            <circle cx="526" cy="174" r="2"/><circle cx="620" cy="152" r="2"/>
-          </g>
-          <g class="rw-native-scan">
-            <line x1="28" y1="224" x2="710" y2="224"/>
-          </g>
-        </svg>`;
-      shell.appendChild(wallMotion);
+    if (!shell.querySelector('.rw-v2-native-wall-canvas')) {
+      const wallCanvas = document.createElement('canvas');
+      wallCanvas.className = 'rw-v2-native-wall-canvas';
+      wallCanvas.setAttribute('aria-hidden', 'true');
+      shell.appendChild(wallCanvas);
     }
     if (!shell.querySelector('.rw-v2-daylight-system')) {
       const daylight = document.createElement('div');
@@ -486,6 +444,241 @@
     const count = moduleCards().filter(card => !card.hidden).length;
     const stamp = new Date().toLocaleTimeString(lang() === 'nl' ? 'nl-NL' : lang() === 'en' ? 'en-GB' : 'pl-PL', { hour:'2-digit', minute:'2-digit' });
     strip.innerHTML = `<span class="rw-v2-strip-online"><i></i>${uiText('systemOnline')}</span><strong>${count}</strong><span>${uiText('quickAccess')}</span><span>${lang().toUpperCase()}</span><span>${stamp}</span>`;
+  }
+  function startNativeWallCanvas(){
+    if (nativeWallEngineStarted) return;
+    nativeWallEngineStarted = true;
+    const canvas = document.querySelector('.rw-v2-native-wall-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha:true });
+    if (!ctx) return;
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    const state = {
+      charts:[
+        [0.12,0.52,0.22,0.47,0.31,0.37,0.43,0.22,0.57,0.27,0.72,0.12,0.86,0.09],
+        [0.52,0.28,0.60,0.13,0.68,0.35,0.76,0.17,0.85,0.31,0.94,0.22],
+        [0.11,0.84,0.20,0.76,0.30,0.70,0.40,0.79,0.52,0.58,0.64,0.66,0.78,0.48],
+        [0.64,0.50,0.70,0.41,0.77,0.54,0.84,0.36,0.91,0.47]
+      ],
+      nodes:[
+        [0.67,0.63,.2],[0.72,0.69,.8],[0.78,0.61,1.4],[0.84,0.73,2.1],[0.90,0.65,2.8],
+        [0.58,0.34,.5],[0.66,0.28,1.7],[0.76,0.31,2.4],[0.86,0.25,3.1],
+        [0.20,0.35,1.2],[0.30,0.24,2.6],[0.40,0.18,.9]
+      ]
+    };
+    function fitCanvas(){
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
+      const width = Math.max(1, Math.round(rect.width * dpr));
+      const height = Math.max(1, Math.round(rect.height * dpr));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { w:rect.width, h:rect.height, dpr };
+    }
+    function rgba(color, alpha){
+      return color.replace('ALPHA', String(alpha));
+    }
+    function drawPanelGrid(x, y, w, h, alpha){
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = 'rgba(126,211,255,.20)';
+      ctx.lineWidth = .7;
+      for (let i = 1; i < 5; i++) {
+        const yy = y + (h / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(x, yy);
+        ctx.lineTo(x + w, yy);
+        ctx.stroke();
+      }
+      for (let i = 1; i < 6; i++) {
+        const xx = x + (w / 6) * i;
+        ctx.beginPath();
+        ctx.moveTo(xx, y);
+        ctx.lineTo(xx, y + h);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    function drawLine(points, box, time, color, width, phase){
+      const [x, y, w, h] = box;
+      ctx.save();
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = color;
+      ctx.strokeStyle = color;
+      ctx.beginPath();
+      points.forEach((value, index) => {
+        const px = x + (w * index) / Math.max(1, points.length - 1);
+        const wave = Math.sin(time * .0017 + index * .92 + phase) * h * .035;
+        const py = y + h - value * h + wave;
+        if (index === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+      ctx.restore();
+    }
+    function drawBars(x, y, w, h, time){
+      ctx.save();
+      const count = 18;
+      const gap = w / count * .38;
+      const bw = (w - gap * (count - 1)) / count;
+      for (let i = 0; i < count; i++) {
+        const n = .28 + (Math.sin(time * .0012 + i * .74) + 1) * .26 + (i % 5) * .035;
+        const bh = Math.min(h * .9, h * n);
+        const px = x + i * (bw + gap);
+        const py = y + h - bh;
+        const grd = ctx.createLinearGradient(0, py, 0, y + h);
+        grd.addColorStop(0, 'rgba(150,236,255,.78)');
+        grd.addColorStop(.5, 'rgba(66,190,230,.35)');
+        grd.addColorStop(1, 'rgba(47,132,190,.10)');
+        ctx.fillStyle = grd;
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = 'rgba(105,210,255,.34)';
+        ctx.fillRect(px, py, bw, bh);
+      }
+      ctx.restore();
+    }
+    function drawWorldMap(x, y, w, h, time){
+      ctx.save();
+      ctx.globalAlpha = .56;
+      ctx.strokeStyle = 'rgba(119,205,244,.34)';
+      ctx.lineWidth = 1;
+      ctx.shadowBlur = 7;
+      ctx.shadowColor = 'rgba(91,174,231,.20)';
+      const land = [
+        [[.05,.48],[.13,.38],[.24,.40],[.31,.50],[.24,.60],[.13,.61],[.05,.54]],
+        [[.32,.43],[.43,.34],[.55,.39],[.58,.52],[.48,.61],[.37,.57]],
+        [[.60,.46],[.71,.38],[.83,.42],[.93,.55],[.84,.66],[.70,.62],[.62,.55]],
+        [[.45,.64],[.52,.70],[.50,.82],[.42,.77]]
+      ];
+      land.forEach(poly => {
+        ctx.beginPath();
+        poly.forEach(([px, py], index) => {
+          const xx = x + px * w;
+          const yy = y + py * h;
+          if (index) ctx.lineTo(xx, yy);
+          else ctx.moveTo(xx, yy);
+        });
+        ctx.closePath();
+        ctx.stroke();
+      });
+      const routes = [
+        [[.18,.50],[.42,.44],[.68,.49],[.86,.54]],
+        [[.31,.54],[.51,.67],[.73,.58]],
+        [[.54,.42],[.73,.39],[.91,.55]]
+      ];
+      routes.forEach((route, ri) => {
+        ctx.beginPath();
+        route.forEach(([px, py], index) => {
+          const xx = x + px * w;
+          const yy = y + py * h;
+          if (index) ctx.quadraticCurveTo(x + (route[index - 1][0] + px) * w / 2, y + (route[index - 1][1] + py) * h / 2 - h * .08, xx, yy);
+          else ctx.moveTo(xx, yy);
+        });
+        ctx.setLineDash([6, 10]);
+        ctx.lineDashOffset = -time * .018 - ri * 12;
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+      state.nodes.slice(0, 5).forEach(([px, py, offset]) => {
+        const pulse = (Math.sin(time * .002 + offset) + 1) / 2;
+        ctx.fillStyle = `rgba(180,240,255,${.42 + pulse * .36})`;
+        ctx.beginPath();
+        ctx.arc(x + px * w, y + py * h, 1.4 + pulse * 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+    function drawNetwork(x, y, w, h, time){
+      ctx.save();
+      const points = state.nodes.slice(5);
+      ctx.strokeStyle = 'rgba(126,211,255,.22)';
+      ctx.lineWidth = .85;
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = 'rgba(126,211,255,.18)';
+      for (let i = 0; i < points.length - 1; i++) {
+        for (let j = i + 1; j < points.length; j++) {
+          if ((i + j) % 3 === 0) {
+            ctx.beginPath();
+            ctx.moveTo(x + points[i][0] * w, y + points[i][1] * h);
+            ctx.lineTo(x + points[j][0] * w, y + points[j][1] * h);
+            ctx.stroke();
+          }
+        }
+      }
+      points.forEach(([px, py, offset]) => {
+        const pulse = (Math.sin(time * .0025 + offset) + 1) / 2;
+        ctx.fillStyle = `rgba(190,242,255,${.38 + pulse * .36})`;
+        ctx.beginPath();
+        ctx.arc(x + px * w, y + py * h, 1.2 + pulse * 1.4, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+    function drawHeat(x, y, w, h, time){
+      ctx.save();
+      const cols = 14;
+      const rows = 7;
+      const gap = 2;
+      const cw = (w - gap * (cols - 1)) / cols;
+      const ch = (h - gap * (rows - 1)) / rows;
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const v = (Math.sin(time * .001 + row * .9 + col * .43) + 1) / 2;
+          ctx.fillStyle = `rgba(${70 + v * 70}, ${160 + v * 70}, ${210 + v * 35}, ${.04 + v * .14})`;
+          ctx.fillRect(x + col * (cw + gap), y + row * (ch + gap), cw, ch);
+        }
+      }
+      ctx.restore();
+    }
+    function drawNativeWallFrame(time){
+      const { w, h } = fitCanvas();
+      if (w < 10 || h < 10) return;
+      ctx.clearRect(0, 0, w, h);
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      const vignette = ctx.createRadialGradient(w * .52, h * .45, 0, w * .52, h * .45, w * .72);
+      vignette.addColorStop(0, 'rgba(115,210,255,.075)');
+      vignette.addColorStop(.52, 'rgba(54,140,200,.030)');
+      vignette.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, w, h);
+      drawPanelGrid(w * .05, h * .07, w * .30, h * .29, .55);
+      drawPanelGrid(w * .40, h * .07, w * .25, h * .22, .42);
+      drawPanelGrid(w * .09, h * .48, w * .28, h * .33, .45);
+      drawLine(state.charts[0], [w * .06, h * .07, w * .28, h * .28], time, 'rgba(126,226,255,.48)', 1.55, 0);
+      drawLine(state.charts[1], [w * .40, h * .08, w * .24, h * .20], time, 'rgba(160,232,255,.34)', 1.25, 1.4);
+      drawLine(state.charts[2], [w * .09, h * .49, w * .27, h * .31], time, 'rgba(101,198,241,.38)', 1.2, 2.8);
+      drawLine(state.charts[3], [w * .64, h * .68, w * .27, h * .18], time, 'rgba(120,220,255,.32)', 1.15, 1.1);
+      drawBars(w * .05, h * .38, w * .26, h * .21, time);
+      drawHeat(w * .39, h * .33, w * .23, h * .18, time);
+      drawNetwork(w * .43, h * .17, w * .38, h * .36, time);
+      drawWorldMap(w * .53, h * .48, w * .40, h * .34, time);
+      ctx.strokeStyle = 'rgba(168,234,255,.16)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([w * .08, w * .9]);
+      ctx.lineDashOffset = -time * .04;
+      ctx.beginPath();
+      ctx.moveTo(w * .03, h * .46);
+      ctx.lineTo(w * .96, h * .46);
+      ctx.stroke();
+      ctx.restore();
+    }
+    function loop(time){
+      nativeWallFrame = window.requestAnimationFrame(loop);
+      if (document.body.classList.contains('app-open')) return;
+      if (reducedMotion && nativeWallLastPaint) return;
+      if (!reducedMotion && time - nativeWallLastPaint < 33) return;
+      nativeWallLastPaint = time;
+      drawNativeWallFrame(time);
+    }
+    nativeWallFrame = window.requestAnimationFrame(loop);
+    window.addEventListener('resize', () => drawNativeWallFrame(performance.now()), { passive:true });
   }
   function commandRows(query = ''){
     const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
@@ -1631,6 +1824,7 @@
     retireLegacyVisualLayers();
     syncBrand();
     ensureShell();
+    startNativeWallCanvas();
     bindPremiumPointer();
     updateWallClock();
     setInterval(updateWallClock, 1000);
