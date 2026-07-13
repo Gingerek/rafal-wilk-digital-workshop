@@ -7847,6 +7847,195 @@ body.rw-v2-ready.rw-v2-phase-afternoon:not(.app-open) .rw-v2-native-wall-canvas{
   }
 }
 
+/* Search-first home: modules stay searchable, while the lower photo becomes an ambient operations scene. */
+body.rw-v2-ready:not(.app-open) .rw-v2-toolbar,
+body.rw-v2-ready:not(.app-open) main.wrap .grid{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  overflow:hidden!important;
+  clip-path:inset(50%)!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
+  z-index:130!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-ambient-deck{
+  position:absolute!important;
+  left:clamp(74px, 7.4vw, 138px)!important;
+  right:clamp(300px, 29vw, 560px)!important;
+  bottom:clamp(30px, 5.4vh, 76px)!important;
+  height:clamp(190px, 24vh, 285px)!important;
+  z-index:37!important;
+  pointer-events:none!important;
+  opacity:.74!important;
+  mix-blend-mode:screen!important;
+  transform:perspective(1400px) rotateX(59deg) rotateZ(-1.8deg) translateZ(0)!important;
+  transform-origin:50% 72%!important;
+  filter:drop-shadow(0 0 18px rgba(91,174,231,.16)) saturate(112%)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-ambient-deck::before{
+  content:""!important;
+  position:absolute!important;
+  inset:18% 2% 4%!important;
+  border-radius:50%!important;
+  border:1px solid rgba(139,216,255,.13)!important;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(134,217,255,.16), rgba(61,151,211,.055) 34%, transparent 66%),
+    repeating-radial-gradient(ellipse at 50% 50%, rgba(139,216,255,.10) 0 1px, transparent 1px 18px)!important;
+  animation:rwAmbientDeckBreathe 3.4s ease-in-out infinite alternate!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-ambient-deck::after{
+  content:""!important;
+  position:absolute!important;
+  left:5%!important;
+  right:7%!important;
+  top:47%!important;
+  height:2px!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg, transparent, rgba(139,216,255,.38), rgba(255,255,255,.72), rgba(139,216,255,.28), transparent)!important;
+  box-shadow:0 0 28px rgba(139,216,255,.26)!important;
+  animation:rwAmbientDeckScanLine 2.6s ease-in-out infinite alternate!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-ring{
+  position:absolute!important;
+  left:50%!important;
+  top:52%!important;
+  width:min(34vw, 360px)!important;
+  aspect-ratio:1!important;
+  border-radius:50%!important;
+  border:1px dashed rgba(160,232,255,.30)!important;
+  transform:translate(-50%,-50%)!important;
+  box-shadow:inset 0 0 38px rgba(91,174,231,.06), 0 0 24px rgba(91,174,231,.12)!important;
+  animation:rwAmbientDeckRotate 18s linear infinite!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-ring:nth-child(2){
+  width:min(23vw, 248px)!important;
+  border-style:solid!important;
+  border-color:rgba(139,216,255,.22)!important;
+  animation-duration:12s!important;
+  animation-direction:reverse!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-core{
+  position:absolute!important;
+  left:50%!important;
+  top:52%!important;
+  width:clamp(14px, 1.4vw, 22px)!important;
+  aspect-ratio:1!important;
+  border-radius:50%!important;
+  transform:translate(-50%,-50%)!important;
+  background:radial-gradient(circle, rgba(255,255,255,.88), rgba(139,216,255,.74) 28%, rgba(91,174,231,.18) 58%, transparent 72%)!important;
+  box-shadow:0 0 34px rgba(139,216,255,.58)!important;
+  animation:rwAmbientDeckPulse 1.45s ease-in-out infinite alternate!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-scan{
+  position:absolute!important;
+  left:50%!important;
+  top:52%!important;
+  width:min(33vw, 350px)!important;
+  aspect-ratio:1!important;
+  border-radius:50%!important;
+  transform:translate(-50%,-50%)!important;
+  background:conic-gradient(from 0deg, transparent 0 62deg, rgba(139,216,255,.22) 73deg, rgba(255,255,255,.34) 82deg, transparent 94deg 360deg)!important;
+  animation:rwAmbientDeckRotate 5.8s linear infinite!important;
+  opacity:.62!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-route{
+  position:absolute!important;
+  height:1px!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg, transparent, rgba(151,226,255,.44), transparent)!important;
+  box-shadow:0 0 14px rgba(139,216,255,.18)!important;
+  animation:rwAmbientRoute 2.7s ease-in-out infinite alternate!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-route:nth-child(5){
+  left:9%!important;
+  right:50%!important;
+  top:42%!important;
+  transform:rotate(-8deg)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-route:nth-child(6){
+  left:46%!important;
+  right:12%!important;
+  top:38%!important;
+  transform:rotate(10deg)!important;
+  animation-delay:.4s!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-route:nth-child(7){
+  left:21%!important;
+  right:22%!important;
+  top:64%!important;
+  transform:rotate(3deg)!important;
+  animation-delay:.8s!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-node{
+  position:absolute!important;
+  width:clamp(7px, .7vw, 10px)!important;
+  aspect-ratio:1!important;
+  border-radius:50%!important;
+  background:rgba(210,248,255,.72)!important;
+  box-shadow:0 0 16px rgba(139,216,255,.54), 0 0 0 0 rgba(139,216,255,.30)!important;
+  animation:rwAmbientNode 1.8s ease-out infinite!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-node:nth-child(8){left:18%!important;top:41%!important;}
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-node:nth-child(9){left:42%!important;top:64%!important;animation-delay:.35s!important;}
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-node:nth-child(10){left:63%!important;top:37%!important;animation-delay:.7s!important;}
+body.rw-v2-ready:not(.app-open) .rw-v2-deck-node:nth-child(11){left:78%!important;top:58%!important;animation-delay:1.05s!important;}
+
+@keyframes rwAmbientDeckRotate{
+  to{transform:translate(-50%,-50%) rotate(360deg);}
+}
+
+@keyframes rwAmbientDeckPulse{
+  from{opacity:.62; transform:translate(-50%,-50%) scale(.86);}
+  to{opacity:1; transform:translate(-50%,-50%) scale(1.18);}
+}
+
+@keyframes rwAmbientDeckBreathe{
+  from{opacity:.44; transform:scale(.985);}
+  to{opacity:.80; transform:scale(1.018);}
+}
+
+@keyframes rwAmbientDeckScanLine{
+  from{transform:translateY(-58px) scaleX(.48); opacity:.18;}
+  to{transform:translateY(58px) scaleX(1); opacity:.78;}
+}
+
+@keyframes rwAmbientRoute{
+  from{opacity:.20; filter:brightness(.8);}
+  to{opacity:.78; filter:brightness(1.25);}
+}
+
+@keyframes rwAmbientNode{
+  0%{box-shadow:0 0 16px rgba(139,216,255,.54), 0 0 0 0 rgba(139,216,255,.34);}
+  100%{box-shadow:0 0 20px rgba(139,216,255,.76), 0 0 0 18px rgba(139,216,255,0);}
+}
+
+@media (max-width:760px){
+  body.rw-v2-ready:not(.app-open) .rw-v2-ambient-deck{
+    left:8%!important;
+    right:8%!important;
+    bottom:7vh!important;
+    height:26vh!important;
+    opacity:.50!important;
+  }
+}
+
 /* PIN gate active state: make it obvious the dialog is waiting for input. */
 #mc_gate.rw-v2-pin-gate .panel{
   overflow:hidden!important;

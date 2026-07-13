@@ -353,6 +353,13 @@
       wallCanvas.setAttribute('aria-hidden', 'true');
       shell.appendChild(wallCanvas);
     }
+    if (!shell.querySelector('.rw-v2-ambient-deck')) {
+      const deck = document.createElement('div');
+      deck.className = 'rw-v2-ambient-deck';
+      deck.setAttribute('aria-hidden', 'true');
+      deck.innerHTML = '<span class="rw-v2-deck-ring"></span><span class="rw-v2-deck-ring"></span><span class="rw-v2-deck-core"></span><span class="rw-v2-deck-scan"></span><span class="rw-v2-deck-route"></span><span class="rw-v2-deck-route"></span><span class="rw-v2-deck-route"></span><span class="rw-v2-deck-node"></span><span class="rw-v2-deck-node"></span><span class="rw-v2-deck-node"></span><span class="rw-v2-deck-node"></span>';
+      shell.appendChild(deck);
+    }
     if (!shell.querySelector('.rw-v2-daylight-system')) {
       const daylight = document.createElement('div');
       daylight.className = 'rw-v2-daylight-system';
