@@ -1761,12 +1761,58 @@ let detectedWeightInfo = null;
 let activeProView = "start";
 
 const HISTORY_KEY = "rafal_redukcja_master_history";
+const EMBEDDED_HISTORY_SEED_KEY = "rafal_redukcja_v34_embedded_history_seed_v1";
 const METRIC_OVERRIDE_KEY = "rafal_redukcja_metric_overrides_v25";
 const LEGACY_HISTORY_KEYS = ["rafal_redukcja_tygodnie_v2_folder","rafal_redukcja_tygodnie_v1","rafal_clear_ocr_reduction_history_v1","rafal_reduction_dashboard_history_v3"];
 const HISTORY_DB = "rafal_redukcja_v23_db";
 const HISTORY_STORE = "history";
 const TARGET_DEFICIT = 8000;
 const TARGET_WEIGHT = 110;
+const EMBEDDED_HISTORY = [{
+  id:"2026-W27",
+  weekName:"Tydzień 27 / 2026 2026-06-29 do 2026-07-05",
+  weekNote:"",
+  createdAt:"2026-07-13T09:02:58.498Z",
+  start:"2026-06-29",
+  end:"2026-07-05",
+  summary:{
+    eaten:18015,burned:25022,deficit:7007,knownDays:7,avgEaten:2573.5714285714284,avgProtein:122.28571428571429,
+    stepsAvg:8367,sleepAvg:7.48,sleepScoreAvg:70,activityCount:4,activityDurationHours:2.38,stressAvg:30,restingHrAvg:60,burnedAvgFromScreen:null
+  },
+  weight:{prevW:null,curW:136.4,weightDiff:null,previousWeekId:null},
+  bodyComposition:{fatKg:null,muscleKg:null,boneKg:null,fatPct:null,source:"",updatedAt:"2026-07-13T09:02:58.498Z"},
+  data:[
+    {label:"Pon",dateISO:"2026-06-29",eaten:2383,burned:2462,deficit:79,protein:132.3,fat:105.2,carbs:212.6,sugar:61.8},
+    {label:"Wt",dateISO:"2026-06-30",eaten:2628,burned:2753,deficit:125,protein:145.6,fat:108.7,carbs:259,sugar:89.9},
+    {label:"Śr",dateISO:"2026-07-01",eaten:2756,burned:3173,deficit:417,protein:130.9,fat:121.9,carbs:279.9,sugar:110.5},
+    {label:"Czw",dateISO:"2026-07-02",eaten:2765,burned:2857,deficit:92,protein:145.6,fat:126.3,carbs:226.4,sugar:56.6},
+    {label:"Pt",dateISO:"2026-07-03",eaten:3120,burned:5387,deficit:2267,protein:128.5,fat:98.6,carbs:236.9,sugar:53.1},
+    {label:"Sob",dateISO:"2026-07-04",eaten:3807,burned:5102,deficit:1295,protein:139.6,fat:238.7,carbs:59.2,sugar:17},
+    {label:"Niedz",dateISO:"2026-07-05",eaten:556,burned:3288,deficit:2732,protein:33.5,fat:27.2,carbs:43.8,sugar:0.2}
+  ],
+  topProducts:[
+    {name:"Aperol Prosecco Limoncello",kcal:1099},
+    {name:"Oliwa",kcal:807},
+    {name:"Kabanosy",kcal:746}
+  ],
+  detected:[{file:"demo",type:"demo"}],
+  ocrSummary:{stepsAvg:8367,sleepAvg:7.48,sleepScoreAvg:70,activityCount:4,activityDurationHours:2.38,stressAvg:30,restingHrAvg:60},
+  quality:{
+    missingBurnedDays:[],hasFitatu:true,hasCalories:true,hasSteps:true,hasSleep:true,hasActivities:true,
+    report:{
+      score:100,confidence:"wysoka",
+      checks:[
+        {key:"fitatu",label:"Fitatu: jedzenie i makro",detail:"7/7 dni",value:"7/7",state:"ok",points:30},
+        {key:"burned",label:"Garmin: kcal spalone",detail:"7/7 dni",value:"7/7",state:"ok",points:28},
+        {key:"weight",label:"Waga tygodnia",detail:"pomiar wpisany",value:"136,4 kg",state:"ok",points:14},
+        {key:"steps",label:"Kroki",detail:"średnia z ekranu Garmin",value:"8367/d",state:"ok",points:10},
+        {key:"sleep",label:"Sen",detail:"średnia z ekranu Garmin",value:"7,5 h",state:"ok",points:8},
+        {key:"activities",label:"Aktywności",detail:"z ekranu Garmin",value:"4",state:"ok",points:10}
+      ],
+      anomalies:["Niedz: nietypowe zjedzone kcal (556)."]
+    }
+  }
+}];
 const DAY_MAP = {
   pn:"Pon", pon:"Pon", poniedzialek:"Pon", poniedziałek:"Pon",
   wt:"Wt", wtorek:"Wt",
@@ -2719,6 +2765,14 @@ async function clearHistoryIndexedDB(){
   db.close();
 }
 function setHistory(items){localStorage.setItem(HISTORY_KEY,JSON.stringify(items));saveMasterPrivate(items);saveHistoryIndexedDB(items)}
+function cloneEmbeddedHistory(){return JSON.parse(JSON.stringify(EMBEDDED_HISTORY))}
+function seedEmbeddedHistoryIfEmpty(){
+  if(getHistory().length)return false;
+  const history=cloneEmbeddedHistory();
+  setHistory(history);
+  try{localStorage.setItem(EMBEDDED_HISTORY_SEED_KEY,new Date().toISOString())}catch(e){}
+  return true;
+}
 function previousWeek(data){
   const id=weekId(data), start=(data.map(d=>d.dateISO).filter(Boolean).sort()[0]||"");
   const h=getHistory().filter(w=>w.id!==id&&Number.isFinite(w.weight?.curW)).sort((a,b)=>(a.start||"").localeCompare(b.start||""));
@@ -4343,8 +4397,10 @@ window.addEventListener("load",async()=>{
   Chart.defaults.font.family="Inter,Roboto,Arial";
   refreshIcons();
   await hydrateHistoryFromIndexedDB();
+  const seededEmbeddedHistory=seedEmbeddedHistoryIfEmpty();
   renderHistory();
   loadLatestWeekPreview();
+  if(seededEmbeddedHistory)setStatus("Załadowano pełną historię dołączoną do modułu.");
   const reports=document.getElementById("allReports");
   const weight=document.getElementById("weeklyWeight");
   const manual=document.getElementById("manualBurned");
