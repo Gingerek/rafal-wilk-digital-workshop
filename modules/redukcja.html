@@ -1380,19 +1380,60 @@
       .weekEntry>.card:nth-child(2) .compositionHeroGrid{grid-template-columns:1fr 1fr}
     }
     @media(max-width:640px){.wrap{padding:12px}.weekMap{grid-template-columns:1fr}.weekStats{grid-template-columns:1fr}.heroPanel{grid-template-columns:1fr}.towerStage{grid-template-columns:repeat(2,1fr)}.missionValue{font-size:30px}.weekEntry>.card:nth-child(2) .compositionHero{padding:16px}.weekEntry>.card:nth-child(2) .compositionHeroGrid{grid-template-columns:1fr}.weekEntry>.card:nth-child(2) .compositionMetricCard{min-height:132px;grid-template-columns:60px minmax(0,1fr);padding:14px}.weekEntry>.card:nth-child(2) .compositionMetricIcon{width:60px;height:60px;font-size:28px}.weekEntry>.card:nth-child(2) .compositionMetricMeta strong{font-size:clamp(24px,10vw,38px)}.weekEntry>.card:nth-child(2) .compositionMetricMeta small{max-width:none}.weekEntry>.card:nth-child(1),.weekEntry>.card:nth-child(2),.weekEntry>.card:nth-child(3){padding:16px}}
-    body.rw-platform-embedded{font-size:16px;line-height:1.5}
-    body.rw-platform-embedded .wrap{max-width:1500px;padding:28px}
-    body.rw-platform-embedded .card{background:rgba(10,16,24,.94);border-color:rgba(255,255,255,.18)}
+    body.rw-platform-embedded{font-size:17px!important;line-height:1.58!important;background:#050914!important;color:#f8fafc!important}
+    body.rw-platform-embedded .wrap{max-width:1560px!important;padding:34px!important}
+    body.rw-platform-embedded .hero{background:linear-gradient(135deg,rgba(8,13,21,.98),rgba(18,36,44,.94))!important;border-color:rgba(148,226,255,.28)!important}
+    body.rw-platform-embedded .card,
+    body.rw-platform-embedded .heroPanel,
+    body.rw-platform-embedded .chartShell,
+    body.rw-platform-embedded .flowBox,
+    body.rw-platform-embedded .energySideCard,
+    body.rw-platform-embedded .weekItem{background:rgba(12,19,30,.96)!important;border-color:rgba(220,238,255,.22)!important;box-shadow:0 18px 52px rgba(0,0,0,.42)!important}
+    body.rw-platform-embedded h1{font-size:clamp(38px,4.2vw,58px)!important;line-height:1.02!important}
+    body.rw-platform-embedded h2{font-size:clamp(21px,1.6vw,28px)!important;color:#fff!important}
+    body.rw-platform-embedded h3,
+    body.rw-platform-embedded label,
+    body.rw-platform-embedded .kpiLabel,
+    body.rw-platform-embedded .missionLabel,
+    body.rw-platform-embedded .chartCaption{color:#e8f3ff!important}
     body.rw-platform-embedded .muted,
     body.rw-platform-embedded .hint,
-    body.rw-platform-embedded .weekMeta{color:#c8d4e6}
-    body.rw-platform-embedded button,
+    body.rw-platform-embedded .weekMeta,
+    body.rw-platform-embedded .kpiNote,
+    body.rw-platform-embedded .energySideValue,
+    body.rw-platform-embedded .verdictText{color:#d7e4f5!important}
     body.rw-platform-embedded input,
-    body.rw-platform-embedded textarea{font-size:15px}
-    body.rw-platform-embedded table{font-size:14px}
+    body.rw-platform-embedded textarea{font-size:16px!important;color:#fff!important;background:#070d1c!important;border-color:rgba(188,219,255,.26)!important}
+    body.rw-platform-embedded button{font-size:15px!important}
+    body.rw-platform-embedded table{font-size:15px!important;background:rgba(8,13,24,.96)!important}
+    body.rw-platform-embedded th{color:#f8fafc!important;background:rgba(30,64,100,.55)!important}
+    body.rw-platform-embedded td{color:#eef6ff!important;border-color:rgba(220,238,255,.16)!important}
+    body.rw-platform-embedded .grid3{grid-template-columns:minmax(320px,.82fr) minmax(520px,1.35fr) minmax(320px,.83fr)!important}
+    body.rw-platform-embedded .grid4{grid-template-columns:repeat(5,minmax(180px,1fr))!important}
+    body.rw-platform-embedded .energyCanvasWrap{height:600px!important;min-height:600px!important}
+    body.rw-platform-embedded .miniChartWrap{min-height:300px!important}
+    body.rw-platform-embedded .compositionHeroGrid{grid-template-columns:repeat(2,minmax(220px,1fr))!important}
+    body.rw-platform-embedded .compositionMetricCard{grid-template-columns:64px minmax(0,1fr)!important;gap:14px!important;padding:16px!important}
+    body.rw-platform-embedded .compositionMetricIcon{width:64px!important;height:64px!important}
+    body.rw-platform-embedded .compositionMetricMeta strong{font-size:clamp(26px,2.5vw,40px)!important;white-space:nowrap!important;letter-spacing:0!important}
+    body.rw-platform-embedded .compositionMetricMeta small{font-size:12px!important}
+    body.rw-platform-embedded .weekEntry>.card:nth-child(2) .compositionHeroGrid{grid-template-columns:repeat(2,minmax(210px,1fr))!important}
+    body.rw-platform-embedded .weekEntry>.card:nth-child(2) .compositionMetricCard{grid-template-columns:62px minmax(0,1fr)!important;min-height:124px!important;padding:14px!important;border-radius:18px!important}
+    body.rw-platform-embedded .weekEntry>.card:nth-child(2) .compositionMetricIcon{width:62px!important;height:62px!important;border-radius:18px!important;font-size:28px!important}
+    body.rw-platform-embedded .weekEntry>.card:nth-child(2) .compositionMetricMeta strong{font-size:clamp(28px,2.1vw,38px)!important;line-height:1!important;white-space:nowrap!important}
     @media(min-width:1051px){
-      body.rw-platform-embedded .hero{grid-template-columns:minmax(0,1fr) minmax(390px,.78fr)}
-      body.rw-platform-embedded .historyLayout{grid-template-columns:minmax(360px,.72fr) minmax(0,1.28fr)}
+      body.rw-platform-embedded .hero{grid-template-columns:minmax(0,1fr) minmax(440px,.78fr)!important}
+      body.rw-platform-embedded .historyLayout{grid-template-columns:minmax(420px,.74fr) minmax(0,1.26fr)!important}
+    }
+    @media(max-width:980px){
+      body.rw-platform-embedded .wrap{padding:18px!important}
+      body.rw-platform-embedded .grid3,
+      body.rw-platform-embedded .grid4,
+      body.rw-platform-embedded .qualityDock,
+      body.rw-platform-embedded .missionDeck,
+      body.rw-platform-embedded .analyticsGrid,
+      body.rw-platform-embedded .proChartGrid,
+      body.rw-platform-embedded .energySection{grid-template-columns:1fr!important}
     }
   </style>
 </head>
@@ -1770,6 +1811,7 @@ let folderFiles = [];
 let autoRunTimer = null;
 let autoRunBusy = false;
 let lastAutoSignature = "";
+let lastAutoPersistSignature = "";
 let lastQualityReport = null;
 let detectedWeightInfo = null;
 let activeProView = "start";
@@ -2847,6 +2889,37 @@ async function saveCurrentWeek(auto=false){
   await saveWeekVisible(merged);
   renderHistory();
   if(!auto)setStatus(`Zapisano ${week.id}.`);
+  return merged;
+}
+function autoPersistSignature(){
+  if(!lastResult)return "";
+  const week=compactWeek(lastResult);
+  return JSON.stringify({
+    id:week.id,
+    start:week.start||"",
+    end:week.end||"",
+    weight:week.weight?.curW??null,
+    bodyComposition:week.bodyComposition||{},
+    data:(week.data||[]).map(d=>[d.dateISO||d.label,d.eaten,d.burned,d.protein,d.fat,d.carbs])
+  });
+}
+async function autoPersistCurrentWeek(){
+  if(!lastResult)return;
+  const sig=autoPersistSignature();
+  if(!sig||sig===lastAutoPersistSignature)return;
+  lastAutoPersistSignature=sig;
+  try{
+    const saved=await saveCurrentWeek(true);
+    const auto=document.getElementById("autoStatus");
+    if(auto&&saved)auto.innerHTML=`<span class="chip ok">Zapamiętano automatycznie: ${esc(saved.id)}</span>`;
+    const status=document.getElementById("status");
+    if(status&&saved)status.textContent=`Tydzień ${saved.id} jest zapamiętany automatycznie. Kolejne tygodnie dopiszą się do historii po analizie.`;
+  }catch(e){
+    lastAutoPersistSignature="";
+    console.error(e);
+    const auto=document.getElementById("autoStatus");
+    if(auto)auto.innerHTML='<span class="chip warn">Analiza gotowa, ale autozapis wymaga ponownej próby.</span>';
+  }
 }
 function currentSignature(){
   const files=[...folderFiles,...Array.from(document.getElementById("allReports").files||[])].map(f=>`${f.name}:${f.size}:${f.lastModified}`).sort().join("|");
@@ -2859,7 +2932,10 @@ function scheduleAutoAnalysis(){
     const files=[...folderFiles,...Array.from(document.getElementById("allReports").files||[])];
     const weight=num(document.getElementById("weeklyWeight").value);
     const hasImage=files.some(f=>f.type?.startsWith("image/"));
-    if(!files.length){document.getElementById("autoStatus").textContent="Dodaj raporty. Analiza ruszy sama.";return}
+    if(!files.length){
+      document.getElementById("autoStatus").textContent=lastResult?`Zapamiętano automatycznie: ${lastResult.id}. Dodaj nowe raporty, aby utworzyć kolejny tydzień.`:"Dodaj raporty. Analiza ruszy sama.";
+      return;
+    }
     if(!Number.isFinite(weight)&&!hasImage){document.getElementById("autoStatus").textContent="Wpisz wagę albo dodaj ekran z pomiarem.";return}
     const sig=currentSignature();
     if(sig===lastAutoSignature||autoRunBusy)return;
@@ -2972,6 +3048,7 @@ function render(data,garmin,fitatu){
   renderPlan(garmin,s);
   renderTech(data,garmin,fitatu);
   renderHistory();
+  autoPersistCurrentWeek();
 }
 function renderQuality(data,garmin,fitatu){
   const missing=data.filter(d=>d.burned===null).map(d=>d.label);
@@ -4016,8 +4093,8 @@ async function runAnalysis(autoStarted=false){
     }
     const data=merge(fitatu,garmin);
     render(data,garmin,fitatu);
-    await saveCurrentWeek(true);
-    document.getElementById("autoStatus").innerHTML=`<span class="chip ok">Zapisano automatycznie: ${esc(lastResult.id)}</span>`;
+    await autoPersistCurrentWeek();
+    document.getElementById("autoStatus").innerHTML=`<span class="chip ok">Zapamiętano automatycznie: ${esc(lastResult.id)}</span>`;
     setStatus(`Gotowe. Raport zapisany automatycznie jako ${lastResult.id}.`);
   }catch(e){
     console.error(e);
@@ -4260,7 +4337,7 @@ function exportHistory(){const blob=new Blob([JSON.stringify(getHistory(),null,2
 async function importHistoryFile(file){if(!file)return;const imported=JSON.parse(await file.text());if(Array.isArray(imported)){setHistory(imported);renderHistory()}}
 async function clearHistory(){if(confirm("Usunąć całą historię?")){localStorage.removeItem(HISTORY_KEY);await clearHistoryIndexedDB();renderHistory();setStatus("Historia usunięta.")}}
 function startNewWeek(){
-  lastResult=null;lastAutoSignature="";folderFiles=[];lastQualityReport=null;detectedWeightInfo=null;
+  lastResult=null;lastAutoSignature="";lastAutoPersistSignature="";folderFiles=[];lastQualityReport=null;detectedWeightInfo=null;
   if(chart){chart.destroy();chart=null}
   if(waterfallChart){waterfallChart.destroy();waterfallChart=null}
   if(riskMatrixChart){riskMatrixChart.destroy();riskMatrixChart=null}
@@ -4336,12 +4413,11 @@ function loadDemo(){
 function seedEmbeddedWeek(){
   if(getHistory().length)return false;
   try{
-    if(localStorage.getItem(EMBEDDED_WEEK_SEED_KEY))return false;
     loadDemo();
     localStorage.setItem(EMBEDDED_WEEK_SEED_KEY,"1");
     renderHistory();
     loadLatestWeekPreview();
-    setStatus("Zaladowano dane tygodnia dolaczone do modulu.");
+    setStatus("Załadowano dane tygodnia dołączone do modułu. Kolejne tygodnie zapiszą się automatycznie.");
     return true;
   }catch(e){
     return false;
