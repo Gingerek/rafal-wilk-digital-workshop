@@ -1855,6 +1855,7 @@
 
   function applyPremiumModuleTheme(frame){
     try {
+      if (frame?.id === 'redukcja') return;
       const doc = frame?.contentDocument;
       if (!doc || !doc.documentElement) return;
       doc.documentElement.classList.add('rw-premium-module-root');
