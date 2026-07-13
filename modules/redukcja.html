@@ -1760,9 +1760,11 @@ let lastQualityReport = null;
 let detectedWeightInfo = null;
 let activeProView = "start";
 
-const HISTORY_KEY = "rafal_redukcja_master_history";
+const HISTORY_KEY = "rafal_redukcja_master_history_clean_v1";
+const HISTORY_RESET_KEY = "rafal_redukcja_history_reset_20260713_empty";
 const METRIC_OVERRIDE_KEY = "rafal_redukcja_metric_overrides_v25";
-const LEGACY_HISTORY_KEYS = ["rafal_redukcja_tygodnie_v2_folder","rafal_redukcja_tygodnie_v1","rafal_clear_ocr_reduction_history_v1","rafal_reduction_dashboard_history_v3"];
+const LEGACY_HISTORY_KEYS = [];
+const OLD_HISTORY_KEYS = ["rafal_redukcja_master_history","rafal_redukcja_tygodnie_v2_folder","rafal_redukcja_tygodnie_v1","rafal_clear_ocr_reduction_history_v1","rafal_reduction_dashboard_history_v3"];
 const HISTORY_DB = "rafal_redukcja_v23_db";
 const HISTORY_STORE = "history";
 const TARGET_DEFICIT = 8000;
@@ -2718,7 +2720,21 @@ async function clearHistoryIndexedDB(){
   });
   db.close();
 }
+async function resetStoredHistoryOnce(){
+  try{
+    if(localStorage.getItem(HISTORY_RESET_KEY)==="1")return false;
+    localStorage.removeItem(HISTORY_KEY);
+    LEGACY_HISTORY_KEYS.forEach(key=>localStorage.removeItem(key));
+    OLD_HISTORY_KEYS.forEach(key=>localStorage.removeItem(key));
+    await clearHistoryIndexedDB();
+    localStorage.setItem(HISTORY_RESET_KEY,"1");
+    return true;
+  }catch(e){
+    return false;
+  }
+}
 function setHistory(items){localStorage.setItem(HISTORY_KEY,JSON.stringify(items));saveMasterPrivate(items);saveHistoryIndexedDB(items)}
+resetStoredHistoryOnce();
 function previousWeek(data){
   const id=weekId(data), start=(data.map(d=>d.dateISO).filter(Boolean).sort()[0]||"");
   const h=getHistory().filter(w=>w.id!==id&&Number.isFinite(w.weight?.curW)).sort((a,b)=>(a.start||"").localeCompare(b.start||""));
@@ -4342,6 +4358,7 @@ window.addEventListener("load",async()=>{
   Chart.defaults.borderColor="rgba(255,255,255,.10)";
   Chart.defaults.font.family="Inter,Roboto,Arial";
   refreshIcons();
+  await resetStoredHistoryOnce();
   await hydrateHistoryFromIndexedDB();
   renderHistory();
   loadLatestWeekPreview();
