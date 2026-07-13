@@ -357,6 +357,7 @@
       const assistantBlink = document.createElement('div');
       assistantBlink.className = 'rw-v2-assistant-blink';
       assistantBlink.setAttribute('aria-hidden', 'true');
+      assistantBlink.innerHTML = '<span class="rw-v2-assistant-lid rw-v2-assistant-lid-left"></span><span class="rw-v2-assistant-lid rw-v2-assistant-lid-right"></span>';
       shell.appendChild(assistantBlink);
     }
     if (!shell.querySelector('.rw-v2-ambient-deck')) {
@@ -432,12 +433,12 @@
     const runBlink = () => {
       if (!document.body.classList.contains('app-open')) {
         blink.classList.add('is-blinking');
-        window.setTimeout(() => blink.classList.remove('is-blinking'), 520 + Math.random() * 180);
+        window.setTimeout(() => blink.classList.remove('is-blinking'), 920 + Math.random() * 420);
       }
-      const nextDelay = 9000 + Math.random() * 8500;
+      const nextDelay = 18000 + Math.random() * 42000;
       window.setTimeout(runBlink, nextDelay);
     };
-    window.setTimeout(runBlink, 5200 + Math.random() * 4200);
+    window.setTimeout(runBlink, 10000 + Math.random() * 18000);
   }
   function renderHero(){
     const hero = document.querySelector('.rw-v2-hero');

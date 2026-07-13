@@ -7842,27 +7842,63 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
   pointer-events:none!important;
   opacity:1!important;
   mix-blend-mode:normal!important;
-  background:url("../images/assistant-face-open.webp?v=20260713-calm-float-1") center / 100% 100% no-repeat!important;
-  animation:rwAssistantLevitate 8.8s ease-in-out infinite!important;
-  will-change:transform!important;
+  background:none!important;
+  transform:translateZ(0)!important;
+  will-change:auto!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink::after{
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink::before{
   content:""!important;
   position:absolute!important;
-  inset:0!important;
-  background:url("../images/assistant-face-blink-closed.webp?v=20260713-calm-float-1") center / 100% 100% no-repeat!important;
+  left:2%!important;
+  top:4%!important;
+  width:76%!important;
+  height:82%!important;
+  border-radius:42% 44% 50% 48%!important;
+  background:
+    radial-gradient(circle at 45% 42%, rgba(94,213,255,.14), transparent 22%),
+    radial-gradient(circle at 52% 55%, rgba(16,120,166,.12), transparent 54%)!important;
+  opacity:.34!important;
+  mix-blend-mode:screen!important;
+  animation:rwAssistantAuraFloat 12s ease-in-out infinite!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid{
+  position:absolute!important;
+  width:11.6%!important;
+  height:4.6%!important;
+  border-radius:58% 58% 48% 48%!important;
+  overflow:hidden!important;
   opacity:0!important;
-  transition:opacity 180ms cubic-bezier(.22,.82,.24,1)!important;
+  transform:scaleY(.12)!important;
+  transform-origin:center center!important;
+  transition:
+    opacity 240ms cubic-bezier(.22,.82,.24,1),
+    transform 420ms cubic-bezier(.22,.82,.24,1)!important;
+  background:
+    linear-gradient(180deg, rgba(45,112,133,.40) 0%, rgba(7,32,45,.86) 45%, rgba(2,11,18,.92) 54%, rgba(48,126,151,.34) 100%),
+    repeating-linear-gradient(94deg, rgba(164,226,246,.18) 0 1px, transparent 1px 7px)!important;
+  box-shadow:inset 0 1px 2px rgba(143,228,255,.14), 0 0 8px rgba(52,190,238,.08)!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-blinking::after{
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid-left{
+  left:34.1%!important;
+  top:48.4%!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid-right{
+  left:66.2%!important;
+  top:48.2%!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-blinking .rw-v2-assistant-lid{
   opacity:1!important;
+  transform:scaleY(1)!important;
 }
 
-@keyframes rwAssistantLevitate{
-  0%,100%{transform:translate3d(0,0,0) scale(1);}
-  50%{transform:translate3d(0,-6px,0) scale(1.002);}
+@keyframes rwAssistantAuraFloat{
+  0%,100%{transform:translate3d(0,0,0) scale(1); opacity:.28;}
+  50%{transform:translate3d(0,-5px,0) scale(1.006); opacity:.42;}
 }
 
 @media (min-aspect-ratio:1704/923){
