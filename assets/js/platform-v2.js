@@ -10,6 +10,7 @@
   let weatherState = null;
   let weatherRequest = null;
   let weatherLastAttempt = 0;
+  let weatherRefreshAllowedAt = Date.now() + 2500;
   let nativeWallEngineStarted = false;
   let nativeWallFrame = 0;
   let nativeWallLastPaint = 0;
@@ -933,6 +934,7 @@
 
   function refreshWeather(){
     if (weatherRequest || !window.fetch) return;
+    if (Date.now() < weatherRefreshAllowedAt) return;
     const cached = readWeatherCache();
     if (Date.now() - Number(cached.fetchedAt || 0) < WEATHER_REFRESH_MS) return;
     if (Date.now() - weatherLastAttempt < 5 * 60 * 1000) return;
@@ -1926,10 +1928,12 @@
     } catch (e) {}
   }
   function skinModuleFrames(){
+    if (!document.body.classList.contains('app-open')) return;
     document.querySelectorAll('iframe').forEach(applyPremiumModuleTheme);
   }
   let skinFrameRaf = 0;
   function scheduleSkinModuleFrames(){
+    if (!document.body.classList.contains('app-open')) return;
     if (skinFrameRaf) return;
     skinFrameRaf = window.requestAnimationFrame(() => {
       skinFrameRaf = 0;
@@ -1968,13 +1972,13 @@
     hideStageWidgets();
     new MutationObserver(() => window.requestAnimationFrame(hideStageWidgets)).observe(document.body, { childList:true, subtree:true });
     setInterval(hideStageWidgets, 4000);
-    skinModuleFrames();
+    if (document.body.classList.contains('app-open')) skinModuleFrames();
     document.querySelectorAll('iframe').forEach(frame => frame.addEventListener('load', () => {
       applyPremiumModuleTheme(frame);
       scheduleLanguagePush(lang());
     }));
     new MutationObserver(scheduleSkinModuleFrames).observe(document.body, { childList:true, subtree:true });
-    setInterval(skinModuleFrames, 5000);
+    setInterval(skinModuleFrames, 8000);
     applyLanguage();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
