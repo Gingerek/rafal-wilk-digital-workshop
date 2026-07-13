@@ -357,7 +357,7 @@
       const assistantBlink = document.createElement('div');
       assistantBlink.className = 'rw-v2-assistant-blink';
       assistantBlink.setAttribute('aria-hidden', 'true');
-      assistantBlink.innerHTML = '<span class="rw-v2-assistant-gaze rw-v2-assistant-gaze-left"><i></i></span><span class="rw-v2-assistant-gaze rw-v2-assistant-gaze-right"><i></i></span><span class="rw-v2-assistant-lid rw-v2-assistant-lid-left"></span><span class="rw-v2-assistant-lid rw-v2-assistant-lid-right"></span>';
+      assistantBlink.innerHTML = '<span class="rw-v2-assistant-gaze rw-v2-assistant-gaze-left"><i></i></span><span class="rw-v2-assistant-gaze rw-v2-assistant-gaze-right"><i></i></span><span class="rw-v2-assistant-lid rw-v2-assistant-lid-upper rw-v2-assistant-lid-left"></span><span class="rw-v2-assistant-lid rw-v2-assistant-lid-lower rw-v2-assistant-lid-left"></span><span class="rw-v2-assistant-lid rw-v2-assistant-lid-upper rw-v2-assistant-lid-right"></span><span class="rw-v2-assistant-lid rw-v2-assistant-lid-lower rw-v2-assistant-lid-right"></span>';
       shell.appendChild(assistantBlink);
     }
     if (!shell.querySelector('.rw-v2-ambient-deck')) {
@@ -431,15 +431,55 @@
     const blink = shell?.querySelector('.rw-v2-assistant-blink');
     if (!blink || blink.dataset.rwBlinkActive === 'true') return;
     blink.dataset.rwBlinkActive = 'true';
+    const ease = (t) => .5 - Math.cos(Math.max(0, Math.min(1, t)) * Math.PI) / 2;
+    const setBlink = (progress) => {
+      const p = Math.max(0, Math.min(1, progress));
+      const top = 0.15 + p * 5.9;
+      const bottom = p * 2.2;
+      blink.style.setProperty('--rw-upper-lid-height', `${top.toFixed(3)}%`);
+      blink.style.setProperty('--rw-lower-lid-height', `${bottom.toFixed(3)}%`);
+      blink.style.setProperty('--rw-lid-opacity', (p * .98).toFixed(3));
+      blink.style.setProperty('--rw-eye-opacity', (.62 * (1 - p * .90)).toFixed(3));
+      blink.style.setProperty('--rw-eye-direct-opacity', (.78 * (1 - p * .90)).toFixed(3));
+    };
+    const animateBlink = (duration, done) => {
+      const close = duration * .43;
+      const hold = duration * .10;
+      const open = duration - close - hold;
+      const started = performance.now();
+      const frame = (now) => {
+        const elapsed = now - started;
+        let progress;
+        if (elapsed < close) {
+          progress = ease(elapsed / close);
+        } else if (elapsed < close + hold) {
+          progress = 1;
+        } else if (elapsed < duration) {
+          progress = 1 - ease((elapsed - close - hold) / open);
+        } else {
+          setBlink(0);
+          done?.();
+          return;
+        }
+        setBlink(progress);
+        window.requestAnimationFrame(frame);
+      };
+      window.requestAnimationFrame(frame);
+    };
     const runBlink = () => {
-      if (!document.body.classList.contains('app-open')) {
-        blink.classList.add('is-blinking');
-        window.setTimeout(() => blink.classList.remove('is-blinking'), 760 + Math.random() * 360);
+      if (!document.body.classList.contains('app-open') && !document.hidden) {
+        const duration = 980 + Math.random() * 520;
+        animateBlink(duration, () => {
+          if (Math.random() < .18) {
+            window.setTimeout(() => animateBlink(840 + Math.random() * 360), 520 + Math.random() * 720);
+          }
+        });
       }
-      const nextDelay = 6500 + Math.random() * 11500;
+      const nextDelay = 2600 + Math.random() * 7600;
       window.setTimeout(runBlink, nextDelay);
     };
-    window.setTimeout(runBlink, 4200 + Math.random() * 7800);
+    setBlink(0);
+    window.setTimeout(runBlink, 1800 + Math.random() * 4200);
   }
 
   function startAssistantGaze(shell){
