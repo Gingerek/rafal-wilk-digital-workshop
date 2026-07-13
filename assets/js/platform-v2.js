@@ -488,10 +488,10 @@
     gazeLayer.dataset.rwGazeActive = 'true';
     const positions = [
       { x: 0, y: 0, hold: 2.4 },
-      { x: -7, y: -2, hold: 2.9 },
-      { x: 7, y: -1, hold: 2.7 },
-      { x: -3, y: 4, hold: 2.2 },
-      { x: 4, y: 3, hold: 2.1 },
+      { x: -3.2, y: -.8, hold: 2.9 },
+      { x: 3.4, y: -.4, hold: 2.7 },
+      { x: -1.5, y: 1.6, hold: 2.2 },
+      { x: 1.8, y: 1.3, hold: 2.1 },
       { x: 1, y: -1, hold: 3.4, direct: true }
     ];
     let lastIndex = -1;
