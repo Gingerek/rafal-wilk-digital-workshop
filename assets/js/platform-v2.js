@@ -343,53 +343,56 @@
       langControls.innerHTML = '<button type="button" data-rw-home-lang="pl">PL</button><button type="button" data-rw-home-lang="en">EN</button><button type="button" data-rw-home-lang="nl">NL</button>';
       shell.appendChild(langControls);
     }
-    if (!shell.querySelector('.rw-v2-analytics-wall')) {
-      const wall = document.createElement('div');
-      wall.className = 'rw-v2-analytics-wall';
-      wall.setAttribute('aria-hidden', 'true');
-      wall.innerHTML = `
-        <div class="rw-v2-wall-bezel">
-          <div class="rw-v2-wall-topline"><span>LIVE OPS</span><i></i><strong data-wall-stat="sync">99.8%</strong></div>
-          <div class="rw-v2-wall-kpis">
-            <span><b data-wall-stat="flow">74</b><small>FLOW</small></span>
-            <span><b data-wall-stat="tasks">12</b><small>ACTIVE</small></span>
-            <span><b data-wall-stat="delta">+18</b><small>DELTA</small></span>
-            <span><b data-wall-stat="risk">03</b><small>RISK</small></span>
-          </div>
-          <div class="rw-v2-wall-mainchart">
-            <svg viewBox="0 0 420 160" role="img" focusable="false">
-              <defs>
-                <linearGradient id="rwWallLine" x1="0" x2="1" y1="0" y2="0">
-                  <stop offset="0" stop-color="#5eead4"/>
-                  <stop offset=".55" stop-color="#7dd3fc"/>
-                  <stop offset="1" stop-color="#fbbf24"/>
-                </linearGradient>
-                <filter id="rwWallGlow" x="-20%" y="-40%" width="140%" height="180%">
-                  <feGaussianBlur stdDeviation="4" result="blur"/>
-                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                </filter>
-              </defs>
-              <path class="rw-v2-wall-gridline" d="M24 32H396M24 72H396M24 112H396"/>
-              <path class="rw-v2-wall-axis" d="M24 16V140H402"/>
-              <polyline class="rw-v2-wall-line rw-v2-wall-line-a" points="24,112 64,86 104,96 144,54 184,66 224,42 264,76 304,36 344,58 396,28"/>
-              <polyline class="rw-v2-wall-line rw-v2-wall-line-b" points="24,126 64,116 104,104 144,118 184,88 224,102 264,74 304,84 344,54 396,72"/>
-              <circle class="rw-v2-wall-pulse-dot" cx="396" cy="28" r="5"/>
-            </svg>
-          </div>
-          <div class="rw-v2-wall-lower">
-            <div class="rw-v2-wall-bars">
-              <i style="--h:62%"></i><i style="--h:38%"></i><i style="--h:76%"></i><i style="--h:54%"></i>
-              <i style="--h:88%"></i><i style="--h:46%"></i><i style="--h:70%"></i><i style="--h:58%"></i>
-            </div>
-            <div class="rw-v2-wall-radar">
-              <span></span><span></span><span></span><span></span><span></span><span></span>
-            </div>
-            <div class="rw-v2-wall-feed">
-              <em></em><em></em><em></em><em></em><em></em>
-            </div>
-          </div>
-        </div>`;
-      shell.appendChild(wall);
+    if (!shell.querySelector('.rw-v2-native-wall-motion')) {
+      const wallMotion = document.createElement('div');
+      wallMotion.className = 'rw-v2-native-wall-motion';
+      wallMotion.setAttribute('aria-hidden', 'true');
+      wallMotion.innerHTML = `
+        <svg viewBox="0 0 760 460" role="img" focusable="false">
+          <defs>
+            <filter id="rwNativeWallGlow" x="-25%" y="-25%" width="150%" height="150%">
+              <feGaussianBlur stdDeviation="2.2" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="rwNativeWallLine" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stop-color="#66d9ff"/>
+              <stop offset=".52" stop-color="#8ee7ff"/>
+              <stop offset="1" stop-color="#9bdcff"/>
+            </linearGradient>
+          </defs>
+          <g class="rw-native-panel rw-native-panel-a">
+            <path d="M32 42H276M32 82H276M32 122H276M32 162H276"/>
+            <polyline points="42,152 72,136 104,142 136,108 168,94 200,70 232,60 264,38"/>
+            <polyline class="rw-native-soft" points="42,174 82,166 122,156 162,168 202,126 242,114 276,92"/>
+          </g>
+          <g class="rw-native-panel rw-native-panel-b">
+            <path d="M322 42H528M322 78H528M322 114H528"/>
+            <polyline points="328,118 360,76 392,102 424,54 456,86 488,50 522,72"/>
+          </g>
+          <g class="rw-native-panel rw-native-panel-c">
+            <path d="M44 244V386H286"/>
+            <line x1="74" y1="386" x2="74" y2="314"/><line x1="104" y1="386" x2="104" y2="286"/>
+            <line x1="134" y1="386" x2="134" y2="330"/><line x1="164" y1="386" x2="164" y2="260"/>
+            <line x1="194" y1="386" x2="194" y2="304"/><line x1="224" y1="386" x2="224" y2="276"/>
+            <polyline class="rw-native-soft" points="48,362 88,352 128,318 168,336 208,282 248,298 286,250"/>
+          </g>
+          <g class="rw-native-map">
+            <path d="M420 292c30-18 75-18 112-2 30 13 70 9 104-7 22 16 45 31 76 25"/>
+            <path d="M426 326c34 9 63 3 90-12 41 28 87 29 142 2"/>
+            <circle cx="462" cy="294" r="2"/><circle cx="512" cy="310" r="2"/><circle cx="574" cy="286" r="2"/>
+            <circle cx="618" cy="328" r="2"/><circle cx="682" cy="304" r="2"/>
+          </g>
+          <g class="rw-native-network">
+            <polyline points="392,158 430,122 468,150 510,104 550,132 594,88 634,118"/>
+            <polyline class="rw-native-soft" points="392,206 438,188 482,216 526,174 572,190 620,152"/>
+            <circle cx="430" cy="122" r="2"/><circle cx="510" cy="104" r="2"/><circle cx="594" cy="88" r="2"/>
+            <circle cx="526" cy="174" r="2"/><circle cx="620" cy="152" r="2"/>
+          </g>
+          <g class="rw-native-scan">
+            <line x1="28" y1="224" x2="710" y2="224"/>
+          </g>
+        </svg>`;
+      shell.appendChild(wallMotion);
     }
     if (!shell.querySelector('.rw-v2-daylight-system')) {
       const daylight = document.createElement('div');
@@ -483,33 +486,6 @@
     const count = moduleCards().filter(card => !card.hidden).length;
     const stamp = new Date().toLocaleTimeString(lang() === 'nl' ? 'nl-NL' : lang() === 'en' ? 'en-GB' : 'pl-PL', { hour:'2-digit', minute:'2-digit' });
     strip.innerHTML = `<span class="rw-v2-strip-online"><i></i>${uiText('systemOnline')}</span><strong>${count}</strong><span>${uiText('quickAccess')}</span><span>${lang().toUpperCase()}</span><span>${stamp}</span>`;
-  }
-  function updateAnalyticsWall(){
-    const wall = document.querySelector('.rw-v2-analytics-wall');
-    if (!wall) return;
-    const now = Date.now() / 1000;
-    const count = moduleCards().length || 12;
-    const flow = Math.round(72 + Math.sin(now / 4.7) * 9 + Math.cos(now / 7.1) * 5);
-    const delta = Math.round(14 + Math.sin(now / 5.3) * 6);
-    const risk = Math.max(1, Math.round(3 + Math.cos(now / 6.8) * 2));
-    const sync = (99.2 + Math.sin(now / 9) * .55).toFixed(1) + '%';
-    const set = (key, value) => {
-      const el = wall.querySelector(`[data-wall-stat="${key}"]`);
-      if (el) el.textContent = value;
-    };
-    set('flow', String(flow));
-    set('tasks', String(count).padStart(2, '0'));
-    set('delta', `${delta >= 0 ? '+' : ''}${delta}`);
-    set('risk', String(risk).padStart(2, '0'));
-    set('sync', sync);
-    wall.querySelectorAll('.rw-v2-wall-bars i').forEach((bar, index) => {
-      const height = 42 + Math.round((Math.sin(now * .72 + index * .9) + 1) * 25 + (index % 3) * 5);
-      bar.style.setProperty('--h', `${Math.min(94, height)}%`);
-    });
-    wall.querySelectorAll('.rw-v2-wall-feed em').forEach((line, index) => {
-      const width = 34 + Math.round((Math.cos(now * .58 + index * 1.35) + 1) * 27);
-      line.style.setProperty('--w', `${Math.min(92, width)}%`);
-    });
   }
   function commandRows(query = ''){
     const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
@@ -1658,8 +1634,6 @@
     bindPremiumPointer();
     updateWallClock();
     setInterval(updateWallClock, 1000);
-    updateAnalyticsWall();
-    setInterval(updateAnalyticsWall, 1600);
     window.addEventListener('resize', () => window.requestAnimationFrame(positionCommandTrigger), { passive:true });
     ensureOpenAppBridge();
     enhancePin();

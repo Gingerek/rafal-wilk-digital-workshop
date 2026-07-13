@@ -1,4 +1,4 @@
-:root{
+﻿:root{
   --v2-bg:#f4f7fb;
   --v2-ink:#111827;
   --v2-muted:#64748b;
@@ -7805,326 +7805,123 @@ body.rw-v2-ready.rw-v2-returning-home .rw-v2-transition-veil span:nth-child(3){
   100%{opacity:1; transform:scale(1); filter:blur(0) brightness(1);}
 }
 
-/* Premium analytics wall: crisp vector dashboard over the command-center wall. */
-body.rw-v2-ready:not(.app-open) .rw-v2-analytics-wall{
+/* Native wall motion: subtle animations aligned to the existing world-map dashboard in the background image. */
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion{
   position:absolute!important;
-  right:clamp(24px, 4.2vw, 92px)!important;
-  top:clamp(104px, 15.2vh, 178px)!important;
-  width:clamp(460px, 38.5vw, 720px)!important;
+  left:clamp(330px, 31.2vw, 650px)!important;
+  top:clamp(26px, 4.4vh, 72px)!important;
+  width:clamp(520px, 44vw, 880px)!important;
   aspect-ratio:1.58!important;
-  z-index:14!important;
+  z-index:13!important;
   pointer-events:none!important;
-  transform:perspective(1200px) rotateY(-5deg) rotateX(1.2deg) translateZ(0)!important;
+  opacity:.26!important;
+  mix-blend-mode:screen!important;
+  filter:drop-shadow(0 0 6px rgba(92,205,255,.10)) saturate(106%)!important;
+  transform:perspective(1600px) rotateY(-2deg) rotateX(.6deg) translateZ(0)!important;
   transform-origin:center center!important;
-  filter:drop-shadow(0 28px 46px rgba(0,0,0,.38)) drop-shadow(0 0 26px rgba(91,174,231,.13))!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-analytics-wall::before{
-  content:""!important;
-  position:absolute!important;
-  inset:-10% -8% -16%!important;
-  border-radius:32px!important;
-  background:radial-gradient(ellipse at 50% 18%, rgba(103,210,255,.18), transparent 58%)!important;
-  opacity:.78!important;
-  filter:blur(12px)!important;
-  mix-blend-mode:screen!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-bezel{
-  position:absolute!important;
-  inset:0!important;
-  display:grid!important;
-  grid-template-rows:auto auto minmax(118px,1fr) minmax(76px,.38fr)!important;
-  gap:clamp(8px, .9vw, 14px)!important;
-  padding:clamp(14px, 1.5vw, 24px)!important;
-  border-radius:clamp(18px, 1.7vw, 28px)!important;
-  border:1px solid rgba(171,230,255,.36)!important;
-  background:
-    linear-gradient(145deg, rgba(5,18,31,.92), rgba(2,10,20,.78) 56%, rgba(7,31,49,.82)),
-    repeating-linear-gradient(90deg, rgba(139,216,255,.045) 0 1px, transparent 1px 38px),
-    repeating-linear-gradient(0deg, rgba(139,216,255,.032) 0 1px, transparent 1px 38px)!important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.20),
-    inset 0 -1px 0 rgba(91,174,231,.16),
-    0 0 0 1px rgba(3,8,16,.56),
-    0 26px 70px rgba(0,0,0,.36)!important;
-  overflow:hidden!important;
-  backdrop-filter:blur(16px) saturate(145%) contrast(112%)!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-bezel::before{
-  content:""!important;
-  position:absolute!important;
-  inset:0!important;
-  background:
-    linear-gradient(112deg, rgba(255,255,255,.18) 0 1px, transparent 18% 72%, rgba(255,255,255,.10) 76%, transparent 82%),
-    radial-gradient(circle at 18% 0, rgba(94,234,212,.18), transparent 34%),
-    radial-gradient(circle at 88% 18%, rgba(251,191,36,.14), transparent 30%)!important;
-  opacity:.84!important;
-  pointer-events:none!important;
-  mix-blend-mode:screen!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-bezel::after{
-  content:""!important;
-  position:absolute!important;
-  inset:0!important;
-  background:linear-gradient(180deg, transparent 0 48%, rgba(255,255,255,.035) 49%, transparent 50% 100%) 0 0 / 100% 5px!important;
-  opacity:.30!important;
-  pointer-events:none!important;
-  animation:rwWallScan 5.6s linear infinite!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-topline,
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-kpis,
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-mainchart,
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-lower{
-  position:relative!important;
-  z-index:1!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-topline{
-  display:grid!important;
-  grid-template-columns:auto 1fr auto!important;
-  align-items:center!important;
-  gap:10px!important;
-  color:rgba(230,249,255,.92)!important;
-  font:850 clamp(9px, .75vw, 12px)/1 "Inter","Segoe UI",Arial,sans-serif!important;
-  letter-spacing:.16em!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-topline i{
-  height:1px!important;
-  background:linear-gradient(90deg, rgba(139,216,255,.22), rgba(139,216,255,.78), rgba(251,191,36,.55), transparent)!important;
-  box-shadow:0 0 16px rgba(139,216,255,.26)!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-topline strong{
-  color:#bff7ff!important;
-  text-shadow:0 0 14px rgba(94,234,212,.46)!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-kpis{
-  display:grid!important;
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:clamp(7px, .8vw, 12px)!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-kpis span{
-  min-width:0!important;
-  padding:clamp(8px, .8vw, 12px)!important;
-  border-radius:14px!important;
-  border:1px solid rgba(139,216,255,.18)!important;
-  background:linear-gradient(180deg, rgba(139,216,255,.085), rgba(255,255,255,.028))!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.10)!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-kpis b{
-  display:block!important;
-  color:#f7fbff!important;
-  font:900 clamp(18px, 2.2vw, 36px)/.9 "Inter","Segoe UI",Arial,sans-serif!important;
-  letter-spacing:0!important;
-  font-variant-numeric:tabular-nums!important;
-  text-shadow:0 0 22px rgba(125,211,252,.36)!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-kpis small{
-  display:block!important;
-  margin-top:6px!important;
-  color:rgba(216,241,255,.58)!important;
-  font:800 clamp(7px, .62vw, 10px)/1 "Inter","Segoe UI",Arial,sans-serif!important;
-  letter-spacing:.13em!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-mainchart{
-  min-height:0!important;
-  border-radius:16px!important;
-  border:1px solid rgba(139,216,255,.13)!important;
-  background:
-    radial-gradient(circle at 72% 12%, rgba(251,191,36,.08), transparent 30%),
-    linear-gradient(180deg, rgba(2,11,24,.34), rgba(0,5,12,.18))!important;
-  overflow:hidden!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-mainchart svg{
-  display:block!important;
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion svg{
   width:100%!important;
   height:100%!important;
+  display:block!important;
   overflow:visible!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-gridline{
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion path,
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion polyline,
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion line{
   fill:none!important;
-  stroke:rgba(139,216,255,.13)!important;
-  stroke-width:1!important;
-  vector-effect:non-scaling-stroke!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-axis{
-  fill:none!important;
-  stroke:rgba(216,241,255,.26)!important;
-  stroke-width:1.4!important;
-  vector-effect:non-scaling-stroke!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-line{
-  fill:none!important;
+  stroke:rgba(130,218,255,.46)!important;
+  stroke-width:.9!important;
   stroke-linecap:round!important;
   stroke-linejoin:round!important;
   vector-effect:non-scaling-stroke!important;
-  filter:url(#rwWallGlow)!important;
+  filter:url(#rwNativeWallGlow)!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-line-a{
-  stroke:url(#rwWallLine)!important;
-  stroke-width:4!important;
-  stroke-dasharray:520!important;
-  animation:rwWallTrace 4.8s ease-in-out infinite alternate!important;
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-panel path{
+  stroke:rgba(128,205,244,.18)!important;
+  filter:none!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-line-b{
-  stroke:rgba(125,211,252,.55)!important;
-  stroke-width:2.2!important;
-  stroke-dasharray:8 10!important;
-  animation:rwWallDash 6s linear infinite!important;
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion polyline{
+  stroke:url(#rwNativeWallLine)!important;
+  stroke-width:1.2!important;
+  stroke-dasharray:320!important;
+  animation:rwNativeWallTrace 7.5s ease-in-out infinite alternate!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-pulse-dot{
-  fill:#fef3c7!important;
-  filter:drop-shadow(0 0 8px rgba(251,191,36,.85))!important;
-  animation:rwWallDot 1.5s ease-in-out infinite!important;
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-soft{
+  stroke:rgba(91,174,231,.30)!important;
+  stroke-width:.9!important;
+  stroke-dasharray:8 12!important;
+  animation:rwNativeWallDash 8.8s linear infinite!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-lower{
-  display:grid!important;
-  grid-template-columns:1.16fr .68fr .9fr!important;
-  gap:clamp(8px, .8vw, 12px)!important;
-  min-height:0!important;
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion circle{
+  fill:rgba(190,239,255,.55)!important;
+  filter:drop-shadow(0 0 4px rgba(125,211,252,.38))!important;
+  animation:rwNativeWallNode 3.8s ease-in-out infinite!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-bars,
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-radar,
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-feed{
-  height:100%!important;
-  min-height:72px!important;
-  border:1px solid rgba(139,216,255,.13)!important;
-  border-radius:14px!important;
-  background:rgba(255,255,255,.035)!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.07)!important;
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-map path{
+  stroke:rgba(112,204,245,.34)!important;
+  stroke-width:1.05!important;
+  stroke-dasharray:5 8!important;
+  animation:rwNativeWallDash 11s linear infinite reverse!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-bars{
-  display:flex!important;
-  align-items:end!important;
-  gap:6px!important;
-  padding:10px 11px!important;
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-network polyline{
+  animation-duration:6.8s!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-bars i{
-  flex:1!important;
-  height:var(--h, 58%)!important;
-  min-height:14%!important;
-  border-radius:999px 999px 4px 4px!important;
-  background:linear-gradient(180deg, #e0f7ff, #5eead4 34%, #0ea5e9 100%)!important;
-  box-shadow:0 0 14px rgba(94,234,212,.28)!important;
-  transition:height 1.25s cubic-bezier(.2,.8,.2,1)!important;
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-scan line{
+  stroke:rgba(151,229,255,.34)!important;
+  stroke-width:1!important;
+  stroke-dasharray:80 680!important;
+  animation:rwNativeWallScan 5.2s linear infinite!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-radar{
-  position:relative!important;
-  overflow:hidden!important;
-  background:
-    radial-gradient(circle, transparent 0 30%, rgba(139,216,255,.16) 31% 32%, transparent 33% 52%, rgba(139,216,255,.12) 53% 54%, transparent 55%),
-    linear-gradient(90deg, transparent 49%, rgba(139,216,255,.14) 50%, transparent 51%),
-    linear-gradient(0deg, transparent 49%, rgba(139,216,255,.14) 50%, transparent 51%)!important;
+@keyframes rwNativeWallTrace{
+  from{stroke-dashoffset:210; opacity:.48;}
+  to{stroke-dashoffset:0; opacity:.86;}
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-radar::before{
-  content:""!important;
-  position:absolute!important;
-  inset:8px!important;
-  border-radius:999px!important;
-  background:conic-gradient(from 0deg, rgba(94,234,212,.45), transparent 26%, transparent)!important;
-  animation:rwWallRadar 4.2s linear infinite!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-radar span{
-  position:absolute!important;
-  width:5px!important;
-  height:5px!important;
-  border-radius:999px!important;
-  background:#fef3c7!important;
-  box-shadow:0 0 11px rgba(251,191,36,.82)!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-radar span:nth-child(1){left:58%;top:28%;}
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-radar span:nth-child(2){left:34%;top:48%;}
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-radar span:nth-child(3){left:68%;top:64%;}
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-radar span:nth-child(4){left:45%;top:72%;}
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-radar span:nth-child(5){left:76%;top:42%;}
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-radar span:nth-child(6){left:24%;top:31%;}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-feed{
-  display:grid!important;
-  align-content:center!important;
-  gap:7px!important;
-  padding:11px!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-feed em{
-  display:block!important;
-  width:var(--w, 62%)!important;
-  height:6px!important;
-  border-radius:999px!important;
-  background:linear-gradient(90deg, rgba(125,211,252,.90), rgba(94,234,212,.48), transparent)!important;
-  box-shadow:0 0 12px rgba(125,211,252,.18)!important;
-  transition:width 1.25s cubic-bezier(.2,.8,.2,1)!important;
-}
-
-@keyframes rwWallTrace{
-  from{stroke-dashoffset:135; opacity:.78;}
-  to{stroke-dashoffset:0; opacity:1;}
-}
-
-@keyframes rwWallDash{
+@keyframes rwNativeWallDash{
   to{stroke-dashoffset:-90;}
 }
 
-@keyframes rwWallDot{
-  0%,100%{transform:scale(.85); opacity:.72;}
-  50%{transform:scale(1.45); opacity:1;}
+@keyframes rwNativeWallNode{
+  0%,100%{opacity:.38; transform:scale(.82);}
+  50%{opacity:.92; transform:scale(1.18);}
 }
 
-@keyframes rwWallRadar{
-  to{transform:rotate(360deg);}
-}
-
-@keyframes rwWallScan{
-  from{background-position:0 -30px;}
-  to{background-position:0 30px;}
+@keyframes rwNativeWallScan{
+  from{stroke-dashoffset:760; opacity:.08;}
+  20%,72%{opacity:.44;}
+  to{stroke-dashoffset:0; opacity:.08;}
 }
 
 @media (max-width:1080px){
-  body.rw-v2-ready:not(.app-open) .rw-v2-analytics-wall{
-    right:20px!important;
-    top:112px!important;
-    width:min(42vw, 410px)!important;
-    opacity:.82!important;
+  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion{
+    left:31vw!important;
+    top:38px!important;
+    width:48vw!important;
+    opacity:.34!important;
   }
 }
 
 @media (max-width:760px){
-  body.rw-v2-ready:not(.app-open) .rw-v2-analytics-wall{
+  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion{
     display:none!important;
   }
 }
 
 @media (prefers-reduced-motion:reduce){
-  body.rw-v2-ready:not(.app-open) .rw-v2-wall-bezel::after,
-  body.rw-v2-ready:not(.app-open) .rw-v2-wall-line-a,
-  body.rw-v2-ready:not(.app-open) .rw-v2-wall-line-b,
-  body.rw-v2-ready:not(.app-open) .rw-v2-wall-pulse-dot,
-  body.rw-v2-ready:not(.app-open) .rw-v2-wall-radar::before{
+  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion polyline,
+  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion circle,
+  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-motion .rw-native-scan line{
     animation:none!important;
   }
 }
