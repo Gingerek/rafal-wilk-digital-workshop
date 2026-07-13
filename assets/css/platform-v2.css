@@ -7873,8 +7873,8 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid{
   transform:scaleY(.12)!important;
   transform-origin:center center!important;
   transition:
-    opacity 240ms cubic-bezier(.22,.82,.24,1),
-    transform 420ms cubic-bezier(.22,.82,.24,1)!important;
+    opacity 360ms cubic-bezier(.18,.74,.24,1),
+    transform 640ms cubic-bezier(.18,.74,.24,1)!important;
   background:
     linear-gradient(180deg, rgba(45,112,133,.40) 0%, rgba(7,32,45,.86) 45%, rgba(2,11,18,.92) 54%, rgba(48,126,151,.34) 100%),
     repeating-linear-gradient(94deg, rgba(164,226,246,.18) 0 1px, transparent 1px 7px)!important;

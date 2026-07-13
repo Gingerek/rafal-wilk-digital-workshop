@@ -433,12 +433,12 @@
     const runBlink = () => {
       if (!document.body.classList.contains('app-open')) {
         blink.classList.add('is-blinking');
-        window.setTimeout(() => blink.classList.remove('is-blinking'), 920 + Math.random() * 420);
+        window.setTimeout(() => blink.classList.remove('is-blinking'), 760 + Math.random() * 360);
       }
-      const nextDelay = 18000 + Math.random() * 42000;
+      const nextDelay = 6500 + Math.random() * 11500;
       window.setTimeout(runBlink, nextDelay);
     };
-    window.setTimeout(runBlink, 10000 + Math.random() * 18000);
+    window.setTimeout(runBlink, 4200 + Math.random() * 7800);
   }
   function renderHero(){
     const hero = document.querySelector('.rw-v2-hero');
