@@ -357,7 +357,7 @@
       const assistantBlink = document.createElement('div');
       assistantBlink.className = 'rw-v2-assistant-blink';
       assistantBlink.setAttribute('aria-hidden', 'true');
-      assistantBlink.innerHTML = '<span class="rw-v2-assistant-lid rw-v2-assistant-lid-left"></span><span class="rw-v2-assistant-lid rw-v2-assistant-lid-right"></span>';
+      assistantBlink.innerHTML = '<span class="rw-v2-assistant-gaze rw-v2-assistant-gaze-left"><i></i></span><span class="rw-v2-assistant-gaze rw-v2-assistant-gaze-right"><i></i></span><span class="rw-v2-assistant-lid rw-v2-assistant-lid-left"></span><span class="rw-v2-assistant-lid rw-v2-assistant-lid-right"></span>';
       shell.appendChild(assistantBlink);
     }
     if (!shell.querySelector('.rw-v2-ambient-deck')) {
@@ -424,6 +424,7 @@
       shell.appendChild(palette);
     }
     startAssistantBlink(shell);
+    startAssistantGaze(shell);
   }
 
   function startAssistantBlink(shell){
@@ -439,6 +440,34 @@
       window.setTimeout(runBlink, nextDelay);
     };
     window.setTimeout(runBlink, 4200 + Math.random() * 7800);
+  }
+
+  function startAssistantGaze(shell){
+    const gazeLayer = shell?.querySelector('.rw-v2-assistant-blink');
+    if (!gazeLayer || gazeLayer.dataset.rwGazeActive === 'true') return;
+    gazeLayer.dataset.rwGazeActive = 'true';
+    const positions = [
+      { x: 0, y: 0, hold: 2.4 },
+      { x: -7, y: -2, hold: 2.9 },
+      { x: 7, y: -1, hold: 2.7 },
+      { x: -3, y: 4, hold: 2.2 },
+      { x: 4, y: 3, hold: 2.1 },
+      { x: 1, y: -1, hold: 3.4, direct: true }
+    ];
+    let lastIndex = -1;
+    const choose = () => {
+      let index = Math.floor(Math.random() * positions.length);
+      if (index === lastIndex) index = (index + 1) % positions.length;
+      if (Math.random() < .28) index = positions.length - 1;
+      lastIndex = index;
+      const target = positions[index];
+      gazeLayer.style.setProperty('--rw-gaze-x', `${target.x}px`);
+      gazeLayer.style.setProperty('--rw-gaze-y', `${target.y}px`);
+      gazeLayer.classList.toggle('is-direct-gaze', !!target.direct);
+      const delay = (target.hold + Math.random() * 2.2) * 1000;
+      window.setTimeout(choose, delay);
+    };
+    window.setTimeout(choose, 900 + Math.random() * 1800);
   }
   function renderHero(){
     const hero = document.querySelector('.rw-v2-hero');
