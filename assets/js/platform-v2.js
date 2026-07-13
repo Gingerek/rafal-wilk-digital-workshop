@@ -1090,7 +1090,6 @@
     }
   }
   function ensureOpenAppBridge(){
-    if (typeof window.openApp === 'function') return;
     window.openApp = function(id, title){
       openModuleFrame(id, title);
     };
@@ -1390,6 +1389,14 @@
         if (moduleMatch?.[1]) {
           event.preventDefault();
           openModuleFrame(moduleMatch[1], activeModuleTitle || card?.querySelector('.title')?.textContent?.trim() || '');
+          return;
+        }
+        const legacyIdx = moduleButton.getAttribute('data-idx');
+        if (legacyIdx !== null && legacyIdx !== '') {
+          event.preventDefault();
+          if (typeof window.loadApp === 'function') {
+            window.loadApp(Number(legacyIdx));
+          }
           return;
         }
       }
