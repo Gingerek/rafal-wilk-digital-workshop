@@ -2721,6 +2721,7 @@ body.app-open .rw-header{display:none !important;}
   if(window.__rwFuturisticDockInstalled) return;
   window.__rwFuturisticDockInstalled=true;
   function ensureDock(){
+    if(!document.body) return;
     let dock=document.getElementById('rwLauncherDock');
     if(!dock){
       dock=document.createElement('div');
@@ -6600,4 +6601,4 @@ ${moduleBrain ? [summarizeBrainList(moduleBrain.rules,8),summarizeBrainList(modu
 </script>
 <link rel="stylesheet" href="assets/css/platform-v2.css?v=20260712-returnloader-1">
 <script src="assets/js/contact-config.js?v=20260708-18"></script>
-<script src="assets/js/platform-v2.js?v=20260713-redukcja-1"></script>
+<script src="assets/js/platform-v2.js?v=20260713-redukcja-5"></script>

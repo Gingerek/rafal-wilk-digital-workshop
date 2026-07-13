@@ -1380,6 +1380,20 @@
       .weekEntry>.card:nth-child(2) .compositionHeroGrid{grid-template-columns:1fr 1fr}
     }
     @media(max-width:640px){.wrap{padding:12px}.weekMap{grid-template-columns:1fr}.weekStats{grid-template-columns:1fr}.heroPanel{grid-template-columns:1fr}.towerStage{grid-template-columns:repeat(2,1fr)}.missionValue{font-size:30px}.weekEntry>.card:nth-child(2) .compositionHero{padding:16px}.weekEntry>.card:nth-child(2) .compositionHeroGrid{grid-template-columns:1fr}.weekEntry>.card:nth-child(2) .compositionMetricCard{min-height:132px;grid-template-columns:60px minmax(0,1fr);padding:14px}.weekEntry>.card:nth-child(2) .compositionMetricIcon{width:60px;height:60px;font-size:28px}.weekEntry>.card:nth-child(2) .compositionMetricMeta strong{font-size:clamp(24px,10vw,38px)}.weekEntry>.card:nth-child(2) .compositionMetricMeta small{max-width:none}.weekEntry>.card:nth-child(1),.weekEntry>.card:nth-child(2),.weekEntry>.card:nth-child(3){padding:16px}}
+    body.rw-platform-embedded{font-size:16px;line-height:1.5}
+    body.rw-platform-embedded .wrap{max-width:1500px;padding:28px}
+    body.rw-platform-embedded .card{background:rgba(10,16,24,.94);border-color:rgba(255,255,255,.18)}
+    body.rw-platform-embedded .muted,
+    body.rw-platform-embedded .hint,
+    body.rw-platform-embedded .weekMeta{color:#c8d4e6}
+    body.rw-platform-embedded button,
+    body.rw-platform-embedded input,
+    body.rw-platform-embedded textarea{font-size:15px}
+    body.rw-platform-embedded table{font-size:14px}
+    @media(min-width:1051px){
+      body.rw-platform-embedded .hero{grid-template-columns:minmax(0,1fr) minmax(390px,.78fr)}
+      body.rw-platform-embedded .historyLayout{grid-template-columns:minmax(360px,.72fr) minmax(0,1.28fr)}
+    }
   </style>
 </head>
 <body>
@@ -1761,6 +1775,7 @@ let detectedWeightInfo = null;
 let activeProView = "start";
 
 const HISTORY_KEY = "rafal_redukcja_master_history";
+const EMBEDDED_WEEK_SEED_KEY = "rafal_redukcja_v34_embedded_week_seeded";
 const METRIC_OVERRIDE_KEY = "rafal_redukcja_metric_overrides_v25";
 const LEGACY_HISTORY_KEYS = ["rafal_redukcja_tygodnie_v2_folder","rafal_redukcja_tygodnie_v1","rafal_clear_ocr_reduction_history_v1","rafal_reduction_dashboard_history_v3"];
 const HISTORY_DB = "rafal_redukcja_v23_db";
@@ -4318,6 +4333,20 @@ function loadDemo(){
   const garmin={calories:{"2026-06-29":2462,"2026-06-30":2753,"2026-07-01":3173,"2026-07-02":2857,"2026-07-03":5387,"2026-07-04":5102,"2026-07-05":3288},steps:[],sleep:[],activities:[],detected:[{file:"demo",type:"demo"}],ocrText:"DEMO",ocrSummary:{stepsAvg:8367,sleepAvg:7.48,sleepScoreAvg:70,activityCount:4,activityDurationHours:2.38,stressAvg:30,restingHrAvg:60}};
   render(merge(fitatu,garmin),garmin,fitatu);saveCurrentWeek(true);setStatus("Demo zapisane.");
 }
+function seedEmbeddedWeek(){
+  if(getHistory().length)return false;
+  try{
+    if(localStorage.getItem(EMBEDDED_WEEK_SEED_KEY))return false;
+    loadDemo();
+    localStorage.setItem(EMBEDDED_WEEK_SEED_KEY,"1");
+    renderHistory();
+    loadLatestWeekPreview();
+    setStatus("Zaladowano dane tygodnia dolaczone do modulu.");
+    return true;
+  }catch(e){
+    return false;
+  }
+}
 
 window.runAnalysis=runAnalysis;
 window.startNewWeek=startNewWeek;
@@ -4333,18 +4362,22 @@ window.closeWeekEditor=closeWeekEditor;
 window.deleteWeek=deleteWeek;
 window.downloadWeek=downloadWeek;
 window.loadDemo=loadDemo;
+window.seedEmbeddedWeek=seedEmbeddedWeek;
 window.applyMetricCorrections=applyMetricCorrections;
 window.setProView=setProView;
 
 window.addEventListener("load",async()=>{
+  if(window.frameElement||window.parent!==window)document.body.classList.add("rw-platform-embedded");
   installProShell();
   Chart.defaults.color="#dbeafe";
   Chart.defaults.borderColor="rgba(255,255,255,.10)";
   Chart.defaults.font.family="Inter,Roboto,Arial";
   refreshIcons();
   await hydrateHistoryFromIndexedDB();
-  renderHistory();
-  loadLatestWeekPreview();
+  if(!seedEmbeddedWeek()){
+    renderHistory();
+    loadLatestWeekPreview();
+  }
   const reports=document.getElementById("allReports");
   const weight=document.getElementById("weeklyWeight");
   const manual=document.getElementById("manualBurned");

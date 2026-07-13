@@ -713,6 +713,34 @@
       }
     }
   }
+  function ensureOpenAppBridge(){
+    if (typeof window.openApp === 'function') return;
+    window.openApp = function(id, title){
+      openModuleFrame(id, title);
+    };
+  }
+  function openModuleFrame(id, title){
+    if (!window.__rwModulePinConsume || !window.__rwModulePinConsume()){
+      if (window.__rwRequestModulePin) {
+        window.__rwRequestModulePin(() => openModuleFrame(id, title), title || id || 'Module');
+      }
+      return;
+    }
+    try {
+      if (window.__rwSaveActiveFrame && id && id !== 'appframe') window.__rwSaveActiveFrame(id, title || '');
+    } catch (_e) {}
+    document.querySelectorAll('iframe').forEach((frame) => frame.classList.remove('show'));
+    const frame = document.getElementById(id);
+    if (frame) frame.classList.add('show');
+    const viewport = document.querySelector('.viewport');
+    if (viewport) viewport.classList.add('active');
+    document.body.classList.add('app-open');
+    const placeholder = document.querySelector('.viewport .placeholder');
+    if (placeholder) placeholder.style.display = 'none';
+    if (title) document.title = `Rafal Wilk Digital Workshop (c) - ${title}`;
+    if (window.__rwSetActiveApp) window.__rwSetActiveApp(title || '', id || '');
+    scheduleLanguagePush(lang());
+  }
   function enhanceCards(){
     document.querySelectorAll('main.wrap .grid .card').forEach((card, index) => {
       const meta = findMeta(card);
@@ -738,14 +766,7 @@
       const title = card.querySelector('.title');
       const titleText = moduleTitle(meta);
       if (title) title.textContent = titleText;
-      let status = card.querySelector('.rw-v2-card-status');
-      if (!status) {
-        status = document.createElement('div');
-        status.className = 'rw-v2-card-status';
-        if (title) title.insertAdjacentElement('afterend', status);
-        else card.appendChild(status);
-      }
-      status.innerHTML = `<span>${moduleStatus(meta)}</span><span>${categoryLabel(meta.category)}</span>`;
+      card.querySelector('.rw-v2-card-status')?.remove();
       card.classList.add('rw-v2-card-clickable');
       card.setAttribute('role', 'button');
       card.setAttribute('tabindex', '0');
@@ -988,6 +1009,13 @@
         activeModuleTitle = meta ? (meta.title[lang()] || meta.title.pl) : '';
         markModuleLaunch(card);
         scheduleLanguagePush(lang());
+        const inline = moduleButton.getAttribute('onclick') || '';
+        const moduleMatch = inline.match(/openApp\('([^']+)'/);
+        if (moduleMatch?.[1]) {
+          event.preventDefault();
+          openModuleFrame(moduleMatch[1], activeModuleTitle || card?.querySelector('.title')?.textContent?.trim() || '');
+          return;
+        }
       }
       const globalLangBtn = event.target.closest('.rw-lang-btn');
       if (globalLangBtn) {
@@ -1556,6 +1584,7 @@
     updateWallClock();
     setInterval(updateWallClock, 1000);
     window.addEventListener('resize', () => window.requestAnimationFrame(positionCommandTrigger), { passive:true });
+    ensureOpenAppBridge();
     enhancePin();
     patchPinGateHooks();
     ensureModuleBar();
