@@ -3112,12 +3112,17 @@ body.app-open .rw-header{display:none !important;}
 <div class="title" data-title-key="Home Office Tracker">Home Office Tracker</div>
 <a class="btn" onclick="openApp('homeofficetracker', this.parentElement.querySelector('.title').textContent)">Open</a>
 </article>
+<article class="card">
+<div class="title" data-title-key="Redukcja">Redukcja</div>
+<a class="btn" onclick="openApp('redukcja', this.parentElement.querySelector('.title').textContent)">Open</a>
+</article>
 <div class="card"><div class="title" data-title-key="My Projects">My Projects</div><a class="btn" onclick="openMc()">Open</a></div></section>
 <section class="viewport">
 <iframe id="appframe" title="Aplikacja" loading="lazy"></iframe>
 <iframe id="managermeetingtracker" title="Rejestr spotkań z managerami" src="modules/manager-meeting-tracker.html" loading="lazy"></iframe>
 
 <iframe id="homeofficetracker" title="Home Office Tracker" src="modules/home-office-tracker.html" loading="lazy"></iframe>
+<iframe id="redukcja" title="Redukcja" src="modules/redukcja.html" loading="lazy"></iframe>
 <iframe id="mycompany" src="modules/my-company.html" title="My Projects" loading="lazy"></iframe></section>
 </main>
 
@@ -4268,7 +4273,8 @@ function openApp(id, title){
     'My Projects': { pl:'Moje projekty', en:'My Projects', nl:'Mijn projecten' },
     'Przegląd agencji': { pl:'Przegląd agencji', en:'Agency overview', nl:'Overzicht bureaus' },
     'Przeglad agencji': { pl:'Przegląd agencji', en:'Agency overview', nl:'Overzicht bureaus' },
-    'Home Office Tracker': { pl:'Licznik pracy z domu', en:'Home Office Tracker', nl:'Thuiswerkdagen teller' }
+    'Home Office Tracker': { pl:'Licznik pracy z domu', en:'Home Office Tracker', nl:'Thuiswerkdagen teller' },
+    'Redukcja': { pl:'Redukcja', en:'Reduction', nl:'Reductie' }
   };
   function lang(){
     const raw = String(localStorage.getItem('rw_lang') || document.documentElement.lang || 'pl').toLowerCase();
@@ -6594,4 +6600,4 @@ ${moduleBrain ? [summarizeBrainList(moduleBrain.rules,8),summarizeBrainList(modu
 </script>
 <link rel="stylesheet" href="assets/css/platform-v2.css?v=20260712-returnloader-1">
 <script src="assets/js/contact-config.js?v=20260708-18"></script>
-<script src="assets/js/platform-v2.js?v=20260712-returnloader-1"></script>
+<script src="assets/js/platform-v2.js?v=20260713-redukcja-1"></script>

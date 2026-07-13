@@ -41,6 +41,9 @@
     { match:'Home Office Tracker', icon:'home', category:'tracking',
       title:{pl:'Licznik pracy z domu', en:'Home Office Tracker', nl:'Thuiswerk tracker'},
       desc:{pl:'Liczenie dni pracy z domu, biura i nieobecności.', en:'Track home, office, and non-working days.', nl:'Tel thuiswerk-, kantoor- en vrije dagen.'}},
+    { match:'Redukcja', icon:'tracker', category:'tracking',
+      title:{pl:'Redukcja', en:'Reduction', nl:'Reductie'},
+      desc:{pl:'Kontrola redukcji, tygodniowego bilansu i danych Garmin/Fitatu.', en:'Track reduction, weekly balance, and Garmin/Fitatu data.', nl:'Volg reductie, weekbalans en Garmin/Fitatu-gegevens.'}},
     { match:'My Projects', icon:'project', category:'projects',
       title:{pl:'Moje projekty', en:'My Projects', nl:'Mijn projecten'},
       desc:{pl:'Twoja przestrzeń na dokumenty, projekty i rozliczenia.', en:'Your workspace for projects, documents, and billing.', nl:'Je werkruimte voor projecten, documenten en facturatie.'}}
