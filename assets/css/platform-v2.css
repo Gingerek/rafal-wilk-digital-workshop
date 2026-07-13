@@ -8194,6 +8194,12 @@ body.rw-v2-ready:not(.app-open) .rw-v2-ambient-deck{
   display:none!important;
 }
 
+body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster .rw-v2-brand-lockup,
+body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock,
+body.rw-v2-ready:not(.app-open) .rw-header{
+  display:none!important;
+}
+
 /* PIN gate active state: make it obvious the dialog is waiting for input. */
 #mc_gate.rw-v2-pin-gate .panel{
   overflow:hidden!important;
