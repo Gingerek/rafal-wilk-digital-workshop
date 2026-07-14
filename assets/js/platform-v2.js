@@ -433,11 +433,12 @@
     const easeInOut = (t) => .5 - Math.cos(Math.max(0, Math.min(1, t)) * Math.PI) / 2;
     const setBlink = (progress) => {
       const p = Math.max(0, Math.min(1, progress));
-      blink.style.setProperty('--rw-eye-blink-opacity', (p * .99).toFixed(3));
+      blink.style.setProperty('--rw-eye-blink-opacity', (p * .96).toFixed(3));
+      blink.style.setProperty('--rw-eye-blink-sweep', `${(20 + p * 17).toFixed(2)}%`);
     };
     const animateBlink = (duration, done) => {
-      const close = duration * .42;
-      const hold = duration * .16;
+      const close = duration * .48;
+      const hold = duration * .10;
       const open = duration - close - hold;
       const started = performance.now();
       const frame = (now) => {
@@ -461,18 +462,19 @@
     };
     const runBlink = () => {
       if (!document.body.classList.contains('app-open') && !document.hidden) {
-        const duration = 1350 + Math.random() * 520;
+        const duration = 1750 + Math.random() * 650;
         animateBlink(duration, () => {
-          if (Math.random() < .10) {
-            window.setTimeout(() => animateBlink(1050 + Math.random() * 320), 360 + Math.random() * 420);
+          if (Math.random() < .12) {
+            window.setTimeout(() => animateBlink(1450 + Math.random() * 420), 520 + Math.random() * 560);
           }
         });
       }
-      const nextDelay = 4200 + Math.random() * 9400;
+      const nextDelay = 3200 + Math.random() * 7600;
       window.setTimeout(runBlink, nextDelay);
     };
+    blink.style.setProperty('--rw-eye-blink-sweep', '0%');
     setBlink(0);
-    window.setTimeout(runBlink, 1800 + Math.random() * 4200);
+    window.setTimeout(runBlink, 4200 + Math.random() * 3600);
   }
 
   function renderHero(){
