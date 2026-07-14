@@ -357,7 +357,7 @@
       const assistantBlink = document.createElement('div');
       assistantBlink.className = 'rw-v2-assistant-blink';
       assistantBlink.setAttribute('aria-hidden', 'true');
-      assistantBlink.innerHTML = '<canvas class="rw-v2-assistant-blink-canvas"></canvas>';
+      assistantBlink.innerHTML = '<span class="rw-v2-assistant-eye-blink rw-v2-assistant-eye-blink-left"></span><span class="rw-v2-assistant-eye-blink rw-v2-assistant-eye-blink-right"></span>';
       shell.appendChild(assistantBlink);
     }
     if (!shell.querySelector('.rw-v2-ambient-deck')) {
@@ -430,160 +430,16 @@
     const blink = shell?.querySelector('.rw-v2-assistant-blink');
     if (!blink || blink.dataset.rwBlinkActive === 'true') return;
     blink.dataset.rwBlinkActive = 'true';
-    const canvas = blink.querySelector('.rw-v2-assistant-blink-canvas');
-    const ctx = canvas?.getContext('2d', { alpha:true });
-    if (!canvas || !ctx) return;
-    const source = {
-      src:'assets/images/private-command-center-hero-polo-beads.webp?v=20260713-polo-beads-1',
-      width:1704,
-      height:923,
-      image:null,
-      ready:false
-    };
-    const closedSource = {
-      src:'assets/images/private-command-center-hero-eye-blink-overlay.png?v=20260714-eye-rig-6',
-      image:null,
-      ready:false
-    };
-    const eyes = [
-      { x:145, y:220, w:130, h:74, detailX:61, detailY:143, detailW:189, detailH:201, lean:-.07 },
-      { x:340, y:220, w:130, h:74, detailX:250, detailY:141, detailW:242, detailH:203, lean:.05 }
-    ];
-    const img = new Image();
-    img.decoding = 'async';
-    img.onload = () => {
-      source.image = img;
-      source.ready = true;
-      drawBlink(0);
-    };
-    img.src = source.src;
-    const closedImg = new Image();
-    closedImg.decoding = 'async';
-    closedImg.onload = () => {
-      closedSource.image = closedImg;
-      closedSource.ready = true;
-      drawBlink(activeProgress);
-    };
-    closedImg.src = closedSource.src;
-    let activeProgress = 0;
-    let lastWidth = 0;
-    let lastHeight = 0;
-    const debugBlink = new URLSearchParams(window.location.search).has('rw-blink-debug');
     const easeInOut = (t) => .5 - Math.cos(Math.max(0, Math.min(1, t)) * Math.PI) / 2;
-    const resizeCanvas = () => {
-      const rect = shell.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const width = Math.max(1, Math.round(rect.width));
-      const height = Math.max(1, Math.round(rect.height));
-      if (width === lastWidth && height === lastHeight && canvas.width === Math.round(width * dpr)) return;
-      lastWidth = width;
-      lastHeight = height;
-      canvas.width = Math.round(width * dpr);
-      canvas.height = Math.round(height * dpr);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      drawBlink(activeProgress);
-    };
-    const coverRect = () => {
-      const scale = Math.max(lastWidth / source.width, lastHeight / source.height);
-      const width = source.width * scale;
-      const height = source.height * scale;
-      return {
-        scale,
-        x:(lastWidth - width) / 2,
-        y:(lastHeight - height) / 2,
-        width,
-        height
-      };
-    };
-    const drawLid = (eye, fit, p, upper) => {
-      const x = fit.x + eye.x * fit.scale;
-      const y = fit.y + eye.y * fit.scale;
-      const w = eye.w * fit.scale;
-      const h = eye.h * fit.scale;
-      const cx = x + w / 2;
-      const cy = y + h / 2;
-      const topTravel = h * (.08 + p * .80);
-      const bottomTravel = h * (.95 - p * .25);
-      const lidY = upper ? y + topTravel : y + bottomTravel;
-      const curve = h * (upper ? (.12 - p * .05) : (.08 + p * .03));
-      ctx.save();
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, w * .47, h * .29, eye.lean, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.beginPath();
-      if (upper) {
-        ctx.moveTo(x + w * .05, y + h * .03);
-        ctx.lineTo(x + w * .95, y + h * .03);
-        ctx.lineTo(x + w * .95, lidY);
-        ctx.bezierCurveTo(x + w * .72, lidY + curve, x + w * .30, lidY + curve, x + w * .05, lidY);
-      } else {
-        ctx.moveTo(x + w * .05, y + h * .97);
-        ctx.lineTo(x + w * .95, y + h * .97);
-        ctx.lineTo(x + w * .95, lidY);
-        ctx.bezierCurveTo(x + w * .72, lidY - curve, x + w * .30, lidY - curve, x + w * .05, lidY);
-      }
-      ctx.closePath();
-      ctx.clip();
-      ctx.globalAlpha = upper ? .98 : .64;
-      const textureShift = h * (upper ? .48 : -.36);
-      ctx.drawImage(source.image, fit.x, fit.y + textureShift, fit.width, fit.height);
-      ctx.restore();
-      if (upper && p > .25) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.ellipse(cx, cy, w * .47, h * .29, eye.lean, 0, Math.PI * 2);
-        ctx.clip();
-        ctx.globalAlpha = Math.min(.28, (p - .25) * .36);
-        ctx.strokeStyle = 'rgba(98,188,221,.58)';
-        ctx.lineWidth = Math.max(1, fit.scale * 1.2);
-        ctx.beginPath();
-        ctx.moveTo(x + w * .10, lidY);
-        ctx.bezierCurveTo(x + w * .32, lidY + curve * .72, x + w * .70, lidY + curve * .72, x + w * .90, lidY);
-        ctx.stroke();
-        ctx.restore();
-      }
-    };
-    const drawClosedDetail = (eye, fit, p) => {
-      if (!closedSource.ready || p <= .48) return;
-      const x = fit.x + eye.detailX * fit.scale;
-      const y = fit.y + eye.detailY * fit.scale;
-      const w = eye.detailW * fit.scale;
-      const h = eye.detailH * fit.scale;
-      const cx = x + w / 2;
-      const cy = y + h / 2;
-      const alpha = Math.min(.82, (p - .48) / .52 * .82);
-      ctx.save();
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, w * .48, h * .30, eye.lean, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.globalAlpha = alpha;
-      ctx.drawImage(closedSource.image, fit.x, fit.y, fit.width, fit.height);
-      ctx.restore();
-    };
-    const drawBlink = (progress) => {
-      activeProgress = Math.max(0, Math.min(1, progress));
-      resizeCanvas();
-      ctx.clearRect(0, 0, lastWidth, lastHeight);
-      if (!source.ready || activeProgress <= .015) return;
-      const p = activeProgress;
-      const fit = coverRect();
-      eyes.forEach((eye) => {
-        drawLid(eye, fit, p, true);
-        drawLid(eye, fit, p, false);
-        drawClosedDetail(eye, fit, p);
-      });
-    };
     const setBlink = (progress) => {
-      drawBlink(progress);
+      const p = Math.max(0, Math.min(1, progress));
+      blink.style.setProperty('--rw-eye-blink-opacity', (p * .96).toFixed(3));
+      blink.style.setProperty('--rw-eye-blink-mask-y', `${(.2 + p * 10.3).toFixed(2)}%`);
+      blink.style.setProperty('--rw-eye-blink-mask-x', `${(3.2 + p * 8.3).toFixed(2)}%`);
     };
-    if (debugBlink) {
-      window.rwV2SetAssistantBlink = setBlink;
-    }
-    const animateBlink = (duration, done, depth = 1) => {
-      const close = duration * .34;
-      const hold = duration * .03;
+    const animateBlink = (duration, done) => {
+      const close = duration * .38;
+      const hold = duration * .06;
       const open = duration - close - hold;
       const started = performance.now();
       const frame = (now) => {
@@ -600,28 +456,26 @@
           done?.();
           return;
         }
-        setBlink(progress * depth);
+        setBlink(progress);
         window.requestAnimationFrame(frame);
       };
       window.requestAnimationFrame(frame);
     };
     const runBlink = () => {
       if (!document.body.classList.contains('app-open') && !document.hidden) {
-        const duration = 520 + Math.random() * 320;
-        const depth = .72 + Math.random() * .24;
+        const duration = 1200 + Math.random() * 300;
         animateBlink(duration, () => {
-          if (Math.random() < .08) {
-            window.setTimeout(() => animateBlink(420 + Math.random() * 190, null, .52 + Math.random() * .18), 180 + Math.random() * 190);
+          if (Math.random() < .07) {
+            window.setTimeout(() => animateBlink(900 + Math.random() * 180), 420 + Math.random() * 260);
           }
-        }, depth);
+        });
       }
-      const nextDelay = 2600 + Math.random() * 8600;
+      const nextDelay = 3600 + Math.random() * 8200;
       window.setTimeout(runBlink, nextDelay);
     };
-    window.addEventListener('resize', resizeCanvas, { passive:true });
-    resizeCanvas();
+    blink.style.setProperty('--rw-eye-blink-mask-y', '0%');
+    blink.style.setProperty('--rw-eye-blink-mask-x', '3.2%');
     setBlink(0);
-    if (debugBlink) return;
     window.setTimeout(runBlink, 4200 + Math.random() * 3600);
   }
 
