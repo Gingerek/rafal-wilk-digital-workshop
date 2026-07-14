@@ -7838,7 +7838,8 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
   z-index:18!important;
   pointer-events:none!important;
   --rw-eye-blink-opacity:0;
-  --rw-eye-blink-sweep:0%;
+  --rw-eye-blink-mask-x:3.2%;
+  --rw-eye-blink-mask-y:0%;
   opacity:1!important;
   mix-blend-mode:normal!important;
   background:none!important;
@@ -7859,14 +7860,23 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink{
   inset:0!important;
   z-index:4!important;
   opacity:var(--rw-eye-blink-opacity, 0)!important;
-  background:url("../images/private-command-center-hero-eye-blink-overlay.png?v=20260714-eye-rig-3") center center / cover no-repeat!important;
-  clip-path:inset(0 0 calc(100% - var(--rw-eye-blink-sweep, 0%)) 0)!important;
-  -webkit-mask-image:linear-gradient(180deg, #000 0 88%, rgba(0,0,0,.72) 94%, transparent 100%)!important;
-  mask-image:linear-gradient(180deg, #000 0 88%, rgba(0,0,0,.72) 94%, transparent 100%)!important;
+  background:url("../images/private-command-center-hero-eye-blink-overlay.png?v=20260714-eye-rig-4") center center / cover no-repeat!important;
+  -webkit-mask-image:radial-gradient(ellipse var(--rw-eye-blink-mask-x, 3.2%) var(--rw-eye-blink-mask-y, 0%) at var(--rw-eye-mask-x) var(--rw-eye-mask-y), #000 0 58%, rgba(0,0,0,.88) 68%, rgba(0,0,0,.34) 82%, transparent 100%)!important;
+  mask-image:radial-gradient(ellipse var(--rw-eye-blink-mask-x, 3.2%) var(--rw-eye-blink-mask-y, 0%) at var(--rw-eye-mask-x) var(--rw-eye-mask-y), #000 0 58%, rgba(0,0,0,.88) 68%, rgba(0,0,0,.34) 82%, transparent 100%)!important;
   filter:saturate(.98) brightness(.99)!important;
   transform:translateZ(0)!important;
   will-change:opacity!important;
   pointer-events:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink-left{
+  --rw-eye-mask-x:15.6%;
+  --rw-eye-mask-y:34.9%;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink-right{
+  --rw-eye-mask-x:28.1%;
+  --rw-eye-mask-y:35.2%;
 }
 
 @keyframes rwAssistantAuraFloat{

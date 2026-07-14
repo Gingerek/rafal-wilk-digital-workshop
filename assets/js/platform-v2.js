@@ -357,7 +357,7 @@
       const assistantBlink = document.createElement('div');
       assistantBlink.className = 'rw-v2-assistant-blink';
       assistantBlink.setAttribute('aria-hidden', 'true');
-      assistantBlink.innerHTML = '<span class="rw-v2-assistant-eye-blink"></span>';
+      assistantBlink.innerHTML = '<span class="rw-v2-assistant-eye-blink rw-v2-assistant-eye-blink-left"></span><span class="rw-v2-assistant-eye-blink rw-v2-assistant-eye-blink-right"></span>';
       shell.appendChild(assistantBlink);
     }
     if (!shell.querySelector('.rw-v2-ambient-deck')) {
@@ -434,7 +434,8 @@
     const setBlink = (progress) => {
       const p = Math.max(0, Math.min(1, progress));
       blink.style.setProperty('--rw-eye-blink-opacity', (p * .96).toFixed(3));
-      blink.style.setProperty('--rw-eye-blink-sweep', `${(20 + p * 17).toFixed(2)}%`);
+      blink.style.setProperty('--rw-eye-blink-mask-y', `${(.2 + p * 10.3).toFixed(2)}%`);
+      blink.style.setProperty('--rw-eye-blink-mask-x', `${(3.2 + p * 8.3).toFixed(2)}%`);
     };
     const animateBlink = (duration, done) => {
       const close = duration * .48;
@@ -472,7 +473,8 @@
       const nextDelay = 3200 + Math.random() * 7600;
       window.setTimeout(runBlink, nextDelay);
     };
-    blink.style.setProperty('--rw-eye-blink-sweep', '0%');
+    blink.style.setProperty('--rw-eye-blink-mask-y', '0%');
+    blink.style.setProperty('--rw-eye-blink-mask-x', '3.2%');
     setBlink(0);
     window.setTimeout(runBlink, 4200 + Math.random() * 3600);
   }
