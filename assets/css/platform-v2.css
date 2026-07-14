@@ -7834,17 +7834,10 @@ body.rw-v2-ready.rw-v2-phase-afternoon:not(.app-open) .rw-v2-native-wall-canvas{
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
   position:absolute!important;
-  left:calc((100vw - (100vh * 1704 / 923)) / 2)!important;
-  top:calc(100vh * 75 / 923)!important;
-  width:calc(100vh * 470 / 923)!important;
-  height:calc(100vh * 380 / 923)!important;
+  inset:0!important;
   z-index:18!important;
   pointer-events:none!important;
-  --rw-gaze-x:0px;
-  --rw-gaze-y:0px;
-  --rw-upper-lid-height:.18%;
-  --rw-lower-lid-height:0%;
-  --rw-lid-opacity:0;
+  --rw-eye-blink-opacity:0;
   opacity:1!important;
   mix-blend-mode:normal!important;
   background:none!important;
@@ -7852,107 +7845,24 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
   will-change:auto!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-gaze{
-  display:none!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-gaze-left{
-  left:35.7%!important;
-  top:51.1%!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-gaze-right{
-  left:68.2%!important;
-  top:51.0%!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-gaze i{
-  display:none!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-direct-gaze .rw-v2-assistant-gaze i{
-  display:none!important;
-}
-
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink::before{
-  content:""!important;
-  position:absolute!important;
-  left:-2%!important;
-  top:-1%!important;
-  width:84%!important;
-  height:91%!important;
-  border-radius:42% 44% 50% 48%!important;
-  background:
-    radial-gradient(circle at 45% 42%, rgba(94,213,255,.24), transparent 23%),
-    radial-gradient(circle at 51% 54%, rgba(16,120,166,.18), transparent 56%),
-    linear-gradient(180deg, transparent 0 18%, rgba(89,208,255,.10) 44%, transparent 74%)!important;
-  opacity:.42!important;
-  z-index:1!important;
-  mix-blend-mode:screen!important;
-  filter:blur(.4px)!important;
-  animation:rwAssistantAuraFloat 10.5s ease-in-out infinite!important;
+  display:none!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink::after{
-  content:""!important;
-  position:absolute!important;
-  left:1%!important;
-  top:7%!important;
-  width:79%!important;
-  height:80%!important;
-  border-radius:44% 46% 52% 50%!important;
-  background:
-    radial-gradient(ellipse at 49% 66%, rgba(0,221,255,.16), transparent 46%),
-    radial-gradient(ellipse at 49% 88%, rgba(0,22,34,.38), transparent 58%)!important;
-  opacity:.28!important;
-  z-index:1!important;
-  mix-blend-mode:screen!important;
-  filter:blur(1.6px)!important;
-  animation:rwAssistantFaceDrift 10.5s ease-in-out infinite!important;
+  display:none!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid{
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink{
   position:absolute!important;
-  width:14.2%!important;
-  height:0%!important;
-  border-radius:999px 999px 58% 58%!important;
-  overflow:hidden!important;
-  z-index:3!important;
-  opacity:var(--rw-lid-opacity, 0)!important;
+  inset:0!important;
+  z-index:4!important;
+  opacity:var(--rw-eye-blink-opacity, 0)!important;
+  background:url("../images/private-command-center-hero-eye-blink-overlay.png?v=20260714-eye-rig-1") center center / cover no-repeat!important;
+  filter:saturate(.98) brightness(.99)!important;
   transform:translateZ(0)!important;
-  transform-origin:center center!important;
-  transition:none!important;
-  background:
-    radial-gradient(ellipse at 50% 20%, rgba(79,170,198,.23) 0 18%, transparent 55%),
-    linear-gradient(180deg, rgba(2,13,23,.99) 0%, rgba(9,37,54,.99) 52%, rgba(1,10,18,.99) 100%),
-    repeating-linear-gradient(96deg, rgba(171,229,246,.07) 0 1px, transparent 1px 8px)!important;
-  box-shadow:inset 0 1px 2px rgba(151,232,255,.09), 0 0 5px rgba(52,190,238,.05)!important;
-  will-change:height, top, opacity!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid-left{
-  left:35.2%!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid-right{
-  left:67.8%!important;
-  width:12.4%!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid-upper{
-  top:49.4%!important;
-  height:var(--rw-upper-lid-height, 0%)!important;
-  border-radius:60% 60% 52% 52%!important;
-}
-
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid-lower{
-  top:calc(56.6% - var(--rw-lower-lid-height, 0%))!important;
-  height:var(--rw-lower-lid-height, 0%)!important;
-  border-radius:52% 52% 62% 62%!important;
-  background:
-    radial-gradient(ellipse at 50% 70%, rgba(58,145,174,.22) 0 28%, transparent 60%),
-    linear-gradient(180deg, rgba(3,14,23,.99) 0%, rgba(10,42,60,.98) 58%, rgba(3,14,23,.99) 100%),
-    repeating-linear-gradient(94deg, rgba(164,226,246,.08) 0 1px, transparent 1px 8px)!important;
+  will-change:opacity!important;
+  pointer-events:none!important;
 }
 
 @keyframes rwAssistantAuraFloat{
@@ -7967,10 +7877,7 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-lid-lower{
 
 @media (min-aspect-ratio:1704/923){
   body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
-    left:0!important;
-    top:calc((100vh - (100vw * 923 / 1704)) / 2 + (100vw * 75 / 1704))!important;
-    width:calc(100vw * 470 / 1704)!important;
-    height:calc(100vw * 380 / 1704)!important;
+    inset:0!important;
   }
 }
 
