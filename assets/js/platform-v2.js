@@ -437,9 +437,9 @@
       blink.style.setProperty('--rw-eye-blink-mask-y', `${(.2 + p * 10.3).toFixed(2)}%`);
       blink.style.setProperty('--rw-eye-blink-mask-x', `${(3.2 + p * 8.3).toFixed(2)}%`);
     };
-    const animateBlink = (duration, done) => {
-      const close = duration * .48;
-      const hold = duration * .10;
+    const animateBlink = (duration, done, depth = 1) => {
+      const close = duration * .34;
+      const hold = duration * .03;
       const open = duration - close - hold;
       const started = performance.now();
       const frame = (now) => {
@@ -456,21 +456,22 @@
           done?.();
           return;
         }
-        setBlink(progress);
+        setBlink(progress * depth);
         window.requestAnimationFrame(frame);
       };
       window.requestAnimationFrame(frame);
     };
     const runBlink = () => {
       if (!document.body.classList.contains('app-open') && !document.hidden) {
-        const duration = 1750 + Math.random() * 650;
+        const duration = 520 + Math.random() * 320;
+        const depth = .72 + Math.random() * .24;
         animateBlink(duration, () => {
-          if (Math.random() < .12) {
-            window.setTimeout(() => animateBlink(1450 + Math.random() * 420), 520 + Math.random() * 560);
+          if (Math.random() < .08) {
+            window.setTimeout(() => animateBlink(420 + Math.random() * 190, null, .52 + Math.random() * .18), 180 + Math.random() * 190);
           }
-        });
+        }, depth);
       }
-      const nextDelay = 3200 + Math.random() * 7600;
+      const nextDelay = 2600 + Math.random() * 8600;
       window.setTimeout(runBlink, nextDelay);
     };
     blink.style.setProperty('--rw-eye-blink-mask-y', '0%');
