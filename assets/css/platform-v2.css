@@ -7860,10 +7860,10 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink{
   inset:0!important;
   z-index:4!important;
   opacity:var(--rw-eye-blink-opacity, 0)!important;
-  background:url("../images/private-command-center-hero-eye-blink-overlay.png?v=20260714-eye-rig-7") center center / cover no-repeat!important;
+  background:url("../images/private-command-center-hero-eye-blink-overlay.png?v=20260714-eye-rig-8") center center / cover no-repeat!important;
   -webkit-mask-image:radial-gradient(ellipse var(--rw-eye-blink-mask-x, 3.2%) var(--rw-eye-blink-mask-y, 0%) at var(--rw-eye-mask-x) var(--rw-eye-mask-y), #000 0 58%, rgba(0,0,0,.88) 68%, rgba(0,0,0,.34) 82%, transparent 100%)!important;
   mask-image:radial-gradient(ellipse var(--rw-eye-blink-mask-x, 3.2%) var(--rw-eye-blink-mask-y, 0%) at var(--rw-eye-mask-x) var(--rw-eye-mask-y), #000 0 58%, rgba(0,0,0,.88) 68%, rgba(0,0,0,.34) 82%, transparent 100%)!important;
-  filter:saturate(.98) brightness(.99)!important;
+  filter:saturate(.84) brightness(.95) contrast(.98)!important;
   transform:translateZ(0)!important;
   will-change:opacity!important;
   pointer-events:none!important;

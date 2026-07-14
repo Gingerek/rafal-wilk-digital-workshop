@@ -434,8 +434,8 @@
     const setBlink = (progress) => {
       const p = Math.max(0, Math.min(1, progress));
       blink.style.setProperty('--rw-eye-blink-opacity', (p * .96).toFixed(3));
-      blink.style.setProperty('--rw-eye-blink-mask-y', `${(.2 + p * 10.3).toFixed(2)}%`);
-      blink.style.setProperty('--rw-eye-blink-mask-x', `${(3.2 + p * 8.3).toFixed(2)}%`);
+      blink.style.setProperty('--rw-eye-blink-mask-y', `${(.2 + p * 8).toFixed(2)}%`);
+      blink.style.setProperty('--rw-eye-blink-mask-x', `${(3.2 + p * 6.8).toFixed(2)}%`);
     };
     const animateBlink = (duration, done) => {
       const close = duration * .38;
