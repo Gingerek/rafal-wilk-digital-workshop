@@ -357,7 +357,7 @@
       const assistantBlink = document.createElement('div');
       assistantBlink.className = 'rw-v2-assistant-blink';
       assistantBlink.setAttribute('aria-hidden', 'true');
-      assistantBlink.innerHTML = '<span class="rw-v2-assistant-blink-overlay"></span>';
+      assistantBlink.innerHTML = '<span class="rw-v2-assistant-blink-frame rw-v2-assistant-blink-frame-left"></span><span class="rw-v2-assistant-blink-frame rw-v2-assistant-blink-frame-right"></span>';
       shell.appendChild(assistantBlink);
     }
     if (!shell.querySelector('.rw-v2-ambient-deck')) {
@@ -433,12 +433,11 @@
     const ease = (t) => .5 - Math.cos(Math.max(0, Math.min(1, t)) * Math.PI) / 2;
     const setBlink = (progress) => {
       const p = Math.max(0, Math.min(1, progress));
-      blink.style.setProperty('--rw-blink-progress', p.toFixed(3));
-      blink.style.setProperty('--rw-blink-frame-opacity', (p * .82).toFixed(3));
+      blink.style.setProperty('--rw-blink-frame-opacity', p.toFixed(3));
     };
     const animateBlink = (duration, done) => {
-      const close = duration * .40;
-      const hold = duration * .09;
+      const close = duration * .34;
+      const hold = duration * .08;
       const open = duration - close - hold;
       const started = performance.now();
       const frame = (now) => {
@@ -462,14 +461,14 @@
     };
     const runBlink = () => {
       if (!document.body.classList.contains('app-open') && !document.hidden) {
-        const duration = 1550 + Math.random() * 620;
+        const duration = 520 + Math.random() * 260;
         animateBlink(duration, () => {
-          if (Math.random() < .08) {
-            window.setTimeout(() => animateBlink(1280 + Math.random() * 360), 420 + Math.random() * 360);
+          if (Math.random() < .12) {
+            window.setTimeout(() => animateBlink(440 + Math.random() * 180), 180 + Math.random() * 180);
           }
         });
       }
-      const nextDelay = 3600 + Math.random() * 9800;
+      const nextDelay = 2200 + Math.random() * 8200;
       window.setTimeout(runBlink, nextDelay);
     };
     setBlink(0);
