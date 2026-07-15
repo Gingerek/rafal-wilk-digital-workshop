@@ -7808,15 +7808,15 @@ body.rw-v2-ready.rw-v2-returning-home .rw-v2-transition-veil span:nth-child(3){
 /* Native wall canvas: high-DPI cinematic visualizations blended into the existing background dashboard. */
 body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
   position:absolute!important;
-  left:clamp(250px, 22vw, 500px)!important;
-  top:clamp(30px, 5.2vh, 78px)!important;
-  width:clamp(700px, 55vw, 1060px)!important;
-  aspect-ratio:1.64!important;
+  left:clamp(330px, 31.2vw, 650px)!important;
+  top:clamp(24px, 4.1vh, 68px)!important;
+  width:clamp(520px, 44vw, 880px)!important;
+  aspect-ratio:1.58!important;
   z-index:13!important;
   pointer-events:none!important;
-  opacity:1!important;
-  mix-blend-mode:normal!important;
-  filter:saturate(118%) contrast(112%) drop-shadow(0 0 12px rgba(92,205,255,.18))!important;
+  opacity:.28!important;
+  mix-blend-mode:screen!important;
+  filter:saturate(116%) contrast(112%) drop-shadow(0 0 7px rgba(92,205,255,.10))!important;
   transform:perspective(1600px) rotateY(-2deg) rotateX(.55deg) translateZ(0)!important;
   transform-origin:center center!important;
   image-rendering:auto!important;
@@ -7824,12 +7824,12 @@ body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
 }
 
 body.rw-v2-ready.rw-v2-phase-night:not(.app-open) .rw-v2-native-wall-canvas{
-  opacity:1!important;
+  opacity:.34!important;
 }
 
 body.rw-v2-ready.rw-v2-phase-day:not(.app-open) .rw-v2-native-wall-canvas,
 body.rw-v2-ready.rw-v2-phase-afternoon:not(.app-open) .rw-v2-native-wall-canvas{
-  opacity:.96!important;
+  opacity:.23!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-plate,
@@ -7958,10 +7958,10 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-playing .rw-v2-assista
 
 @media (max-width:1080px){
   body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
-    left:27vw!important;
+    left:31vw!important;
     top:36px!important;
-    width:64vw!important;
-    opacity:.90!important;
+    width:48vw!important;
+    opacity:.20!important;
   }
 }
 
