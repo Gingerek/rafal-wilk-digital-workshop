@@ -6989,144 +6989,35 @@ body.rw-v2-ready .rw-v2-live-rain{
 }
 
 body.rw-v2-ready .rw-v2-live-plane{
-  z-index:8!important;
-  left:72%!important;
-  top:22%!important;
-  width:clamp(112px, 12.2vw, 198px)!important;
-  height:clamp(36px, 4vw, 64px)!important;
-  opacity:.92!important;
-  transform-origin:50% 50%!important;
-  animation:rwPassengerPlaneFlight 26s cubic-bezier(.42,0,.58,1) infinite!important;
-  filter:drop-shadow(0 6px 9px rgba(0,15,35,.28)) drop-shadow(0 0 4px rgba(255,255,255,.30))!important;
+  z-index:4!important;
+  left:68.2%!important;
+  top:17.8%!important;
+  width:clamp(178px, 18vw, 292px)!important;
+  height:clamp(66px, 6.9vw, 112px)!important;
+  opacity:.74!important;
+  background:url("../images/rw-passenger-plane-window.png?v=20260715-plane-static-1") center/contain no-repeat!important;
+  transform:rotate(-2.6deg) translateZ(0)!important;
+  filter:blur(.18px) saturate(.94) contrast(.96) drop-shadow(0 9px 14px rgba(31,67,102,.10))!important;
   mix-blend-mode:normal!important;
+  animation:none!important;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0 55%, #000 63%, #000 100%), linear-gradient(180deg, #000 0 62%, transparent 92%)!important;
+  mask-image:linear-gradient(90deg, transparent 0 55%, #000 63%, #000 100%), linear-gradient(180deg, #000 0 62%, transparent 92%)!important;
 }
 
 body.rw-v2-ready .rw-v2-live-plane i,
 body.rw-v2-ready .rw-v2-live-plane b{
-  position:absolute!important;
-  display:block!important;
-  pointer-events:none!important;
-}
-
-body.rw-v2-ready .rw-v2-plane-shadow{
-  left:10%!important;
-  top:55%!important;
-  width:82%!important;
-  height:18%!important;
-  border-radius:50%!important;
-  background:rgba(14,38,62,.16)!important;
-  filter:blur(7px)!important;
-}
-
-body.rw-v2-ready .rw-v2-plane-body{
-  left:12%!important;
-  top:35%!important;
-  width:74%!important;
-  height:25%!important;
-  border-radius:999px 70% 70% 999px!important;
-  background:
-    linear-gradient(90deg, rgba(216,236,248,.98) 0%, rgba(255,255,255,.98) 38%, rgba(181,220,244,.94) 76%, rgba(91,138,174,.88) 100%)!important;
-  box-shadow:inset 0 -2px 3px rgba(47,88,118,.20), inset 0 1px 2px rgba(255,255,255,.74)!important;
-  transform:skewX(-6deg)!important;
-}
-
-body.rw-v2-ready .rw-v2-plane-body::before{
-  content:""!important;
-  position:absolute!important;
-  right:-8%!important;
-  top:22%!important;
-  width:16%!important;
-  height:48%!important;
-  border-radius:0 999px 999px 0!important;
-  background:rgba(226,246,255,.92)!important;
-}
-
-body.rw-v2-ready .rw-v2-plane-body::after{
-  content:""!important;
-  position:absolute!important;
-  left:12%!important;
-  top:31%!important;
-  width:58%!important;
-  height:22%!important;
-  border-radius:999px!important;
-  background:
-    linear-gradient(180deg, rgba(27,119,170,.44), rgba(27,119,170,.18) 44%, transparent 46%),
-    repeating-linear-gradient(90deg, rgba(5,27,48,.48) 0 2px, transparent 2px 8px)!important;
-  opacity:.66!important;
-}
-
-body.rw-v2-ready .rw-v2-plane-body b{
-  left:50%!important;
-  top:50%!important;
-  transform:translate(-50%,-50%) scaleX(.92)!important;
-  color:#0b2b42!important;
-  font:900 clamp(9px, 1.05vw, 16px)/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace!important;
-  letter-spacing:.04em!important;
-  text-shadow:0 1px 1px rgba(255,255,255,.62)!important;
-  z-index:4!important;
-}
-
-body.rw-v2-ready .rw-v2-plane-wing{
-  left:38%!important;
-  top:40%!important;
-  width:28%!important;
-  height:50%!important;
-  border-radius:16% 86% 34% 80%!important;
-  background:linear-gradient(135deg, rgba(245,252,255,.90), rgba(101,154,190,.74))!important;
-  transform:skewX(-20deg) rotate(7deg)!important;
-  box-shadow:inset 0 1px 2px rgba(255,255,255,.65)!important;
-}
-
-body.rw-v2-ready .rw-v2-plane-wing::before,
-body.rw-v2-ready .rw-v2-plane-wing::after{
-  content:""!important;
-  position:absolute!important;
-  top:58%!important;
-  width:18%!important;
-  height:18%!important;
-  border-radius:999px!important;
-  background:linear-gradient(180deg, rgba(228,246,255,.95), rgba(72,122,158,.78))!important;
-  box-shadow:inset 0 -1px 2px rgba(12,40,66,.26), 0 1px 2px rgba(0,18,34,.24)!important;
-}
-
-body.rw-v2-ready .rw-v2-plane-wing::before{
-  left:23%!important;
-}
-
-body.rw-v2-ready .rw-v2-plane-wing::after{
-  left:58%!important;
-}
-
-body.rw-v2-ready .rw-v2-plane-tail{
-  left:10%!important;
-  top:17%!important;
-  width:18%!important;
-  height:42%!important;
-  border-radius:18% 82% 18% 70%!important;
-  background:linear-gradient(135deg, rgba(236,249,255,.90), rgba(93,147,188,.72))!important;
-  transform:skewX(-18deg) rotate(-18deg)!important;
-}
-
-body.rw-v2-ready .rw-v2-plane-trail{
-  left:-105%!important;
-  top:45%!important;
-  width:110%!important;
-  height:2px!important;
-  border-radius:999px!important;
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), rgba(207,240,255,.34))!important;
-  filter:blur(.7px)!important;
-  opacity:.42!important;
+  display:none!important;
 }
 
 body.rw-v2-phase-night .rw-v2-live-plane{
-  opacity:.46!important;
-  filter:drop-shadow(0 0 6px rgba(166,226,255,.22))!important;
+  opacity:.48!important;
+  filter:blur(.22px) saturate(.82) contrast(.86) drop-shadow(0 0 6px rgba(166,226,255,.10))!important;
 }
 
 body.rw-v2-weather-rain .rw-v2-live-plane,
 body.rw-v2-weather-fog .rw-v2-live-plane{
-  opacity:.42!important;
-  filter:blur(.28px) drop-shadow(0 0 5px rgba(170,226,255,.16))!important;
+  opacity:.38!important;
+  filter:blur(.75px) saturate(.72) contrast(.82) drop-shadow(0 0 5px rgba(170,226,255,.10))!important;
 }
 
 body.rw-v2-weather-fog .rw-v2-live-clouds{
@@ -7147,27 +7038,6 @@ body.rw-v2-weather-snow .rw-v2-window-reflection{
 @keyframes rwLiveRain{
   from{background-position:0 0;}
   to{background-position:0 46px;}
-}
-
-@keyframes rwPassengerPlaneFlight{
-  0%{
-    transform:translate3d(36vw, 2.6vh, 0) rotate(-3.2deg) scale(.88);
-    opacity:0;
-  }
-  8%{
-    opacity:.88;
-  }
-  48%{
-    transform:translate3d(-12vw, -1.4vh, 0) rotate(-3.8deg) scale(1);
-    opacity:.92;
-  }
-  84%{
-    opacity:.82;
-  }
-  100%{
-    transform:translate3d(-68vw, -4.8vh, 0) rotate(-4.3deg) scale(1.05);
-    opacity:0;
-  }
 }
 
 /* Premium UX polish v7: tighter shell, smoother module entry, unified module chrome. */

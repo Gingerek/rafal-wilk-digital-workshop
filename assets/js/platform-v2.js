@@ -389,7 +389,7 @@
       const daylight = document.createElement('div');
       daylight.className = 'rw-v2-daylight-system';
       daylight.setAttribute('aria-hidden', 'true');
-      daylight.innerHTML = '<span class="rw-v2-sky-wash"></span><span class="rw-v2-live-clouds"></span><span class="rw-v2-live-stars"></span><span class="rw-v2-live-moon"></span><span class="rw-v2-live-sun"></span><span class="rw-v2-live-rain"></span><span class="rw-v2-live-plane" aria-hidden="true"><i class="rw-v2-plane-shadow"></i><i class="rw-v2-plane-body"><b>RW</b></i><i class="rw-v2-plane-wing"></i><i class="rw-v2-plane-tail"></i><i class="rw-v2-plane-trail"></i></span><span class="rw-v2-window-reflection"></span>';
+      daylight.innerHTML = '<span class="rw-v2-sky-wash"></span><span class="rw-v2-live-clouds"></span><span class="rw-v2-live-stars"></span><span class="rw-v2-live-moon"></span><span class="rw-v2-live-sun"></span><span class="rw-v2-live-rain"></span><span class="rw-v2-live-plane" aria-hidden="true"></span><span class="rw-v2-window-reflection"></span>';
       shell.appendChild(daylight);
     }
     shell.querySelectorAll('.rw-v2-window-sun,.rw-v2-window-moon,.rw-v2-city-lights').forEach((el) => el.remove());
