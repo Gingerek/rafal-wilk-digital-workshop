@@ -7849,13 +7849,13 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-cutout{
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-plate{
   z-index:117!important;
-  background-image:url("../images/private-command-center-assistant-face-cleanplate.png?v=20260715-face-cutout-1")!important;
+  background-image:url("../images/private-command-center-assistant-face-cleanplate.png?v=20260715-face-cutout-2")!important;
   opacity:1!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-cutout{
   z-index:118!important;
-  background-image:url("../images/private-command-center-assistant-face-cutout.png?v=20260715-face-cutout-1")!important;
+  background-image:url("../images/private-command-center-assistant-face-cutout.png?v=20260715-face-cutout-2")!important;
   opacity:.98!important;
   filter:saturate(1.02) contrast(1.01) drop-shadow(0 0 18px rgba(92,205,255,.10))!important;
   animation:rwAssistantHeadLevitate 12.8s ease-in-out infinite both!important;
@@ -7917,16 +7917,16 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-playing .rw-v2-assista
     transform:translate3d(0,0,0) rotateZ(0deg) rotateY(0deg) rotateX(0deg) scale(1);
   }
   18%{
-    transform:translate3d(6px,-7px,0) rotateZ(.16deg) rotateY(-1deg) rotateX(.38deg) scale(1.002);
+    transform:translate3d(3px,-4px,0) rotateZ(.10deg) rotateY(-1.55deg) rotateX(.62deg) scale(1.0015);
   }
   39%{
-    transform:translate3d(-5px,-3px,0) rotateZ(-.14deg) rotateY(.85deg) rotateX(-.34deg) scale(1.001);
+    transform:translate3d(-3px,-2px,0) rotateZ(-.09deg) rotateY(1.25deg) rotateX(-.54deg) scale(1.0008);
   }
   63%{
-    transform:translate3d(4px,6px,0) rotateZ(.12deg) rotateY(.55deg) rotateX(-.65deg) scale(1.002);
+    transform:translate3d(2px,4px,0) rotateZ(.08deg) rotateY(.90deg) rotateX(-1.05deg) scale(1.0012);
   }
   84%{
-    transform:translate3d(-6px,3px,0) rotateZ(-.16deg) rotateY(-.7deg) rotateX(.24deg) scale(1.001);
+    transform:translate3d(-3px,2px,0) rotateZ(-.10deg) rotateY(-1.10deg) rotateX(.46deg) scale(1.0008);
   }
 }
 
