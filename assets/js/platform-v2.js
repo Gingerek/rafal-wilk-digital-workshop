@@ -434,9 +434,13 @@
     if (!blinkFrame) return;
     const natural = { width: 1704, height: 923 };
     const crop = { x: 82, y: 205, width: 380, height: 115 };
-    const blinkDuration = 1480;
     let hideTimer = 0;
     let raf = 0;
+    const randomBetween = (min, max) => min + Math.random() * (max - min);
+    const nextBlinkDelay = () => {
+      const base = 5200 + Math.pow(Math.random(), 1.85) * 14500;
+      return Math.random() < .12 ? base + randomBetween(4500, 12000) : base;
+    };
     const updateGeometry = () => {
       const rect = shell.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
@@ -454,33 +458,33 @@
       window.cancelAnimationFrame(raf);
       raf = window.requestAnimationFrame(updateGeometry);
     };
-    const playBlink = (done) => {
+    const playBlink = (duration = 1480, done) => {
       window.clearTimeout(hideTimer);
       updateGeometry();
+      blink.style.setProperty('--rw-blink-duration', `${Math.round(duration)}ms`);
       blink.classList.remove('is-playing');
       blink.offsetHeight;
       blink.classList.add('is-playing');
       hideTimer = window.setTimeout(() => {
         blink.classList.remove('is-playing');
         done?.();
-      }, blinkDuration);
+      }, duration);
     };
     const runBlink = () => {
       const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
       if (!reducedMotion && !document.body.classList.contains('app-open') && !document.hidden) {
-        playBlink(() => {
-          if (Math.random() < .07) {
-            window.setTimeout(() => playBlink(), 420 + Math.random() * 260);
+        playBlink(randomBetween(1360, 1560), () => {
+          if (Math.random() < .045) {
+            window.setTimeout(() => playBlink(randomBetween(920, 1080)), randomBetween(360, 620));
           }
         });
       }
-      const nextDelay = 3600 + Math.random() * 8200;
-      window.setTimeout(runBlink, nextDelay);
+      window.setTimeout(runBlink, nextBlinkDelay());
     };
     updateGeometry();
     window.addEventListener('resize', queueGeometry, { passive:true });
     window.addEventListener('orientationchange', queueGeometry, { passive:true });
-    window.setTimeout(runBlink, 4200 + Math.random() * 3600);
+    window.setTimeout(runBlink, randomBetween(6800, 10800));
   }
 
   function renderHero(){

@@ -7874,7 +7874,7 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink{
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-playing .rw-v2-assistant-eye-blink{
   opacity:1!important;
-  animation:rwHumanEyelidBlinkSprite 1480ms steps(36,end) 1 both!important;
+  animation:rwHumanEyelidBlinkSprite var(--rw-blink-duration, 1480ms) steps(36,end) 1 both!important;
 }
 
 @keyframes rwHumanEyelidBlinkSprite{
