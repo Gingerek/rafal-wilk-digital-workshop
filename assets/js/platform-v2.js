@@ -1446,7 +1446,7 @@
     const day = Math.floor((now - start) / 86400000);
     const hour = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
     const daylightHours = 12 + 4.35 * Math.cos((2 * Math.PI * (day - 172)) / 365);
-    const solarNoon = 12.75;
+    const solarNoon = 13.65;
     const sunrise = solarNoon - daylightHours / 2;
     const sunset = solarNoon + daylightHours / 2;
     const dawnStart = sunrise - .75;
@@ -1455,7 +1455,11 @@
     const morningFade = clampNumber((hour - dawnStart) / Math.max(0.1, sunrise - dawnStart), 0, 1);
     const eveningFade = clampNumber((duskEnd - hour) / Math.max(0.1, duskEnd - sunset), 0, 1);
     const sunVisible = hour >= dawnStart && hour <= duskEnd ? clampNumber(Math.min(morningFade, eveningFade) * 1.15, 0, 1) : 0;
-    const nightAmount = hour < dawnStart ? 1 : hour > duskEnd ? 1 : 1 - sunVisible;
+    const afterDusk = hour > duskEnd;
+    const beforeDawn = hour < dawnStart;
+    const nightAmount = afterDusk ? clampNumber((hour - duskEnd) / 1.15, 0, 1)
+      : beforeDawn ? clampNumber((dawnStart - hour) / 1.15, 0, 1)
+      : 0;
     const sunElevation = Math.max(0, Math.sin(dayProgress * Math.PI));
     const weatherSun = clampNumber(1 - weather.cloudCover * .76 - weather.precipitation * .34, .05, 1);
     const hiddenByPerson = dayProgress < .14 || dayProgress > .92 ? .65 : 1;
@@ -1481,8 +1485,8 @@
     shell.style.setProperty('--rw-sun-size', `${(54 + sunElevation * 48).toFixed(1)}px`);
     shell.style.setProperty('--rw-cloud-opacity', clampNumber(.025 + weather.cloudCover * .22 + (weather.state === 'fog' ? .10 : 0), 0, .30).toFixed(3));
     shell.style.setProperty('--rw-rain-opacity', clampNumber(weather.precipitation * .50 + (weather.state === 'rain' ? .18 : 0), 0, .58).toFixed(3));
-    shell.style.setProperty('--rw-stars-opacity', clampNumber(nightAmount * (1 - weather.cloudCover * .72) * (1 - weather.precipitation), 0, .66).toFixed(3));
-    shell.style.setProperty('--rw-moon-opacity', clampNumber(nightAmount * (1 - weather.cloudCover * .65) * .52, 0, .52).toFixed(3));
+    shell.style.setProperty('--rw-stars-opacity', clampNumber(nightAmount * (1 - weather.cloudCover * .72) * (1 - weather.precipitation), 0, .46).toFixed(3));
+    shell.style.setProperty('--rw-moon-opacity', clampNumber(nightAmount * (1 - weather.cloudCover * .65) * .42, 0, .42).toFixed(3));
     shell.style.setProperty('--rw-window-night', clampNumber(nightAmount, 0, 1).toFixed(3));
     shell.style.setProperty('--rw-reflection-sun', (sunVisible * weatherSun * 0.020).toFixed(3));
   }
