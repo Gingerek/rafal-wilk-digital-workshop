@@ -7860,7 +7860,7 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-halo{
   opacity:.24!important;
   mix-blend-mode:screen!important;
   filter:saturate(1.08) blur(.15px)!important;
-  animation:rwAssistantHeadLevitate 12.8s ease-in-out infinite both!important;
+  animation:rwAssistantHaloLevitate 14.6s ease-in-out infinite both!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-cutout{
@@ -7900,7 +7900,7 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink{
   height:var(--rw-blink-height, 0)!important;
   z-index:4!important;
   display:block!important;
-  background-image:url("../images/private-command-center-human-eyelid-blink-sprite-v4-clean-balanced.png?v=20260715-human-blink-4-clean-1")!important;
+  background-image:none!important;
   background-repeat:no-repeat!important;
   background-position:0 0;
   background-size:100% auto!important;
@@ -7910,6 +7910,10 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink{
   will-change:opacity, background-position!important;
   pointer-events:none!important;
   user-select:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.rw-blink-ready .rw-v2-assistant-eye-blink{
+  background-image:url("../images/private-command-center-human-eyelid-blink-sprite-v4-clean-balanced.png?v=20260715-human-blink-4-clean-1")!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-playing .rw-v2-assistant-eye-blink{
@@ -7937,6 +7941,29 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-playing .rw-v2-assista
   }
   84%{
     transform:translate3d(-3px,2px,0) rotateZ(-.10deg) rotateY(-1.10deg) rotateX(.46deg) scale(1.0008);
+  }
+}
+
+@keyframes rwAssistantHaloLevitate{
+  0%,100%{
+    transform:translate3d(.6px,.8px,0) rotateZ(.02deg) rotateY(.35deg) rotateX(.16deg) scale(1.002);
+    opacity:.20;
+  }
+  22%{
+    transform:translate3d(4px,-5px,0) rotateZ(.13deg) rotateY(-1.85deg) rotateX(.72deg) scale(1.004);
+    opacity:.28;
+  }
+  48%{
+    transform:translate3d(-4px,-2px,0) rotateZ(-.12deg) rotateY(1.55deg) rotateX(-.62deg) scale(1.003);
+    opacity:.23;
+  }
+  70%{
+    transform:translate3d(2px,5px,0) rotateZ(.10deg) rotateY(1.10deg) rotateX(-1.15deg) scale(1.004);
+    opacity:.30;
+  }
+  88%{
+    transform:translate3d(-3px,3px,0) rotateZ(-.12deg) rotateY(-1.30deg) rotateX(.52deg) scale(1.003);
+    opacity:.24;
   }
 }
 

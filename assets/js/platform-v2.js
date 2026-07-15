@@ -456,9 +456,32 @@
     const natural = { width: 1704, height: 923 };
     const crop = { x: 82, y: 205, width: 380, height: 115 };
     const faceCrop = { x: 0, y: 62, width: 438, height: 562 };
+    const blinkSpriteUrl = 'assets/images/private-command-center-human-eyelid-blink-sprite-v4-clean-balanced.png?v=20260715-human-blink-4-clean-1';
     let hideTimer = 0;
     let raf = 0;
+    let spriteReady = false;
     const randomBetween = (min, max) => min + Math.random() * (max - min);
+    const loadBlinkSprite = () => {
+      if (spriteReady || blink.dataset.rwBlinkSpriteLoading === 'true') return;
+      blink.dataset.rwBlinkSpriteLoading = 'true';
+      const image = new Image();
+      image.decoding = 'async';
+      image.onload = () => {
+        spriteReady = true;
+        blink.classList.add('rw-blink-ready');
+      };
+      image.onerror = () => {
+        blink.dataset.rwBlinkSpriteLoading = 'false';
+      };
+      image.src = blinkSpriteUrl;
+    };
+    const queueBlinkSpriteLoad = () => {
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(loadBlinkSprite, { timeout: 2200 });
+        return;
+      }
+      window.setTimeout(loadBlinkSprite, 900);
+    };
     const nextBlinkDelay = () => {
       const base = 3600 + Math.pow(Math.random(), 1.65) * 8000;
       return Math.random() < .10 ? base + randomBetween(2800, 7600) : base;
@@ -490,6 +513,11 @@
       raf = window.requestAnimationFrame(updateGeometry);
     };
     const playBlink = (duration = 1480, done) => {
+      if (!spriteReady) {
+        loadBlinkSprite();
+        done?.();
+        return;
+      }
       window.clearTimeout(hideTimer);
       updateGeometry();
       blink.style.setProperty('--rw-blink-duration', `${Math.round(duration)}ms`);
@@ -515,6 +543,7 @@
     updateGeometry();
     window.addEventListener('resize', queueGeometry, { passive:true });
     window.addEventListener('orientationchange', queueGeometry, { passive:true });
+    queueBlinkSpriteLoad();
     window.setTimeout(runBlink, randomBetween(4200, 7200));
   }
 
