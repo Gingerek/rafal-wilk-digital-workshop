@@ -7865,7 +7865,7 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-halo{
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-cutout{
   z-index:119!important;
-  background-image:url("../images/private-command-center-assistant-face-cutout-v4.png?v=20260715-face-cutout-4")!important;
+  background-image:url("../images/private-command-center-assistant-face-cutout-v5.png?v=20260715-face-cutout-5")!important;
   opacity:.98!important;
   filter:saturate(1.02) contrast(1.01) drop-shadow(0 0 18px rgba(92,205,255,.10))!important;
   animation:rwAssistantHeadLevitate 12.8s ease-in-out infinite both!important;
@@ -7900,7 +7900,7 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink{
   height:var(--rw-blink-height, 0)!important;
   z-index:4!important;
   display:block!important;
-  background-image:url("../images/private-command-center-human-eyelid-blink-sprite-v4.png?v=20260715-human-blink-4")!important;
+  background-image:url("../images/private-command-center-human-eyelid-blink-sprite-v5.png?v=20260715-human-blink-5")!important;
   background-repeat:no-repeat!important;
   background-position:0 0;
   background-size:100% auto!important;
