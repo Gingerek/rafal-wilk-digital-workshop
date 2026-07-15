@@ -389,7 +389,7 @@
       const daylight = document.createElement('div');
       daylight.className = 'rw-v2-daylight-system';
       daylight.setAttribute('aria-hidden', 'true');
-      daylight.innerHTML = '<span class="rw-v2-sky-wash"></span><span class="rw-v2-live-clouds"></span><span class="rw-v2-live-stars"></span><span class="rw-v2-live-moon"></span><span class="rw-v2-live-sun"></span><span class="rw-v2-live-rain"></span><span class="rw-v2-live-plane" aria-hidden="true"></span><span class="rw-v2-window-reflection"></span>';
+      daylight.innerHTML = '<span class="rw-v2-sky-wash"></span><span class="rw-v2-live-clouds"></span><span class="rw-v2-live-stars"></span><span class="rw-v2-live-moon"></span><span class="rw-v2-live-sun"></span><span class="rw-v2-live-rain"></span><span class="rw-v2-window-reflection"></span>';
       shell.appendChild(daylight);
     }
     if (!shell.querySelector('.rw-v2-floor-signature')) {
@@ -1416,6 +1416,7 @@
       cloudCover,
       precipitation,
       code,
+      isDay:Number(current.is_day ?? 1),
       sunrise: Array.isArray(daily.sunrise) ? daily.sunrise[0] : '',
       sunset: Array.isArray(daily.sunset) ? daily.sunset[0] : '',
       fetchedAt:Date.now()
@@ -1463,11 +1464,12 @@
     const sunrise = apiSunriseHour ?? (solarNoon - daylightHours / 2);
     const sunset = apiSunsetHour ?? (solarNoon + daylightHours / 2);
     const dawnStart = sunrise - .75;
-    const duskEnd = sunset + .85;
+    const duskEnd = sunset + .25;
     const dayProgress = clampNumber((hour - sunrise) / daylightHours, 0, 1);
     const morningFade = clampNumber((hour - dawnStart) / Math.max(0.1, sunrise - dawnStart), 0, 1);
-    const eveningFade = clampNumber((duskEnd - hour) / Math.max(0.1, duskEnd - sunset), 0, 1);
-    const sunVisible = hour >= dawnStart && hour <= duskEnd ? clampNumber(Math.min(morningFade, eveningFade) * 1.15, 0, 1) : 0;
+    const eveningFade = clampNumber((sunset - hour) / Math.max(0.1, sunset - (sunset - .55)), 0, 1);
+    const apiNight = weather.isDay === 0;
+    const sunVisible = !apiNight && hour >= dawnStart && hour <= sunset ? clampNumber(Math.min(morningFade, eveningFade) * 1.15, 0, 1) : 0;
     const afterDusk = hour > duskEnd;
     const beforeDawn = hour < dawnStart;
     const nightAmount = afterDusk ? clampNumber((hour - duskEnd) / 1.15, 0, 1)

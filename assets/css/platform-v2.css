@@ -6844,7 +6844,7 @@ body.rw-v2-ready:not(.app-open) .rw-v2-floor-signature{
   width:clamp(320px, 34vw, 560px)!important;
   height:clamp(46px, 5.4vw, 82px)!important;
   pointer-events:none!important;
-  display:grid!important;
+  display:none!important;
   place-items:center!important;
   transform-origin:50% 100%!important;
   transform:translateX(-50%) perspective(760px) rotateX(69deg) rotateZ(-2.8deg) skewX(-8deg)!important;
@@ -6931,7 +6931,7 @@ body.rw-v2-ready.rw-v2-phase-sunset{
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea.webp?v=20260715-container-sea-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-night.webp?v=20260715-container-sea-night-1");
 }
 
 body.rw-v2-ready:not(.app-open),
@@ -7048,11 +7048,12 @@ body.rw-v2-ready .rw-v2-live-rain{
 
 body.rw-v2-ready .rw-v2-live-plane{
   z-index:7!important;
+  display:none!important;
   left:62.2%!important;
   top:14.8%!important;
   width:clamp(302px, 31vw, 508px)!important;
   height:clamp(112px, 11.9vw, 194px)!important;
-  opacity:.98!important;
+  opacity:0!important;
   background:url("../images/rw-passenger-plane-window.png?v=20260715-plane-black-1") center/contain no-repeat!important;
   transform:rotate(-2.6deg) translateZ(0)!important;
   filter:blur(.04px) saturate(1.12) contrast(1.12) drop-shadow(0 12px 18px rgba(18,42,67,.16))!important;
