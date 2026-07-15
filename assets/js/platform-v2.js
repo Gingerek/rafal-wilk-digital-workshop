@@ -353,6 +353,18 @@
       wallCanvas.setAttribute('aria-hidden', 'true');
       shell.appendChild(wallCanvas);
     }
+    if (!shell.querySelector('.rw-v2-assistant-face-plate')) {
+      const assistantPlate = document.createElement('div');
+      assistantPlate.className = 'rw-v2-assistant-face-plate';
+      assistantPlate.setAttribute('aria-hidden', 'true');
+      shell.appendChild(assistantPlate);
+    }
+    if (!shell.querySelector('.rw-v2-assistant-face-cutout')) {
+      const assistantFace = document.createElement('div');
+      assistantFace.className = 'rw-v2-assistant-face-cutout';
+      assistantFace.setAttribute('aria-hidden', 'true');
+      shell.appendChild(assistantFace);
+    }
     if (!shell.querySelector('.rw-v2-assistant-blink')) {
       const assistantBlink = document.createElement('div');
       assistantBlink.className = 'rw-v2-assistant-blink';
@@ -429,11 +441,14 @@
   function startAssistantBlink(shell){
     const blink = shell?.querySelector('.rw-v2-assistant-blink');
     const blinkFrame = blink?.querySelector('.rw-v2-assistant-eye-blink');
+    const facePlate = shell?.querySelector('.rw-v2-assistant-face-plate');
+    const faceCutout = shell?.querySelector('.rw-v2-assistant-face-cutout');
     if (!blink || blink.dataset.rwBlinkActive === 'true') return;
     blink.dataset.rwBlinkActive = 'true';
     if (!blinkFrame) return;
     const natural = { width: 1704, height: 923 };
     const crop = { x: 82, y: 205, width: 380, height: 115 };
+    const faceCrop = { x: 0, y: 62, width: 438, height: 562 };
     let hideTimer = 0;
     let raf = 0;
     const randomBetween = (min, max) => min + Math.random() * (max - min);
@@ -453,6 +468,15 @@
       blink.style.setProperty('--rw-blink-top', `${offsetY + crop.y * scale}px`);
       blink.style.setProperty('--rw-blink-width', `${crop.width * scale}px`);
       blink.style.setProperty('--rw-blink-height', `${crop.height * scale}px`);
+      blink.style.setProperty('--rw-head-origin-x', `${offsetX + (faceCrop.x + faceCrop.width * .52) * scale}px`);
+      blink.style.setProperty('--rw-head-origin-y', `${offsetY + (faceCrop.y + faceCrop.height * .46) * scale}px`);
+      [facePlate, faceCutout].forEach((faceLayer) => {
+        if (!faceLayer) return;
+        faceLayer.style.setProperty('--rw-face-left', `${offsetX + faceCrop.x * scale}px`);
+        faceLayer.style.setProperty('--rw-face-top', `${offsetY + faceCrop.y * scale}px`);
+        faceLayer.style.setProperty('--rw-face-width', `${faceCrop.width * scale}px`);
+        faceLayer.style.setProperty('--rw-face-height', `${faceCrop.height * scale}px`);
+      });
     };
     const queueGeometry = () => {
       window.cancelAnimationFrame(raf);
