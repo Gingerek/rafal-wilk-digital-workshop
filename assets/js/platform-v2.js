@@ -359,6 +359,12 @@
       assistantPlate.setAttribute('aria-hidden', 'true');
       shell.appendChild(assistantPlate);
     }
+    if (!shell.querySelector('.rw-v2-assistant-face-halo')) {
+      const assistantHalo = document.createElement('div');
+      assistantHalo.className = 'rw-v2-assistant-face-halo';
+      assistantHalo.setAttribute('aria-hidden', 'true');
+      shell.appendChild(assistantHalo);
+    }
     if (!shell.querySelector('.rw-v2-assistant-face-cutout')) {
       const assistantFace = document.createElement('div');
       assistantFace.className = 'rw-v2-assistant-face-cutout';
@@ -442,6 +448,7 @@
     const blink = shell?.querySelector('.rw-v2-assistant-blink');
     const blinkFrame = blink?.querySelector('.rw-v2-assistant-eye-blink');
     const facePlate = shell?.querySelector('.rw-v2-assistant-face-plate');
+    const faceHalo = shell?.querySelector('.rw-v2-assistant-face-halo');
     const faceCutout = shell?.querySelector('.rw-v2-assistant-face-cutout');
     if (!blink || blink.dataset.rwBlinkActive === 'true') return;
     blink.dataset.rwBlinkActive = 'true';
@@ -470,7 +477,7 @@
       blink.style.setProperty('--rw-blink-height', `${crop.height * scale}px`);
       blink.style.setProperty('--rw-head-origin-x', `${offsetX + (faceCrop.x + faceCrop.width * .52) * scale}px`);
       blink.style.setProperty('--rw-head-origin-y', `${offsetY + (faceCrop.y + faceCrop.height * .46) * scale}px`);
-      [facePlate, faceCutout].forEach((faceLayer) => {
+      [facePlate, faceHalo, faceCutout].forEach((faceLayer) => {
         if (!faceLayer) return;
         faceLayer.style.setProperty('--rw-face-left', `${offsetX + faceCrop.x * scale}px`);
         faceLayer.style.setProperty('--rw-face-top', `${offsetY + faceCrop.y * scale}px`);
