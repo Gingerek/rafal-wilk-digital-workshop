@@ -982,6 +982,89 @@
       ctx.stroke();
       ctx.restore();
     }
+    function drawCityStreetLayer(x, y, w, h, time){
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.strokeStyle = 'rgba(128,218,255,.22)';
+      ctx.lineWidth = .72;
+      for (let i = 0; i < 7; i++) {
+        const px = x + w * (.10 + i * .13);
+        ctx.beginPath();
+        ctx.moveTo(px, y + h * .08);
+        ctx.lineTo(px + w * .08, y + h * .92);
+        ctx.stroke();
+      }
+      for (let i = 0; i < 6; i++) {
+        const py = y + h * (.12 + i * .14);
+        ctx.beginPath();
+        ctx.moveTo(x + w * .05, py);
+        ctx.lineTo(x + w * .94, py + Math.sin(i * 1.4) * h * .035);
+        ctx.stroke();
+      }
+      const route = [[.10,.74],[.24,.61],[.39,.65],[.54,.43],[.70,.50],[.86,.30]];
+      ctx.strokeStyle = 'rgba(255,210,122,.58)';
+      ctx.lineWidth = 1.45;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = 'rgba(255,201,104,.32)';
+      ctx.beginPath();
+      route.forEach(([px, py], index) => {
+        const xx = x + px * w;
+        const yy = y + py * h + Math.sin(time * .0012 + index) * h * .012;
+        if (index) ctx.lineTo(xx, yy);
+        else ctx.moveTo(xx, yy);
+      });
+      ctx.stroke();
+      const events = [[.18,.28,.2],[.42,.38,1.1],[.58,.72,2.4],[.80,.56,3.2],[.35,.82,4.1]];
+      events.forEach(([px, py, offset], index) => {
+        const pulse = (Math.sin(time * .003 + offset) + 1) / 2;
+        ctx.fillStyle = index % 2 ? `rgba(185,244,255,${.34 + pulse * .34})` : `rgba(255,214,128,${.40 + pulse * .38})`;
+        ctx.shadowBlur = 8 + pulse * 10;
+        ctx.beginPath();
+        ctx.arc(x + px * w, y + py * h, 1.6 + pulse * 2.8, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+    function drawExistingScreenGestures(w, h, time){
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      const hands = [
+        { x:w * .76, y:h * .66, phase:0, targets:[[w * .58, h * .34], [w * .67, h * .56]] },
+        { x:w * .66, y:h * .88, phase:1.7, targets:[[w * .24, h * .63], [w * .58, h * .78]] }
+      ];
+      hands.forEach((hand) => {
+        const pulse = (Math.sin(time * .0025 + hand.phase) + 1) / 2;
+        const halo = ctx.createRadialGradient(hand.x, hand.y, 0, hand.x, hand.y, 48 + pulse * 15);
+        halo.addColorStop(0, `rgba(160,239,255,${.11 + pulse * .10})`);
+        halo.addColorStop(.45, `rgba(88,211,255,${.055 + pulse * .045})`);
+        halo.addColorStop(1, 'rgba(88,211,255,0)');
+        ctx.fillStyle = halo;
+        ctx.beginPath();
+        ctx.arc(hand.x, hand.y, 54 + pulse * 14, 0, Math.PI * 2);
+        ctx.fill();
+        hand.targets.forEach(([tx, ty], index) => {
+          const alpha = .13 + pulse * .17 - index * .025;
+          ctx.strokeStyle = `rgba(139,230,255,${Math.max(.08, alpha)})`;
+          ctx.lineWidth = index ? .85 : 1.35;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = 'rgba(106,222,255,.34)';
+          ctx.beginPath();
+          ctx.moveTo(hand.x, hand.y);
+          const cx = hand.x - w * (.10 + index * .05);
+          const cy = hand.y - h * (.20 + index * .03);
+          ctx.quadraticCurveTo(cx, cy, tx, ty);
+          ctx.stroke();
+          const t = (time * .00025 + index * .36 + hand.phase * .08) % 1;
+          const px = (1 - t) * (1 - t) * hand.x + 2 * (1 - t) * t * cx + t * t * tx;
+          const py = (1 - t) * (1 - t) * hand.y + 2 * (1 - t) * t * cy + t * t * ty;
+          ctx.fillStyle = 'rgba(231,253,255,.72)';
+          ctx.beginPath();
+          ctx.arc(px, py, 1.35 + pulse, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      });
+      ctx.restore();
+    }
     function drawNativeWallFrame(time){
       const { w, h } = fitCanvas();
       if (w < 10 || h < 10) return;
@@ -1005,11 +1088,13 @@
       drawLine(state.charts[2], [w * .09, h * .49, w * .27, h * .31], time, 'rgba(101,198,241,.38)', 1.2, 2.8);
       drawLine(state.charts[3], [w * .64, h * .68, w * .27, h * .18], time, 'rgba(120,220,255,.32)', 1.15, 1.1);
       drawBars(w * .05, h * .38, w * .26, h * .21, time);
+      drawCityStreetLayer(w * .09, h * .49, w * .27, h * .31, time);
       drawHeat(w * .39, h * .33, w * .23, h * .18, time);
       drawMicroMatrix(w * .37, h * .55, w * .18, h * .24, time);
       drawNetwork(w * .43, h * .17, w * .38, h * .36, time);
       drawRadarCore(w * .62, h * .33, Math.min(w * .115, h * .235), time);
       drawWorldMap(w * .53, h * .48, w * .40, h * .34, time);
+      drawExistingScreenGestures(w, h, time);
       drawSpectralNoise(w, h, time);
       drawScanPass(w, h, time);
       ctx.strokeStyle = 'rgba(168,234,255,.16)';
