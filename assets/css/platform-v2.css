@@ -3772,7 +3772,7 @@ body.rw-v2-ready .rw-v2-filter[aria-pressed="true"]{
 }
 
 body.rw-v2-ready .rw-v2-visual::before{
-  opacity:.36!important;
+  opacity:.30!important;
   filter:saturate(.92) contrast(.98) brightness(1.06)!important;
   -webkit-mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.58) 16%, #000 54%, rgba(0,0,0,.54) 82%, transparent 100%)!important;
   mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.58) 16%, #000 54%, rgba(0,0,0,.54) 82%, transparent 100%)!important;
@@ -7824,12 +7824,12 @@ body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
 }
 
 body.rw-v2-ready.rw-v2-phase-night:not(.app-open) .rw-v2-native-wall-canvas{
-  opacity:.46!important;
+  opacity:.36!important;
 }
 
 body.rw-v2-ready.rw-v2-phase-day:not(.app-open) .rw-v2-native-wall-canvas,
 body.rw-v2-ready.rw-v2-phase-afternoon:not(.app-open) .rw-v2-native-wall-canvas{
-  opacity:.38!important;
+  opacity:.30!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-plate,

@@ -1080,16 +1080,49 @@
     function drawCompactMetrics(x, y, w, h, time){
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
-      ['FLOW', 'LOAD', 'SYNC'].forEach((label, index) => {
+      [0, 1, 2].forEach((_, index) => {
         const yy = y + h * (.22 + index * .24);
         const value = .34 + (Math.sin(time * .0015 + index * 1.05) + 1) * .28;
-        ctx.fillStyle = 'rgba(174,237,255,.42)';
-        ctx.font = '700 6px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
-        ctx.fillText(label, x + w * .08, yy);
         ctx.fillStyle = 'rgba(58,160,220,.16)';
-        ctx.fillRect(x + w * .37, yy - 5, w * .48, 4);
+        ctx.fillRect(x + w * .12, yy - 5, w * .74, 4);
         ctx.fillStyle = index === 1 ? 'rgba(255,209,122,.54)' : 'rgba(126,229,255,.54)';
-        ctx.fillRect(x + w * .37, yy - 5, w * .48 * value, 4);
+        ctx.fillRect(x + w * .12, yy - 5, w * .74 * value, 4);
+      });
+      ctx.restore();
+    }
+    function drawMinimalRadar(cx, cy, radius, time){
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.globalCompositeOperation = 'screen';
+      const sweep = time * .0012;
+      ctx.strokeStyle = 'rgba(156,236,255,.42)';
+      ctx.lineWidth = 1;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = 'rgba(126,226,255,.28)';
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(sweep) * radius, Math.sin(sweep) * radius);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(213,251,255,.55)';
+      for (let i = 0; i < 3; i++) {
+        const a = sweep * .55 + i * 2.1;
+        const r = radius * (.34 + i * .16);
+        ctx.beginPath();
+        ctx.arc(Math.cos(a) * r, Math.sin(a) * r, 1.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    function drawMapPulses(x, y, w, h, time){
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      [[.20,.32,.2],[.46,.48,1.3],[.72,.36,2.2],[.62,.70,3.1]].forEach(([px, py, offset], index) => {
+        const pulse = (Math.sin(time * .0028 + offset) + 1) / 2;
+        ctx.fillStyle = index ? `rgba(184,244,255,${.28 + pulse * .34})` : `rgba(255,214,128,${.34 + pulse * .36})`;
+        ctx.shadowBlur = 7 + pulse * 8;
+        ctx.beginPath();
+        ctx.arc(x + px * w, y + py * h, 1.5 + pulse * 2.2, 0, Math.PI * 2);
+        ctx.fill();
       });
       ctx.restore();
     }
@@ -1115,32 +1148,25 @@
         world:[w * .625, h * .470, w * .300, h * .315]
       };
       drawInsidePanel(panels.radar, (x, y, pw, ph) => {
-        drawPanelActivity(x, y, pw, ph, time, 'RADAR');
-        drawRadarCore(x + pw * .50, y + ph * .54, Math.min(pw * .34, ph * .38), time);
+        drawMinimalRadar(x + pw * .50, y + ph * .54, Math.min(pw * .34, ph * .38), time);
       });
       drawInsidePanel(panels.bars, (x, y, pw, ph) => {
-        drawPanelActivity(x, y, pw, ph, time, 'CAPACITY');
         drawBars(x + pw * .08, y + ph * .18, pw * .84, ph * .70, time);
       });
       drawInsidePanel(panels.network, (x, y, pw, ph) => {
-        drawPanelActivity(x, y, pw, ph, time, 'NODES');
         drawNetwork(x + pw * .03, y + ph * .04, pw * .94, ph * .90, time);
       });
       drawInsidePanel(panels.chart, (x, y, pw, ph) => {
-        drawPanelActivity(x, y, pw, ph, time, 'FLOW');
         drawLine(state.charts[0], [x + pw * .06, y + ph * .18, pw * .88, ph * .68], time, 'rgba(126,226,255,.52)', 1.6, 0);
       });
       drawInsidePanel(panels.city, (x, y, pw, ph) => {
-        drawPanelActivity(x, y, pw, ph, time, 'CITY');
-        drawCityStreetLayer(x + pw * .05, y + ph * .08, pw * .90, ph * .84, time);
+        drawMapPulses(x + pw * .05, y + ph * .08, pw * .90, ph * .84, time);
       });
       drawInsidePanel(panels.micro, (x, y, pw, ph) => {
-        drawPanelActivity(x, y, pw, ph, time, 'GESTURE');
         drawCompactMetrics(x + pw * .05, y + ph * .08, pw * .90, ph * .84, time);
       });
       drawInsidePanel(panels.world, (x, y, pw, ph) => {
-        drawPanelActivity(x, y, pw, ph, time, 'GLOBAL');
-        drawWorldMap(x + pw * .04, y + ph * .08, pw * .92, ph * .84, time);
+        drawMapPulses(x + pw * .04, y + ph * .08, pw * .92, ph * .84, time);
       });
       ctx.restore();
     }
