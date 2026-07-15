@@ -1242,7 +1242,7 @@ body.app-open .rw-header{display:none !important;}
     return raw.startsWith('en') ? 'en' : raw.startsWith('nl') ? 'nl' : 'pl';
   }
   function apply(){
-    if (window.__rwPlatformV2 || document.body.classList.contains('rw-v2-ready')) return;
+    if (window.__rwPlatformV2 || document.body?.classList.contains('rw-v2-ready')) return;
     const title = document.querySelector('main.wrap .btn[data-idx="2"]')?.closest('.card')?.querySelector('.title');
     if (!title) return;
     title.setAttribute('data-title-key', 'Rekentool');
