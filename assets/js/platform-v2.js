@@ -483,8 +483,8 @@
       window.setTimeout(loadBlinkSprite, 900);
     };
     const nextBlinkDelay = () => {
-      const base = 3600 + Math.pow(Math.random(), 1.65) * 8000;
-      return Math.random() < .10 ? base + randomBetween(2800, 7600) : base;
+      const base = 2400 + Math.pow(Math.random(), 1.55) * 5000;
+      return Math.random() < .08 ? base + randomBetween(1600, 4200) : base;
     };
     const updateGeometry = () => {
       const rect = shell.getBoundingClientRect();
@@ -544,7 +544,7 @@
     window.addEventListener('resize', queueGeometry, { passive:true });
     window.addEventListener('orientationchange', queueGeometry, { passive:true });
     queueBlinkSpriteLoad();
-    window.setTimeout(runBlink, randomBetween(4200, 7200));
+    window.setTimeout(runBlink, randomBetween(2600, 4200));
   }
 
   function renderHero(){
