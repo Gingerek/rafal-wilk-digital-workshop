@@ -1075,24 +1075,7 @@
       ctx.restore();
     }
     function drawPanelActivity(x, y, w, h, time, label){
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
-      ctx.strokeStyle = 'rgba(130,220,255,.15)';
-      ctx.lineWidth = .6;
-      for (let i = 1; i < 5; i++) {
-        ctx.beginPath();
-        ctx.moveTo(x + w * i / 5, y);
-        ctx.lineTo(x + w * i / 5, y + h);
-        ctx.stroke();
-      }
-      for (let i = 1; i < 4; i++) {
-        ctx.beginPath();
-        ctx.moveTo(x, y + h * i / 4);
-        ctx.lineTo(x + w, y + h * i / 4);
-        ctx.stroke();
-      }
-      if (label) drawMicroLabel(label, x + 4, y + 9, .28);
-      ctx.restore();
+      void x; void y; void w; void h; void time; void label;
     }
     function drawCompactMetrics(x, y, w, h, time){
       ctx.save();
@@ -1123,13 +1106,13 @@
       ctx.fillStyle = vignette;
       ctx.fillRect(0, 0, w, h);
       const panels = {
-        radar:[w * .05, h * .07, w * .30, h * .29],
-        bars:[w * .39, h * .12, w * .18, h * .31],
-        network:[w * .43, h * .08, w * .23, h * .25],
-        chart:[w * .62, h * .12, w * .31, h * .22],
-        city:[w * .09, h * .48, w * .28, h * .33],
-        micro:[w * .39, h * .55, w * .18, h * .24],
-        world:[w * .61, h * .47, w * .32, h * .34]
+        radar:[w * .055, h * .105, w * .255, h * .285],
+        network:[w * .355, h * .105, w * .210, h * .245],
+        chart:[w * .635, h * .125, w * .300, h * .205],
+        city:[w * .085, h * .535, w * .280, h * .300],
+        micro:[w * .410, h * .515, w * .160, h * .170],
+        bars:[w * .405, h * .730, w * .170, h * .160],
+        world:[w * .625, h * .470, w * .300, h * .315]
       };
       drawInsidePanel(panels.radar, (x, y, pw, ph) => {
         drawPanelActivity(x, y, pw, ph, time, 'RADAR');
@@ -1154,7 +1137,6 @@
       drawInsidePanel(panels.micro, (x, y, pw, ph) => {
         drawPanelActivity(x, y, pw, ph, time, 'GESTURE');
         drawCompactMetrics(x + pw * .05, y + ph * .08, pw * .90, ph * .84, time);
-        drawMicroMatrix(x + pw * .08, y + ph * .50, pw * .84, ph * .42, time);
       });
       drawInsidePanel(panels.world, (x, y, pw, ph) => {
         drawPanelActivity(x, y, pw, ph, time, 'GLOBAL');

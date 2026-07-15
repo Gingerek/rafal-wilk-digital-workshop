@@ -7809,7 +7809,7 @@ body.rw-v2-ready.rw-v2-returning-home .rw-v2-transition-veil span:nth-child(3){
 body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
   position:absolute!important;
   left:clamp(285px, 23vw, 500px)!important;
-  top:clamp(24px, 4.1vh, 68px)!important;
+  top:clamp(58px, 7.2vh, 102px)!important;
   width:clamp(390px, 31vw, 620px)!important;
   aspect-ratio:1.58!important;
   z-index:13!important;
@@ -7959,7 +7959,7 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-playing .rw-v2-assista
 @media (max-width:1080px){
   body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
     left:25vw!important;
-    top:36px!important;
+    top:62px!important;
     width:38vw!important;
     opacity:.26!important;
   }
@@ -8003,18 +8003,7 @@ body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-ambient-deck{
-  position:absolute!important;
-  left:clamp(74px, 7.4vw, 138px)!important;
-  right:clamp(300px, 29vw, 560px)!important;
-  bottom:clamp(30px, 5.4vh, 76px)!important;
-  height:clamp(190px, 24vh, 285px)!important;
-  z-index:37!important;
-  pointer-events:none!important;
-  opacity:.74!important;
-  mix-blend-mode:screen!important;
-  transform:perspective(1400px) rotateX(59deg) rotateZ(-1.8deg) translateZ(0)!important;
-  transform-origin:50% 72%!important;
-  filter:drop-shadow(0 0 18px rgba(91,174,231,.16)) saturate(112%)!important;
+  display:none!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-ambient-deck::before{
