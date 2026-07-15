@@ -1065,6 +1065,51 @@
       });
       ctx.restore();
     }
+    function drawInsidePanel(panel, draw){
+      const [x, y, w, h] = panel;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x, y, w, h);
+      ctx.clip();
+      draw(x, y, w, h);
+      ctx.restore();
+    }
+    function drawPanelActivity(x, y, w, h, time, label){
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.strokeStyle = 'rgba(130,220,255,.15)';
+      ctx.lineWidth = .6;
+      for (let i = 1; i < 5; i++) {
+        ctx.beginPath();
+        ctx.moveTo(x + w * i / 5, y);
+        ctx.lineTo(x + w * i / 5, y + h);
+        ctx.stroke();
+      }
+      for (let i = 1; i < 4; i++) {
+        ctx.beginPath();
+        ctx.moveTo(x, y + h * i / 4);
+        ctx.lineTo(x + w, y + h * i / 4);
+        ctx.stroke();
+      }
+      if (label) drawMicroLabel(label, x + 4, y + 9, .28);
+      ctx.restore();
+    }
+    function drawCompactMetrics(x, y, w, h, time){
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ['FLOW', 'LOAD', 'SYNC'].forEach((label, index) => {
+        const yy = y + h * (.22 + index * .24);
+        const value = .34 + (Math.sin(time * .0015 + index * 1.05) + 1) * .28;
+        ctx.fillStyle = 'rgba(174,237,255,.42)';
+        ctx.font = '700 6px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+        ctx.fillText(label, x + w * .08, yy);
+        ctx.fillStyle = 'rgba(58,160,220,.16)';
+        ctx.fillRect(x + w * .37, yy - 5, w * .48, 4);
+        ctx.fillStyle = index === 1 ? 'rgba(255,209,122,.54)' : 'rgba(126,229,255,.54)';
+        ctx.fillRect(x + w * .37, yy - 5, w * .48 * value, 4);
+      });
+      ctx.restore();
+    }
     function drawNativeWallFrame(time){
       const { w, h } = fitCanvas();
       if (w < 10 || h < 10) return;
@@ -1077,34 +1122,44 @@
       vignette.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = vignette;
       ctx.fillRect(0, 0, w, h);
-      drawPanelGrid(w * .05, h * .07, w * .30, h * .29, .55);
-      drawPanelGrid(w * .40, h * .07, w * .25, h * .22, .42);
-      drawPanelGrid(w * .09, h * .48, w * .28, h * .33, .45);
-      drawMicroLabel('OPS.THROUGHPUT // 24H', w * .06, h * .06, .22);
-      drawMicroLabel('LOAD BALANCE', w * .40, h * .06, .18);
-      drawMicroLabel('GLOBAL ROUTES', w * .54, h * .47, .20);
-      drawLine(state.charts[0], [w * .06, h * .07, w * .28, h * .28], time, 'rgba(126,226,255,.48)', 1.55, 0);
-      drawLine(state.charts[1], [w * .40, h * .08, w * .24, h * .20], time, 'rgba(160,232,255,.34)', 1.25, 1.4);
-      drawLine(state.charts[2], [w * .09, h * .49, w * .27, h * .31], time, 'rgba(101,198,241,.38)', 1.2, 2.8);
-      drawLine(state.charts[3], [w * .64, h * .68, w * .27, h * .18], time, 'rgba(120,220,255,.32)', 1.15, 1.1);
-      drawBars(w * .05, h * .38, w * .26, h * .21, time);
-      drawCityStreetLayer(w * .09, h * .49, w * .27, h * .31, time);
-      drawHeat(w * .39, h * .33, w * .23, h * .18, time);
-      drawMicroMatrix(w * .37, h * .55, w * .18, h * .24, time);
-      drawNetwork(w * .43, h * .17, w * .38, h * .36, time);
-      drawRadarCore(w * .62, h * .33, Math.min(w * .115, h * .235), time);
-      drawWorldMap(w * .53, h * .48, w * .40, h * .34, time);
-      drawExistingScreenGestures(w, h, time);
-      drawSpectralNoise(w, h, time);
-      drawScanPass(w, h, time);
-      ctx.strokeStyle = 'rgba(168,234,255,.16)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([w * .08, w * .9]);
-      ctx.lineDashOffset = -time * .04;
-      ctx.beginPath();
-      ctx.moveTo(w * .03, h * .46);
-      ctx.lineTo(w * .96, h * .46);
-      ctx.stroke();
+      const panels = {
+        radar:[w * .05, h * .07, w * .30, h * .29],
+        bars:[w * .39, h * .12, w * .18, h * .31],
+        network:[w * .43, h * .08, w * .23, h * .25],
+        chart:[w * .62, h * .12, w * .31, h * .22],
+        city:[w * .09, h * .48, w * .28, h * .33],
+        micro:[w * .39, h * .55, w * .18, h * .24],
+        world:[w * .61, h * .47, w * .32, h * .34]
+      };
+      drawInsidePanel(panels.radar, (x, y, pw, ph) => {
+        drawPanelActivity(x, y, pw, ph, time, 'RADAR');
+        drawRadarCore(x + pw * .50, y + ph * .54, Math.min(pw * .34, ph * .38), time);
+      });
+      drawInsidePanel(panels.bars, (x, y, pw, ph) => {
+        drawPanelActivity(x, y, pw, ph, time, 'CAPACITY');
+        drawBars(x + pw * .08, y + ph * .18, pw * .84, ph * .70, time);
+      });
+      drawInsidePanel(panels.network, (x, y, pw, ph) => {
+        drawPanelActivity(x, y, pw, ph, time, 'NODES');
+        drawNetwork(x + pw * .03, y + ph * .04, pw * .94, ph * .90, time);
+      });
+      drawInsidePanel(panels.chart, (x, y, pw, ph) => {
+        drawPanelActivity(x, y, pw, ph, time, 'FLOW');
+        drawLine(state.charts[0], [x + pw * .06, y + ph * .18, pw * .88, ph * .68], time, 'rgba(126,226,255,.52)', 1.6, 0);
+      });
+      drawInsidePanel(panels.city, (x, y, pw, ph) => {
+        drawPanelActivity(x, y, pw, ph, time, 'CITY');
+        drawCityStreetLayer(x + pw * .05, y + ph * .08, pw * .90, ph * .84, time);
+      });
+      drawInsidePanel(panels.micro, (x, y, pw, ph) => {
+        drawPanelActivity(x, y, pw, ph, time, 'GESTURE');
+        drawCompactMetrics(x + pw * .05, y + ph * .08, pw * .90, ph * .84, time);
+        drawMicroMatrix(x + pw * .08, y + ph * .50, pw * .84, ph * .42, time);
+      });
+      drawInsidePanel(panels.world, (x, y, pw, ph) => {
+        drawPanelActivity(x, y, pw, ph, time, 'GLOBAL');
+        drawWorldMap(x + pw * .04, y + ph * .08, pw * .92, ph * .84, time);
+      });
       ctx.restore();
     }
     function loop(time){
