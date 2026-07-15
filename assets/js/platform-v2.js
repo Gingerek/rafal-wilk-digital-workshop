@@ -4,7 +4,7 @@
 
   const LS_LANG = 'rw_lang';
   const CONTACT_ENDPOINT = String(window.RW_CONTACT_ENDPOINT || '').trim();
-  const NL_WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=52.3676&longitude=4.9041&current=temperature_2m,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m&timezone=Europe%2FAmsterdam&forecast_days=1';
+  const NL_WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=51.4817&longitude=5.6611&current=temperature_2m,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m&daily=sunrise,sunset&timezone=Europe%2FAmsterdam&forecast_days=1';
   const WEATHER_CACHE_KEY = 'rw_nl_weather_v2';
   const WEATHER_REFRESH_MS = 15 * 60 * 1000;
   let weatherState = null;
@@ -1397,6 +1397,7 @@
 
   function normalizeWeather(payload){
     const current = payload?.current || {};
+    const daily = payload?.daily || {};
     const code = Number(current.weather_code ?? 3);
     const cloudCover = clampNumber(Number(current.cloud_cover ?? 55) / 100, 0, 1);
     const precipitation = clampNumber(
@@ -1410,7 +1411,15 @@
     else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) state = 'snow';
     else if (cloudCover > .68) state = 'cloudy';
     else if (cloudCover > .32) state = 'partly-cloudy';
-    return { state, cloudCover, precipitation, code, fetchedAt:Date.now() };
+    return {
+      state,
+      cloudCover,
+      precipitation,
+      code,
+      sunrise: Array.isArray(daily.sunrise) ? daily.sunrise[0] : '',
+      sunset: Array.isArray(daily.sunset) ? daily.sunset[0] : '',
+      fetchedAt:Date.now()
+    };
   }
 
   function refreshWeather(){
@@ -1446,9 +1455,13 @@
     const day = Math.floor((now - start) / 86400000);
     const hour = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
     const daylightHours = 12 + 4.35 * Math.cos((2 * Math.PI * (day - 172)) / 365);
+    const apiSunrise = weather.sunrise ? new Date(weather.sunrise) : null;
+    const apiSunset = weather.sunset ? new Date(weather.sunset) : null;
+    const apiSunriseHour = apiSunrise && !Number.isNaN(apiSunrise.getTime()) ? apiSunrise.getHours() + apiSunrise.getMinutes() / 60 : null;
+    const apiSunsetHour = apiSunset && !Number.isNaN(apiSunset.getTime()) ? apiSunset.getHours() + apiSunset.getMinutes() / 60 : null;
     const solarNoon = 13.65;
-    const sunrise = solarNoon - daylightHours / 2;
-    const sunset = solarNoon + daylightHours / 2;
+    const sunrise = apiSunriseHour ?? (solarNoon - daylightHours / 2);
+    const sunset = apiSunsetHour ?? (solarNoon + daylightHours / 2);
     const dawnStart = sunrise - .75;
     const duskEnd = sunset + .85;
     const dayProgress = clampNumber((hour - sunrise) / daylightHours, 0, 1);

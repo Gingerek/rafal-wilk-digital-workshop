@@ -6838,17 +6838,17 @@ body.rw-v2-ready .rw-v2-window-reflection{
 
 body.rw-v2-ready:not(.app-open) .rw-v2-floor-signature{
   position:absolute!important;
-  left:35.4%!important;
-  bottom:7.9%!important;
+  left:50%!important;
+  bottom:1.15%!important;
   z-index:2!important;
-  width:clamp(250px, 27vw, 440px)!important;
-  height:clamp(42px, 4.8vw, 76px)!important;
+  width:clamp(320px, 34vw, 560px)!important;
+  height:clamp(46px, 5.4vw, 82px)!important;
   pointer-events:none!important;
   display:grid!important;
   place-items:center!important;
   transform-origin:50% 100%!important;
-  transform:perspective(680px) rotateX(66deg) rotateZ(-5.6deg) skewX(-10deg)!important;
-  opacity:.38!important;
+  transform:translateX(-50%) perspective(760px) rotateX(69deg) rotateZ(-2.8deg) skewX(-8deg)!important;
+  opacity:.46!important;
   mix-blend-mode:screen!important;
   filter:blur(.12px) drop-shadow(0 0 11px rgba(114,222,255,.16))!important;
   mask-image:linear-gradient(90deg, transparent 0, #000 18%, #000 78%, transparent 100%), linear-gradient(180deg, transparent 0, #000 26%, #000 70%, transparent 100%)!important;
@@ -6882,10 +6882,10 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-floor-signature span{
 
 @media (max-width:760px){
   body.rw-v2-ready:not(.app-open) .rw-v2-floor-signature{
-    left:33%!important;
-    bottom:9.4%!important;
-    width:clamp(170px, 45vw, 280px)!important;
-    opacity:.30!important;
+    left:50%!important;
+    bottom:1.4%!important;
+    width:clamp(250px, 62vw, 360px)!important;
+    opacity:.36!important;
   }
 
   body.rw-v2-ready:not(.app-open) .rw-v2-floor-signature span{
@@ -6896,7 +6896,7 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-floor-signature span{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-open-sea-balanced.webp?v=20260715-window-scale-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea.webp?v=20260715-container-sea-1");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6911,27 +6911,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-open-sea-balanced.webp?v=20260715-window-scale-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea.webp?v=20260715-container-sea-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-open-sea-balanced.webp?v=20260715-window-scale-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea.webp?v=20260715-container-sea-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-open-sea-balanced.webp?v=20260715-window-scale-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea.webp?v=20260715-container-sea-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-open-sea-balanced.webp?v=20260715-window-scale-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea.webp?v=20260715-container-sea-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-open-sea-balanced.webp?v=20260715-window-scale-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea.webp?v=20260715-container-sea-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-open-sea-balanced.webp?v=20260715-window-scale-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea.webp?v=20260715-container-sea-1");
 }
 
 body.rw-v2-ready:not(.app-open),
