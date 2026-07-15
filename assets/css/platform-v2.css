@@ -6836,6 +6836,64 @@ body.rw-v2-ready .rw-v2-window-reflection{
   mix-blend-mode:screen!important;
 }
 
+body.rw-v2-ready:not(.app-open) .rw-v2-floor-signature{
+  position:absolute!important;
+  left:35.4%!important;
+  bottom:7.9%!important;
+  z-index:2!important;
+  width:clamp(250px, 27vw, 440px)!important;
+  height:clamp(42px, 4.8vw, 76px)!important;
+  pointer-events:none!important;
+  display:grid!important;
+  place-items:center!important;
+  transform-origin:50% 100%!important;
+  transform:perspective(680px) rotateX(66deg) rotateZ(-5.6deg) skewX(-10deg)!important;
+  opacity:.38!important;
+  mix-blend-mode:screen!important;
+  filter:blur(.12px) drop-shadow(0 0 11px rgba(114,222,255,.16))!important;
+  mask-image:linear-gradient(90deg, transparent 0, #000 18%, #000 78%, transparent 100%), linear-gradient(180deg, transparent 0, #000 26%, #000 70%, transparent 100%)!important;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 18%, #000 78%, transparent 100%), linear-gradient(180deg, transparent 0, #000 26%, #000 70%, transparent 100%)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-floor-signature::before{
+  content:""!important;
+  position:absolute!important;
+  inset:18% 2% 20%!important;
+  border-radius:50%!important;
+  background:radial-gradient(ellipse at 50% 50%, rgba(82,206,255,.14), rgba(255,184,92,.05) 42%, transparent 74%)!important;
+  filter:blur(9px)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-floor-signature span{
+  position:relative!important;
+  display:block!important;
+  color:rgba(203,244,255,.70)!important;
+  font:760 clamp(12px, 1.22vw, 19px)/1 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
+  letter-spacing:.18em!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+  text-shadow:0 0 12px rgba(105,219,255,.22), 0 0 24px rgba(255,176,86,.08)!important;
+}
+
+body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-floor-signature span{
+  color:rgba(230,247,255,.74)!important;
+  text-shadow:0 0 12px rgba(105,219,255,.20), 0 0 20px rgba(255,177,88,.18)!important;
+}
+
+@media (max-width:760px){
+  body.rw-v2-ready:not(.app-open) .rw-v2-floor-signature{
+    left:33%!important;
+    bottom:9.4%!important;
+    width:clamp(170px, 45vw, 280px)!important;
+    opacity:.30!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) .rw-v2-floor-signature span{
+    font-size:9px!important;
+    letter-spacing:.12em!important;
+  }
+}
+
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
   --rw-home-bg:url("../images/private-command-center-hero-ocean-sunset.webp?v=20260715-ocean-sunset-1");

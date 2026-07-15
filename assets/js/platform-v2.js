@@ -392,6 +392,13 @@
       daylight.innerHTML = '<span class="rw-v2-sky-wash"></span><span class="rw-v2-live-clouds"></span><span class="rw-v2-live-stars"></span><span class="rw-v2-live-moon"></span><span class="rw-v2-live-sun"></span><span class="rw-v2-live-rain"></span><span class="rw-v2-live-plane" aria-hidden="true"></span><span class="rw-v2-window-reflection"></span>';
       shell.appendChild(daylight);
     }
+    if (!shell.querySelector('.rw-v2-floor-signature')) {
+      const signature = document.createElement('div');
+      signature.className = 'rw-v2-floor-signature';
+      signature.setAttribute('aria-hidden', 'true');
+      signature.innerHTML = '<span>Rafal Wilk Digital Workshop</span>';
+      shell.appendChild(signature);
+    }
     shell.querySelectorAll('.rw-v2-window-sun,.rw-v2-window-moon,.rw-v2-city-lights').forEach((el) => el.remove());
     if (!shell.querySelector('.rw-v2-depth-field')) {
       const depth = document.createElement('div');
@@ -1058,23 +1065,45 @@
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
       const controls = [
-        { hand:[w * .78, h * .66], panel:panels.chart, label:'FLOW' },
-        { hand:[w * .76, h * .66], panel:panels.world, label:'ROUTE' },
+        { hand:[w * .77, h * .66], panel:panels.chart, label:'FLOW' },
+        { hand:[w * .77, h * .66], panel:panels.world, label:'ROUTE' },
         { hand:[w * .66, h * .88], panel:panels.city, label:'CITY' },
         { hand:[w * .66, h * .88], panel:panels.radar, label:'SCAN' },
         { hand:[w * .74, h * .70], panel:panels.network, label:'NODE' },
+        { hand:[w * .68, h * .82], panel:panels.micro, label:'SYNC' },
         { hand:[w * .66, h * .88], panel:panels.bars, label:'LOAD' }
       ];
-      const cycle = 7600;
+      const cycle = 6900;
       const slot = Math.floor(time / cycle) % controls.length;
+      const nextSlot = (slot + 1) % controls.length;
       const t = (time % cycle) / cycle;
+      const move = Math.max(0, Math.min(1, (t - .72) / .22));
+      const easeMove = move * move * (3 - 2 * move);
       const active = controls[slot];
-      const [hx, hy] = active.hand;
-      const [px, py, pw, ph] = active.panel;
+      const next = controls[nextSlot];
+      const lerp = (a, b, p) => a + (b - a) * p;
+      const fitPanel = (panel) => {
+        const pad = Math.max(2, Math.min(panel[2], panel[3]) * .035);
+        return [panel[0] + pad, panel[1] + pad, panel[2] - pad * 2, panel[3] - pad * 2];
+      };
+      const activePanel = fitPanel(active.panel);
+      const nextPanel = fitPanel(next.panel);
+      const panelBox = [
+        lerp(activePanel[0], nextPanel[0], easeMove),
+        lerp(activePanel[1], nextPanel[1], easeMove),
+        lerp(activePanel[2], nextPanel[2], easeMove),
+        lerp(activePanel[3], nextPanel[3], easeMove)
+      ];
+      const [hx, hy] = [
+        lerp(active.hand[0], next.hand[0], easeMove),
+        lerp(active.hand[1], next.hand[1], easeMove)
+      ];
+      const [px, py, pw, ph] = panelBox;
       const tx = px + pw * .50;
       const ty = py + ph * .50;
-      const envelope = Math.sin(Math.min(1, t) * Math.PI);
-      const packet = Math.min(1, Math.max(0, (t - .16) / .58));
+      const hold = move > 0 ? 1 - move * .22 : 1;
+      const envelope = Math.sin(Math.min(1, t) * Math.PI) * hold;
+      const packet = Math.min(1, Math.max(0, (t - .14) / .54));
       const handPulse = .45 + envelope * .55;
 
       const halo = ctx.createRadialGradient(hx, hy, 0, hx, hy, 40 + handPulse * 34);
@@ -1118,9 +1147,13 @@
       ctx.strokeStyle = `rgba(181,244,255,${.28 + envelope * .44})`;
       ctx.lineWidth = 1.25;
       ctx.strokeRect(px + 1, py + 1, pw - 2, ph - 2);
+      ctx.strokeStyle = `rgba(255,211,124,${.14 + envelope * .20})`;
+      ctx.lineWidth = .55;
+      ctx.strokeRect(px + 4, py + 4, Math.max(1, pw - 8), Math.max(1, ph - 8));
       ctx.fillStyle = `rgba(205,249,255,${.34 + envelope * .38})`;
-      ctx.font = '700 8px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
-      ctx.fillText(`GESTURE // ${active.label}`, px + pw * .08, py + ph * .14);
+      ctx.font = `${Math.max(7, Math.min(9, ph * .055))}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
+      const label = move > .56 ? next.label : active.label;
+      ctx.fillText(`GESTURE // ${label}`, px + pw * .07, py + Math.max(13, ph * .14));
       const scanY = py + ph * (.16 + packet * .70);
       const scan = ctx.createLinearGradient(px, scanY, px + pw, scanY);
       scan.addColorStop(0, 'rgba(127,226,255,0)');
@@ -1216,13 +1249,13 @@
       ctx.fillStyle = vignette;
       ctx.fillRect(0, 0, w, h);
       const panels = {
-        radar:[w * .055, h * .105, w * .255, h * .285],
-        network:[w * .355, h * .105, w * .210, h * .245],
-        chart:[w * .635, h * .125, w * .300, h * .205],
-        city:[w * .085, h * .535, w * .280, h * .300],
-        micro:[w * .410, h * .515, w * .160, h * .170],
-        bars:[w * .405, h * .730, w * .170, h * .160],
-        world:[w * .625, h * .470, w * .300, h * .315]
+        radar:[w * .032, h * .078, w * .278, h * .340],
+        network:[w * .354, h * .086, w * .208, h * .265],
+        chart:[w * .636, h * .100, w * .302, h * .232],
+        city:[w * .040, h * .505, w * .306, h * .374],
+        micro:[w * .397, h * .482, w * .174, h * .190],
+        bars:[w * .396, h * .724, w * .184, h * .168],
+        world:[w * .626, h * .422, w * .314, h * .388]
       };
       drawInsidePanel(panels.radar, (x, y, pw, ph) => {
         drawMinimalRadar(x + pw * .50, y + ph * .54, Math.min(pw * .34, ph * .38), time);
