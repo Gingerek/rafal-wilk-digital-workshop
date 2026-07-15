@@ -573,6 +573,10 @@
         [0.67,0.63,.2],[0.72,0.69,.8],[0.78,0.61,1.4],[0.84,0.73,2.1],[0.90,0.65,2.8],
         [0.58,0.34,.5],[0.66,0.28,1.7],[0.76,0.31,2.4],[0.86,0.25,3.1],
         [0.20,0.35,1.2],[0.30,0.24,2.6],[0.40,0.18,.9]
+      ],
+      cityNodes:[
+        [.16,.22,.1],[.29,.34,.7],[.44,.28,1.2],[.58,.43,1.8],[.70,.32,2.4],
+        [.26,.58,3.0],[.48,.66,3.6],[.78,.61,4.1],[.64,.76,4.7]
       ]
     };
     function fitCanvas(){
@@ -633,6 +637,166 @@
       ctx.font = '600 7px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
       ctx.letterSpacing = '0px';
       ctx.fillText(text, x, y);
+      ctx.restore();
+    }
+    function drawPanelShell(x, y, w, h, label, time, active = false){
+      ctx.save();
+      const pulse = (Math.sin(time * .002 + x * .015 + y * .011) + 1) / 2;
+      ctx.globalCompositeOperation = 'screen';
+      const fill = ctx.createLinearGradient(x, y, x + w, y + h);
+      fill.addColorStop(0, `rgba(24,105,150,${active ? .105 : .062})`);
+      fill.addColorStop(.58, `rgba(9,54,86,${active ? .078 : .040})`);
+      fill.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = fill;
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = `rgba(143,225,255,${active ? .42 + pulse * .12 : .24})`;
+      ctx.lineWidth = active ? 1.15 : .8;
+      ctx.shadowBlur = active ? 13 : 5;
+      ctx.shadowColor = 'rgba(95,205,255,.30)';
+      ctx.strokeRect(x, y, w, h);
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = `rgba(183,238,255,${active ? .72 : .38})`;
+      ctx.font = '700 8px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+      ctx.fillText(label, x + 8, y + 13);
+      ctx.globalAlpha = active ? .35 : .18;
+      ctx.fillStyle = 'rgba(160,230,255,.80)';
+      ctx.fillRect(x + w - 44, y + 8, 26 + pulse * 8, 2);
+      ctx.restore();
+    }
+    function drawCityMap(x, y, w, h, time){
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      const water = ctx.createLinearGradient(x, y, x + w, y + h);
+      water.addColorStop(0, 'rgba(40,145,190,.035)');
+      water.addColorStop(1, 'rgba(15,84,130,.11)');
+      ctx.fillStyle = water;
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = 'rgba(122,219,255,.18)';
+      ctx.lineWidth = .65;
+      for (let i = 0; i < 10; i++) {
+        const xx = x + w * (.08 + i * .092 + Math.sin(i) * .012);
+        ctx.beginPath();
+        ctx.moveTo(xx, y + h * .05);
+        ctx.lineTo(xx + w * .10, y + h * .94);
+        ctx.stroke();
+      }
+      for (let i = 0; i < 8; i++) {
+        const yy = y + h * (.10 + i * .11);
+        ctx.beginPath();
+        ctx.moveTo(x + w * .04, yy);
+        ctx.lineTo(x + w * .96, yy + Math.sin(i * 1.7) * h * .04);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = 'rgba(190,245,255,.44)';
+      ctx.lineWidth = 1.5;
+      ctx.shadowBlur = 9;
+      ctx.shadowColor = 'rgba(105,220,255,.36)';
+      ctx.beginPath();
+      const route = [[.10,.72],[.24,.58],[.38,.61],[.52,.42],[.66,.48],[.82,.28],[.94,.36]];
+      route.forEach(([px, py], index) => {
+        const xx = x + px * w;
+        const yy = y + py * h + Math.sin(time * .0014 + index) * h * .012;
+        if (index) ctx.lineTo(xx, yy);
+        else ctx.moveTo(xx, yy);
+      });
+      ctx.stroke();
+      const scan = (time * .00012) % 1;
+      const scanX = x + w * (.08 + scan * .84);
+      const sweep = ctx.createLinearGradient(scanX - w * .10, y, scanX + w * .10, y);
+      sweep.addColorStop(0, 'rgba(90,215,255,0)');
+      sweep.addColorStop(.5, 'rgba(160,240,255,.12)');
+      sweep.addColorStop(1, 'rgba(90,215,255,0)');
+      ctx.fillStyle = sweep;
+      ctx.fillRect(scanX - w * .10, y, w * .20, h);
+      state.cityNodes.forEach(([px, py, offset], index) => {
+        const pulse = (Math.sin(time * .0027 + offset) + 1) / 2;
+        ctx.fillStyle = index % 3 === 0 ? `rgba(255,214,138,${.36 + pulse * .40})` : `rgba(185,245,255,${.44 + pulse * .34})`;
+        ctx.shadowBlur = 8 + pulse * 11;
+        ctx.beginPath();
+        ctx.arc(x + px * w, y + py * h, 1.8 + pulse * 2.4, 0, Math.PI * 2);
+        ctx.fill();
+        if (pulse > .78) {
+          ctx.strokeStyle = `rgba(168,238,255,${(pulse - .78) * 1.8})`;
+          ctx.lineWidth = .7;
+          ctx.beginPath();
+          ctx.arc(x + px * w, y + py * h, 9 + pulse * 10, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      });
+      ctx.restore();
+    }
+    function drawGestureControl(w, h, time){
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      const hands = [
+        { x:w * .56, y:h * .78, phase:.0 },
+        { x:w * .48, y:h * .94, phase:1.7 }
+      ];
+      const targets = [
+        [w * .44, h * .22],
+        [w * .21, h * .66],
+        [w * .54, h * .55],
+        [w * .32, h * .34]
+      ];
+      hands.forEach((hand, hi) => {
+        const pulse = (Math.sin(time * .0025 + hand.phase) + 1) / 2;
+        const halo = ctx.createRadialGradient(hand.x, hand.y, 0, hand.x, hand.y, 62 + pulse * 18);
+        halo.addColorStop(0, `rgba(166,240,255,${.22 + pulse * .14})`);
+        halo.addColorStop(.38, `rgba(80,205,255,${.11 + pulse * .08})`);
+        halo.addColorStop(1, 'rgba(80,205,255,0)');
+        ctx.fillStyle = halo;
+        ctx.beginPath();
+        ctx.arc(hand.x, hand.y, 76 + pulse * 18, 0, Math.PI * 2);
+        ctx.fill();
+        targets.forEach(([tx, ty], ti) => {
+          if ((ti + hi) % 2 && pulse < .38) return;
+          const alpha = .24 + pulse * .24 - ti * .020;
+          ctx.strokeStyle = `rgba(137,228,255,${Math.max(.08, alpha)})`;
+          ctx.lineWidth = ti === hi ? 1.85 : 1.05;
+          ctx.shadowBlur = ti === hi ? 14 : 7;
+          ctx.shadowColor = 'rgba(109,222,255,.42)';
+          ctx.beginPath();
+          ctx.moveTo(hand.x, hand.y);
+          const cx = hand.x - (hand.x - tx) * (.42 + ti * .04);
+          const cy = hand.y - h * (.18 + ti * .025) + Math.sin(time * .0015 + ti) * 8;
+          ctx.quadraticCurveTo(cx, cy, tx, ty);
+          ctx.stroke();
+          const travel = (time * .00028 + ti * .21 + hi * .12) % 1;
+          const px = (1 - travel) * (1 - travel) * hand.x + 2 * (1 - travel) * travel * cx + travel * travel * tx;
+          const py = (1 - travel) * (1 - travel) * hand.y + 2 * (1 - travel) * travel * cy + travel * travel * ty;
+          ctx.fillStyle = 'rgba(229,252,255,.78)';
+          ctx.shadowBlur = 12;
+          ctx.beginPath();
+          ctx.arc(px, py, 1.5 + pulse * 1.2, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.strokeStyle = `rgba(202,249,255,${.42 + pulse * .22})`;
+        ctx.lineWidth = 1.1;
+        ctx.setLineDash([4, 8]);
+        ctx.lineDashOffset = -time * .025;
+        ctx.beginPath();
+        ctx.arc(hand.x, hand.y, 22 + pulse * 12, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
+      ctx.restore();
+    }
+    function drawKpiTicker(x, y, w, h, time){
+      ctx.save();
+      const labels = ['FLOW', 'LOAD', 'ETA', 'SYNC'];
+      labels.forEach((label, index) => {
+        const rowY = y + h * (.18 + index * .21);
+        const value = .36 + (Math.sin(time * .0015 + index * .92) + 1) * .30;
+        ctx.fillStyle = 'rgba(172,235,255,.45)';
+        ctx.font = '700 7px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+        ctx.fillText(label, x, rowY);
+        ctx.fillStyle = 'rgba(70,170,220,.13)';
+        ctx.fillRect(x + w * .34, rowY - 5, w * .55, 4);
+        ctx.fillStyle = index === 2 ? 'rgba(255,204,118,.54)' : 'rgba(138,231,255,.58)';
+        ctx.shadowBlur = 7;
+        ctx.shadowColor = 'rgba(105,220,255,.35)';
+        ctx.fillRect(x + w * .34, rowY - 5, w * .55 * value, 4);
+      });
       ctx.restore();
     }
     function drawLine(points, box, time, color, width, phase){
@@ -988,37 +1152,48 @@
       ctx.clearRect(0, 0, w, h);
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
-      const vignette = ctx.createRadialGradient(w * .52, h * .45, 0, w * .52, h * .45, w * .72);
-      vignette.addColorStop(0, 'rgba(115,210,255,.075)');
-      vignette.addColorStop(.52, 'rgba(54,140,200,.030)');
+      const vignette = ctx.createRadialGradient(w * .48, h * .44, 0, w * .48, h * .44, w * .76);
+      vignette.addColorStop(0, 'rgba(115,210,255,.105)');
+      vignette.addColorStop(.52, 'rgba(54,140,200,.042)');
       vignette.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = vignette;
       ctx.fillRect(0, 0, w, h);
-      drawPanelGrid(w * .05, h * .07, w * .30, h * .29, .55);
-      drawPanelGrid(w * .40, h * .07, w * .25, h * .22, .42);
-      drawPanelGrid(w * .09, h * .48, w * .28, h * .33, .45);
-      drawMicroLabel('OPS.THROUGHPUT // 24H', w * .06, h * .06, .22);
-      drawMicroLabel('LOAD BALANCE', w * .40, h * .06, .18);
-      drawMicroLabel('GLOBAL ROUTES', w * .54, h * .47, .20);
-      drawLine(state.charts[0], [w * .06, h * .07, w * .28, h * .28], time, 'rgba(126,226,255,.48)', 1.55, 0);
-      drawLine(state.charts[1], [w * .40, h * .08, w * .24, h * .20], time, 'rgba(160,232,255,.34)', 1.25, 1.4);
-      drawLine(state.charts[2], [w * .09, h * .49, w * .27, h * .31], time, 'rgba(101,198,241,.38)', 1.2, 2.8);
-      drawLine(state.charts[3], [w * .64, h * .68, w * .27, h * .18], time, 'rgba(120,220,255,.32)', 1.15, 1.1);
-      drawBars(w * .05, h * .38, w * .26, h * .21, time);
-      drawHeat(w * .39, h * .33, w * .23, h * .18, time);
-      drawMicroMatrix(w * .37, h * .55, w * .18, h * .24, time);
-      drawNetwork(w * .43, h * .17, w * .38, h * .36, time);
-      drawRadarCore(w * .62, h * .33, Math.min(w * .115, h * .235), time);
-      drawWorldMap(w * .53, h * .48, w * .40, h * .34, time);
+      const panels = {
+        radar:[w * .04, h * .08, w * .25, h * .32],
+        trend:[w * .32, h * .08, w * .24, h * .25],
+        kpi:[w * .59, h * .08, w * .18, h * .25],
+        city:[w * .04, h * .48, w * .32, h * .38],
+        routes:[w * .39, h * .43, w * .29, h * .28],
+        skyline:[w * .54, h * .74, w * .24, h * .16]
+      };
+      drawPanelShell(...panels.radar, 'LIVE RADAR / FOCUS', time, true);
+      drawPanelShell(...panels.trend, 'TRAFFIC INDEX / 24H', time, true);
+      drawPanelShell(...panels.kpi, 'GESTURE QUEUE', time, true);
+      drawPanelShell(...panels.city, 'CITY MAP / DISTRICTS', time, true);
+      drawPanelShell(...panels.routes, 'NETWORK ROUTES', time, false);
+      drawPanelShell(...panels.skyline, 'CAPACITY BARS', time, false);
+      drawPanelGrid(panels.trend[0] + 8, panels.trend[1] + 21, panels.trend[2] - 16, panels.trend[3] - 30, .58);
+      drawPanelGrid(panels.routes[0] + 8, panels.routes[1] + 20, panels.routes[2] - 16, panels.routes[3] - 28, .42);
+      drawRadarCore(panels.radar[0] + panels.radar[2] * .50, panels.radar[1] + panels.radar[3] * .56, Math.min(panels.radar[2] * .37, panels.radar[3] * .38), time);
+      drawLine(state.charts[0], [panels.trend[0] + 10, panels.trend[1] + 24, panels.trend[2] - 20, panels.trend[3] - 36], time, 'rgba(126,226,255,.66)', 1.9, 0);
+      drawLine(state.charts[1], [panels.trend[0] + 10, panels.trend[1] + 34, panels.trend[2] - 20, panels.trend[3] - 52], time, 'rgba(255,207,128,.40)', 1.15, 1.4);
+      drawKpiTicker(panels.kpi[0] + 10, panels.kpi[1] + 24, panels.kpi[2] - 20, panels.kpi[3] - 34, time);
+      drawCityMap(panels.city[0] + 9, panels.city[1] + 22, panels.city[2] - 18, panels.city[3] - 32, time);
+      drawWorldMap(panels.routes[0] + 8, panels.routes[1] + 22, panels.routes[2] - 16, panels.routes[3] - 30, time);
+      drawNetwork(panels.routes[0] + 12, panels.routes[1] + 24, panels.routes[2] - 24, panels.routes[3] - 36, time);
+      drawBars(panels.skyline[0] + 8, panels.skyline[1] + 21, panels.skyline[2] - 16, panels.skyline[3] - 30, time);
+      drawHeat(w * .69, h * .39, w * .10, h * .14, time);
+      drawMicroMatrix(w * .70, h * .55, w * .09, h * .16, time);
+      drawGestureControl(w, h, time);
       drawSpectralNoise(w, h, time);
       drawScanPass(w, h, time);
-      ctx.strokeStyle = 'rgba(168,234,255,.16)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([w * .08, w * .9]);
+      ctx.strokeStyle = 'rgba(168,234,255,.24)';
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([w * .055, w * .7]);
       ctx.lineDashOffset = -time * .04;
       ctx.beginPath();
-      ctx.moveTo(w * .03, h * .46);
-      ctx.lineTo(w * .96, h * .46);
+      ctx.moveTo(w * .03, h * .435);
+      ctx.lineTo(w * .79, h * .435);
       ctx.stroke();
       ctx.restore();
     }
