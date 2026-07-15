@@ -1054,44 +1054,92 @@
       });
       ctx.restore();
     }
-    function drawExistingScreenGestures(w, h, time){
+    function drawExistingScreenGestures(w, h, time, panels){
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
-      const hands = [
-        { x:w * .76, y:h * .66, phase:0, targets:[[w * .58, h * .34], [w * .67, h * .56]] },
-        { x:w * .66, y:h * .88, phase:1.7, targets:[[w * .24, h * .63], [w * .58, h * .78]] }
+      const controls = [
+        { hand:[w * .78, h * .66], panel:panels.chart, label:'FLOW' },
+        { hand:[w * .76, h * .66], panel:panels.world, label:'ROUTE' },
+        { hand:[w * .66, h * .88], panel:panels.city, label:'CITY' },
+        { hand:[w * .66, h * .88], panel:panels.radar, label:'SCAN' },
+        { hand:[w * .74, h * .70], panel:panels.network, label:'NODE' },
+        { hand:[w * .66, h * .88], panel:panels.bars, label:'LOAD' }
       ];
-      hands.forEach((hand) => {
-        const pulse = (Math.sin(time * .0025 + hand.phase) + 1) / 2;
-        const halo = ctx.createRadialGradient(hand.x, hand.y, 0, hand.x, hand.y, 48 + pulse * 15);
-        halo.addColorStop(0, `rgba(160,239,255,${.11 + pulse * .10})`);
-        halo.addColorStop(.45, `rgba(88,211,255,${.055 + pulse * .045})`);
-        halo.addColorStop(1, 'rgba(88,211,255,0)');
-        ctx.fillStyle = halo;
-        ctx.beginPath();
-        ctx.arc(hand.x, hand.y, 54 + pulse * 14, 0, Math.PI * 2);
-        ctx.fill();
-        hand.targets.forEach(([tx, ty], index) => {
-          const alpha = .13 + pulse * .17 - index * .025;
-          ctx.strokeStyle = `rgba(139,230,255,${Math.max(.08, alpha)})`;
-          ctx.lineWidth = index ? .85 : 1.35;
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = 'rgba(106,222,255,.34)';
-          ctx.beginPath();
-          ctx.moveTo(hand.x, hand.y);
-          const cx = hand.x - w * (.10 + index * .05);
-          const cy = hand.y - h * (.20 + index * .03);
-          ctx.quadraticCurveTo(cx, cy, tx, ty);
-          ctx.stroke();
-          const t = (time * .00025 + index * .36 + hand.phase * .08) % 1;
-          const px = (1 - t) * (1 - t) * hand.x + 2 * (1 - t) * t * cx + t * t * tx;
-          const py = (1 - t) * (1 - t) * hand.y + 2 * (1 - t) * t * cy + t * t * ty;
-          ctx.fillStyle = 'rgba(231,253,255,.72)';
-          ctx.beginPath();
-          ctx.arc(px, py, 1.35 + pulse, 0, Math.PI * 2);
-          ctx.fill();
-        });
+      const cycle = 7600;
+      const slot = Math.floor(time / cycle) % controls.length;
+      const t = (time % cycle) / cycle;
+      const active = controls[slot];
+      const [hx, hy] = active.hand;
+      const [px, py, pw, ph] = active.panel;
+      const tx = px + pw * .50;
+      const ty = py + ph * .50;
+      const envelope = Math.sin(Math.min(1, t) * Math.PI);
+      const packet = Math.min(1, Math.max(0, (t - .16) / .58));
+      const handPulse = .45 + envelope * .55;
+
+      const halo = ctx.createRadialGradient(hx, hy, 0, hx, hy, 40 + handPulse * 34);
+      halo.addColorStop(0, `rgba(178,245,255,${.16 + handPulse * .18})`);
+      halo.addColorStop(.42, `rgba(88,211,255,${.075 + handPulse * .070})`);
+      halo.addColorStop(1, 'rgba(88,211,255,0)');
+      ctx.fillStyle = halo;
+      ctx.beginPath();
+      ctx.arc(hx, hy, 46 + handPulse * 14, 0, Math.PI * 2);
+      ctx.fill();
+
+      const cx = hx - w * .10;
+      const cy = hy - h * .24;
+      ctx.strokeStyle = `rgba(139,230,255,${.16 + envelope * .28})`;
+      ctx.lineWidth = 1.35;
+      ctx.shadowBlur = 18;
+      ctx.shadowColor = 'rgba(106,222,255,.34)';
+      ctx.beginPath();
+      ctx.moveTo(hx, hy);
+      ctx.quadraticCurveTo(cx, cy, tx, ty);
+      ctx.stroke();
+
+      const qx = (1 - packet) * (1 - packet) * hx + 2 * (1 - packet) * packet * cx + packet * packet * tx;
+      const qy = (1 - packet) * (1 - packet) * hy + 2 * (1 - packet) * packet * cy + packet * packet * ty;
+      ctx.fillStyle = `rgba(231,253,255,${.68 + envelope * .28})`;
+      ctx.shadowBlur = 16;
+      ctx.beginPath();
+      ctx.arc(qx, qy, 1.8 + envelope * 1.1, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(px, py, pw, ph);
+      ctx.clip();
+      const panelGlow = ctx.createRadialGradient(tx, ty, 0, tx, ty, Math.max(pw, ph) * .70);
+      panelGlow.addColorStop(0, `rgba(122,229,255,${.13 + envelope * .16})`);
+      panelGlow.addColorStop(.50, `rgba(58,176,235,${.050 + envelope * .075})`);
+      panelGlow.addColorStop(1, 'rgba(58,176,235,0)');
+      ctx.fillStyle = panelGlow;
+      ctx.fillRect(px, py, pw, ph);
+      ctx.strokeStyle = `rgba(181,244,255,${.28 + envelope * .44})`;
+      ctx.lineWidth = 1.25;
+      ctx.strokeRect(px + 1, py + 1, pw - 2, ph - 2);
+      ctx.fillStyle = `rgba(205,249,255,${.34 + envelope * .38})`;
+      ctx.font = '700 8px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+      ctx.fillText(`GESTURE // ${active.label}`, px + pw * .08, py + ph * .14);
+      const scanY = py + ph * (.16 + packet * .70);
+      const scan = ctx.createLinearGradient(px, scanY, px + pw, scanY);
+      scan.addColorStop(0, 'rgba(127,226,255,0)');
+      scan.addColorStop(.45, `rgba(220,252,255,${.12 + envelope * .28})`);
+      scan.addColorStop(1, 'rgba(127,226,255,0)');
+      ctx.fillStyle = scan;
+      ctx.fillRect(px + pw * .05, scanY - 1, pw * .90, 2);
+      ctx.restore();
+
+      ctx.save();
+      controls.forEach((control, index) => {
+        if (index === slot) return;
+        const [ox, oy, ow, oh] = control.panel;
+        const idle = (Math.sin(time * .001 + index * 1.3) + 1) / 2;
+        ctx.strokeStyle = `rgba(126,226,255,${.035 + idle * .035})`;
+        ctx.lineWidth = .55;
+        ctx.strokeRect(ox + 1, oy + 1, ow - 2, oh - 2);
       });
+      ctx.restore();
       ctx.restore();
     }
     function drawInsidePanel(panel, draw){
@@ -1197,6 +1245,7 @@
       drawInsidePanel(panels.world, (x, y, pw, ph) => {
         drawMapPulses(x + pw * .04, y + ph * .08, pw * .92, ph * .84, time);
       });
+      drawExistingScreenGestures(w, h, time, panels);
       ctx.restore();
     }
     function loop(time){
