@@ -357,7 +357,7 @@
       const assistantBlink = document.createElement('div');
       assistantBlink.className = 'rw-v2-assistant-blink';
       assistantBlink.setAttribute('aria-hidden', 'true');
-      assistantBlink.innerHTML = '<span class="rw-v2-assistant-eye-blink rw-v2-assistant-eye-blink-left"></span><span class="rw-v2-assistant-eye-blink rw-v2-assistant-eye-blink-right"></span>';
+      assistantBlink.innerHTML = '<span class="rw-v2-assistant-eye-blink"></span>';
       shell.appendChild(assistantBlink);
     }
     if (!shell.querySelector('.rw-v2-ambient-deck')) {
@@ -428,54 +428,58 @@
 
   function startAssistantBlink(shell){
     const blink = shell?.querySelector('.rw-v2-assistant-blink');
+    const blinkFrame = blink?.querySelector('.rw-v2-assistant-eye-blink');
     if (!blink || blink.dataset.rwBlinkActive === 'true') return;
     blink.dataset.rwBlinkActive = 'true';
-    const easeInOut = (t) => .5 - Math.cos(Math.max(0, Math.min(1, t)) * Math.PI) / 2;
-    const setBlink = (progress) => {
-      const p = Math.max(0, Math.min(1, progress));
-      blink.style.setProperty('--rw-eye-blink-opacity', (p * .96).toFixed(3));
-      blink.style.setProperty('--rw-eye-blink-mask-y', `${(.2 + p * 10.3).toFixed(2)}%`);
-      blink.style.setProperty('--rw-eye-blink-mask-x', `${(3.2 + p * 8.3).toFixed(2)}%`);
+    if (!blinkFrame) return;
+    const natural = { width: 1704, height: 923 };
+    const crop = { x: 82, y: 205, width: 380, height: 115 };
+    const blinkDuration = 1480;
+    let hideTimer = 0;
+    let raf = 0;
+    const updateGeometry = () => {
+      const rect = shell.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const scale = Math.max(rect.width / natural.width, rect.height / natural.height);
+      const renderedWidth = natural.width * scale;
+      const renderedHeight = natural.height * scale;
+      const offsetX = (rect.width - renderedWidth) / 2;
+      const offsetY = (rect.height - renderedHeight) / 2;
+      blink.style.setProperty('--rw-blink-left', `${offsetX + crop.x * scale}px`);
+      blink.style.setProperty('--rw-blink-top', `${offsetY + crop.y * scale}px`);
+      blink.style.setProperty('--rw-blink-width', `${crop.width * scale}px`);
+      blink.style.setProperty('--rw-blink-height', `${crop.height * scale}px`);
     };
-    const animateBlink = (duration, done) => {
-      const close = duration * .38;
-      const hold = duration * .06;
-      const open = duration - close - hold;
-      const started = performance.now();
-      const frame = (now) => {
-        const elapsed = now - started;
-        let progress;
-        if (elapsed < close) {
-          progress = easeInOut(elapsed / close);
-        } else if (elapsed < close + hold) {
-          progress = 1;
-        } else if (elapsed < duration) {
-          progress = 1 - easeInOut((elapsed - close - hold) / open);
-        } else {
-          setBlink(0);
-          done?.();
-          return;
-        }
-        setBlink(progress);
-        window.requestAnimationFrame(frame);
-      };
-      window.requestAnimationFrame(frame);
+    const queueGeometry = () => {
+      window.cancelAnimationFrame(raf);
+      raf = window.requestAnimationFrame(updateGeometry);
+    };
+    const playBlink = (done) => {
+      window.clearTimeout(hideTimer);
+      updateGeometry();
+      blink.classList.remove('is-playing');
+      blink.offsetHeight;
+      blink.classList.add('is-playing');
+      hideTimer = window.setTimeout(() => {
+        blink.classList.remove('is-playing');
+        done?.();
+      }, blinkDuration);
     };
     const runBlink = () => {
-      if (!document.body.classList.contains('app-open') && !document.hidden) {
-        const duration = 1200 + Math.random() * 300;
-        animateBlink(duration, () => {
+      const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+      if (!reducedMotion && !document.body.classList.contains('app-open') && !document.hidden) {
+        playBlink(() => {
           if (Math.random() < .07) {
-            window.setTimeout(() => animateBlink(900 + Math.random() * 180), 420 + Math.random() * 260);
+            window.setTimeout(() => playBlink(), 420 + Math.random() * 260);
           }
         });
       }
       const nextDelay = 3600 + Math.random() * 8200;
       window.setTimeout(runBlink, nextDelay);
     };
-    blink.style.setProperty('--rw-eye-blink-mask-y', '0%');
-    blink.style.setProperty('--rw-eye-blink-mask-x', '3.2%');
-    setBlink(0);
+    updateGeometry();
+    window.addEventListener('resize', queueGeometry, { passive:true });
+    window.addEventListener('orientationchange', queueGeometry, { passive:true });
     window.setTimeout(runBlink, 4200 + Math.random() * 3600);
   }
 

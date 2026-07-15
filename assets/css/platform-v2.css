@@ -7833,13 +7833,10 @@ body.rw-v2-ready.rw-v2-phase-afternoon:not(.app-open) .rw-v2-native-wall-canvas{
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink{
-  position:absolute!important;
+  position:fixed!important;
   inset:0!important;
-  z-index:18!important;
+  z-index:120!important;
   pointer-events:none!important;
-  --rw-eye-blink-opacity:0;
-  --rw-eye-blink-mask-x:3.2%;
-  --rw-eye-blink-mask-y:0%;
   opacity:1!important;
   mix-blend-mode:normal!important;
   background:none!important;
@@ -7857,26 +7854,32 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink::after{
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink{
   position:absolute!important;
-  inset:0!important;
+  left:var(--rw-blink-left, 0)!important;
+  top:var(--rw-blink-top, 0)!important;
+  width:var(--rw-blink-width, 0)!important;
+  height:var(--rw-blink-height, 0)!important;
   z-index:4!important;
-  opacity:var(--rw-eye-blink-opacity, 0)!important;
-  background:url("../images/private-command-center-hero-eye-blink-overlay-tight-v2.png?v=20260714-eye-rig-10") center center / cover no-repeat!important;
-  -webkit-mask-image:radial-gradient(ellipse var(--rw-eye-blink-mask-x, 3.2%) var(--rw-eye-blink-mask-y, 0%) at var(--rw-eye-mask-x) var(--rw-eye-mask-y), #000 0 58%, rgba(0,0,0,.88) 68%, rgba(0,0,0,.34) 82%, transparent 100%)!important;
-  mask-image:radial-gradient(ellipse var(--rw-eye-blink-mask-x, 3.2%) var(--rw-eye-blink-mask-y, 0%) at var(--rw-eye-mask-x) var(--rw-eye-mask-y), #000 0 58%, rgba(0,0,0,.88) 68%, rgba(0,0,0,.34) 82%, transparent 100%)!important;
-  filter:saturate(.98) brightness(.99)!important;
+  display:block!important;
+  background-image:url("../images/private-command-center-human-eyelid-blink-sprite.png?v=20260715-human-blink-3")!important;
+  background-repeat:no-repeat!important;
+  background-position:0 0;
+  background-size:100% auto!important;
+  opacity:0!important;
+  filter:none!important;
   transform:translateZ(0)!important;
-  will-change:opacity!important;
+  will-change:opacity, background-position!important;
   pointer-events:none!important;
+  user-select:none!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink-left{
-  --rw-eye-mask-x:15.6%;
-  --rw-eye-mask-y:34.9%;
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.is-playing .rw-v2-assistant-eye-blink{
+  opacity:1!important;
+  animation:rwHumanEyelidBlinkSprite 1480ms steps(36,end) 1 both!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink-right{
-  --rw-eye-mask-x:28.1%;
-  --rw-eye-mask-y:35.2%;
+@keyframes rwHumanEyelidBlinkSprite{
+  from{background-position:0 0;}
+  to{background-position:0 100%;}
 }
 
 @keyframes rwAssistantAuraFloat{
