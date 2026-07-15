@@ -7849,8 +7849,8 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-cutout{
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-plate{
   z-index:117!important;
-  background-image:url("../images/private-command-center-assistant-face-cleanplate.png?v=20260715-face-cutout-2")!important;
-  opacity:1!important;
+  background-image:url("../images/private-command-center-assistant-face-cleanplate.png?v=20260715-face-cutout-3")!important;
+  opacity:.86!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-cutout{
