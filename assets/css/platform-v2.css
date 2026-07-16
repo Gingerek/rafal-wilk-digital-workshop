@@ -6896,7 +6896,7 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-floor-signature span{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-bald-soft.webp?v=20260716-day-bald-soft-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-clear-controls.webp?v=20260716-clear-controls-1");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6911,27 +6911,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-bald-soft.webp?v=20260716-day-bald-soft-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-clear-controls.webp?v=20260716-clear-controls-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-bald-soft.webp?v=20260716-day-bald-soft-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-clear-controls.webp?v=20260716-clear-controls-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-bald-soft.webp?v=20260716-day-bald-soft-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-clear-controls.webp?v=20260716-clear-controls-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-bald-soft.webp?v=20260716-day-bald-soft-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-clear-controls.webp?v=20260716-clear-controls-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-bald-soft.webp?v=20260716-bald-soft-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-sunset-clear-controls.webp?v=20260716-clear-controls-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-night-bald-soft.webp?v=20260716-bald-soft-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-night-clear-controls.webp?v=20260716-clear-controls-1");
 }
 
 body.rw-v2-ready:not(.app-open),
@@ -7905,9 +7905,9 @@ body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
   aspect-ratio:1.58!important;
   z-index:13!important;
   pointer-events:none!important;
-  opacity:.24!important;
+  opacity:.30!important;
   mix-blend-mode:screen!important;
-  filter:saturate(96%) contrast(94%) brightness(.96) blur(.18px) drop-shadow(0 0 5px rgba(92,205,255,.07))!important;
+  filter:saturate(104%) contrast(102%) brightness(.99) drop-shadow(0 0 6px rgba(92,205,255,.08))!important;
   transform:perspective(1600px) rotateY(-2deg) rotateX(.55deg) translateZ(0)!important;
   transform-origin:center center!important;
   image-rendering:auto!important;
@@ -7915,12 +7915,12 @@ body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
 }
 
 body.rw-v2-ready.rw-v2-phase-night:not(.app-open) .rw-v2-native-wall-canvas{
-  opacity:.24!important;
+  opacity:.28!important;
 }
 
 body.rw-v2-ready.rw-v2-phase-day:not(.app-open) .rw-v2-native-wall-canvas,
 body.rw-v2-ready.rw-v2-phase-afternoon:not(.app-open) .rw-v2-native-wall-canvas{
-  opacity:.22!important;
+  opacity:.28!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-plate,
