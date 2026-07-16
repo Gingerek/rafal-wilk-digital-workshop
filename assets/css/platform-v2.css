@@ -6896,7 +6896,7 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-floor-signature span{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-clear-wearables-hd.webp?v=20260716-clear-wearables-hd-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-board-wall-hd.webp?v=20260716-board-wall-1");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6911,27 +6911,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-clear-wearables-hd.webp?v=20260716-clear-wearables-hd-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-board-wall-hd.webp?v=20260716-board-wall-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-clear-wearables-hd.webp?v=20260716-clear-wearables-hd-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-board-wall-hd.webp?v=20260716-board-wall-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-clear-wearables-hd.webp?v=20260716-clear-wearables-hd-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-board-wall-hd.webp?v=20260716-board-wall-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-clear-wearables-hd.webp?v=20260716-clear-wearables-hd-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-board-wall-hd.webp?v=20260716-board-wall-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-sunset-clear-wearables-hd.webp?v=20260716-clear-wearables-hd-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-sunset-board-wall-hd.webp?v=20260716-board-wall-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-night-clear-wearables-hd.webp?v=20260716-clear-wearables-hd-1");
+  --rw-home-bg:url("../images/private-command-center-hero-container-sea-night-board-wall-hd.webp?v=20260716-board-wall-1");
 }
 
 body.rw-v2-ready:not(.app-open),
@@ -7905,7 +7905,8 @@ body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
   aspect-ratio:1.58!important;
   z-index:13!important;
   pointer-events:none!important;
-  opacity:.34!important;
+  display:none!important;
+  opacity:0!important;
   mix-blend-mode:screen!important;
   filter:saturate(108%) contrast(106%) brightness(1.01) drop-shadow(0 0 6px rgba(92,205,255,.09))!important;
   transform:perspective(1600px) rotateY(-2deg) rotateX(.55deg) translateZ(0)!important;
