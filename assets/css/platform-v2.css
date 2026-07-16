@@ -6931,7 +6931,7 @@ body.rw-v2-ready.rw-v2-phase-sunset{
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v3.webp?v=20260716-personal-bg-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v4.webp?v=20260716-night-refine-1");
 }
 
 body.rw-v2-ready:not(.app-open),
