@@ -6,16 +6,16 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Rafal Wilk Digital Workshop ©</title>
-<link rel="preload" as="image" fetchpriority="high" href="assets/images/private-command-center-hero-future-bg-day.webp?v=20260716-future-bg-1"/>
-<link rel="preload" as="image" href="assets/images/private-command-center-hero-future-bg-night.webp?v=20260716-future-bg-1"/>
+<link rel="preload" as="image" fetchpriority="high" href="assets/images/private-command-center-hero-personal-bg-day-v2.webp?v=20260716-personal-bg-2"/>
+<link rel="preload" as="image" href="assets/images/private-command-center-hero-personal-bg-night-v2.webp?v=20260716-personal-bg-2"/>
 <link rel="preload" as="image" href="assets/images/private-command-center-assistant-face-cleanplate.png?v=20260715-face-cutout-3"/>
 <link rel="preload" as="image" href="assets/images/private-command-center-assistant-face-halo.png?v=20260715-face-halo-1"/>
 <link rel="preload" as="image" href="assets/images/private-command-center-assistant-face-cutout-v5.png?v=20260715-face-cutout-5"/>
-<link rel="preload" as="style" href="assets/css/platform-v2.css?v=20260716-future-bg-1"/>
+<link rel="preload" as="style" href="assets/css/platform-v2.css?v=20260716-personal-bg-2"/>
 <style id="rw-critical-home-boot">
   html{background:#05080d}
   body:not(.rw-v2-ready):not(.app-open){
-    background:#05080d url("assets/images/private-command-center-hero-future-bg-day.webp?v=20260716-future-bg-1") center/cover fixed no-repeat!important;
+    background:#05080d url("assets/images/private-command-center-hero-personal-bg-day-v2.webp?v=20260716-personal-bg-2") center/cover fixed no-repeat!important;
   }
   body:not(.rw-v2-ready):not(.app-open)>*:not(script):not(style):not(link){
     visibility:hidden!important;
@@ -3083,6 +3083,22 @@ body.app-open .rw-header{display:none !important;}
 <button class="btn" data-idx="2" type="button">Open in platform</button>
 </article>
 <article class="card">
+<div class="title" data-title-key="Rekentool Combined">Rekentool Combined</div>
+<a class="btn" onclick="openApp('rekentoolcombined', this.parentElement.querySelector('.title').textContent)">Open</a>
+</article>
+<article class="card">
+<div class="title" data-title-key="Rekentool General Staffing">Rekentool General Staffing</div>
+<a class="btn" onclick="openApp('rekentoolgeneralstaffing', this.parentElement.querySelector('.title').textContent)">Open</a>
+</article>
+<article class="card">
+<div class="title" data-title-key="Rekentool Professional Staffing">Rekentool Professional Staffing</div>
+<a class="btn" onclick="openApp('rekentoolprofessionalstaffing', this.parentElement.querySelector('.title').textContent)">Open</a>
+</article>
+<article class="card">
+<div class="title" data-title-key="Rekentool Pay roll">Rekentool Pay roll</div>
+<a class="btn" onclick="openApp('rekentoolpayroll', this.parentElement.querySelector('.title').textContent)">Open</a>
+</article>
+<article class="card">
 <div class="title" data-title-key="Intake Call">Intake Call</div>
 <button class="btn" data-idx="3" type="button">Open in platform</button>
 </article>
@@ -3123,6 +3139,10 @@ body.app-open .rw-header{display:none !important;}
 
 <iframe id="homeofficetracker" title="Home Office Tracker" src="modules/home-office-tracker.html" loading="lazy"></iframe>
 <iframe id="redukcja" title="Redukcja" src="modules/redukcja.html?v=20260713-new-empty-history-key-1" loading="lazy"></iframe>
+<iframe id="rekentoolcombined" title="Rekentool Combined" src="modules/rekentool-combined.html" loading="lazy"></iframe>
+<iframe id="rekentoolgeneralstaffing" title="Rekentool General Staffing" src="modules/rekentool-general-staffing.html" loading="lazy"></iframe>
+<iframe id="rekentoolprofessionalstaffing" title="Rekentool Professional Staffing" src="modules/rekentool-professional-staffing.html" loading="lazy"></iframe>
+<iframe id="rekentoolpayroll" title="Rekentool Pay roll" src="modules/rekentool-pay-roll.html" loading="lazy"></iframe>
 <iframe id="mycompany" src="modules/my-company.html" title="My Projects" loading="lazy"></iframe></section>
 </main>
 
@@ -3925,7 +3945,7 @@ function openApp(id, title){
   }
 
   function applyLang(lang){
-    const TITLE = {"Contract Budget Calculator":{"pl":"Kalkulator budżetu kontraktu","en":"Contract Budget Calculator","nl":"Contractbudgetcalculator"},"New Bill Rate":{"pl":"Nowa stawka bill rate","en":"New Bill Rate","nl":"Nieuwe bill rate"},"My Projects":{"pl":"Moje Projekty","en":"My Projects","nl":"Mijn projecten"},"Rekentool 2026":{"pl":"Rekentool 2026","en":"Rekentool 2026","nl":"Rekentool 2026"},"Meeting Planner":{"pl":"Planer spotkań","en":"Meeting Planner","nl":"Vergaderplanner"},"Ocena dopasowania CV":{"pl":"Ocena dopasowania CV","en":"CV Match Evaluation"},"Rafal Wilk": { pl:"Rafal Wilk", en:"Rafal Wilk", nl:"Rafal Wilk" },"Skanowanie duplikatów":{"pl":"Skanowanie duplikatów","en":"Duplicate Scanner"},"Rejestr spotkań z managerami":{"pl":"Rejestr spotkań z managerami","en":"Manager Meeting Register","nl":"Register van gesprekken met managers"},"Przegląd agencji":{"pl":"Przegląd agencji","en":"Agency overview","nl":"Overzicht bureaus"},"Przeglad agencji":{"pl":"Przegląd agencji","en":"Agency overview","nl":"Overzicht bureaus"}};
+    const TITLE = {"Contract Budget Calculator":{"pl":"Kalkulator budżetu kontraktu","en":"Contract Budget Calculator","nl":"Contractbudgetcalculator"},"New Bill Rate":{"pl":"Nowa stawka bill rate","en":"New Bill Rate","nl":"Nieuwe bill rate"},"My Projects":{"pl":"Moje Projekty","en":"My Projects","nl":"Mijn projecten"},"Rekentool 2026":{"pl":"Rekentool 2026","en":"Rekentool 2026","nl":"Rekentool 2026"},"Rekentool Combined":{"pl":"Rekentool Combined","en":"Rekentool Combined","nl":"Rekentool Combined"},"Rekentool General Staffing":{"pl":"Rekentool General Staffing","en":"Rekentool General Staffing","nl":"Rekentool General Staffing"},"Rekentool Professional Staffing":{"pl":"Rekentool Professional Staffing","en":"Rekentool Professional Staffing","nl":"Rekentool Professional Staffing"},"Rekentool Pay roll":{"pl":"Rekentool Pay roll","en":"Rekentool Pay roll","nl":"Rekentool Pay roll"},"Meeting Planner":{"pl":"Planer spotkań","en":"Meeting Planner","nl":"Vergaderplanner"},"Ocena dopasowania CV":{"pl":"Ocena dopasowania CV","en":"CV Match Evaluation"},"Rafal Wilk": { pl:"Rafal Wilk", en:"Rafal Wilk", nl:"Rafal Wilk" },"Skanowanie duplikatów":{"pl":"Skanowanie duplikatów","en":"Duplicate Scanner"},"Rejestr spotkań z managerami":{"pl":"Rejestr spotkań z managerami","en":"Manager Meeting Register","nl":"Register van gesprekken met managers"},"Przegląd agencji":{"pl":"Przegląd agencji","en":"Agency overview","nl":"Overzicht bureaus"},"Przeglad agencji":{"pl":"Przegląd agencji","en":"Agency overview","nl":"Overzicht bureaus"}};
 // Toggle pressed state
     document.querySelectorAll('.rw-lang-btn').forEach(b=>{
       b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false');
@@ -4055,6 +4075,10 @@ function openApp(id, title){
     'Contract Budget Calculator (PO)': { pl:'Kalkulator budżetu kontraktu (PO)', en:'Contract Budget Calculator (PO)', nl:'Contractbudgetcalculator (PO)' },
     'New Bill Rate': { pl:'Nowa stawka Bill Rate', en:'New Bill Rate', nl:'Nieuwe Bill Rate' },
     'Rafal Wilk': { pl:'Rafal Wilk', en:'Flexcenter Calculator 2026', nl:'Rafal Wilk' },
+    'Rekentool Combined': { pl:'Rekentool Combined', en:'Rekentool Combined', nl:'Rekentool Combined' },
+    'Rekentool General Staffing': { pl:'Rekentool General Staffing', en:'Rekentool General Staffing', nl:'Rekentool General Staffing' },
+    'Rekentool Professional Staffing': { pl:'Rekentool Professional Staffing', en:'Rekentool Professional Staffing', nl:'Rekentool Professional Staffing' },
+    'Rekentool Pay roll': { pl:'Rekentool Pay roll', en:'Rekentool Pay roll', nl:'Rekentool Pay roll' },
     'Intake Call': { pl:'Intake Call', en:'Intake Call', nl:'Intakegesprek' },
     'Ocena dopasowania CV': { pl:'Ocena dopasowania CV', en:'CV Match Evaluation', nl:'CV-matchbeoordeling' },
     'Skanowanie duplikatów': { pl:'Skanowanie duplikatów', en:'Duplicate Scanner', nl:'Duplicatenscanner' },
@@ -4541,7 +4565,7 @@ select.rw-input{appearance:none;-webkit-appearance:none;background-image:linear-
   setTimeout(install, 2200);
 })();
 </script>
-<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260716-future-bg-1">
+<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260716-personal-bg-2">
 <style id="rw-hide-title-clock-override">
 body.rw-v2-ready:not(.app-open) header.rw-header,
 body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster .rw-v2-brand-lockup,
@@ -4551,4 +4575,4 @@ body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock{
 }
 </style>
 <script src="assets/js/contact-config.js?v=20260708-18"></script>
-<script src="assets/js/platform-v2.js?v=20260716-future-bg-1"></script>
+<script src="assets/js/platform-v2.js?v=20260716-personal-bg-2"></script>

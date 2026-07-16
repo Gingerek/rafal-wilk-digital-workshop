@@ -1,0 +1,630 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flexcenter Rekentool 2026 - Pay roll</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fff5f7 0%, #f0f9ff 50%, #f0fdf4 100%);
+      color: #111827;
+      line-height: 1.5;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container { max-width: 1180px; margin: 0 auto; }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 28px 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      margin-bottom: 18px;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .title-block h1 {
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .title-block p {
+      font-size: 14px;
+      color: #6b7280;
+    }
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .markup-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+    }
+    .markup-badge .badge-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      font-weight: 700;
+      color: #1d4ed8;
+    }
+    .markup-badge strong {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+    }
+    .language-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .language-switch-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      font-weight: 700;
+      color: #6b7280;
+    }
+    .language-switch-buttons {
+      display: inline-flex;
+      border: 1px solid #d1d5db;
+      border-radius: 999px;
+      background: #f9fafb;
+      padding: 4px;
+    }
+    .language-switch-buttons button {
+      border: 0;
+      background: transparent;
+      color: #374151;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .language-switch-buttons button.active {
+      background: #111827;
+      color: #ffffff;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 18px;
+    }
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 280px));
+      gap: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin-bottom: 8px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #ffffff;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      min-height: 48px;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 56px;
+      height: 28px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #d1d5db;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: .25s;
+    }
+    .toggle-slider:before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      bottom: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,.18);
+      transition: .25s;
+    }
+    .toggle-switch input:checked + .toggle-slider {
+      background: #3b82f6;
+    }
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(28px);
+    }
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .price-box {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .price-box .label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+    .price-box .value {
+      font-size: 30px;
+      font-weight: 700;
+      color: #111827;
+    }
+    .price-box.green .value {
+      color: #059669;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    th, td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      background: #ffffff;
+    }
+    th {
+      background: #f9fafb;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: #6b7280;
+      text-align: left;
+      border-top: 1px solid #e5e7eb;
+    }
+    th:first-child {
+      border-left: 1px solid #e5e7eb;
+      border-top-left-radius: 10px;
+    }
+    th:last-child {
+      border-right: 1px solid #e5e7eb;
+      border-top-right-radius: 10px;
+    }
+    tbody td:first-child { border-left: 1px solid #e5e7eb; }
+    tbody td:last-child { border-right: 1px solid #e5e7eb; }
+    tbody tr:last-child td:first-child { border-bottom-left-radius: 10px; }
+    tbody tr:last-child td:last-child { border-bottom-right-radius: 10px; }
+    tbody tr:hover td { background: #fffbeb; }
+    .rates-table th:nth-child(2), .rates-table td:nth-child(2) { width: 14%; text-align: center; }
+    .rates-table th:nth-child(3), .rates-table td:nth-child(3),
+    .rates-table th:nth-child(4), .rates-table td:nth-child(4) { width: 18%; text-align: right; }
+    .consignatie-table th:nth-child(2), .consignatie-table td:nth-child(2),
+    .consignatie-table th:nth-child(3), .consignatie-table td:nth-child(3) { width: 18%; text-align: right; }
+    .allowance-name { font-weight: 600; color: #111827; }
+    .percentage-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fef3c7;
+      color: #92400e;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .worker-rate { font-weight: 600; color: #6b7280; }
+    .supplier-rate { font-weight: 700; color: #111827; }
+    .day-time-label {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .day-label { font-weight: 700; }
+    .time-label { font-size: 13px; color: #6b7280; }
+    .group-row td {
+      background: #eff6ff !important;
+      color: #1e3a8a;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      border-left: 1px solid #dbeafe;
+      border-right: 1px solid #dbeafe;
+      border-bottom: 1px solid #dbeafe;
+      padding: 10px 16px;
+    }
+    .group-row:first-child td {
+      border-top: 1px solid #dbeafe;
+    }
+    @media (max-width: 760px) {
+      body { padding: 14px; }
+      .card { padding: 22px 18px; }
+      .title-block h1 { font-size: 24px; }
+      th, td { padding: 12px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header-row">
+        <div class="title-block">
+          <h1 id="headerTitle"></h1>
+          <p id="headerSubtitle"></p>
+        </div>
+        <div class="top-controls">
+          <div class="markup-badge">
+            <span class="badge-label" id="markupLabel"></span>
+            <strong id="markupValue"></strong>
+          </div>
+          <div class="language-switch">
+            <span class="language-switch-label" id="languageSwitchLabel"></span>
+            <div class="language-switch-buttons">
+              <button id="langEn" type="button">EN</button>
+              <button id="langNl" type="button">NL</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title" id="inputTitle"></h2>
+      <div class="input-grid">
+        <div class="form-group">
+          <label for="payRate" id="payRateLabel"></label>
+          <input type="number" id="payRate" value="25.00" step="0.01" min="0" />
+        </div>
+        <div class="form-group">
+          <label for="tenureDiscount" id="tenureDiscountLabel"></label>
+          <div class="toggle-row">
+            <label class="toggle-switch">
+              <input type="checkbox" id="tenureDiscount">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title" id="exampleTitle"></h2>
+      <div class="price-grid">
+        <div class="price-box">
+          <div class="label" id="displayPayRateLabel"></div>
+          <div class="value" id="displayPayRate"></div>
+        </div>
+        <div class="price-box green">
+          <div class="label" id="displayBillRateLabel"></div>
+          <div class="value" id="displayBillRate"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title" id="rateOverviewTitle"></h2>
+      <table class="rates-table">
+        <thead>
+          <tr>
+            <th id="colHourType"></th>
+            <th id="colFactor"></th>
+            <th id="colWorkerRate"></th>
+            <th id="colSupplierRate"></th>
+          </tr>
+        </thead>
+        <tbody id="ratesTable"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title" id="consignatieTitle"></h2>
+      <table class="consignatie-table">
+        <thead>
+          <tr>
+            <th id="consignatieColDayTime"></th>
+            <th id="consignatieColAllowance"></th>
+            <th id="consignatieColSupplierRate"></th>
+          </tr>
+        </thead>
+        <tbody id="consignatieTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const agency = { name: 'Pay roll', multiplier: 2.325 };
+    const storageKey = `rekentoolLanguage_${agency.name.replace(/\s+/g, '_')}`;
+    let currentLanguage = localStorage.getItem(storageKey) || 'en';
+
+    const rates = [
+      { key: 'standardHours', type: 'normal', factor: 100, group: 'standard' },
+      { key: 'shiftWorkWeekdaySaturdayMorning', type: 'shift', factor: 140, group: 'shift' },
+      { key: 'shiftWorkWeekend', type: 'shift', factor: 220, group: 'shift' },
+      { key: 'deferredWorkWeekdays', type: 'deferred', factor: 150, group: 'deferred' },
+      { key: 'deferredWorkWeekend', type: 'deferred', factor: 200, group: 'deferred' },
+      { key: 'overtimeWeekAndFridayDay', type: 'overtime', factor: 155, group: 'overtime' },
+      { key: 'overtimeFridayNightWeekend', type: 'overtime', factor: 200, group: 'overtime' },
+      { key: 'holidayOvertimeDeferred', type: 'overtime', factor: 300, group: 'overtime' }
+    ];
+
+    const consignatieRates = [
+      { dayKey: 'mondayFriday', timeKey: '0700_2200', caoRate: 2.25 },
+      { dayKey: 'saturdaySunday', timeKey: '0700_2200', caoRate: 2.75 },
+      { dayKey: 'holiday', timeKey: '0700_2200', caoRate: 3.50 },
+      { dayKey: 'mondayFriday', timeKey: '2200_0700', caoRate: 3.50 },
+      { dayKey: 'saturdaySunday', timeKey: '2200_0700', caoRate: 4.00 },
+      { dayKey: 'holiday', timeKey: '2200_0700', caoRate: 4.50 }
+    ];
+
+    const translations = {
+      en: {
+        pageTitle: `Flexcenter Rekentool 2026 - ${agency.name}`,
+        headerTitle: `Flexcenter Rekentool 2026 - ${agency.name}`,
+        headerSubtitle: '',
+        markupLabel: 'Pay roll',
+        languageSwitchLabel: 'Language',
+        inputTitle: 'Input Parameters',
+        payRateLabel: 'Pay Rate (€/hour)',
+        tenureDiscountLabel: 'Tenure Discount (1000+ hrs)',
+        exampleTitle: 'Example Calculation',
+        displayPayRateLabel: 'Pay Rate',
+        displayBillRateLabel: 'Normal Hour Bill Rate',
+        rateOverviewTitle: 'Rate Overview',
+        colHourType: 'Hour Category',
+        colFactor: 'Factor',
+        colWorkerRate: 'Worker Rate',
+        colSupplierRate: 'Supplier Rate',
+        consignatieTitle: 'On-Call Allowance',
+        consignatieColDayTime: 'Day and Time',
+        consignatieColAllowance: 'CAO Allowance',
+        consignatieColSupplierRate: 'Supplier Rate',
+        groupLabels: {
+          standard: 'Standard',
+          shift: 'Shift',
+          deferred: 'Deferred',
+          overtime: 'Overtime'
+        },
+        rateLabels: {
+          standardHours: 'Standard hours Mon-Fri 7:00-18:00',
+          shiftWorkWeekdaySaturdayMorning: 'Shift work Mon-Fri 18:00-7:00, Sat 0:00-12:00',
+          deferredWorkWeekend: 'Deferred work Sat-Sun 0:00-24:00',
+          overtimeWeekAndFridayDay: 'Overtime Mon-Thu 0:00-24:00, Fri 6:00-22:00',
+          overtimeFridayNightWeekend: 'Overtime Fri 22:00-24:00, Sat-Sun 0:00-24:00',
+          holidayOvertimeDeferred: 'Overtime / deferred work on holidays 0:00-24:00',
+          deferredWorkWeekdays: 'Deferred work Mon-Fri 0:00-24:00',
+          shiftWorkWeekend: 'Shift work Sat 12:00-24:00, Sun 0:00-24:00'
+        },
+        dayLabels: {
+          mondayFriday: 'Monday - Friday',
+          saturdaySunday: 'Saturday - Sunday',
+          holiday: 'Holiday'
+        },
+        timeLabels: {
+          '0700_2200': '7:00 - 22:00',
+          '2200_0700': '22:00 - 7:00'
+        }
+      },
+      nl: {
+        pageTitle: `Flexcenter Rekentool 2026 - ${agency.name}`,
+        headerTitle: `Flexcenter Rekentool 2026 - ${agency.name}`,
+        headerSubtitle: '',
+        markupLabel: 'Pay roll',
+        languageSwitchLabel: 'Taal',
+        inputTitle: 'Invoerparameters',
+        payRateLabel: 'Pay rate (€/uur)',
+        tenureDiscountLabel: 'Tenurekorting (1000+ uur)',
+        exampleTitle: 'Voorbeeldberekening',
+        displayPayRateLabel: 'Pay rate',
+        displayBillRateLabel: 'Bill rate reguliere uren',
+        rateOverviewTitle: 'Overzicht tarieven',
+        colHourType: 'Uurcategorie',
+        colFactor: 'Factor',
+        colWorkerRate: 'Werknemerstarief',
+        colSupplierRate: 'Leverancierstarief',
+        consignatieTitle: 'Consignatievergoeding',
+        consignatieColDayTime: 'Dag en tijd',
+        consignatieColAllowance: 'CAO-vergoeding',
+        consignatieColSupplierRate: 'Leverancierstarief',
+        groupLabels: {
+          standard: 'Standaard',
+          shift: 'Ploegendienst',
+          deferred: 'Verschoven dienst',
+          overtime: 'Overwerk'
+        },
+        rateLabels: {
+          standardHours: 'Reguliere uren ma-vr 7:00-18:00',
+          shiftWorkWeekdaySaturdayMorning: 'Ploegendienst ma-vr 18:00-7:00, za 0:00-12:00',
+          deferredWorkWeekend: 'Verschoven dienst za-zo 0:00-24:00',
+          overtimeWeekAndFridayDay: 'Overwerk ma-do 0:00-24:00, vr 6:00-22:00',
+          overtimeFridayNightWeekend: 'Overwerk vr 22:00-24:00, za-zo 0:00-24:00',
+          holidayOvertimeDeferred: 'Overwerk / verschoven dienst op feestdagen 0:00-24:00',
+          deferredWorkWeekdays: 'Verschoven dienst ma-vr 0:00-24:00',
+          shiftWorkWeekend: 'Ploegendienst za 12:00-24:00, zo 0:00-24:00'
+        },
+        dayLabels: {
+          mondayFriday: 'Maandag - vrijdag',
+          saturdaySunday: 'Zaterdag - zondag',
+          holiday: 'Feestdag'
+        },
+        timeLabels: {
+          '0700_2200': '7:00 - 22:00',
+          '2200_0700': '22:00 - 7:00'
+        }
+      }
+    };
+
+    const payRateInput = document.getElementById('payRate');
+    const tenureDiscount = document.getElementById('tenureDiscount');
+    const ratesTable = document.getElementById('ratesTable');
+    const consignatieTable = document.getElementById('consignatieTable');
+    const displayPayRate = document.getElementById('displayPayRate');
+    const displayBillRate = document.getElementById('displayBillRate');
+    const langEnButton = document.getElementById('langEn');
+    const langNlButton = document.getElementById('langNl');
+
+    function formatCurrency(value) {
+      const locale = currentLanguage === 'nl' ? 'nl-NL' : 'en-IE';
+      return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(value);
+    }
+
+    function applyStaticTexts() {
+      const t = translations[currentLanguage];
+      document.documentElement.lang = currentLanguage;
+      document.title = t.pageTitle;
+      document.getElementById('headerTitle').textContent = t.headerTitle;
+      document.getElementById('headerSubtitle').textContent = t.headerSubtitle;
+      document.getElementById('markupLabel').textContent = t.markupLabel;
+      document.getElementById('markupValue').textContent = agency.multiplier.toString();
+      document.getElementById('languageSwitchLabel').textContent = t.languageSwitchLabel;
+      document.getElementById('inputTitle').textContent = t.inputTitle;
+      document.getElementById('payRateLabel').textContent = t.payRateLabel;
+      document.getElementById('tenureDiscountLabel').textContent = t.tenureDiscountLabel;
+      document.getElementById('exampleTitle').textContent = t.exampleTitle;
+      document.getElementById('displayPayRateLabel').textContent = t.displayPayRateLabel;
+      document.getElementById('displayBillRateLabel').textContent = t.displayBillRateLabel;
+      document.getElementById('rateOverviewTitle').textContent = t.rateOverviewTitle;
+      document.getElementById('colHourType').textContent = t.colHourType;
+      document.getElementById('colFactor').textContent = t.colFactor;
+      document.getElementById('colWorkerRate').textContent = t.colWorkerRate;
+      document.getElementById('colSupplierRate').textContent = t.colSupplierRate;
+      document.getElementById('consignatieTitle').textContent = t.consignatieTitle;
+      document.getElementById('consignatieColDayTime').textContent = t.consignatieColDayTime;
+      document.getElementById('consignatieColAllowance').textContent = t.consignatieColAllowance;
+      document.getElementById('consignatieColSupplierRate').textContent = t.consignatieColSupplierRate;
+      langEnButton.classList.toggle('active', currentLanguage === 'en');
+      langNlButton.classList.toggle('active', currentLanguage === 'nl');
+    }
+
+    function calculate() {
+      const t = translations[currentLanguage];
+      const payRate = parseFloat(payRateInput.value) || 0;
+      const multiplier = agency.multiplier;
+      const tenureDiscountRate = tenureDiscount.checked ? 0.985 : 1.0;
+      const normalBillRateBase = payRate * multiplier;
+      const normalBillRate = normalBillRateBase * tenureDiscountRate;
+
+      displayPayRate.textContent = formatCurrency(payRate);
+      displayBillRate.textContent = formatCurrency(normalBillRate);
+
+      let ratesHtml = '';
+      let currentGroup = '';
+      rates.forEach((rate) => {
+        if (rate.group !== currentGroup) {
+          currentGroup = rate.group;
+          ratesHtml += `
+            <tr class="group-row">
+              <td colspan="4">${t.groupLabels[rate.group]}</td>
+            </tr>
+          `;
+        }
+
+        const workerRate = payRate * (rate.factor / 100);
+        const extraPay = workerRate - payRate;
+        let supplierRate = 0;
+
+        if (rate.type === 'normal' || rate.type === 'shift') {
+          supplierRate = workerRate * multiplier * tenureDiscountRate;
+        } else if (rate.type === 'deferred') {
+          supplierRate = workerRate * multiplier * tenureDiscountRate;
+        } else if (rate.type === 'overtime') {
+          const overtimeRecovery = extraPay * 0.75;
+          supplierRate = (normalBillRateBase + extraPay + overtimeRecovery) * tenureDiscountRate;
+        }
+
+        ratesHtml += `
+          <tr>
+            <td class="allowance-name">${t.rateLabels[rate.key]}</td>
+            <td><span class="percentage-badge">${rate.factor}%</span></td>
+            <td class="worker-rate">${formatCurrency(workerRate)}</td>
+            <td class="supplier-rate">${formatCurrency(supplierRate)}</td>
+          </tr>
+        `;
+      });
+      ratesTable.innerHTML = ratesHtml;
+
+      let consignatieHtml = '';
+      consignatieRates.forEach((row) => {
+        const supplierRate = row.caoRate * multiplier;
+        consignatieHtml += `
+          <tr>
+            <td class="allowance-name">
+              <span class="day-time-label">
+                <span class="day-label">${t.dayLabels[row.dayKey]}</span>
+                <span class="time-label">${t.timeLabels[row.timeKey]}</span>
+              </span>
+            </td>
+            <td class="worker-rate">${formatCurrency(row.caoRate)}</td>
+            <td class="supplier-rate">${formatCurrency(supplierRate)}</td>
+          </tr>
+        `;
+      });
+      consignatieTable.innerHTML = consignatieHtml;
+    }
+
+    function setLanguage(language) {
+      currentLanguage = language;
+      localStorage.setItem(storageKey, language);
+      applyStaticTexts();
+      calculate();
+    }
+
+    payRateInput.addEventListener('input', calculate);
+    tenureDiscount.addEventListener('change', calculate);
+    langEnButton.addEventListener('click', () => setLanguage('en'));
+    langNlButton.addEventListener('click', () => setLanguage('nl'));
+
+    applyStaticTexts();
+    calculate();
+  </script>
+</body>
+</html>
