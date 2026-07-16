@@ -6896,7 +6896,7 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-floor-signature span{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v2.webp?v=20260716-personal-bg-2");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v3.webp?v=20260716-personal-bg-3");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6911,27 +6911,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v2.webp?v=20260716-personal-bg-2");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v3.webp?v=20260716-personal-bg-3");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v2.webp?v=20260716-personal-bg-2");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v3.webp?v=20260716-personal-bg-3");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v2.webp?v=20260716-personal-bg-2");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v3.webp?v=20260716-personal-bg-3");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v2.webp?v=20260716-personal-bg-2");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v3.webp?v=20260716-personal-bg-3");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v2.webp?v=20260716-personal-bg-2");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v3.webp?v=20260716-personal-bg-3");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v2.webp?v=20260716-personal-bg-2");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v3.webp?v=20260716-personal-bg-3");
 }
 
 body.rw-v2-ready:not(.app-open),
@@ -7938,6 +7938,10 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-cutout{
   background-repeat:no-repeat!important;
   transform-origin:52% 46%!important;
   will-change:transform!important;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 7%, #000 91%, transparent 100%)!important;
+  -webkit-mask-composite:source-in!important;
+  mask-image:linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 7%, #000 91%, transparent 100%)!important;
+  mask-composite:intersect!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-plate{
@@ -8002,6 +8006,8 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-eye-blink{
   will-change:opacity, background-position!important;
   pointer-events:none!important;
   user-select:none!important;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 50%, #000 58%, rgba(0,0,0,.82) 73%, transparent 100%)!important;
+  mask-image:radial-gradient(ellipse at 50% 50%, #000 58%, rgba(0,0,0,.82) 73%, transparent 100%)!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-blink.rw-blink-ready .rw-v2-assistant-eye-blink{
