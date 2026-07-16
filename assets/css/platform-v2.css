@@ -6896,7 +6896,7 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-floor-signature span{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-board-wall-hd.webp?v=20260716-board-wall-1");
+  --rw-home-bg:url("../images/private-command-center-hero-unified-bg-day.webp?v=20260716-unified-bg-1");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6911,27 +6911,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-board-wall-hd.webp?v=20260716-board-wall-1");
+  --rw-home-bg:url("../images/private-command-center-hero-unified-bg-day.webp?v=20260716-unified-bg-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-board-wall-hd.webp?v=20260716-board-wall-1");
+  --rw-home-bg:url("../images/private-command-center-hero-unified-bg-day.webp?v=20260716-unified-bg-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-board-wall-hd.webp?v=20260716-board-wall-1");
+  --rw-home-bg:url("../images/private-command-center-hero-unified-bg-day.webp?v=20260716-unified-bg-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-day-board-wall-hd.webp?v=20260716-board-wall-1");
+  --rw-home-bg:url("../images/private-command-center-hero-unified-bg-day.webp?v=20260716-unified-bg-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-sunset-board-wall-hd.webp?v=20260716-board-wall-1");
+  --rw-home-bg:url("../images/private-command-center-hero-unified-bg-sunset.webp?v=20260716-unified-bg-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-container-sea-night-board-wall-hd.webp?v=20260716-board-wall-1");
+  --rw-home-bg:url("../images/private-command-center-hero-unified-bg-night.webp?v=20260716-unified-bg-1");
 }
 
 body.rw-v2-ready:not(.app-open),
