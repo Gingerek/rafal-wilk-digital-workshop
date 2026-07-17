@@ -1447,14 +1447,43 @@
     document.body.classList.add(`rw-v2-weather-${state || 'cloudy'}`);
   }
 
+  function getAmsterdamTimeParts(now = new Date()){
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone:'Europe/Amsterdam',
+      year:'numeric',
+      month:'2-digit',
+      day:'2-digit',
+      hour:'2-digit',
+      minute:'2-digit',
+      second:'2-digit',
+      hour12:false,
+      hourCycle:'h23'
+    }).formatToParts(now).reduce((acc, part) => {
+      if (part.type !== 'literal') acc[part.type] = Number(part.value);
+      return acc;
+    }, {});
+    const year = parts.year || now.getFullYear();
+    const month = parts.month || (now.getMonth() + 1);
+    const dayOfMonth = parts.day || now.getDate();
+    const start = Date.UTC(year, 0, 0);
+    const current = Date.UTC(year, month - 1, dayOfMonth);
+    return {
+      year,
+      month,
+      dayOfMonth,
+      dayOfYear:Math.floor((current - start) / 86400000),
+      hour:(parts.hour || 0) + (parts.minute || 0) / 60 + (parts.second || 0) / 3600
+    };
+  }
+
   function updateDaylightScene(now = new Date()){
     const shell = document.querySelector('.rw-v2-shell');
     if (!shell) return;
     const weather = readWeatherCache();
     refreshWeather();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const day = Math.floor((now - start) / 86400000);
-    const hour = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+    const amsterdam = getAmsterdamTimeParts(now);
+    const day = amsterdam.dayOfYear;
+    const hour = amsterdam.hour;
     const daylightHours = 12 + 4.35 * Math.cos((2 * Math.PI * (day - 172)) / 365);
     const apiSunrise = weather.sunrise ? new Date(weather.sunrise) : null;
     const apiSunset = weather.sunset ? new Date(weather.sunset) : null;
@@ -1477,9 +1506,8 @@
       : 0;
     const sunElevation = Math.max(0, Math.sin(dayProgress * Math.PI));
     const weatherSun = clampNumber(1 - weather.cloudCover * .76 - weather.precipitation * .34, .05, 1);
-    const hiddenByPerson = dayProgress < .14 || dayProgress > .92 ? .65 : 1;
-    const sunX = 72 + dayProgress * 20;
-    const sunY = 58 - sunElevation * 50;
+    const sunX = 70 + dayProgress * 23;
+    const sunY = 62 - sunElevation * 52;
     const moonProgress = hour > sunset ? clampNumber((hour - sunset) / (24 - sunset + sunrise), 0, 1) : clampNumber((hour + 24 - sunset) / (24 - sunset + sunrise), 0, 1);
     const moonX = 92 - moonProgress * 25;
     const moonY = 15 + Math.sin(moonProgress * Math.PI) * 10;
@@ -1496,14 +1524,14 @@
     shell.style.setProperty('--rw-sun-y', `${sunY.toFixed(2)}%`);
     shell.style.setProperty('--rw-moon-x', `${moonX.toFixed(2)}%`);
     shell.style.setProperty('--rw-moon-y', `${moonY.toFixed(2)}%`);
-    shell.style.setProperty('--rw-sun-opacity', (sunVisible * (.02 + sunElevation * .24) * weatherSun * hiddenByPerson).toFixed(3));
-    shell.style.setProperty('--rw-sun-size', `${(54 + sunElevation * 48).toFixed(1)}px`);
+    shell.style.setProperty('--rw-sun-opacity', (sunVisible * (.18 + sunElevation * .56) * weatherSun).toFixed(3));
+    shell.style.setProperty('--rw-sun-size', `${(58 + sunElevation * 58).toFixed(1)}px`);
     shell.style.setProperty('--rw-cloud-opacity', clampNumber(.025 + weather.cloudCover * .22 + (weather.state === 'fog' ? .10 : 0), 0, .30).toFixed(3));
     shell.style.setProperty('--rw-rain-opacity', clampNumber(weather.precipitation * .50 + (weather.state === 'rain' ? .18 : 0), 0, .58).toFixed(3));
     shell.style.setProperty('--rw-stars-opacity', clampNumber(nightAmount * (1 - weather.cloudCover * .72) * (1 - weather.precipitation), 0, .46).toFixed(3));
-    shell.style.setProperty('--rw-moon-opacity', clampNumber(nightAmount * (1 - weather.cloudCover * .65) * .42, 0, .42).toFixed(3));
+    shell.style.setProperty('--rw-moon-opacity', clampNumber(nightAmount * (1 - weather.cloudCover * .65) * .56, 0, .56).toFixed(3));
     shell.style.setProperty('--rw-window-night', clampNumber(nightAmount, 0, 1).toFixed(3));
-    shell.style.setProperty('--rw-reflection-sun', (sunVisible * weatherSun * 0.020).toFixed(3));
+    shell.style.setProperty('--rw-reflection-sun', (sunVisible * weatherSun * (0.026 + sunElevation * .024)).toFixed(3));
   }
   function openCommandPalette(){
     const palette = document.querySelector('.rw-v2-command-palette');

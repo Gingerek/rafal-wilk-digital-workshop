@@ -6896,7 +6896,7 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-floor-signature span{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v3.webp?v=20260716-personal-bg-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v4.webp?v=20260717-live-sky-1");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6911,27 +6911,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v3.webp?v=20260716-personal-bg-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v4.webp?v=20260717-live-sky-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v3.webp?v=20260716-personal-bg-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v4.webp?v=20260717-live-sky-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v3.webp?v=20260716-personal-bg-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v4.webp?v=20260717-live-sky-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v3.webp?v=20260716-personal-bg-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v4.webp?v=20260717-live-sky-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v3.webp?v=20260716-personal-bg-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v4.webp?v=20260717-live-sky-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v5.webp?v=20260716-night-leds-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v6.webp?v=20260717-live-sky-1");
 }
 
 body.rw-v2-ready:not(.app-open),
@@ -6983,6 +6983,26 @@ body.rw-v2-ready .rw-v2-live-sun{
   mix-blend-mode:screen!important;
   filter:blur(.45px) saturate(102%) drop-shadow(0 0 18px rgba(255,206,126,.12))!important;
   transition:left 1.4s ease, top 1.4s ease, opacity .9s ease, width .9s ease, height .9s ease!important;
+}
+
+body.rw-v2-ready.rw-v2-phase-dawn .rw-v2-live-sun,
+body.rw-v2-ready.rw-v2-phase-morning .rw-v2-live-sun{
+  background:
+    radial-gradient(circle, rgba(255,252,229,.70) 0 12%, rgba(255,215,139,.34) 25%, rgba(255,159,86,.12) 47%, transparent 72%)!important;
+  filter:blur(.35px) saturate(108%) drop-shadow(0 0 22px rgba(255,196,115,.18))!important;
+}
+
+body.rw-v2-ready.rw-v2-phase-day .rw-v2-live-sun,
+body.rw-v2-ready.rw-v2-phase-afternoon .rw-v2-live-sun{
+  background:
+    radial-gradient(circle, rgba(255,255,239,.64) 0 11%, rgba(255,237,180,.26) 25%, rgba(255,206,133,.08) 46%, transparent 72%)!important;
+  filter:blur(.42px) saturate(101%) drop-shadow(0 0 18px rgba(255,230,178,.12))!important;
+}
+
+body.rw-v2-ready.rw-v2-phase-sunset .rw-v2-live-sun{
+  background:
+    radial-gradient(circle, rgba(255,242,210,.72) 0 12%, rgba(255,178,93,.38) 28%, rgba(255,112,56,.16) 51%, transparent 75%)!important;
+  filter:blur(.38px) saturate(112%) drop-shadow(0 0 26px rgba(255,151,82,.20))!important;
 }
 
 body.rw-v2-ready .rw-v2-live-clouds{
