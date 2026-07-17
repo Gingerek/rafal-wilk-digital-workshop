@@ -484,19 +484,21 @@
     eyeContact.dataset.rwEyeContactActive = 'true';
     let idleTimer = 0;
     let lastActiveAt = 0;
+    const idleDelay = 5200;
     const activate = () => {
       const now = performance.now();
-      if (now - lastActiveAt < 180) return;
+      if (now - lastActiveAt < 260) return;
       lastActiveAt = now;
       if (document.body.classList.contains('app-open')) return;
       document.body.classList.add('rw-v2-eye-contact-active');
       window.clearTimeout(idleTimer);
       idleTimer = window.setTimeout(() => {
         document.body.classList.remove('rw-v2-eye-contact-active');
-      }, 4200);
+      }, idleDelay);
     };
     window.addEventListener('pointermove', activate, { passive:true });
     window.addEventListener('mousemove', activate, { passive:true });
+    window.addEventListener('pointerenter', activate, { passive:true });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         window.clearTimeout(idleTimer);
