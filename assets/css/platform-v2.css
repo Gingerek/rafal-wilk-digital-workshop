@@ -6896,7 +6896,7 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-floor-signature span{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v8.webp?v=20260717-light-brown-shoes-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v11.webp?v=20260717-engraved-signature-3");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6911,27 +6911,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v8.webp?v=20260717-light-brown-shoes-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v11.webp?v=20260717-engraved-signature-3");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v8.webp?v=20260717-light-brown-shoes-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v11.webp?v=20260717-engraved-signature-3");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v8.webp?v=20260717-light-brown-shoes-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v11.webp?v=20260717-engraved-signature-3");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v8.webp?v=20260717-light-brown-shoes-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v11.webp?v=20260717-engraved-signature-3");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v8.webp?v=20260717-light-brown-shoes-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v11.webp?v=20260717-engraved-signature-3");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v10.webp?v=20260717-light-brown-shoes-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v13.webp?v=20260717-engraved-signature-3");
 }
 
 body.rw-v2-ready:not(.app-open),
@@ -8550,24 +8550,7 @@ body.rw-v2-ready:not(.app-open) button[type="submit"]{
 
 /* Ownership mark: integrated console engraving, not a floating label. */
 body.rw-v2-ready:not(.app-open) .rw-v2-console-signature{
-  position:absolute!important;
-  left:32.2%!important;
-  bottom:18.6%!important;
-  z-index:12!important;
-  width:clamp(365px, 30vw, 540px)!important;
-  height:clamp(30px, 2.75vw, 50px)!important;
-  pointer-events:none!important;
-  display:flex!important;
-  align-items:center!important;
-  gap:clamp(10px, .82vw, 16px)!important;
-  padding:0 clamp(8px, .72vw, 14px)!important;
-  color:rgba(216,237,244,.70)!important;
-  transform-origin:0 50%!important;
-  transform:perspective(1080px) rotateX(34deg) rotateZ(-.7deg) skewX(-6deg)!important;
-  opacity:.72!important;
-  mix-blend-mode:screen!important;
-  filter:drop-shadow(0 0 7px rgba(92,218,255,.13)) drop-shadow(0 1px 2px rgba(0,0,0,.50))!important;
-  overflow:visible!important;
+  display:none!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-console-signature::before{
