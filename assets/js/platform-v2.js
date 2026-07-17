@@ -21,9 +21,9 @@
     { match:'New Bill Rate', icon:'rate', category:'finance',
       title:{pl:'Nowa stawka Bill Rate', en:'New Bill Rate', nl:'Nieuw bill rate'},
       desc:{pl:'Kalkulacja marży, kosztu i stawki sprzedażowej.', en:'Calculate margin, cost, and client billing rate.', nl:'Bereken marge, kostprijs en klanttarief.'}},
-    { match:['Urządzenie kalkulacyjne', 'Calculation Tool', 'Calculation device', 'Calculatietool', 'Rekeninstrument', 'Rekentool'], icon:'tool', category:'finance',
-      title:{pl:'Rekentool', en:'Rekentool', nl:'Rekentool'},
-      desc:{pl:'Pomocniczy moduł kalkulacyjny do codziennej pracy.', en:'Utility calculator for everyday operations.', nl:'Hulprekenmodule voor dagelijks werk.'}},
+    { match:['Urządzenie kalkulacyjne', 'Calculation Tool', 'Calculation device', 'Calculatietool', 'Rekeninstrument', 'Rekentool', 'RekenTool Master'], icon:'tool', category:'finance',
+      title:{pl:'RekenTool Master', en:'RekenTool Master', nl:'RekenTool Master'},
+      desc:{pl:'Główny moduł kalkulacyjny RekenTool do codziennej pracy.', en:'Main RekenTool calculator module for everyday operations.', nl:'Hoofdmodule van RekenTool voor dagelijks werk.'}},
     { match:'Intake Call', icon:'call', category:'recruitment',
       title:{pl:'Intake Call', en:'Intake Call', nl:'Intakegesprek'},
       desc:{pl:'Strukturyzuje rozmowę intake i wymagania roli.', en:'Structure intake calls and role requirements.', nl:'Structureer intakegesprekken en functie-eisen.'}},
@@ -50,7 +50,19 @@
       desc:{pl:'Kontrola redukcji, tygodniowego bilansu i danych Garmin/Fitatu.', en:'Track reduction, weekly balance, and Garmin/Fitatu data.', nl:'Volg reductie, weekbalans en Garmin/Fitatu-gegevens.'}},
     { match:'My Projects', icon:'project', category:'projects',
       title:{pl:'Moje projekty', en:'My Projects', nl:'Mijn projecten'},
-      desc:{pl:'Twoja przestrzeń na dokumenty, projekty i rozliczenia.', en:'Your workspace for projects, documents, and billing.', nl:'Je werkruimte voor projecten, documenten en facturatie.'}}
+      desc:{pl:'Twoja przestrzeń na dokumenty, projekty i rozliczenia.', en:'Your workspace for projects, documents, and billing.', nl:'Je werkruimte voor projecten, documenten en facturatie.'}},
+    { match:['RekenTool Professional & General Staffing', 'Rekentool Combined'], icon:'tool', category:'finance',
+      title:{pl:'RekenTool Professional & General Staffing', en:'RekenTool Professional & General Staffing', nl:'RekenTool Professional & General Staffing'},
+      desc:{pl:'Połączony RekenTool dla Professional Staffing i General Staffing.', en:'Combined RekenTool for Professional Staffing and General Staffing.', nl:'Gecombineerde RekenTool voor Professional Staffing en General Staffing.'}},
+    { match:['RekenTool General Staffing', 'Rekentool General Staffing'], icon:'tool', category:'finance',
+      title:{pl:'RekenTool General Staffing', en:'RekenTool General Staffing', nl:'RekenTool General Staffing'},
+      desc:{pl:'Osobny RekenTool dla General Staffing.', en:'Separate RekenTool for General Staffing.', nl:'Aparte RekenTool voor General Staffing.'}},
+    { match:['RekenTool Professional Staffing', 'Rekentool Professional Staffing'], icon:'tool', category:'finance',
+      title:{pl:'RekenTool Professional Staffing', en:'RekenTool Professional Staffing', nl:'RekenTool Professional Staffing'},
+      desc:{pl:'Osobny RekenTool dla Professional Staffing.', en:'Separate RekenTool for Professional Staffing.', nl:'Aparte RekenTool voor Professional Staffing.'}},
+    { match:['RekenTool Payroll', 'Rekentool Pay roll', 'Rekentool Payroll'], icon:'tool', category:'finance',
+      title:{pl:'RekenTool Payroll', en:'RekenTool Payroll', nl:'RekenTool Payroll'},
+      desc:{pl:'Osobny RekenTool dla Payroll.', en:'Separate RekenTool for Payroll.', nl:'Aparte RekenTool voor Payroll.'}}
   ];
   const commandHotspots = [
     { id:'revenue', label:'Total revenue panel' },
@@ -398,6 +410,13 @@
       signature.setAttribute('aria-hidden', 'true');
       signature.innerHTML = '<span>Rafal Wilk Digital Workshop</span>';
       shell.appendChild(signature);
+    }
+    if (!shell.querySelector('.rw-v2-console-signature')) {
+      const consoleSignature = document.createElement('div');
+      consoleSignature.className = 'rw-v2-console-signature';
+      consoleSignature.setAttribute('aria-hidden', 'true');
+      consoleSignature.innerHTML = '<span class="rw-v2-console-seal">RW</span><span class="rw-v2-console-name">Rafa&#322; Wilk Digital Workshop</span><span class="rw-v2-console-origin">Original Platform</span>';
+      shell.appendChild(consoleSignature);
     }
     shell.querySelectorAll('.rw-v2-window-sun,.rw-v2-window-moon,.rw-v2-city-lights').forEach((el) => el.remove());
     if (!shell.querySelector('.rw-v2-depth-field')) {
