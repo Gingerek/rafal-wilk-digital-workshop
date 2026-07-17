@@ -484,7 +484,7 @@
     eyeContact.dataset.rwEyeContactActive = 'true';
     let idleTimer = 0;
     let lastActiveAt = 0;
-    const idleDelay = 5200;
+    const idleDelay = 30000;
     const activate = () => {
       const now = performance.now();
       if (now - lastActiveAt < 260) return;
