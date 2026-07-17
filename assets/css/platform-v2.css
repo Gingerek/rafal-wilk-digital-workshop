@@ -8551,36 +8551,36 @@ body.rw-v2-ready:not(.app-open) button[type="submit"]{
 /* Ownership mark: integrated console engraving, not a floating label. */
 body.rw-v2-ready:not(.app-open) .rw-v2-console-signature{
   position:absolute!important;
-  left:37.2%!important;
-  bottom:13.85%!important;
+  left:32.2%!important;
+  bottom:18.6%!important;
   z-index:12!important;
-  width:clamp(360px, 32vw, 600px)!important;
-  height:clamp(32px, 3.2vw, 58px)!important;
+  width:clamp(365px, 30vw, 540px)!important;
+  height:clamp(30px, 2.75vw, 50px)!important;
   pointer-events:none!important;
   display:flex!important;
   align-items:center!important;
-  gap:clamp(12px, 1.05vw, 20px)!important;
-  padding:0 clamp(10px, .9vw, 18px)!important;
-  color:rgba(226,246,252,.78)!important;
+  gap:clamp(10px, .82vw, 16px)!important;
+  padding:0 clamp(8px, .72vw, 14px)!important;
+  color:rgba(216,237,244,.70)!important;
   transform-origin:0 50%!important;
-  transform:perspective(980px) rotateX(42deg) rotateZ(-.8deg) skewX(-7deg)!important;
-  opacity:.76!important;
+  transform:perspective(1080px) rotateX(34deg) rotateZ(-.7deg) skewX(-6deg)!important;
+  opacity:.72!important;
   mix-blend-mode:screen!important;
-  filter:drop-shadow(0 0 9px rgba(92,218,255,.18)) drop-shadow(0 1px 2px rgba(0,0,0,.45))!important;
+  filter:drop-shadow(0 0 7px rgba(92,218,255,.13)) drop-shadow(0 1px 2px rgba(0,0,0,.50))!important;
   overflow:visible!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-console-signature::before{
   content:""!important;
   position:absolute!important;
-  left:clamp(46px, 4vw, 74px)!important;
-  right:clamp(16px, 1.4vw, 26px)!important;
-  bottom:clamp(4px, .36vw, 7px)!important;
-  height:2px!important;
+  left:clamp(40px, 3.35vw, 62px)!important;
+  right:clamp(12px, 1.05vw, 20px)!important;
+  bottom:clamp(3px, .28vw, 5px)!important;
+  height:1px!important;
   border-radius:999px!important;
-  background:linear-gradient(90deg, rgba(126,225,255,.36), rgba(126,225,255,.13) 72%, transparent)!important;
+  background:linear-gradient(90deg, rgba(126,225,255,.24), rgba(126,225,255,.09) 72%, transparent)!important;
   border:0!important;
-  box-shadow:0 0 10px rgba(92,217,255,.16)!important;
+  box-shadow:0 0 8px rgba(92,217,255,.10)!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-console-signature::after{
@@ -8590,17 +8590,17 @@ body.rw-v2-ready:not(.app-open) .rw-v2-console-signature::after{
 body.rw-v2-ready:not(.app-open) .rw-v2-console-seal{
   position:relative!important;
   z-index:1!important;
-  width:clamp(31px, 2.7vw, 50px)!important;
+  width:clamp(28px, 2.35vw, 43px)!important;
   aspect-ratio:1!important;
   display:grid!important;
   place-items:center!important;
   border-radius:50%!important;
-  border:2px solid rgba(128,220,255,.55)!important;
-  color:rgba(235,252,255,.88)!important;
-  font:900 clamp(10px, .95vw, 17px)/1 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
+  border:1px solid rgba(128,220,255,.54)!important;
+  color:rgba(230,248,252,.78)!important;
+  font:900 clamp(9px, .82vw, 15px)/1 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
   letter-spacing:.04em!important;
   background:radial-gradient(circle at 50% 48%, rgba(91,209,255,.18), rgba(18,64,87,.16) 62%, transparent 70%)!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.10), inset 0 0 16px rgba(89,211,255,.18), 0 0 15px rgba(92,217,255,.22)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08), inset 0 0 12px rgba(89,211,255,.15), 0 0 11px rgba(92,217,255,.17)!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-console-name,
@@ -8609,12 +8609,12 @@ body.rw-v2-ready:not(.app-open) .rw-v2-console-origin{
   z-index:1!important;
   white-space:nowrap!important;
   text-transform:uppercase!important;
-  text-shadow:0 0 7px rgba(112,221,255,.18)!important;
+  text-shadow:0 0 6px rgba(112,221,255,.14), 0 1px 1px rgba(0,0,0,.42)!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-console-name{
-  font:800 clamp(15px, 1.35vw, 26px)/1 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
-  letter-spacing:.18em!important;
+  font:790 clamp(13px, 1.16vw, 22px)/1 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
+  letter-spacing:.16em!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-console-origin{
@@ -8622,9 +8622,9 @@ body.rw-v2-ready:not(.app-open) .rw-v2-console-origin{
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-console-signature{
-  opacity:.78!important;
-  color:rgba(235,251,255,.80)!important;
-  filter:drop-shadow(0 0 10px rgba(91,218,255,.18)) drop-shadow(0 1px 2px rgba(0,0,0,.45))!important;
+  opacity:.70!important;
+  color:rgba(232,248,252,.74)!important;
+  filter:drop-shadow(0 0 8px rgba(91,218,255,.14)) drop-shadow(0 1px 2px rgba(0,0,0,.48))!important;
 }
 
 @keyframes rwConsoleSignatureScan{
