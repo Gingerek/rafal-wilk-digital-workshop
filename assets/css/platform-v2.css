@@ -6896,7 +6896,7 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-floor-signature span{
 
 /* Live Netherlands window engine: phase images + solar/weather layers. */
 body.rw-v2-ready{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v11.webp?v=20260717-engraved-signature-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v14.webp?v=20260717-engraved-signature-5");
   --rw-sun-opacity:0;
   --rw-sun-size:72px;
   --rw-sun-x:78%;
@@ -6911,27 +6911,27 @@ body.rw-v2-ready{
 }
 
 body.rw-v2-ready.rw-v2-phase-dawn{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v11.webp?v=20260717-engraved-signature-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v14.webp?v=20260717-engraved-signature-5");
 }
 
 body.rw-v2-ready.rw-v2-phase-morning{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v11.webp?v=20260717-engraved-signature-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v14.webp?v=20260717-engraved-signature-5");
 }
 
 body.rw-v2-ready.rw-v2-phase-day{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v11.webp?v=20260717-engraved-signature-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v14.webp?v=20260717-engraved-signature-5");
 }
 
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v11.webp?v=20260717-engraved-signature-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v14.webp?v=20260717-engraved-signature-5");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v11.webp?v=20260717-engraved-signature-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v13.webp?v=20260717-engraved-signature-5");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v13.webp?v=20260717-engraved-signature-3");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v15.webp?v=20260717-engraved-signature-5");
 }
 
 body.rw-v2-ready:not(.app-open),
