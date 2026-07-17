@@ -383,6 +383,13 @@
       assistantFace.setAttribute('aria-hidden', 'true');
       shell.appendChild(assistantFace);
     }
+    if (!shell.querySelector('.rw-v2-assistant-eye-contact')) {
+      const eyeContact = document.createElement('div');
+      eyeContact.className = 'rw-v2-assistant-eye-contact';
+      eyeContact.setAttribute('aria-hidden', 'true');
+      eyeContact.innerHTML = '<span class="rw-v2-eye-contact-eye rw-v2-eye-contact-eye-left"></span><span class="rw-v2-eye-contact-eye rw-v2-eye-contact-eye-right"></span>';
+      shell.appendChild(eyeContact);
+    }
     if (!shell.querySelector('.rw-v2-assistant-blink')) {
       const assistantBlink = document.createElement('div');
       assistantBlink.className = 'rw-v2-assistant-blink';
@@ -415,7 +422,7 @@
       const consoleSignature = document.createElement('div');
       consoleSignature.className = 'rw-v2-console-signature';
       consoleSignature.setAttribute('aria-hidden', 'true');
-      consoleSignature.innerHTML = '<span class="rw-v2-console-seal">RW</span><span class="rw-v2-console-name">Rafa&#322; Wilk Digital Workshop</span><span class="rw-v2-console-origin">Original Platform</span>';
+      consoleSignature.innerHTML = '<span class="rw-v2-console-seal">RW</span><span class="rw-v2-console-name">Rafa&#322; Wilk Digital Workshop</span>';
       shell.appendChild(consoleSignature);
     }
     shell.querySelectorAll('.rw-v2-window-sun,.rw-v2-window-moon,.rw-v2-city-lights').forEach((el) => el.remove());
@@ -468,6 +475,34 @@
       shell.appendChild(palette);
     }
     startAssistantBlink(shell);
+    startAssistantEyeContact(shell);
+  }
+
+  function startAssistantEyeContact(shell){
+    const eyeContact = shell?.querySelector('.rw-v2-assistant-eye-contact');
+    if (!eyeContact || eyeContact.dataset.rwEyeContactActive === 'true') return;
+    eyeContact.dataset.rwEyeContactActive = 'true';
+    let idleTimer = 0;
+    let lastActiveAt = 0;
+    const activate = () => {
+      const now = performance.now();
+      if (now - lastActiveAt < 180) return;
+      lastActiveAt = now;
+      if (document.body.classList.contains('app-open')) return;
+      document.body.classList.add('rw-v2-eye-contact-active');
+      window.clearTimeout(idleTimer);
+      idleTimer = window.setTimeout(() => {
+        document.body.classList.remove('rw-v2-eye-contact-active');
+      }, 4200);
+    };
+    window.addEventListener('pointermove', activate, { passive:true });
+    window.addEventListener('mousemove', activate, { passive:true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        window.clearTimeout(idleTimer);
+        document.body.classList.remove('rw-v2-eye-contact-active');
+      }
+    });
   }
 
   function startAssistantBlink(shell){
@@ -476,6 +511,7 @@
     const facePlate = shell?.querySelector('.rw-v2-assistant-face-plate');
     const faceHalo = shell?.querySelector('.rw-v2-assistant-face-halo');
     const faceCutout = shell?.querySelector('.rw-v2-assistant-face-cutout');
+    const eyeContact = shell?.querySelector('.rw-v2-assistant-eye-contact');
     if (!blink || blink.dataset.rwBlinkActive === 'true') return;
     blink.dataset.rwBlinkActive = 'true';
     if (!blinkFrame) return;
@@ -526,7 +562,7 @@
       blink.style.setProperty('--rw-blink-height', `${crop.height * scale}px`);
       blink.style.setProperty('--rw-head-origin-x', `${offsetX + (faceCrop.x + faceCrop.width * .52) * scale}px`);
       blink.style.setProperty('--rw-head-origin-y', `${offsetY + (faceCrop.y + faceCrop.height * .46) * scale}px`);
-      [facePlate, faceHalo, faceCutout].forEach((faceLayer) => {
+      [facePlate, faceHalo, faceCutout, eyeContact].forEach((faceLayer) => {
         if (!faceLayer) return;
         faceLayer.style.setProperty('--rw-face-left', `${offsetX + faceCrop.x * scale}px`);
         faceLayer.style.setProperty('--rw-face-top', `${offsetY + faceCrop.y * scale}px`);
