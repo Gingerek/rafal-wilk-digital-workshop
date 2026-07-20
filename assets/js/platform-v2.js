@@ -365,6 +365,25 @@
       wallCanvas.setAttribute('aria-hidden', 'true');
       shell.appendChild(wallCanvas);
     }
+    if (!shell.querySelector('.rw-v2-ai-global-grade')) {
+      const globalGrade = document.createElement('div');
+      globalGrade.className = 'rw-v2-ai-global-grade';
+      globalGrade.setAttribute('aria-hidden', 'true');
+      shell.appendChild(globalGrade);
+    }
+    if (!shell.querySelector('.rw-v2-ai-ecosystem-bridge')) {
+      const ecosystemBridge = document.createElement('div');
+      ecosystemBridge.className = 'rw-v2-ai-ecosystem-bridge';
+      ecosystemBridge.setAttribute('aria-hidden', 'true');
+      ecosystemBridge.innerHTML = '<span class="rw-v2-ai-bridge-line rw-v2-ai-bridge-line-a"></span><span class="rw-v2-ai-bridge-line rw-v2-ai-bridge-line-b"></span><span class="rw-v2-ai-bridge-line rw-v2-ai-bridge-line-c"></span><span class="rw-v2-ai-bridge-node rw-v2-ai-bridge-node-a"></span><span class="rw-v2-ai-bridge-node rw-v2-ai-bridge-node-b"></span><span class="rw-v2-ai-bridge-node rw-v2-ai-bridge-node-c"></span>';
+      shell.appendChild(ecosystemBridge);
+    }
+    if (!shell.querySelector('.rw-v2-assistant-face-shadow')) {
+      const assistantShadow = document.createElement('div');
+      assistantShadow.className = 'rw-v2-assistant-face-shadow';
+      assistantShadow.setAttribute('aria-hidden', 'true');
+      shell.appendChild(assistantShadow);
+    }
     if (!shell.querySelector('.rw-v2-assistant-face-plate')) {
       const assistantPlate = document.createElement('div');
       assistantPlate.className = 'rw-v2-assistant-face-plate';
@@ -510,6 +529,7 @@
   function startAssistantBlink(shell){
     const blink = shell?.querySelector('.rw-v2-assistant-blink');
     const blinkFrame = blink?.querySelector('.rw-v2-assistant-eye-blink');
+    const faceShadow = shell?.querySelector('.rw-v2-assistant-face-shadow');
     const facePlate = shell?.querySelector('.rw-v2-assistant-face-plate');
     const faceHalo = shell?.querySelector('.rw-v2-assistant-face-halo');
     const faceCutout = shell?.querySelector('.rw-v2-assistant-face-cutout');
@@ -547,8 +567,8 @@
       window.setTimeout(loadBlinkSprite, 900);
     };
     const nextBlinkDelay = () => {
-      const base = 2400 + Math.pow(Math.random(), 1.55) * 5000;
-      return Math.random() < .08 ? base + randomBetween(1600, 4200) : base;
+      const base = 2850 + Math.pow(Math.random(), 1.35) * 5600;
+      return Math.random() < .10 ? base + randomBetween(1100, 3100) : base;
     };
     const updateGeometry = () => {
       const rect = shell.getBoundingClientRect();
@@ -564,7 +584,7 @@
       blink.style.setProperty('--rw-blink-height', `${crop.height * scale}px`);
       blink.style.setProperty('--rw-head-origin-x', `${offsetX + (faceCrop.x + faceCrop.width * .52) * scale}px`);
       blink.style.setProperty('--rw-head-origin-y', `${offsetY + (faceCrop.y + faceCrop.height * .46) * scale}px`);
-      [facePlate, faceHalo, faceCutout, eyeContact].forEach((faceLayer) => {
+      [faceShadow, facePlate, faceHalo, faceCutout, eyeContact].forEach((faceLayer) => {
         if (!faceLayer) return;
         faceLayer.style.setProperty('--rw-face-left', `${offsetX + faceCrop.x * scale}px`);
         faceLayer.style.setProperty('--rw-face-top', `${offsetY + faceCrop.y * scale}px`);
@@ -576,8 +596,9 @@
       window.cancelAnimationFrame(raf);
       raf = window.requestAnimationFrame(updateGeometry);
     };
-    const playBlink = (duration = 1480, done) => {
+    const playBlink = (duration = 1180, done) => {
       if (!spriteReady) {
+        document.body.classList.remove('rw-v2-blink-playing');
         loadBlinkSprite();
         done?.();
         return;
@@ -586,19 +607,22 @@
       updateGeometry();
       blink.style.setProperty('--rw-blink-duration', `${Math.round(duration)}ms`);
       blink.classList.remove('is-playing');
+      document.body.classList.remove('rw-v2-blink-playing');
       blink.offsetHeight;
       blink.classList.add('is-playing');
+      document.body.classList.add('rw-v2-blink-playing');
       hideTimer = window.setTimeout(() => {
         blink.classList.remove('is-playing');
+        document.body.classList.remove('rw-v2-blink-playing');
         done?.();
       }, duration);
     };
     const runBlink = () => {
       const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
       if (!reducedMotion && !document.body.classList.contains('app-open') && !document.hidden) {
-        playBlink(randomBetween(1360, 1560), () => {
-          if (Math.random() < .045) {
-            window.setTimeout(() => playBlink(randomBetween(920, 1080)), randomBetween(360, 620));
+        playBlink(randomBetween(1040, 1280), () => {
+          if (Math.random() < .065) {
+            window.setTimeout(() => playBlink(randomBetween(820, 980)), randomBetween(260, 460));
           }
         });
       }
@@ -607,6 +631,13 @@
     updateGeometry();
     window.addEventListener('resize', queueGeometry, { passive:true });
     window.addEventListener('orientationchange', queueGeometry, { passive:true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        window.clearTimeout(hideTimer);
+        blink.classList.remove('is-playing');
+        document.body.classList.remove('rw-v2-blink-playing');
+      }
+    });
     queueBlinkSpriteLoad();
     window.setTimeout(runBlink, randomBetween(2600, 4200));
   }
