@@ -371,7 +371,6 @@
       globalGrade.setAttribute('aria-hidden', 'true');
       shell.appendChild(globalGrade);
     }
-    shell.querySelectorAll('.rw-v2-ai-ecosystem-bridge').forEach((bridge) => bridge.remove());
     if (!shell.querySelector('.rw-v2-assistant-face-shadow')) {
       const assistantShadow = document.createElement('div');
       assistantShadow.className = 'rw-v2-assistant-face-shadow';
@@ -390,6 +389,18 @@
       assistantHalo.setAttribute('aria-hidden', 'true');
       shell.appendChild(assistantHalo);
     }
+    if (!shell.querySelector('.rw-v2-assistant-face-depth')) {
+      const assistantDepth = document.createElement('div');
+      assistantDepth.className = 'rw-v2-assistant-face-depth';
+      assistantDepth.setAttribute('aria-hidden', 'true');
+      shell.appendChild(assistantDepth);
+    }
+    if (!shell.querySelector('.rw-v2-assistant-face-rim')) {
+      const assistantRim = document.createElement('div');
+      assistantRim.className = 'rw-v2-assistant-face-rim';
+      assistantRim.setAttribute('aria-hidden', 'true');
+      shell.appendChild(assistantRim);
+    }
     if (!shell.querySelector('.rw-v2-assistant-face-cutout')) {
       const assistantFace = document.createElement('div');
       assistantFace.className = 'rw-v2-assistant-face-cutout';
@@ -404,10 +415,12 @@
       assistantFaceVideo.loop = true;
       assistantFaceVideo.autoplay = true;
       assistantFaceVideo.playsInline = true;
+      assistantFaceVideo.preload = 'auto';
       assistantFaceVideo.setAttribute('muted', '');
       assistantFaceVideo.setAttribute('loop', '');
       assistantFaceVideo.setAttribute('autoplay', '');
       assistantFaceVideo.setAttribute('playsinline', '');
+      assistantFaceVideo.setAttribute('preload', 'auto');
       shell.appendChild(assistantFaceVideo);
     }
     if (!shell.querySelector('.rw-v2-assistant-mouth-sync')) {
@@ -426,13 +439,6 @@
       shell.appendChild(assistantVoice);
     }
     shell.querySelectorAll('.rw-v2-voice-unlock').forEach((voiceUnlock) => voiceUnlock.remove());
-    if (!shell.querySelector('.rw-v2-assistant-eye-contact')) {
-      const eyeContact = document.createElement('div');
-      eyeContact.className = 'rw-v2-assistant-eye-contact';
-      eyeContact.setAttribute('aria-hidden', 'true');
-      eyeContact.innerHTML = '<span class="rw-v2-eye-contact-eye rw-v2-eye-contact-eye-left"></span><span class="rw-v2-eye-contact-eye rw-v2-eye-contact-eye-right"></span>';
-      shell.appendChild(eyeContact);
-    }
     if (!shell.querySelector('.rw-v2-assistant-blink')) {
       const assistantBlink = document.createElement('div');
       assistantBlink.className = 'rw-v2-assistant-blink';
@@ -518,36 +524,6 @@
     }
     startAssistantBlink(shell);
     startAssistantVoice(shell);
-    startAssistantEyeContact(shell);
-  }
-
-  function startAssistantEyeContact(shell){
-    const eyeContact = shell?.querySelector('.rw-v2-assistant-eye-contact');
-    if (!eyeContact || eyeContact.dataset.rwEyeContactActive === 'true') return;
-    eyeContact.dataset.rwEyeContactActive = 'true';
-    let idleTimer = 0;
-    let lastActiveAt = 0;
-    const idleDelay = 30000;
-    const activate = () => {
-      const now = performance.now();
-      if (now - lastActiveAt < 260) return;
-      lastActiveAt = now;
-      if (document.body.classList.contains('app-open')) return;
-      document.body.classList.add('rw-v2-eye-contact-active');
-      window.clearTimeout(idleTimer);
-      idleTimer = window.setTimeout(() => {
-        document.body.classList.remove('rw-v2-eye-contact-active');
-      }, idleDelay);
-    };
-    window.addEventListener('pointermove', activate, { passive:true });
-    window.addEventListener('mousemove', activate, { passive:true });
-    window.addEventListener('pointerenter', activate, { passive:true });
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        window.clearTimeout(idleTimer);
-        document.body.classList.remove('rw-v2-eye-contact-active');
-      }
-    });
   }
 
   function startAssistantVoice(shell){
@@ -815,11 +791,12 @@
     const faceShadow = shell?.querySelector('.rw-v2-assistant-face-shadow');
     const facePlate = shell?.querySelector('.rw-v2-assistant-face-plate');
     const faceHalo = shell?.querySelector('.rw-v2-assistant-face-halo');
+    const faceDepth = shell?.querySelector('.rw-v2-assistant-face-depth');
+    const faceRim = shell?.querySelector('.rw-v2-assistant-face-rim');
     const faceCutout = shell?.querySelector('.rw-v2-assistant-face-cutout');
     const faceVideo = shell?.querySelector('.rw-v2-assistant-face-video');
     const faceCanvas = shell?.querySelector('.rw-v2-assistant-face-canvas');
     const faceMouth = shell?.querySelector('.rw-v2-assistant-mouth-sync');
-    const eyeContact = shell?.querySelector('.rw-v2-assistant-eye-contact');
     if (!blink || blink.dataset.rwBlinkActive === 'true') return;
     blink.dataset.rwBlinkActive = 'true';
     if (!faceCanvas && !faceVideo) return;
@@ -844,7 +821,7 @@
       const renderedHeight = natural.height * scale;
       const offsetX = (rect.width - renderedWidth) / 2;
       const offsetY = (rect.height - renderedHeight) / 2;
-      [faceShadow, facePlate, faceHalo, faceCutout, faceVideo, faceCanvas, faceMouth, eyeContact].forEach((faceLayer) => {
+      [faceShadow, facePlate, faceHalo, faceDepth, faceRim, faceCutout, faceVideo, faceCanvas, faceMouth].forEach((faceLayer) => {
         if (!faceLayer) return;
         faceLayer.style.setProperty('--rw-face-left', `${offsetX + faceCrop.x * scale}px`);
         faceLayer.style.setProperty('--rw-face-top', `${offsetY + faceCrop.y * scale}px`);
@@ -867,9 +844,6 @@
         document.body.classList.add('rw-v2-video-face-ready');
         document.body.classList.remove('rw-v2-canvas-face-ready', 'rw-v2-blink-playing');
         faceVideo.classList.add('is-active');
-        if (eyeContact) {
-          eyeContact.style.setProperty('opacity', '0', 'important');
-        }
       };
       faceVideo.muted = true;
       faceVideo.loop = true;
@@ -1188,7 +1162,7 @@
       blink.style.setProperty('--rw-face-height', `${faceCrop.height * scale}px`);
       blink.style.setProperty('--rw-head-origin-x', `${offsetX + (faceCrop.x + faceCrop.width * .52) * scale}px`);
       blink.style.setProperty('--rw-head-origin-y', `${offsetY + (faceCrop.y + faceCrop.height * .46) * scale}px`);
-      [faceShadow, facePlate, faceHalo, faceCutout, faceCanvas, eyeContact].forEach((faceLayer) => {
+      [faceShadow, facePlate, faceHalo, faceCutout, faceCanvas].forEach((faceLayer) => {
         if (!faceLayer) return;
         faceLayer.style.setProperty('--rw-face-left', `${offsetX + faceCrop.x * scale}px`);
         faceLayer.style.setProperty('--rw-face-top', `${offsetY + faceCrop.y * scale}px`);
@@ -1991,7 +1965,7 @@
         nativeWallFrame = window.requestAnimationFrame(loop);
         return;
       }
-      if (!reducedMotion && time - nativeWallLastPaint < 33) {
+      if (!reducedMotion && time - nativeWallLastPaint < 42) {
         nativeWallFrame = window.requestAnimationFrame(loop);
         return;
       }
