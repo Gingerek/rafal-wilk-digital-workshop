@@ -371,13 +371,7 @@
       globalGrade.setAttribute('aria-hidden', 'true');
       shell.appendChild(globalGrade);
     }
-    if (!shell.querySelector('.rw-v2-ai-ecosystem-bridge')) {
-      const ecosystemBridge = document.createElement('div');
-      ecosystemBridge.className = 'rw-v2-ai-ecosystem-bridge';
-      ecosystemBridge.setAttribute('aria-hidden', 'true');
-      ecosystemBridge.innerHTML = '<span class="rw-v2-ai-bridge-line rw-v2-ai-bridge-line-a"></span><span class="rw-v2-ai-bridge-line rw-v2-ai-bridge-line-b"></span><span class="rw-v2-ai-bridge-line rw-v2-ai-bridge-line-c"></span><span class="rw-v2-ai-bridge-node rw-v2-ai-bridge-node-a"></span><span class="rw-v2-ai-bridge-node rw-v2-ai-bridge-node-b"></span><span class="rw-v2-ai-bridge-node rw-v2-ai-bridge-node-c"></span>';
-      shell.appendChild(ecosystemBridge);
-    }
+    shell.querySelectorAll('.rw-v2-ai-ecosystem-bridge').forEach((bridge) => bridge.remove());
     if (!shell.querySelector('.rw-v2-assistant-face-shadow')) {
       const assistantShadow = document.createElement('div');
       assistantShadow.className = 'rw-v2-assistant-face-shadow';
@@ -424,14 +418,10 @@
       shell.appendChild(assistantMouth);
     }
     if (!shell.querySelector('.rw-v2-assistant-voice')) {
-      const assistantVoice = document.createElement('video');
+      const assistantVoice = document.createElement('audio');
       assistantVoice.className = 'rw-v2-assistant-voice';
-      assistantVoice.preload = 'auto';
-      assistantVoice.muted = true;
-      assistantVoice.playsInline = true;
-      assistantVoice.setAttribute('preload', 'auto');
-      assistantVoice.setAttribute('muted', '');
-      assistantVoice.setAttribute('playsinline', '');
+      assistantVoice.preload = 'metadata';
+      assistantVoice.setAttribute('preload', 'metadata');
       assistantVoice.src = 'assets/audio/samantha-intro.mp3?v=20260721-samantha-intro-1';
       shell.appendChild(assistantVoice);
     }
@@ -566,8 +556,8 @@
     if (!mouth || mouth.dataset.rwVoiceActive === 'true') return;
     mouth.dataset.rwVoiceActive = 'true';
     if (!audio) return;
-    audio.preload = 'auto';
-    audio.setAttribute('preload', 'auto');
+    audio.preload = 'metadata';
+    audio.setAttribute('preload', 'metadata');
     if (!audio.src || !audio.src.includes('samantha-intro.mp3')) {
       audio.src = 'assets/audio/samantha-intro.mp3?v=20260721-samantha-intro-1';
     }
@@ -580,19 +570,37 @@
     let spectrum = null;
     let raf = 0;
     let pendingUserGesture = false;
+    let userGestureSeen = false;
     let hasStarted = false;
     let smoothOpen = 0;
     let smoothWide = 0;
     let lastPeakAt = 0;
-    let prearmPromise = null;
-    let visualGreetingPlayed = false;
-    let visualGreetingActive = false;
-    const scriptedGreetingDuration = 3710;
-    const scriptedSyllables = [
-      [.10, .10, .28], [.30, .12, .42], [.52, .10, .30], [.73, .12, .46],
-      [.98, .11, .34], [1.17, .12, .48], [1.40, .10, .24], [1.62, .12, .40],
-      [1.86, .11, .48], [2.08, .10, .30], [2.30, .12, .44], [2.55, .10, .28],
-      [2.75, .12, .50], [2.98, .11, .34], [3.20, .12, .42], [3.46, .13, .26]
+    let presenceTimer = 0;
+    const mouthCueMap = [
+      [0,0,0.234],[0.04,0,0.21],[0.08,0.316,0.246],[0.12,0.532,0.333],
+      [0.16,0.68,0.402],[0.2,0.68,0.414],[0.24,0.68,0.399],[0.28,0.68,0.428],
+      [0.32,0.416,0.485],[0.36,0.236,0.454],[0.4,0.341,0.471],[0.44,0.552,0.346],
+      [0.48,0.68,0.392],[0.52,0.635,0.374],[0.56,0.633,0.373],[0.6,0.552,0.461],
+      [0.64,0.398,0.519],[0.68,0.35,0.397],[0.72,0.464,0.306],[0.76,0.68,0.392],
+      [0.8,0.587,0.365],[0.84,0.583,0.367],[0.88,0.665,0.386],[0.92,0.56,0.344],
+      [0.96,0.517,0.327],[1,0.574,0.375],[1.04,0.617,0.393],[1.08,0.68,0.413],
+      [1.12,0.554,0.342],[1.16,0.365,0.266],[1.2,0.223,0.449],[1.24,0.214,0.446],
+      [1.28,0.347,0.499],[1.32,0.257,0.463],[1.36,0.316,0.459],[1.4,0.507,0.344],
+      [1.44,0.416,0.313],[1.48,0.403,0.312],[1.52,0.385,0.315],[1.56,0.364,0.275],
+      [1.6,0.325,0.266],[1.64,0.284,0.296],[1.68,0.221,0.338],[1.72,0.08,0.392],
+      [1.76,0.2,0.329],[1.8,0.166,0.382],[1.84,0.178,0.389],[1.88,0.449,0.331],
+      [1.92,0.635,0.388],[1.96,0.527,0.331],[2,0.348,0.358],[2.04,0.162,0.425],
+      [2.08,0.186,0.391],[2.12,0.419,0.288],[2.16,0.607,0.363],[2.2,0.552,0.341],
+      [2.24,0.552,0.341],[2.28,0.55,0.34],[2.32,0.499,0.323],[2.36,0.48,0.315],
+      [2.4,0.634,0.381],[2.44,0.553,0.344],[2.48,0.519,0.327],[2.52,0.399,0.283],
+      [2.56,0.234,0.389],[2.6,0.107,0.403],[2.64,0.048,0.379],[2.68,0.338,0.304],
+      [2.72,0.56,0.344],[2.76,0.462,0.305],[2.8,0.442,0.297],[2.84,0.585,0.354],
+      [2.88,0.489,0.316],[2.92,0.423,0.289],[2.96,0.502,0.323],[3,0.633,0.403],
+      [3.04,0.553,0.354],[3.08,0.535,0.334],[3.12,0.513,0.325],[3.16,0.473,0.309],
+      [3.2,0.398,0.317],[3.24,0.429,0.292],[3.28,0.283,0.243],[3.32,0.185,0.322],
+      [3.36,0.123,0.257],[3.4,0.081,0.165],[3.44,0.054,0.164],[3.48,0.035,0.139],
+      [3.52,0.023,0.167],[3.56,0.015,0.241],[3.6,0.003,0.114],[3.64,0.002,0.125],
+      [3.68,0,0.206]
     ];
 
     const setVoiceState = (state) => {
@@ -600,24 +608,45 @@
       window.__rwAssistantVoiceState = state;
     };
 
+    const sampleMouthCue = (time) => {
+      const cueTime = Math.max(0, Number(time) + .035);
+      if (cueTime <= mouthCueMap[0][0]) return { open:mouthCueMap[0][1], wide:mouthCueMap[0][2] };
+      const last = mouthCueMap[mouthCueMap.length - 1];
+      if (cueTime >= last[0]) return { open:0, wide:.08 };
+      let low = 0;
+      let high = mouthCueMap.length - 1;
+      while (high - low > 1) {
+        const mid = (low + high) >> 1;
+        if (mouthCueMap[mid][0] <= cueTime) low = mid;
+        else high = mid;
+      }
+      const a = mouthCueMap[low];
+      const b = mouthCueMap[high];
+      const mix = clamp((cueTime - a[0]) / Math.max(.001, b[0] - a[0]));
+      return {
+        open:a[1] + (b[1] - a[1]) * mix,
+        wide:a[2] + (b[2] - a[2]) * mix
+      };
+    };
+    window.__rwAssistantMouthCueMap = { duration:3.709, frames:mouthCueMap.length };
+
     const applyMouthPose = (open, wide) => {
-      const mouthOpen = clamp(open, 0, .58);
-      const mouthWide = clamp(wide, 0, .62);
+      const mouthOpen = clamp(open, 0, .68);
+      const mouthWide = clamp(wide, 0, .72);
       mouth.style.setProperty('--rw-mouth-open', mouthOpen.toFixed(3));
-      mouth.style.setProperty('--rw-mouth-gap', `${(mouthOpen * 3.7).toFixed(2)}px`);
-      mouth.style.setProperty('--rw-mouth-height', `${(1.1 + mouthOpen * 6.0).toFixed(2)}px`);
-      mouth.style.setProperty('--rw-mouth-wide', (1 + mouthWide * .18).toFixed(3));
-      mouth.style.setProperty('--rw-mouth-alpha', (0.08 + mouthOpen * 0.42).toFixed(3));
-      mouth.style.setProperty('--rw-mouth-line-alpha', (0.18 + mouthOpen * 0.34).toFixed(3));
-      mouth.style.setProperty('--rw-mouth-glint-alpha', (0.08 + mouthOpen * 0.18).toFixed(3));
-      mouth.style.setProperty('--rw-mouth-upper-shift', `${(mouthOpen * 1.35).toFixed(2)}px`);
-      mouth.style.setProperty('--rw-mouth-lower-shift', `${(mouthOpen * 3.3).toFixed(2)}px`);
+      mouth.style.setProperty('--rw-mouth-gap', `${(mouthOpen * 8.2).toFixed(2)}px`);
+      mouth.style.setProperty('--rw-mouth-height', `${(1.3 + mouthOpen * 19.5).toFixed(2)}px`);
+      mouth.style.setProperty('--rw-mouth-wide', (1 + mouthWide * .22).toFixed(3));
+      mouth.style.setProperty('--rw-mouth-alpha', (0.12 + mouthOpen * 0.54).toFixed(3));
+      mouth.style.setProperty('--rw-mouth-line-alpha', (0.24 + mouthOpen * 0.46).toFixed(3));
+      mouth.style.setProperty('--rw-mouth-glint-alpha', (0.08 + mouthOpen * 0.20).toFixed(3));
+      mouth.style.setProperty('--rw-mouth-upper-shift', `${(mouthOpen * 3.0).toFixed(2)}px`);
+      mouth.style.setProperty('--rw-mouth-lower-shift', `${(mouthOpen * 10.6).toFixed(2)}px`);
     };
 
     const resetMouth = () => {
       smoothOpen = 0;
       smoothWide = 0;
-      visualGreetingActive = false;
       applyMouthPose(0, 0);
       document.body.classList.remove('rw-v2-assistant-speaking');
       if (!pendingUserGesture) document.body.classList.remove('rw-v2-assistant-voice-blocked');
@@ -688,107 +717,55 @@
       if (peak) lastPeakAt = now;
       const consonantRatio = voiceEnergy > 0 ? highEnergy / voiceEnergy : zeroCrossings / waveform?.length || 0;
       const syllableLift = peak ? .07 : 0;
-      const targetOpen = clamp((rms - .018) * 4.25 + syllableLift, 0, .58);
-      const targetWide = clamp(.08 + consonantRatio * .42 + targetOpen * .24, 0, .62);
-      const attack = targetOpen > smoothOpen ? .34 : .20;
+      const analysedOpen = clamp((rms - .018) * 4.25 + syllableLift, 0, .64);
+      const analysedWide = clamp(.08 + consonantRatio * .42 + analysedOpen * .24, 0, .70);
+      const cue = sampleMouthCue(audio.currentTime);
+      const targetOpen = clamp(cue.open * .88 + analysedOpen * .18, 0, .68);
+      const targetWide = clamp(cue.wide * .84 + analysedWide * .16, 0, .72);
+      const attack = targetOpen > smoothOpen ? .58 : .36;
       smoothOpen += (targetOpen - smoothOpen) * attack;
-      smoothWide += (targetWide - smoothWide) * .18;
+      smoothWide += (targetWide - smoothWide) * .30;
 
       applyMouthPose(smoothOpen, smoothWide);
       raf = window.requestAnimationFrame(animateMouth);
     };
 
-    const scriptedMouthPose = (elapsedMs) => {
-      const t = elapsedMs / 1000;
-      const gateIn = clamp(t / .16);
-      const gateOut = clamp((scriptedGreetingDuration / 1000 - t) / .28);
-      const gate = Math.min(gateIn, gateOut);
-      let open = 0;
-      scriptedSyllables.forEach(([center, width, amp]) => {
-        const distance = (t - center) / width;
-        open += amp * Math.exp(-distance * distance);
-      });
-      const flutter = .025 * Math.max(0, Math.sin(t * 38)) + .016 * Math.max(0, Math.sin(t * 57 + .8));
-      open = clamp((open + flutter) * gate, 0, .50);
-      const wide = clamp(.14 + open * .46 + .08 * Math.max(0, Math.sin(t * 11 + 1.4)), 0, .54);
-      return { open, wide };
-    };
-
-    const startVisualGreeting = () => {
-      if (visualGreetingActive || visualGreetingPlayed) return;
-      visualGreetingActive = true;
-      visualGreetingPlayed = true;
-      window.cancelAnimationFrame(raf);
-      const startedAt = performance.now();
-      document.body.classList.add('rw-v2-assistant-speaking');
-      setVoiceState(pendingUserGesture ? 'visual-only-blocked' : 'visual-only');
-      const tick = () => {
-        const elapsed = performance.now() - startedAt;
-        if (!visualGreetingActive || elapsed >= scriptedGreetingDuration) {
-          setVoiceState(pendingUserGesture ? 'visual-ended-blocked' : 'visual-ended');
-          resetMouth();
-          return;
-        }
-        const pose = scriptedMouthPose(elapsed);
-        applyMouthPose(pose.open, pose.wide);
-        raf = window.requestAnimationFrame(tick);
-      };
-      tick();
-    };
-
-    const prearmAudio = async () => {
-      if (audio.dataset.rwVoicePrearmed === 'true') return true;
-      audio.dataset.rwVoicePrearmed = 'starting';
-      audio.muted = true;
-      audio.loop = true;
-      audio.volume = 0;
-      try {
-        audio.currentTime = 0;
-      } catch (e) {}
-      try {
-        await audio.play();
-        audio.dataset.rwVoicePrearmed = 'true';
-        setVoiceState('prearmed-muted');
-        return true;
-      } catch (e) {
-        audio.dataset.rwVoicePrearmed = 'blocked';
-        setVoiceState('prearm-blocked');
-        return false;
-      }
+    const startGreetingPresence = () => {
+      if (hasStarted || document.hidden || document.body.classList.contains('app-open')) return;
+      pendingUserGesture = true;
+      document.body.classList.add('rw-v2-assistant-presence');
+      document.body.classList.remove('rw-v2-assistant-voice-blocked');
+      setVoiceState('waiting-for-interaction');
+      window.clearTimeout(presenceTimer);
+      presenceTimer = window.setTimeout(() => {
+        document.body.classList.remove('rw-v2-assistant-presence');
+      }, 5200);
+      if (userGestureSeen) playIntro();
     };
 
     const playIntro = async () => {
       if (hasStarted || document.hidden || document.body.classList.contains('app-open')) return;
       hasStarted = true;
-      visualGreetingActive = false;
       window.cancelAnimationFrame(raf);
       raf = 0;
       pendingUserGesture = false;
+      document.body.classList.remove('rw-v2-assistant-presence');
       setVoiceState('starting');
-      if (prearmPromise) {
-        try {
-          await prearmPromise;
-        } catch (e) {}
-      }
-      const wasPrearmedPlaying = audio.dataset.rwVoicePrearmed === 'true' && !audio.paused;
       audio.loop = false;
       audio.muted = false;
       audio.volume = 1;
       try {
         audio.currentTime = 0;
       } catch (e) {}
-      if (!wasPrearmedPlaying) {
-        try {
-          await audio.play();
-        } catch (e) {
-          hasStarted = false;
-          pendingUserGesture = true;
-          setVoiceState('blocked');
-          document.body.classList.add('rw-v2-assistant-voice-blocked');
-          resetMouth();
-          startVisualGreeting();
-          return;
-        }
+      try {
+        await audio.play();
+      } catch (e) {
+        hasStarted = false;
+        pendingUserGesture = true;
+        setVoiceState('blocked');
+        document.body.classList.add('rw-v2-assistant-voice-blocked');
+        resetMouth();
+        return;
       }
       if (audio.paused) {
         hasStarted = false;
@@ -796,7 +773,6 @@
         setVoiceState('blocked');
         document.body.classList.add('rw-v2-assistant-voice-blocked');
         resetMouth();
-        startVisualGreeting();
         return;
       }
       document.body.classList.remove('rw-v2-assistant-voice-blocked');
@@ -806,18 +782,18 @@
           new Promise((resolve) => window.setTimeout(resolve, 420))
         ]);
       } catch (e) {}
-      setVoiceState(analyser ? 'playing-analyser' : 'playing-fallback');
+      setVoiceState(analyser ? 'playing-cue-analyser' : 'playing-cue');
       document.body.classList.add('rw-v2-assistant-speaking');
       animateMouth();
     };
 
     const playAfterGesture = () => {
+      userGestureSeen = true;
       if (!pendingUserGesture || hasStarted) return;
       playIntro();
     };
 
-    prearmPromise = prearmAudio();
-    window.setTimeout(playIntro, 5000);
+    window.setTimeout(startGreetingPresence, 5000);
     ['pointerdown', 'click', 'keydown', 'touchstart'].forEach((eventName) => {
       window.addEventListener(eventName, playAfterGesture, { passive:true });
     });
@@ -1336,7 +1312,7 @@
     };
     function fitCanvas(){
       const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(3, Math.max(2, window.devicePixelRatio || 1));
+      const dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
       const width = Math.max(1, Math.round(rect.width * dpr));
       const height = Math.max(1, Math.round(rect.height * dpr));
       if (canvas.width !== width || canvas.height !== height) {
@@ -2005,12 +1981,23 @@
       ctx.restore();
     }
     function loop(time){
-      nativeWallFrame = window.requestAnimationFrame(loop);
-      if (document.body.classList.contains('app-open')) return;
-      if (reducedMotion && nativeWallLastPaint) return;
-      if (!reducedMotion && time - nativeWallLastPaint < 33) return;
+      if (document.hidden || document.body.classList.contains('app-open')) {
+        nativeWallFrame = window.setTimeout(() => {
+          nativeWallFrame = window.requestAnimationFrame(loop);
+        }, 500);
+        return;
+      }
+      if (reducedMotion && nativeWallLastPaint) {
+        nativeWallFrame = window.requestAnimationFrame(loop);
+        return;
+      }
+      if (!reducedMotion && time - nativeWallLastPaint < 33) {
+        nativeWallFrame = window.requestAnimationFrame(loop);
+        return;
+      }
       nativeWallLastPaint = time;
       drawNativeWallFrame(time);
+      nativeWallFrame = window.requestAnimationFrame(loop);
     }
     nativeWallFrame = window.requestAnimationFrame(loop);
     window.addEventListener('resize', () => drawNativeWallFrame(performance.now()), { passive:true });
