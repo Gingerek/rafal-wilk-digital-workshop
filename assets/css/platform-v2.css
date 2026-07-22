@@ -8172,10 +8172,13 @@ body.rw-v2-ready.rw-v2-canvas-face-ready:not(.app-open) .rw-v2-assistant-face-cu
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-plate{
   z-index:117!important;
-  background-image:none!important;
-  opacity:0!important;
+  background:
+    radial-gradient(ellipse at 50% 48%, rgba(4,13,25,.96) 0 42%, rgba(5,20,38,.88) 58%, rgba(4,14,27,.72) 76%, transparent 100%),
+    linear-gradient(90deg, rgba(3,13,27,.92), rgba(6,28,51,.78) 42%, rgba(4,16,31,.62) 100%)!important;
+  opacity:.86!important;
   mix-blend-mode:normal!important;
-  filter:none!important;
+  filter:saturate(1.08) brightness(.98)!important;
+  transition:opacity 260ms ease!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-halo{
