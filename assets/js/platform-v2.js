@@ -402,6 +402,40 @@
       assistantFace.setAttribute('aria-hidden', 'true');
       shell.appendChild(assistantFace);
     }
+    if (!shell.querySelector('.rw-v2-assistant-face-video')) {
+      const assistantFaceVideo = document.createElement('video');
+      assistantFaceVideo.className = 'rw-v2-assistant-face-video';
+      assistantFaceVideo.setAttribute('aria-hidden', 'true');
+      assistantFaceVideo.muted = true;
+      assistantFaceVideo.loop = true;
+      assistantFaceVideo.autoplay = true;
+      assistantFaceVideo.playsInline = true;
+      assistantFaceVideo.setAttribute('muted', '');
+      assistantFaceVideo.setAttribute('loop', '');
+      assistantFaceVideo.setAttribute('autoplay', '');
+      assistantFaceVideo.setAttribute('playsinline', '');
+      shell.appendChild(assistantFaceVideo);
+    }
+    if (!shell.querySelector('.rw-v2-assistant-mouth-sync')) {
+      const assistantMouth = document.createElement('div');
+      assistantMouth.className = 'rw-v2-assistant-mouth-sync';
+      assistantMouth.setAttribute('aria-hidden', 'true');
+      assistantMouth.innerHTML = '<span class="rw-v2-mouth-core"></span><span class="rw-v2-mouth-upper"></span><span class="rw-v2-mouth-lower"></span><span class="rw-v2-mouth-glint"></span>';
+      shell.appendChild(assistantMouth);
+    }
+    if (!shell.querySelector('.rw-v2-assistant-voice')) {
+      const assistantVoice = document.createElement('video');
+      assistantVoice.className = 'rw-v2-assistant-voice';
+      assistantVoice.preload = 'auto';
+      assistantVoice.muted = true;
+      assistantVoice.playsInline = true;
+      assistantVoice.setAttribute('preload', 'auto');
+      assistantVoice.setAttribute('muted', '');
+      assistantVoice.setAttribute('playsinline', '');
+      assistantVoice.src = 'assets/audio/samantha-intro.mp3?v=20260721-samantha-intro-1';
+      shell.appendChild(assistantVoice);
+    }
+    shell.querySelectorAll('.rw-v2-voice-unlock').forEach((voiceUnlock) => voiceUnlock.remove());
     if (!shell.querySelector('.rw-v2-assistant-eye-contact')) {
       const eyeContact = document.createElement('div');
       eyeContact.className = 'rw-v2-assistant-eye-contact';
@@ -413,7 +447,6 @@
       const assistantBlink = document.createElement('div');
       assistantBlink.className = 'rw-v2-assistant-blink';
       assistantBlink.setAttribute('aria-hidden', 'true');
-      assistantBlink.innerHTML = '<span class="rw-v2-assistant-eye-blink"></span>';
       shell.appendChild(assistantBlink);
     }
     if (!shell.querySelector('.rw-v2-ambient-deck')) {
@@ -494,6 +527,7 @@
       shell.appendChild(palette);
     }
     startAssistantBlink(shell);
+    startAssistantVoice(shell);
     startAssistantEyeContact(shell);
   }
 
@@ -526,49 +560,643 @@
     });
   }
 
+  function startAssistantVoice(shell){
+    const mouth = shell?.querySelector('.rw-v2-assistant-mouth-sync');
+    const audio = shell?.querySelector('.rw-v2-assistant-voice');
+    if (!mouth || mouth.dataset.rwVoiceActive === 'true') return;
+    mouth.dataset.rwVoiceActive = 'true';
+    if (!audio) return;
+    audio.preload = 'auto';
+    audio.setAttribute('preload', 'auto');
+    if (!audio.src || !audio.src.includes('samantha-intro.mp3')) {
+      audio.src = 'assets/audio/samantha-intro.mp3?v=20260721-samantha-intro-1';
+    }
+
+    const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, value));
+    let audioContext = null;
+    let analyser = null;
+    let source = null;
+    let waveform = null;
+    let spectrum = null;
+    let raf = 0;
+    let pendingUserGesture = false;
+    let hasStarted = false;
+    let smoothOpen = 0;
+    let smoothWide = 0;
+    let lastPeakAt = 0;
+    let prearmPromise = null;
+    let visualGreetingPlayed = false;
+    let visualGreetingActive = false;
+    const scriptedGreetingDuration = 3710;
+    const scriptedSyllables = [
+      [.10, .10, .28], [.30, .12, .42], [.52, .10, .30], [.73, .12, .46],
+      [.98, .11, .34], [1.17, .12, .48], [1.40, .10, .24], [1.62, .12, .40],
+      [1.86, .11, .48], [2.08, .10, .30], [2.30, .12, .44], [2.55, .10, .28],
+      [2.75, .12, .50], [2.98, .11, .34], [3.20, .12, .42], [3.46, .13, .26]
+    ];
+
+    const setVoiceState = (state) => {
+      mouth.dataset.rwVoiceState = state;
+      window.__rwAssistantVoiceState = state;
+    };
+
+    const applyMouthPose = (open, wide) => {
+      const mouthOpen = clamp(open, 0, .58);
+      const mouthWide = clamp(wide, 0, .62);
+      mouth.style.setProperty('--rw-mouth-open', mouthOpen.toFixed(3));
+      mouth.style.setProperty('--rw-mouth-gap', `${(mouthOpen * 3.7).toFixed(2)}px`);
+      mouth.style.setProperty('--rw-mouth-height', `${(1.1 + mouthOpen * 6.0).toFixed(2)}px`);
+      mouth.style.setProperty('--rw-mouth-wide', (1 + mouthWide * .18).toFixed(3));
+      mouth.style.setProperty('--rw-mouth-alpha', (0.08 + mouthOpen * 0.42).toFixed(3));
+      mouth.style.setProperty('--rw-mouth-line-alpha', (0.18 + mouthOpen * 0.34).toFixed(3));
+      mouth.style.setProperty('--rw-mouth-glint-alpha', (0.08 + mouthOpen * 0.18).toFixed(3));
+      mouth.style.setProperty('--rw-mouth-upper-shift', `${(mouthOpen * 1.35).toFixed(2)}px`);
+      mouth.style.setProperty('--rw-mouth-lower-shift', `${(mouthOpen * 3.3).toFixed(2)}px`);
+    };
+
+    const resetMouth = () => {
+      smoothOpen = 0;
+      smoothWide = 0;
+      visualGreetingActive = false;
+      applyMouthPose(0, 0);
+      document.body.classList.remove('rw-v2-assistant-speaking');
+      if (!pendingUserGesture) document.body.classList.remove('rw-v2-assistant-voice-blocked');
+      window.cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    const ensureAudioAnalysis = async () => {
+      const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextCtor) return false;
+      if (!audioContext) {
+        audioContext = new AudioContextCtor();
+      }
+      if (!source) {
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 512;
+        analyser.smoothingTimeConstant = .68;
+        source = audioContext.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        waveform = new Uint8Array(analyser.fftSize);
+        spectrum = new Uint8Array(analyser.frequencyBinCount);
+      }
+      if (audioContext.state === 'suspended') {
+        await audioContext.resume();
+      }
+      return true;
+    };
+
+    const animateMouth = () => {
+      if (audio.paused || audio.ended) {
+        setVoiceState(audio.ended ? 'ended' : 'paused');
+        resetMouth();
+        return;
+      }
+
+      let rms = 0;
+      let zeroCrossings = 0;
+      let highEnergy = 0;
+      let voiceEnergy = 0;
+      if (analyser && waveform) {
+        analyser.getByteTimeDomainData(waveform);
+        let previous = waveform[0] - 128;
+        for (let i = 0; i < waveform.length; i += 1) {
+          const normalized = (waveform[i] - 128) / 128;
+          rms += normalized * normalized;
+          if (i > 0) {
+            const current = waveform[i] - 128;
+            if ((current >= 0 && previous < 0) || (current < 0 && previous >= 0)) zeroCrossings += 1;
+            previous = current;
+          }
+        }
+        rms = Math.sqrt(rms / waveform.length);
+        if (spectrum) {
+          analyser.getByteFrequencyData(spectrum);
+          for (let i = 3; i < spectrum.length; i += 1) {
+            if (i < 34) voiceEnergy += spectrum[i];
+            if (i >= 34 && i < 98) highEnergy += spectrum[i];
+          }
+        }
+      } else {
+        rms = .028 + Math.max(0, Math.sin(audio.currentTime * 18)) * .035;
+        zeroCrossings = 18 + Math.max(0, Math.sin(audio.currentTime * 21)) * 20;
+      }
+
+      const now = performance.now();
+      const peak = rms > .082 && now - lastPeakAt > 115;
+      if (peak) lastPeakAt = now;
+      const consonantRatio = voiceEnergy > 0 ? highEnergy / voiceEnergy : zeroCrossings / waveform?.length || 0;
+      const syllableLift = peak ? .07 : 0;
+      const targetOpen = clamp((rms - .018) * 4.25 + syllableLift, 0, .58);
+      const targetWide = clamp(.08 + consonantRatio * .42 + targetOpen * .24, 0, .62);
+      const attack = targetOpen > smoothOpen ? .34 : .20;
+      smoothOpen += (targetOpen - smoothOpen) * attack;
+      smoothWide += (targetWide - smoothWide) * .18;
+
+      applyMouthPose(smoothOpen, smoothWide);
+      raf = window.requestAnimationFrame(animateMouth);
+    };
+
+    const scriptedMouthPose = (elapsedMs) => {
+      const t = elapsedMs / 1000;
+      const gateIn = clamp(t / .16);
+      const gateOut = clamp((scriptedGreetingDuration / 1000 - t) / .28);
+      const gate = Math.min(gateIn, gateOut);
+      let open = 0;
+      scriptedSyllables.forEach(([center, width, amp]) => {
+        const distance = (t - center) / width;
+        open += amp * Math.exp(-distance * distance);
+      });
+      const flutter = .025 * Math.max(0, Math.sin(t * 38)) + .016 * Math.max(0, Math.sin(t * 57 + .8));
+      open = clamp((open + flutter) * gate, 0, .50);
+      const wide = clamp(.14 + open * .46 + .08 * Math.max(0, Math.sin(t * 11 + 1.4)), 0, .54);
+      return { open, wide };
+    };
+
+    const startVisualGreeting = () => {
+      if (visualGreetingActive || visualGreetingPlayed) return;
+      visualGreetingActive = true;
+      visualGreetingPlayed = true;
+      window.cancelAnimationFrame(raf);
+      const startedAt = performance.now();
+      document.body.classList.add('rw-v2-assistant-speaking');
+      setVoiceState(pendingUserGesture ? 'visual-only-blocked' : 'visual-only');
+      const tick = () => {
+        const elapsed = performance.now() - startedAt;
+        if (!visualGreetingActive || elapsed >= scriptedGreetingDuration) {
+          setVoiceState(pendingUserGesture ? 'visual-ended-blocked' : 'visual-ended');
+          resetMouth();
+          return;
+        }
+        const pose = scriptedMouthPose(elapsed);
+        applyMouthPose(pose.open, pose.wide);
+        raf = window.requestAnimationFrame(tick);
+      };
+      tick();
+    };
+
+    const prearmAudio = async () => {
+      if (audio.dataset.rwVoicePrearmed === 'true') return true;
+      audio.dataset.rwVoicePrearmed = 'starting';
+      audio.muted = true;
+      audio.loop = true;
+      audio.volume = 0;
+      try {
+        audio.currentTime = 0;
+      } catch (e) {}
+      try {
+        await audio.play();
+        audio.dataset.rwVoicePrearmed = 'true';
+        setVoiceState('prearmed-muted');
+        return true;
+      } catch (e) {
+        audio.dataset.rwVoicePrearmed = 'blocked';
+        setVoiceState('prearm-blocked');
+        return false;
+      }
+    };
+
+    const playIntro = async () => {
+      if (hasStarted || document.hidden || document.body.classList.contains('app-open')) return;
+      hasStarted = true;
+      visualGreetingActive = false;
+      window.cancelAnimationFrame(raf);
+      raf = 0;
+      pendingUserGesture = false;
+      setVoiceState('starting');
+      if (prearmPromise) {
+        try {
+          await prearmPromise;
+        } catch (e) {}
+      }
+      const wasPrearmedPlaying = audio.dataset.rwVoicePrearmed === 'true' && !audio.paused;
+      audio.loop = false;
+      audio.muted = false;
+      audio.volume = 1;
+      try {
+        audio.currentTime = 0;
+      } catch (e) {}
+      if (!wasPrearmedPlaying) {
+        try {
+          await audio.play();
+        } catch (e) {
+          hasStarted = false;
+          pendingUserGesture = true;
+          setVoiceState('blocked');
+          document.body.classList.add('rw-v2-assistant-voice-blocked');
+          resetMouth();
+          startVisualGreeting();
+          return;
+        }
+      }
+      if (audio.paused) {
+        hasStarted = false;
+        pendingUserGesture = true;
+        setVoiceState('blocked');
+        document.body.classList.add('rw-v2-assistant-voice-blocked');
+        resetMouth();
+        startVisualGreeting();
+        return;
+      }
+      document.body.classList.remove('rw-v2-assistant-voice-blocked');
+      try {
+        await Promise.race([
+          ensureAudioAnalysis(),
+          new Promise((resolve) => window.setTimeout(resolve, 420))
+        ]);
+      } catch (e) {}
+      setVoiceState(analyser ? 'playing-analyser' : 'playing-fallback');
+      document.body.classList.add('rw-v2-assistant-speaking');
+      animateMouth();
+    };
+
+    const playAfterGesture = () => {
+      if (!pendingUserGesture || hasStarted) return;
+      playIntro();
+    };
+
+    prearmPromise = prearmAudio();
+    window.setTimeout(playIntro, 5000);
+    ['pointerdown', 'click', 'keydown', 'touchstart'].forEach((eventName) => {
+      window.addEventListener(eventName, playAfterGesture, { passive:true });
+    });
+    setVoiceState('armed');
+    audio.addEventListener('ended', () => {
+      setVoiceState('ended');
+      resetMouth();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        audio.pause();
+        resetMouth();
+      }
+    });
+  }
+
   function startAssistantBlink(shell){
     const blink = shell?.querySelector('.rw-v2-assistant-blink');
-    const blinkFrame = blink?.querySelector('.rw-v2-assistant-eye-blink');
     const faceShadow = shell?.querySelector('.rw-v2-assistant-face-shadow');
     const facePlate = shell?.querySelector('.rw-v2-assistant-face-plate');
     const faceHalo = shell?.querySelector('.rw-v2-assistant-face-halo');
     const faceCutout = shell?.querySelector('.rw-v2-assistant-face-cutout');
+    const faceVideo = shell?.querySelector('.rw-v2-assistant-face-video');
+    const faceCanvas = shell?.querySelector('.rw-v2-assistant-face-canvas');
+    const faceMouth = shell?.querySelector('.rw-v2-assistant-mouth-sync');
     const eyeContact = shell?.querySelector('.rw-v2-assistant-eye-contact');
     if (!blink || blink.dataset.rwBlinkActive === 'true') return;
     blink.dataset.rwBlinkActive = 'true';
-    if (!blinkFrame) return;
+    if (!faceCanvas && !faceVideo) return;
     const natural = { width: 1704, height: 923 };
-    const crop = { x: 82, y: 205, width: 380, height: 115 };
-    const faceCrop = { x: 0, y: 62, width: 438, height: 562 };
-    const blinkSpriteUrl = 'assets/images/private-command-center-human-eyelid-blink-sprite-v4-clean-balanced.png?v=20260715-human-blink-4-clean-1';
+    const faceCrop = { x: 58, y: 54, width: 446, height: 562 };
     let hideTimer = 0;
+    let blinkAnimFrame = 0;
     let raf = 0;
-    let spriteReady = false;
+    let blinkStartedAt = 0;
+    let blinkDuration = 0;
+    let blinkDone = null;
+    let blinkActive = false;
     const randomBetween = (min, max) => min + Math.random() * (max - min);
-    const loadBlinkSprite = () => {
-      if (spriteReady || blink.dataset.rwBlinkSpriteLoading === 'true') return;
-      blink.dataset.rwBlinkSpriteLoading = 'true';
-      const image = new Image();
-      image.decoding = 'async';
-      image.onload = () => {
-        spriteReady = true;
-        blink.classList.add('rw-blink-ready');
-      };
-      image.onerror = () => {
-        blink.dataset.rwBlinkSpriteLoading = 'false';
-      };
-      image.src = blinkSpriteUrl;
+    const canvasCtx = faceCanvas?.getContext?.('2d', { alpha:true });
+    const easeInOut = (t) => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, value));
+    const updateVideoGeometry = () => {
+      const rect = shell.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const scale = Math.max(rect.width / natural.width, rect.height / natural.height);
+      const renderedWidth = natural.width * scale;
+      const renderedHeight = natural.height * scale;
+      const offsetX = (rect.width - renderedWidth) / 2;
+      const offsetY = (rect.height - renderedHeight) / 2;
+      [faceShadow, facePlate, faceHalo, faceCutout, faceVideo, faceCanvas, faceMouth, eyeContact].forEach((faceLayer) => {
+        if (!faceLayer) return;
+        faceLayer.style.setProperty('--rw-face-left', `${offsetX + faceCrop.x * scale}px`);
+        faceLayer.style.setProperty('--rw-face-top', `${offsetY + faceCrop.y * scale}px`);
+        faceLayer.style.setProperty('--rw-face-width', `${faceCrop.width * scale}px`);
+        faceLayer.style.setProperty('--rw-face-height', `${faceCrop.height * scale}px`);
+      });
     };
-    const queueBlinkSpriteLoad = () => {
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(loadBlinkSprite, { timeout: 2200 });
+    if (faceVideo) {
+      const facePoster = 'assets/images/aireel-face-poster-v2.webp?v=20260721-face-poster-2';
+      const videoSources = {
+        balanced: 'assets/videos/aireel-face-hd-seamless-integrated-v4-smoothplay.mp4?v=20260721-smoothplay-1',
+        mobile: 'assets/videos/aireel-face-hd-seamless-integrated-v4-fast.mp4?v=20260720-aireel-fast-1'
+      };
+      const pickVideoSource = () => {
+        const smallScreen = window.matchMedia?.('(max-width: 760px), (max-height: 620px)')?.matches;
+        return smallScreen ? videoSources.mobile : videoSources.balanced;
+      };
+      const markVideoReady = () => {
+        updateVideoGeometry();
+        document.body.classList.add('rw-v2-video-face-ready');
+        document.body.classList.remove('rw-v2-canvas-face-ready', 'rw-v2-blink-playing');
+        faceVideo.classList.add('is-active');
+        if (eyeContact) {
+          eyeContact.style.setProperty('opacity', '0', 'important');
+        }
+      };
+      faceVideo.muted = true;
+      faceVideo.loop = true;
+      faceVideo.autoplay = true;
+      faceVideo.playsInline = true;
+      faceVideo.playbackRate = 1;
+      faceVideo.setAttribute('muted', '');
+      faceVideo.setAttribute('loop', '');
+      faceVideo.setAttribute('autoplay', '');
+      faceVideo.setAttribute('playsinline', '');
+      faceVideo.poster = facePoster;
+      faceVideo.preload = 'auto';
+      const videoSource = pickVideoSource();
+      if (!faceVideo.src || !faceVideo.src.includes(videoSource.split('?')[0])) {
+        faceVideo.src = videoSource;
+      }
+      faceVideo.addEventListener('loadeddata', markVideoReady, { once:true });
+      faceVideo.addEventListener('canplay', markVideoReady, { once:true });
+      faceVideo.play?.().catch(() => {});
+      markVideoReady();
+      const queueVideoGeometry = () => {
+        window.cancelAnimationFrame(raf);
+        raf = window.requestAnimationFrame(updateVideoGeometry);
+      };
+      updateVideoGeometry();
+      window.addEventListener('resize', queueVideoGeometry, { passive:true });
+      window.addEventListener('orientationchange', queueVideoGeometry, { passive:true });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          faceVideo.pause?.();
+          return;
+        }
+        faceVideo.play?.().catch(() => {});
+      });
+      return;
+    }
+    const faceImage = new Image();
+    const faceSource = { x: 315, y: 65, width: 650, height: 850 };
+    const faceUrl = 'assets/images/private-command-center-assistant-face-user-reference-v1.png?v=20260720-user-face-blink-1';
+    faceImage.decoding = 'async';
+    faceImage.src = faceUrl;
+    const blinkCurve = (t) => {
+      const x = clamp(t);
+      if (x < .38) return easeInOut(x / .38);
+      if (x < .58) return 1;
+      return 1 - easeInOut((x - .58) / .42);
+    };
+    const eyeRig = [
+      { cx:176, cy:239, rx:48, ry:18, tilt:.035, lidSource:{ x:122, y:198, width:108, height:52 } },
+      { cx:351, cy:255, rx:35, ry:14, tilt:.02, lidSource:{ x:310, y:220, width:82, height:42 } }
+    ];
+    const drawSmooth = (ctx, points) => {
+      ctx.beginPath();
+      ctx.moveTo(points[0][0], points[0][1]);
+      for (let i = 1; i < points.length - 1; i += 1) {
+        const midX = (points[i][0] + points[i + 1][0]) / 2;
+        const midY = (points[i][1] + points[i + 1][1]) / 2;
+        ctx.quadraticCurveTo(points[i][0], points[i][1], midX, midY);
+      }
+      const last = points[points.length - 1];
+      ctx.lineTo(last[0], last[1]);
+    };
+    const drawFacePanel = (ctx) => {
+      const shellGradient = ctx.createRadialGradient(178, 162, 28, 205, 258, 245);
+      shellGradient.addColorStop(0, 'rgba(222,184,156,.98)');
+      shellGradient.addColorStop(.45, 'rgba(154,105,86,.96)');
+      shellGradient.addColorStop(1, 'rgba(55,37,37,.96)');
+      ctx.save();
+      ctx.fillStyle = 'rgba(34,18,17,.88)';
+      ctx.beginPath();
+      ctx.moveTo(111, 105);
+      ctx.bezierCurveTo(130, 42, 286, 38, 306, 105);
+      ctx.bezierCurveTo(288, 88, 247, 82, 205, 83);
+      ctx.bezierCurveTo(163, 82, 129, 89, 111, 105);
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(139,91,76,.86)';
+      ctx.beginPath();
+      ctx.ellipse(82, 252, 15, 42, -.08, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(328, 252, 15, 42, .08, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.shadowColor = 'rgba(20,9,8,.42)';
+      ctx.shadowBlur = 28;
+      ctx.fillStyle = shellGradient;
+      ctx.beginPath();
+      ctx.moveTo(205, 54);
+      ctx.bezierCurveTo(123, 55, 80, 127, 76, 238);
+      ctx.bezierCurveTo(73, 350, 122, 458, 205, 496);
+      ctx.bezierCurveTo(288, 458, 337, 350, 334, 238);
+      ctx.bezierCurveTo(330, 127, 287, 55, 205, 54);
+      ctx.closePath();
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      const sideShade = ctx.createLinearGradient(76, 0, 334, 0);
+      sideShade.addColorStop(0, 'rgba(22,10,10,.34)');
+      sideShade.addColorStop(.34, 'rgba(255,220,190,0)');
+      sideShade.addColorStop(.66, 'rgba(255,220,190,0)');
+      sideShade.addColorStop(1, 'rgba(18,8,8,.42)');
+      ctx.fillStyle = sideShade;
+      ctx.fill();
+
+      ctx.strokeStyle = 'rgba(236,204,176,.34)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      ctx.globalAlpha = .32;
+      ctx.strokeStyle = 'rgba(94,228,255,.28)';
+      ctx.lineWidth = .9;
+      [
+        [[116,112],[144,164],[139,236],[116,306]],
+        [[294,112],[266,164],[271,236],[294,306]],
+        [[102,312],[143,336],[184,348],[226,348],[308,312]]
+      ].forEach((line) => {
+        drawSmooth(ctx, line);
+        ctx.stroke();
+      });
+      ctx.globalAlpha = 1;
+
+      ctx.globalAlpha = .13;
+      ctx.fillStyle = 'rgba(255,229,206,.8)';
+      for (let i = 0; i < 34; i += 1) {
+        const x = 118 + ((i * 37) % 176);
+        const y = 145 + ((i * 53) % 235);
+        const radius = .55 + ((i % 4) * .12);
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      const cheek = ctx.createRadialGradient(140, 268, 5, 140, 268, 58);
+      cheek.addColorStop(0, 'rgba(234,149,128,.22)');
+      cheek.addColorStop(1, 'rgba(234,149,128,0)');
+      ctx.fillStyle = cheek;
+      ctx.beginPath();
+      ctx.arc(140, 268, 58, 0, Math.PI * 2);
+      ctx.fill();
+
+      const cheekRight = ctx.createRadialGradient(270, 268, 5, 270, 268, 58);
+      cheekRight.addColorStop(0, 'rgba(234,149,128,.18)');
+      cheekRight.addColorStop(1, 'rgba(234,149,128,0)');
+      ctx.fillStyle = cheekRight;
+      ctx.beginPath();
+      ctx.arc(270, 268, 58, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    };
+    const drawEye = (ctx, eye, blinkAmount) => {
+      const p = clamp(blinkAmount);
+      if (p <= .01) return;
+      const upperEdge = -eye.ry - 3 + (eye.ry * 2.2 * p);
+      const lowerEdge = eye.ry + 2 - (eye.ry * .48 * p);
+      const closedY = eye.ry * .06;
+
+      ctx.save();
+      ctx.translate(eye.cx, eye.cy);
+      ctx.rotate(eye.tilt);
+
+      ctx.beginPath();
+      ctx.ellipse(0, 0, eye.rx, eye.ry + 4, 0, 0, Math.PI * 2);
+      ctx.clip();
+
+      ctx.globalAlpha = .82;
+      ctx.drawImage(
+        faceCanvas,
+        Math.max(0, eye.lidSource.x), Math.max(0, eye.lidSource.y), eye.lidSource.width, eye.lidSource.height,
+        -eye.rx - 8, -eye.ry - 8, eye.rx * 2 + 16, eye.ry * 2 + 20
+      );
+      ctx.globalAlpha = 1;
+
+      const lidFill = ctx.createLinearGradient(0, -eye.ry - 10, 0, eye.ry + 10);
+      lidFill.addColorStop(0, 'rgba(30,111,153,.36)');
+      lidFill.addColorStop(.42, 'rgba(7,34,55,.70)');
+      lidFill.addColorStop(1, 'rgba(0,8,18,.88)');
+      ctx.fillStyle = lidFill;
+
+      ctx.beginPath();
+      ctx.moveTo(-eye.rx - 6, -eye.ry - 7);
+      ctx.lineTo(eye.rx + 6, -eye.ry - 7);
+      ctx.lineTo(eye.rx + 6, upperEdge - eye.ry * .14);
+      ctx.bezierCurveTo(eye.rx * .48, upperEdge + eye.ry * .27, -eye.rx * .48, upperEdge + eye.ry * .27, -eye.rx - 6, upperEdge - eye.ry * .14);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(-eye.rx - 6, eye.ry + 6);
+      ctx.lineTo(eye.rx + 6, eye.ry + 6);
+      ctx.lineTo(eye.rx + 6, lowerEdge + eye.ry * .1);
+      ctx.bezierCurveTo(eye.rx * .48, lowerEdge - eye.ry * .08, -eye.rx * .48, lowerEdge - eye.ry * .08, -eye.rx - 6, lowerEdge + eye.ry * .1);
+      ctx.closePath();
+      ctx.globalAlpha = .48;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      ctx.strokeStyle = 'rgba(2,10,18,.82)';
+      ctx.lineWidth = 1.4;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-eye.rx + 3, upperEdge - eye.ry * .13);
+      ctx.bezierCurveTo(-eye.rx * .46, upperEdge + eye.ry * .24, eye.rx * .46, upperEdge + eye.ry * .24, eye.rx - 3, upperEdge - eye.ry * .13);
+      ctx.stroke();
+
+      if (p > .66) {
+        ctx.strokeStyle = 'rgba(0,6,13,.94)';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-eye.rx + 4, closedY);
+        ctx.bezierCurveTo(-eye.rx * .42, closedY + eye.ry * .13, eye.rx * .42, closedY + eye.ry * .13, eye.rx - 4, closedY);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    };
+    const drawLowerFace = (ctx) => {
+      ctx.save();
+      const noseShade = ctx.createLinearGradient(188, 235, 222, 340);
+      noseShade.addColorStop(0, 'rgba(68,35,31,0)');
+      noseShade.addColorStop(.76, 'rgba(66,35,31,.24)');
+      ctx.fillStyle = noseShade;
+      ctx.beginPath();
+      ctx.moveTo(205, 228);
+      ctx.bezierCurveTo(194, 264, 190, 307, 184, 333);
+      ctx.bezierCurveTo(196, 343, 215, 343, 226, 333);
+      ctx.bezierCurveTo(220, 306, 216, 264, 205, 228);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = 'rgba(70,36,32,.42)';
+      ctx.lineWidth = 1.2;
+      drawSmooth(ctx, [[193,331],[202,336],[217,331]]);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(45,21,20,.48)';
+      ctx.beginPath();
+      ctx.ellipse(194, 331, 5, 2, -.15, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(217, 331, 5, 2, .15, 0, Math.PI * 2);
+      ctx.fill();
+
+      const lip = ctx.createLinearGradient(160, 386, 250, 405);
+      lip.addColorStop(0, 'rgba(82,36,42,.92)');
+      lip.addColorStop(.5, 'rgba(138,70,74,.94)');
+      lip.addColorStop(1, 'rgba(55,24,31,.92)');
+      ctx.fillStyle = lip;
+      ctx.beginPath();
+      ctx.moveTo(164, 391);
+      ctx.bezierCurveTo(181, 382, 194, 387, 205, 387);
+      ctx.bezierCurveTo(216, 387, 229, 382, 246, 391);
+      ctx.bezierCurveTo(229, 405, 181, 405, 164, 391);
+      ctx.fill();
+
+      ctx.strokeStyle = 'rgba(34,14,18,.72)';
+      ctx.lineWidth = 1.6;
+      drawSmooth(ctx, [[166,391],[186,394],[205,393],[224,394],[244,391]]);
+      ctx.stroke();
+      ctx.restore();
+    };
+    const renderCanvasFace = (blinkAmount = 0) => {
+      if (!canvasCtx || !faceCanvas || !faceImage.complete || !faceImage.naturalWidth) return;
+      if (faceCanvas.width !== faceCrop.width || faceCanvas.height !== faceCrop.height) {
+        faceCanvas.width = faceCrop.width;
+        faceCanvas.height = faceCrop.height;
+      }
+      canvasCtx.clearRect(0, 0, faceCanvas.width, faceCanvas.height);
+      canvasCtx.drawImage(
+        faceImage,
+        faceSource.x, faceSource.y, faceSource.width, faceSource.height,
+        0, 0, faceCrop.width, faceCrop.height
+      );
+      eyeRig.forEach((eye) => drawEye(canvasCtx, eye, blinkAmount));
+    };
+    const tickBlink = (now) => {
+      const progress = blinkDuration ? (now - blinkStartedAt) / blinkDuration : 1;
+      renderCanvasFace(blinkCurve(progress));
+      if (progress < 1) {
+        blinkAnimFrame = window.requestAnimationFrame(tickBlink);
         return;
       }
-      window.setTimeout(loadBlinkSprite, 900);
+      blinkActive = false;
+      renderCanvasFace(0);
+      blink.classList.remove('is-playing');
+      document.body.classList.remove('rw-v2-blink-playing');
+      blinkDone?.();
+      blinkDone = null;
     };
+    const activateCanvasFace = () => {
+      if (!faceCanvas || !canvasCtx || !faceImage.complete || !faceImage.naturalWidth) return;
+      renderCanvasFace(0);
+      document.body.classList.add('rw-v2-canvas-face-ready');
+      if (eyeContact) {
+        eyeContact.style.setProperty('opacity', '0', 'important');
+      }
+    };
+    faceImage.addEventListener('load', activateCanvasFace, { once:true });
+    activateCanvasFace();
     const nextBlinkDelay = () => {
-      const base = 2850 + Math.pow(Math.random(), 1.35) * 5600;
-      return Math.random() < .10 ? base + randomBetween(1100, 3100) : base;
+      const base = 1250 + Math.pow(Math.random(), 1.2) * 2500;
+      return Math.random() < .14 ? base + randomBetween(650, 1500) : base;
     };
     const updateGeometry = () => {
       const rect = shell.getBoundingClientRect();
@@ -578,13 +1206,13 @@
       const renderedHeight = natural.height * scale;
       const offsetX = (rect.width - renderedWidth) / 2;
       const offsetY = (rect.height - renderedHeight) / 2;
-      blink.style.setProperty('--rw-blink-left', `${offsetX + crop.x * scale}px`);
-      blink.style.setProperty('--rw-blink-top', `${offsetY + crop.y * scale}px`);
-      blink.style.setProperty('--rw-blink-width', `${crop.width * scale}px`);
-      blink.style.setProperty('--rw-blink-height', `${crop.height * scale}px`);
+      blink.style.setProperty('--rw-face-left', `${offsetX + faceCrop.x * scale}px`);
+      blink.style.setProperty('--rw-face-top', `${offsetY + faceCrop.y * scale}px`);
+      blink.style.setProperty('--rw-face-width', `${faceCrop.width * scale}px`);
+      blink.style.setProperty('--rw-face-height', `${faceCrop.height * scale}px`);
       blink.style.setProperty('--rw-head-origin-x', `${offsetX + (faceCrop.x + faceCrop.width * .52) * scale}px`);
       blink.style.setProperty('--rw-head-origin-y', `${offsetY + (faceCrop.y + faceCrop.height * .46) * scale}px`);
-      [faceShadow, facePlate, faceHalo, faceCutout, eyeContact].forEach((faceLayer) => {
+      [faceShadow, facePlate, faceHalo, faceCutout, faceCanvas, eyeContact].forEach((faceLayer) => {
         if (!faceLayer) return;
         faceLayer.style.setProperty('--rw-face-left', `${offsetX + faceCrop.x * scale}px`);
         faceLayer.style.setProperty('--rw-face-top', `${offsetY + faceCrop.y * scale}px`);
@@ -597,13 +1225,8 @@
       raf = window.requestAnimationFrame(updateGeometry);
     };
     const playBlink = (duration = 1180, done) => {
-      if (!spriteReady) {
-        document.body.classList.remove('rw-v2-blink-playing');
-        loadBlinkSprite();
-        done?.();
-        return;
-      }
       window.clearTimeout(hideTimer);
+      window.cancelAnimationFrame(blinkAnimFrame);
       updateGeometry();
       blink.style.setProperty('--rw-blink-duration', `${Math.round(duration)}ms`);
       blink.classList.remove('is-playing');
@@ -611,18 +1234,28 @@
       blink.offsetHeight;
       blink.classList.add('is-playing');
       document.body.classList.add('rw-v2-blink-playing');
+      blinkActive = true;
+      blinkStartedAt = performance.now();
+      blinkDuration = duration;
+      blinkDone = done;
+      renderCanvasFace(0);
+      blinkAnimFrame = window.requestAnimationFrame(tickBlink);
       hideTimer = window.setTimeout(() => {
+        window.cancelAnimationFrame(blinkAnimFrame);
+        blinkActive = false;
+        renderCanvasFace(0);
         blink.classList.remove('is-playing');
         document.body.classList.remove('rw-v2-blink-playing');
-        done?.();
-      }, duration);
+        blinkDone?.();
+        blinkDone = null;
+      }, duration + 80);
     };
     const runBlink = () => {
       const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
       if (!reducedMotion && !document.body.classList.contains('app-open') && !document.hidden) {
-        playBlink(randomBetween(1040, 1280), () => {
-          if (Math.random() < .065) {
-            window.setTimeout(() => playBlink(randomBetween(820, 980)), randomBetween(260, 460));
+        playBlink(randomBetween(620, 820), () => {
+          if (Math.random() < .16) {
+            window.setTimeout(() => playBlink(randomBetween(520, 680)), randomBetween(230, 410));
           }
         });
       }
@@ -634,12 +1267,14 @@
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         window.clearTimeout(hideTimer);
+        window.cancelAnimationFrame(blinkAnimFrame);
+        blinkActive = false;
+        renderCanvasFace(0);
         blink.classList.remove('is-playing');
         document.body.classList.remove('rw-v2-blink-playing');
       }
     });
-    queueBlinkSpriteLoad();
-    window.setTimeout(runBlink, randomBetween(2600, 4200));
+    window.setTimeout(runBlink, randomBetween(900, 1700));
   }
 
   function renderHero(){
