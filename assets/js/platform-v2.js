@@ -11,6 +11,8 @@
   let weatherRequest = null;
   let weatherLastAttempt = 0;
   let weatherRefreshAllowedAt = Date.now() + 2500;
+  let weatherRefreshScheduled = false;
+  let contactRenderScheduled = false;
   let nativeWallEngineStarted = false;
   let nativeWallFrame = 0;
   let nativeWallLastPaint = 0;
@@ -1881,6 +1883,15 @@
       .catch(() => {})
       .finally(() => { weatherRequest = null; });
   }
+  function scheduleWeatherRefresh(){
+    if (weatherRefreshScheduled) return;
+    weatherRefreshScheduled = true;
+    const idle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 6000));
+    idle(() => {
+      weatherRefreshScheduled = false;
+      refreshWeather();
+    }, { timeout: 12000 });
+  }
 
   function applyWeatherClass(state){
     const known = ['clear', 'partly-cloudy', 'cloudy', 'rain', 'snow', 'fog'];
@@ -1921,7 +1932,7 @@
     const shell = document.querySelector('.rw-v2-shell');
     if (!shell) return;
     const weather = readWeatherCache();
-    refreshWeather();
+    scheduleWeatherRefresh();
     const amsterdam = getAmsterdamTimeParts(now);
     const day = amsterdam.dayOfYear;
     const hour = amsterdam.hour;
@@ -1996,6 +2007,7 @@
   function renderContact(){
     const contact = document.querySelector('.rw-v2-contact');
     if (!contact) return;
+    contactRenderScheduled = false;
     contact.innerHTML = `<div class="rw-v2-contact-copy">
       <span>${t('contactTitle')}</span>
       <a href="mailto:rafalw898@gmail.com">rafalw898@gmail.com</a>
@@ -2008,6 +2020,12 @@
       <label class="rw-v2-contact-honeypot"><span>Website</span><input name="website" autocomplete="off" tabindex="-1"></label>
       <button type="submit">${t('contactSend')}</button>
     </form>`;
+  }
+  function scheduleContactRender(){
+    if (contactRenderScheduled) return;
+    contactRenderScheduled = true;
+    const idle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 1200));
+    idle(renderContact, { timeout: 2500 });
   }
   function getContactEndpoint(){
     return String(window.RW_CONTACT_ENDPOINT || CONTACT_ENDPOINT || '').trim();
@@ -2390,7 +2408,7 @@
   function applyLanguage(){
     renderHero();
     renderToolbar();
-    renderContact();
+    scheduleContactRender();
     enhanceCards();
     patchPinTexts();
     updateModuleBar();
@@ -3069,7 +3087,7 @@
     ensureShell();
     renderHero();
     renderToolbar();
-    renderContact();
+    scheduleContactRender();
     enhanceCards();
     patchPinTexts();
     updateModuleBar();
