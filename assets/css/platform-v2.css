@@ -8135,17 +8135,6 @@ body.rw-v2-ready:not(.app-open) .rw-v2-mouth-glint{
   transform:translate(-42%, calc(-50% + var(--rw-mouth-gap))) scaleX(var(--rw-mouth-wide))!important;
 }
 
-body.rw-v2-ready:not(.app-open) .rw-v2-assistant-voice{
-  position:fixed!important;
-  left:0!important;
-  top:0!important;
-  width:1px!important;
-  height:1px!important;
-  opacity:0!important;
-  pointer-events:none!important;
-  visibility:hidden!important;
-}
-
 body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-canvas,
 body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-cutout{
   opacity:0!important;

@@ -430,14 +430,7 @@
       assistantMouth.innerHTML = '<span class="rw-v2-mouth-core"></span><span class="rw-v2-mouth-upper"></span><span class="rw-v2-mouth-lower"></span><span class="rw-v2-mouth-glint"></span>';
       shell.appendChild(assistantMouth);
     }
-    if (!shell.querySelector('.rw-v2-assistant-voice')) {
-      const assistantVoice = document.createElement('audio');
-      assistantVoice.className = 'rw-v2-assistant-voice';
-      assistantVoice.preload = 'metadata';
-      assistantVoice.setAttribute('preload', 'metadata');
-      assistantVoice.src = 'assets/audio/samantha-intro.mp3?v=20260721-samantha-intro-1';
-      shell.appendChild(assistantVoice);
-    }
+    shell.querySelectorAll('.rw-v2-assistant-voice').forEach((assistantVoice) => assistantVoice.remove());
     shell.querySelectorAll('.rw-v2-voice-unlock').forEach((voiceUnlock) => voiceUnlock.remove());
     if (!shell.querySelector('.rw-v2-assistant-blink')) {
       const assistantBlink = document.createElement('div');
@@ -528,262 +521,21 @@
 
   function startAssistantVoice(shell){
     const mouth = shell?.querySelector('.rw-v2-assistant-mouth-sync');
-    const audio = shell?.querySelector('.rw-v2-assistant-voice');
     if (!mouth || mouth.dataset.rwVoiceActive === 'true') return;
     mouth.dataset.rwVoiceActive = 'true';
-    if (!audio) return;
-    audio.preload = 'metadata';
-    audio.setAttribute('preload', 'metadata');
-    if (!audio.src || !audio.src.includes('samantha-intro.mp3')) {
-      audio.src = 'assets/audio/samantha-intro.mp3?v=20260721-samantha-intro-1';
-    }
-
-    const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, value));
-    let audioContext = null;
-    let analyser = null;
-    let source = null;
-    let waveform = null;
-    let spectrum = null;
-    let raf = 0;
-    let pendingUserGesture = false;
-    let userGestureSeen = false;
-    let hasStarted = false;
-    let smoothOpen = 0;
-    let smoothWide = 0;
-    let lastPeakAt = 0;
-    let presenceTimer = 0;
-    const mouthCueMap = [
-      [0,0,0.234],[0.04,0,0.21],[0.08,0.316,0.246],[0.12,0.532,0.333],
-      [0.16,0.68,0.402],[0.2,0.68,0.414],[0.24,0.68,0.399],[0.28,0.68,0.428],
-      [0.32,0.416,0.485],[0.36,0.236,0.454],[0.4,0.341,0.471],[0.44,0.552,0.346],
-      [0.48,0.68,0.392],[0.52,0.635,0.374],[0.56,0.633,0.373],[0.6,0.552,0.461],
-      [0.64,0.398,0.519],[0.68,0.35,0.397],[0.72,0.464,0.306],[0.76,0.68,0.392],
-      [0.8,0.587,0.365],[0.84,0.583,0.367],[0.88,0.665,0.386],[0.92,0.56,0.344],
-      [0.96,0.517,0.327],[1,0.574,0.375],[1.04,0.617,0.393],[1.08,0.68,0.413],
-      [1.12,0.554,0.342],[1.16,0.365,0.266],[1.2,0.223,0.449],[1.24,0.214,0.446],
-      [1.28,0.347,0.499],[1.32,0.257,0.463],[1.36,0.316,0.459],[1.4,0.507,0.344],
-      [1.44,0.416,0.313],[1.48,0.403,0.312],[1.52,0.385,0.315],[1.56,0.364,0.275],
-      [1.6,0.325,0.266],[1.64,0.284,0.296],[1.68,0.221,0.338],[1.72,0.08,0.392],
-      [1.76,0.2,0.329],[1.8,0.166,0.382],[1.84,0.178,0.389],[1.88,0.449,0.331],
-      [1.92,0.635,0.388],[1.96,0.527,0.331],[2,0.348,0.358],[2.04,0.162,0.425],
-      [2.08,0.186,0.391],[2.12,0.419,0.288],[2.16,0.607,0.363],[2.2,0.552,0.341],
-      [2.24,0.552,0.341],[2.28,0.55,0.34],[2.32,0.499,0.323],[2.36,0.48,0.315],
-      [2.4,0.634,0.381],[2.44,0.553,0.344],[2.48,0.519,0.327],[2.52,0.399,0.283],
-      [2.56,0.234,0.389],[2.6,0.107,0.403],[2.64,0.048,0.379],[2.68,0.338,0.304],
-      [2.72,0.56,0.344],[2.76,0.462,0.305],[2.8,0.442,0.297],[2.84,0.585,0.354],
-      [2.88,0.489,0.316],[2.92,0.423,0.289],[2.96,0.502,0.323],[3,0.633,0.403],
-      [3.04,0.553,0.354],[3.08,0.535,0.334],[3.12,0.513,0.325],[3.16,0.473,0.309],
-      [3.2,0.398,0.317],[3.24,0.429,0.292],[3.28,0.283,0.243],[3.32,0.185,0.322],
-      [3.36,0.123,0.257],[3.4,0.081,0.165],[3.44,0.054,0.164],[3.48,0.035,0.139],
-      [3.52,0.023,0.167],[3.56,0.015,0.241],[3.6,0.003,0.114],[3.64,0.002,0.125],
-      [3.68,0,0.206]
-    ];
-
-    const setVoiceState = (state) => {
-      mouth.dataset.rwVoiceState = state;
-      window.__rwAssistantVoiceState = state;
-    };
-
-    const sampleMouthCue = (time) => {
-      const cueTime = Math.max(0, Number(time) + .035);
-      if (cueTime <= mouthCueMap[0][0]) return { open:mouthCueMap[0][1], wide:mouthCueMap[0][2] };
-      const last = mouthCueMap[mouthCueMap.length - 1];
-      if (cueTime >= last[0]) return { open:0, wide:.08 };
-      let low = 0;
-      let high = mouthCueMap.length - 1;
-      while (high - low > 1) {
-        const mid = (low + high) >> 1;
-        if (mouthCueMap[mid][0] <= cueTime) low = mid;
-        else high = mid;
-      }
-      const a = mouthCueMap[low];
-      const b = mouthCueMap[high];
-      const mix = clamp((cueTime - a[0]) / Math.max(.001, b[0] - a[0]));
-      return {
-        open:a[1] + (b[1] - a[1]) * mix,
-        wide:a[2] + (b[2] - a[2]) * mix
-      };
-    };
-    window.__rwAssistantMouthCueMap = { duration:3.709, frames:mouthCueMap.length };
-
-    const applyMouthPose = (open, wide) => {
-      const mouthOpen = clamp(open, 0, .68);
-      const mouthWide = clamp(wide, 0, .72);
-      mouth.style.setProperty('--rw-mouth-open', mouthOpen.toFixed(3));
-      mouth.style.setProperty('--rw-mouth-gap', `${(mouthOpen * 8.2).toFixed(2)}px`);
-      mouth.style.setProperty('--rw-mouth-height', `${(1.3 + mouthOpen * 19.5).toFixed(2)}px`);
-      mouth.style.setProperty('--rw-mouth-wide', (1 + mouthWide * .22).toFixed(3));
-      mouth.style.setProperty('--rw-mouth-alpha', (0.12 + mouthOpen * 0.54).toFixed(3));
-      mouth.style.setProperty('--rw-mouth-line-alpha', (0.24 + mouthOpen * 0.46).toFixed(3));
-      mouth.style.setProperty('--rw-mouth-glint-alpha', (0.08 + mouthOpen * 0.20).toFixed(3));
-      mouth.style.setProperty('--rw-mouth-upper-shift', `${(mouthOpen * 3.0).toFixed(2)}px`);
-      mouth.style.setProperty('--rw-mouth-lower-shift', `${(mouthOpen * 10.6).toFixed(2)}px`);
-    };
-
-    const resetMouth = () => {
-      smoothOpen = 0;
-      smoothWide = 0;
-      applyMouthPose(0, 0);
-      document.body.classList.remove('rw-v2-assistant-speaking');
-      if (!pendingUserGesture) document.body.classList.remove('rw-v2-assistant-voice-blocked');
-      window.cancelAnimationFrame(raf);
-      raf = 0;
-    };
-
-    const ensureAudioAnalysis = async () => {
-      const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextCtor) return false;
-      if (!audioContext) {
-        audioContext = new AudioContextCtor();
-      }
-      if (!source) {
-        analyser = audioContext.createAnalyser();
-        analyser.fftSize = 512;
-        analyser.smoothingTimeConstant = .68;
-        source = audioContext.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        waveform = new Uint8Array(analyser.fftSize);
-        spectrum = new Uint8Array(analyser.frequencyBinCount);
-      }
-      if (audioContext.state === 'suspended') {
-        await audioContext.resume();
-      }
-      return true;
-    };
-
-    const animateMouth = () => {
-      if (audio.paused || audio.ended) {
-        setVoiceState(audio.ended ? 'ended' : 'paused');
-        resetMouth();
-        return;
-      }
-
-      let rms = 0;
-      let zeroCrossings = 0;
-      let highEnergy = 0;
-      let voiceEnergy = 0;
-      if (analyser && waveform) {
-        analyser.getByteTimeDomainData(waveform);
-        let previous = waveform[0] - 128;
-        for (let i = 0; i < waveform.length; i += 1) {
-          const normalized = (waveform[i] - 128) / 128;
-          rms += normalized * normalized;
-          if (i > 0) {
-            const current = waveform[i] - 128;
-            if ((current >= 0 && previous < 0) || (current < 0 && previous >= 0)) zeroCrossings += 1;
-            previous = current;
-          }
-        }
-        rms = Math.sqrt(rms / waveform.length);
-        if (spectrum) {
-          analyser.getByteFrequencyData(spectrum);
-          for (let i = 3; i < spectrum.length; i += 1) {
-            if (i < 34) voiceEnergy += spectrum[i];
-            if (i >= 34 && i < 98) highEnergy += spectrum[i];
-          }
-        }
-      } else {
-        rms = .028 + Math.max(0, Math.sin(audio.currentTime * 18)) * .035;
-        zeroCrossings = 18 + Math.max(0, Math.sin(audio.currentTime * 21)) * 20;
-      }
-
-      const now = performance.now();
-      const peak = rms > .082 && now - lastPeakAt > 115;
-      if (peak) lastPeakAt = now;
-      const consonantRatio = voiceEnergy > 0 ? highEnergy / voiceEnergy : zeroCrossings / waveform?.length || 0;
-      const syllableLift = peak ? .07 : 0;
-      const analysedOpen = clamp((rms - .018) * 4.25 + syllableLift, 0, .64);
-      const analysedWide = clamp(.08 + consonantRatio * .42 + analysedOpen * .24, 0, .70);
-      const cue = sampleMouthCue(audio.currentTime);
-      const targetOpen = clamp(cue.open * .88 + analysedOpen * .18, 0, .68);
-      const targetWide = clamp(cue.wide * .84 + analysedWide * .16, 0, .72);
-      const attack = targetOpen > smoothOpen ? .58 : .36;
-      smoothOpen += (targetOpen - smoothOpen) * attack;
-      smoothWide += (targetWide - smoothWide) * .30;
-
-      applyMouthPose(smoothOpen, smoothWide);
-      raf = window.requestAnimationFrame(animateMouth);
-    };
-
-    const startGreetingPresence = () => {
-      if (hasStarted || document.hidden || document.body.classList.contains('app-open')) return;
-      pendingUserGesture = true;
-      document.body.classList.add('rw-v2-assistant-presence');
-      document.body.classList.remove('rw-v2-assistant-voice-blocked');
-      setVoiceState('waiting-for-interaction');
-      window.clearTimeout(presenceTimer);
-      presenceTimer = window.setTimeout(() => {
-        document.body.classList.remove('rw-v2-assistant-presence');
-      }, 5200);
-      if (userGestureSeen) playIntro();
-    };
-
-    const playIntro = async () => {
-      if (hasStarted || document.hidden || document.body.classList.contains('app-open')) return;
-      hasStarted = true;
-      window.cancelAnimationFrame(raf);
-      raf = 0;
-      pendingUserGesture = false;
-      document.body.classList.remove('rw-v2-assistant-presence');
-      setVoiceState('starting');
-      audio.loop = false;
-      audio.muted = false;
-      audio.volume = 1;
-      try {
-        audio.currentTime = 0;
-      } catch (e) {}
-      try {
-        await audio.play();
-      } catch (e) {
-        hasStarted = false;
-        pendingUserGesture = true;
-        setVoiceState('blocked');
-        document.body.classList.add('rw-v2-assistant-voice-blocked');
-        resetMouth();
-        return;
-      }
-      if (audio.paused) {
-        hasStarted = false;
-        pendingUserGesture = true;
-        setVoiceState('blocked');
-        document.body.classList.add('rw-v2-assistant-voice-blocked');
-        resetMouth();
-        return;
-      }
-      document.body.classList.remove('rw-v2-assistant-voice-blocked');
-      try {
-        await Promise.race([
-          ensureAudioAnalysis(),
-          new Promise((resolve) => window.setTimeout(resolve, 420))
-        ]);
-      } catch (e) {}
-      setVoiceState(analyser ? 'playing-cue-analyser' : 'playing-cue');
-      document.body.classList.add('rw-v2-assistant-speaking');
-      animateMouth();
-    };
-
-    const playAfterGesture = () => {
-      userGestureSeen = true;
-      if (!pendingUserGesture || hasStarted) return;
-      playIntro();
-    };
-
-    window.setTimeout(startGreetingPresence, 5000);
-    ['pointerdown', 'click', 'keydown', 'touchstart'].forEach((eventName) => {
-      window.addEventListener(eventName, playAfterGesture, { passive:true });
-    });
-    setVoiceState('armed');
-    audio.addEventListener('ended', () => {
-      setVoiceState('ended');
-      resetMouth();
-    });
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        audio.pause();
-        resetMouth();
-      }
-    });
+    mouth.dataset.rwVoiceState = 'disabled';
+    window.__rwAssistantVoiceState = 'disabled';
+    window.__rwAssistantMouthCueMap = null;
+    document.body.classList.remove('rw-v2-assistant-speaking', 'rw-v2-assistant-presence', 'rw-v2-assistant-voice-blocked');
+    mouth.style.setProperty('--rw-mouth-open', '0.000');
+    mouth.style.setProperty('--rw-mouth-gap', '0.00px');
+    mouth.style.setProperty('--rw-mouth-height', '1.30px');
+    mouth.style.setProperty('--rw-mouth-wide', '1.000');
+    mouth.style.setProperty('--rw-mouth-alpha', '0.120');
+    mouth.style.setProperty('--rw-mouth-line-alpha', '0.240');
+    mouth.style.setProperty('--rw-mouth-glint-alpha', '0.080');
+    mouth.style.setProperty('--rw-mouth-upper-shift', '0.00px');
+    mouth.style.setProperty('--rw-mouth-lower-shift', '0.00px');
   }
 
   function startAssistantBlink(shell){
