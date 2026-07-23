@@ -114,7 +114,7 @@
     authorizedOnce = false;
     var p = parts();
     if (p.title) p.title.textContent = 'Dostep do modulu';
-    if (p.text) p.text.textContent = moduleTitle ? 'Wpisz PIN 4685, aby otworzyc: ' + moduleTitle : 'Wpisz PIN 4685, aby otworzyc wybrany modul.';
+    if (p.text) p.text.textContent = moduleTitle ? 'Wpisz PIN, aby otworzyc: ' + moduleTitle : 'Wpisz PIN, aby otworzyc wybrany modul.';
     if (p.err) p.err.textContent = '';
     if (p.pin) p.pin.value = '';
     if (p.gate) {
@@ -585,14 +585,8 @@ function openMyCompany(){
   };
   document.addEventListener('DOMContentLoaded', function(){
     try{
-      const frameRaw = localStorage.getItem(ACTIVE_FRAME_KEY);
-      if (frameRaw) {
-        const frameState = JSON.parse(frameRaw);
-        if (frameState && frameState.id && window.openApp) window.openApp(frameState.id, frameState.title || '');
-        return;
-      }
-      const raw = localStorage.getItem(ACTIVE_MODULE_KEY);
-      if (raw !== null && raw !== '') requestLegacyModule(Number(raw));
+      localStorage.removeItem(ACTIVE_FRAME_KEY);
+      localStorage.removeItem(ACTIVE_MODULE_KEY);
     }catch(_e){}
   });
 })();
@@ -1747,7 +1741,7 @@ function openApp(id, title){
   setTimeout(install, 2200);
 })();
 </script>
-<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260723-pin-once-1">
+<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260723-pin-modules-only-1">
 <style id="rw-hide-title-clock-override">
 body.rw-v2-ready:not(.app-open) header.rw-header,
 body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster .rw-v2-brand-lockup,
@@ -1757,4 +1751,4 @@ body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock{
 }
 </style>
 <script src="assets/js/contact-config.js?v=20260708-18"></script>
-<script src="assets/js/platform-v2.js?v=20260723-pin-once-1"></script>
+<script src="assets/js/platform-v2.js?v=20260723-pin-modules-only-1"></script>
