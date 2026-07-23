@@ -613,22 +613,16 @@
       faceVideo.addEventListener('loadeddata', markVideoReady, { once:true });
       faceVideo.addEventListener('canplay', markVideoReady, { once:true });
       markVideoReady();
-      let videoLoadRequested = false;
-      const loadVideoOnIntent = (event) => {
-        if (videoLoadRequested) return;
+      const loadVideoWhenIdle = () => {
         if (document.hidden || document.body.classList.contains('app-open')) return;
-        const target = event?.target;
-        if (target?.closest?.('[onclick*="openApp"], [data-app-id], .rw-v2-app-card, .rw-v2-module-card')) return;
-        videoLoadRequested = true;
         if (!faceVideo.src || !faceVideo.src.includes(videoSource.split('?')[0])) {
           faceVideo.src = videoSource;
           faceVideo.load?.();
         }
         faceVideo.play?.().catch(() => {});
       };
-      ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
-        window.addEventListener(eventName, loadVideoOnIntent, { passive:true, once:true });
-      });
+      const idle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 2600));
+      idle(loadVideoWhenIdle, { timeout: 4200 });
       const queueVideoGeometry = () => {
         window.cancelAnimationFrame(raf);
         raf = window.requestAnimationFrame(updateVideoGeometry);
@@ -641,7 +635,7 @@
           faceVideo.pause?.();
           return;
         }
-        if (videoLoadRequested) faceVideo.play?.().catch(() => {});
+        faceVideo.play?.().catch(() => {});
       });
       return;
     }
