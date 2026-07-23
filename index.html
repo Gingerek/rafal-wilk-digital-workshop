@@ -8,7 +8,6 @@
 <title>Rafal Wilk Digital Workshop ©</title>
 <link rel="preload" as="image" fetchpriority="high" href="assets/images/private-command-center-hero-personal-bg-day-v15.webp?v=20260717-personal-sharp-1"/>
 <link rel="preload" as="image" href="assets/images/aireel-face-poster-v2.webp?v=20260721-face-poster-2"/>
-<link rel="preload" as="video" type="video/mp4" media="(min-width: 761px)" href="assets/videos/aireel-face-hd-seamless-integrated-v4-smoothplay.mp4?v=20260721-smoothplay-1"/>
 <style id="rw-critical-home-boot">
   html{background:#05080d}
   body:not(.rw-v2-ready):not(.app-open){
@@ -176,7 +175,10 @@
     }
     document.querySelectorAll('iframe').forEach(function(frame){ frame.classList.remove('show'); });
     var frame = document.getElementById(id);
-    if (frame) frame.classList.add('show');
+    if (frame) {
+      if (!frame.getAttribute('src') && frame.dataset.src) frame.setAttribute('src', frame.dataset.src);
+      frame.classList.add('show');
+    }
     var viewport = document.querySelector('.viewport');
     if (viewport) viewport.classList.add('active');
     document.body.classList.add('app-open');
@@ -265,6 +267,8 @@
 (function(){
   if(window.__rwFuturisticDockInstalled) return;
   window.__rwFuturisticDockInstalled=true;
+  let dockTimer=0;
+  let mo=null;
   function ensureDock(){
     if(!document.body) return;
     let dock=document.getElementById('rwLauncherDock');
@@ -277,12 +281,16 @@
     const launcher=document.getElementById('rwVoiceLauncher');
     if(api && api.parentElement!==dock) dock.appendChild(api);
     if(launcher && launcher.parentElement!==dock) dock.appendChild(launcher);
+    if(window.__rwPlatformV2 || document.body.classList.contains('rw-v2-ready')){
+      if(mo) mo.disconnect();
+      if(dockTimer) clearInterval(dockTimer);
+    }
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', ensureDock);
   ensureDock();
-  const mo=new MutationObserver(ensureDock);
+  mo=new MutationObserver(ensureDock);
   mo.observe(document.documentElement,{childList:true,subtree:true});
-  setInterval(ensureDock,1000);
+  dockTimer=setInterval(ensureDock,1000);
 })();
 </script>
 
@@ -387,15 +395,15 @@
 <div class="card"><div class="title" data-title-key="My Projects">My Projects</div><a class="btn" onclick="openMc()">Open</a></div></section>
 <section class="viewport">
 <iframe id="appframe" title="Aplikacja" loading="lazy"></iframe>
-<iframe id="managermeetingtracker" title="Rejestr spotkań z managerami" src="modules/manager-meeting-tracker.html" loading="lazy"></iframe>
+<iframe id="managermeetingtracker" title="Rejestr spotkań z managerami" data-src="modules/manager-meeting-tracker.html" loading="lazy"></iframe>
 
-<iframe id="homeofficetracker" title="Home Office Tracker" src="modules/home-office-tracker.html" loading="lazy"></iframe>
-<iframe id="redukcja" title="Redukcja" src="modules/redukcja.html?v=20260713-new-empty-history-key-1" loading="lazy"></iframe>
-<iframe id="rekentoolcombined" title="RekenTool Professional & General Staffing" src="modules/rekentool-combined.html" loading="lazy"></iframe>
-<iframe id="rekentoolgeneralstaffing" title="RekenTool General Staffing" src="modules/rekentool-general-staffing.html" loading="lazy"></iframe>
-<iframe id="rekentoolprofessionalstaffing" title="RekenTool Professional Staffing" src="modules/rekentool-professional-staffing.html" loading="lazy"></iframe>
-<iframe id="rekentoolpayroll" title="RekenTool Payroll" src="modules/rekentool-pay-roll.html" loading="lazy"></iframe>
-<iframe id="mycompany" src="modules/my-company.html" title="My Projects" loading="lazy"></iframe></section>
+<iframe id="homeofficetracker" title="Home Office Tracker" data-src="modules/home-office-tracker.html" loading="lazy"></iframe>
+<iframe id="redukcja" title="Redukcja" data-src="modules/redukcja.html?v=20260713-new-empty-history-key-1" loading="lazy"></iframe>
+<iframe id="rekentoolcombined" title="RekenTool Professional & General Staffing" data-src="modules/rekentool-combined.html" loading="lazy"></iframe>
+<iframe id="rekentoolgeneralstaffing" title="RekenTool General Staffing" data-src="modules/rekentool-general-staffing.html" loading="lazy"></iframe>
+<iframe id="rekentoolprofessionalstaffing" title="RekenTool Professional Staffing" data-src="modules/rekentool-professional-staffing.html" loading="lazy"></iframe>
+<iframe id="rekentoolpayroll" title="RekenTool Payroll" data-src="modules/rekentool-pay-roll.html" loading="lazy"></iframe>
+<iframe id="mycompany" data-src="modules/my-company.html" title="My Projects" loading="lazy"></iframe></section>
 </main>
 
 <script id="rw-force-xlsx-download">
@@ -665,7 +673,10 @@ function openApp(id, title){
 
   // show selected iframe
   var el = document.getElementById(id);
-  if (el) el.classList.add('show');
+  if (el) {
+    if (!el.getAttribute('src') && el.dataset.src) el.setAttribute('src', el.dataset.src);
+    el.classList.add('show');
+  }
 
   // activate viewport + hide cards grid (same behaviour as loadApp)
   var viewport = document.querySelector('.viewport');
@@ -1514,10 +1525,6 @@ function openApp(id, title){
     event.stopPropagation();
     loadVoiceAgent(true);
   }, true);
-  window.addEventListener('load', function(){
-    var idle = window.requestIdleCallback || function(cb){ return setTimeout(cb, 900); };
-    idle(function(){ loadVoiceAgent(false); }, { timeout: 3200 });
-  }, { once:true });
 })();
 </script>
 
@@ -1660,7 +1667,6 @@ function openApp(id, title){
   window.addEventListener('rwLanguageChanged', render);
   window.addEventListener('rwOpenAIKeyChanged', render);
   window.addEventListener('storage', render);
-  setInterval(render, 1200);
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', render);
   render();
 })();
@@ -1741,7 +1747,7 @@ function openApp(id, title){
   setTimeout(install, 2200);
 })();
 </script>
-<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260723-pin-modules-only-1">
+<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260723-speed-1">
 <style id="rw-hide-title-clock-override">
 body.rw-v2-ready:not(.app-open) header.rw-header,
 body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster .rw-v2-brand-lockup,
@@ -1751,4 +1757,4 @@ body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock{
 }
 </style>
 <script src="assets/js/contact-config.js?v=20260708-18"></script>
-<script src="assets/js/platform-v2.js?v=20260723-pin-modules-only-1"></script>
+<script src="assets/js/platform-v2.js?v=20260723-speed-1"></script>

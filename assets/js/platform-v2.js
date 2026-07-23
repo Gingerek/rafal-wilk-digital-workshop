@@ -413,14 +413,13 @@
       assistantFaceVideo.setAttribute('aria-hidden', 'true');
       assistantFaceVideo.muted = true;
       assistantFaceVideo.loop = true;
-      assistantFaceVideo.autoplay = true;
+      assistantFaceVideo.autoplay = false;
       assistantFaceVideo.playsInline = true;
-      assistantFaceVideo.preload = 'auto';
+      assistantFaceVideo.preload = 'none';
       assistantFaceVideo.setAttribute('muted', '');
       assistantFaceVideo.setAttribute('loop', '');
-      assistantFaceVideo.setAttribute('autoplay', '');
       assistantFaceVideo.setAttribute('playsinline', '');
-      assistantFaceVideo.setAttribute('preload', 'auto');
+      assistantFaceVideo.setAttribute('preload', 'none');
       shell.appendChild(assistantFaceVideo);
     }
     if (!shell.querySelector('.rw-v2-assistant-mouth-sync')) {
@@ -599,23 +598,29 @@
       };
       faceVideo.muted = true;
       faceVideo.loop = true;
-      faceVideo.autoplay = true;
+      faceVideo.autoplay = false;
       faceVideo.playsInline = true;
       faceVideo.playbackRate = 1;
       faceVideo.setAttribute('muted', '');
       faceVideo.setAttribute('loop', '');
-      faceVideo.setAttribute('autoplay', '');
       faceVideo.setAttribute('playsinline', '');
       faceVideo.poster = facePoster;
-      faceVideo.preload = 'auto';
+      faceVideo.preload = 'none';
+      faceVideo.setAttribute('preload', 'none');
       const videoSource = pickVideoSource();
-      if (!faceVideo.src || !faceVideo.src.includes(videoSource.split('?')[0])) {
-        faceVideo.src = videoSource;
-      }
       faceVideo.addEventListener('loadeddata', markVideoReady, { once:true });
       faceVideo.addEventListener('canplay', markVideoReady, { once:true });
-      faceVideo.play?.().catch(() => {});
       markVideoReady();
+      const loadVideoWhenIdle = () => {
+        if (document.hidden || document.body.classList.contains('app-open')) return;
+        if (!faceVideo.src || !faceVideo.src.includes(videoSource.split('?')[0])) {
+          faceVideo.src = videoSource;
+          faceVideo.load?.();
+        }
+        faceVideo.play?.().catch(() => {});
+      };
+      const idle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 2600));
+      idle(loadVideoWhenIdle, { timeout: 4200 });
       const queueVideoGeometry = () => {
         window.cancelAnimationFrame(raf);
         raf = window.requestAnimationFrame(updateVideoGeometry);
@@ -1717,7 +1722,7 @@
         nativeWallFrame = window.requestAnimationFrame(loop);
         return;
       }
-      if (!reducedMotion && time - nativeWallLastPaint < 42) {
+      if (!reducedMotion && time - nativeWallLastPaint < 100) {
         nativeWallFrame = window.requestAnimationFrame(loop);
         return;
       }
@@ -2158,7 +2163,10 @@
     } catch (_e) {}
     document.querySelectorAll('iframe').forEach((frame) => frame.classList.remove('show'));
     const frame = document.getElementById(id);
-    if (frame) frame.classList.add('show');
+    if (frame) {
+      if (!frame.getAttribute('src') && frame.dataset.src) frame.setAttribute('src', frame.dataset.src);
+      frame.classList.add('show');
+    }
     const viewport = document.querySelector('.viewport');
     if (viewport) viewport.classList.add('active');
     document.body.classList.add('app-open');
