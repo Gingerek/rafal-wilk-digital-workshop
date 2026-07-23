@@ -2473,7 +2473,6 @@
         if (legacyIdx !== null && legacyIdx !== '') {
           event.preventDefault();
           const openLegacyModule = () => {
-            if (window.__rwModulePinConsume) window.__rwModulePinConsume();
             if (typeof window.loadApp === 'function') {
               window.loadApp(Number(legacyIdx));
             }
@@ -2491,7 +2490,6 @@
         if (protectedHref) {
           event.preventDefault();
           const openProtectedLink = () => {
-            if (window.__rwModulePinConsume) window.__rwModulePinConsume();
             const link = document.createElement('a');
             link.href = moduleButton.href;
             if (moduleButton.hasAttribute('download')) {

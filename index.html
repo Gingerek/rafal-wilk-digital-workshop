@@ -199,12 +199,10 @@
     event.stopImmediatePropagation();
     window.__rwRequestModulePin(function(){
       if (moduleMatch) {
-        if (window.__rwModulePinConsume) window.__rwModulePinConsume();
         window.openApp(moduleMatch[1], moduleTitle);
         return;
       }
       if (dataIdx !== null && typeof window.loadApp === 'function') {
-        if (window.__rwModulePinConsume) window.__rwModulePinConsume();
         window.loadApp(Number(dataIdx));
         return;
       }
@@ -563,7 +561,6 @@ function openMyCompany(){
   };
   function requestLegacyModule(idx){
     const open = function(){
-      if (window.__rwModulePinConsume) window.__rwModulePinConsume();
       stubLoadApp(Number(idx));
     };
     if (window.__rwRequestModulePin) {
@@ -1750,7 +1747,7 @@ function openApp(id, title){
   setTimeout(install, 2200);
 })();
 </script>
-<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260723-clean-secure-3">
+<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260723-pin-once-1">
 <style id="rw-hide-title-clock-override">
 body.rw-v2-ready:not(.app-open) header.rw-header,
 body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster .rw-v2-brand-lockup,
@@ -1760,4 +1757,4 @@ body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock{
 }
 </style>
 <script src="assets/js/contact-config.js?v=20260708-18"></script>
-<script src="assets/js/platform-v2.js?v=20260723-clean-secure-3"></script>
+<script src="assets/js/platform-v2.js?v=20260723-pin-once-1"></script>
