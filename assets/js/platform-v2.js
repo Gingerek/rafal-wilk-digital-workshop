@@ -2320,9 +2320,6 @@
       setTimeout(patchPinTexts, 0);
     });
     gate && pinTextObserver.observe(gate, { childList:true, characterData:true, subtree:true, attributes:true, attributeFilter:['style', 'class'] });
-    setInterval(() => {
-      if (gate && getComputedStyle(gate).display !== 'none') patchPinTexts();
-    }, 900);
     const mo = new MutationObserver(() => {
       if (err && err.textContent) {
         err.textContent = t('wrongPin');
@@ -2537,13 +2534,10 @@
     window.addEventListener('storage', applyLanguage);
     window.addEventListener('rwLanguageChanged', applyLanguage);
     setInterval(() => {
-      if (!document.body.classList.contains('app-open')) {
-        syncHomeLang();
-        enhanceCards();
-      } else {
+      if (document.body.classList.contains('app-open')) {
         updateModuleBar();
       }
-    }, 3600);
+    }, 10000);
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter' && event.key !== ' ') return;
       const card = event.target.closest?.('main.wrap .grid .card');
@@ -2584,7 +2578,9 @@
     });
     const bodyObserver = new MutationObserver(updateModuleBar);
     bodyObserver.observe(document.body, { attributes:true, attributeFilter:['class'] });
-    setInterval(updateModuleBar, 3000);
+    setInterval(() => {
+      if (document.body.classList.contains('app-open')) updateModuleBar();
+    }, 12000);
   }
   let premiumPointerBound = false;
   function bindPremiumPointer(){
@@ -3090,7 +3086,7 @@
     startNativeWallCanvas();
     bindPremiumPointer();
     updateWallClock();
-    setInterval(updateWallClock, 1000);
+    setInterval(updateWallClock, 60000);
     window.addEventListener('resize', () => window.requestAnimationFrame(positionCommandTrigger), { passive:true });
     ensureOpenAppBridge();
     enhancePin();
@@ -3099,14 +3095,15 @@
     bindEvents();
     hideStageWidgets();
     new MutationObserver(() => window.requestAnimationFrame(hideStageWidgets)).observe(document.body, { childList:true, subtree:true });
-    setInterval(hideStageWidgets, 4000);
     if (document.body.classList.contains('app-open')) skinModuleFrames();
     document.querySelectorAll('iframe').forEach(frame => frame.addEventListener('load', () => {
       applyPremiumModuleTheme(frame);
       scheduleLanguagePush(lang());
     }));
     new MutationObserver(scheduleSkinModuleFrames).observe(document.body, { childList:true, subtree:true });
-    setInterval(skinModuleFrames, 8000);
+    setInterval(() => {
+      if (document.body.classList.contains('app-open')) skinModuleFrames();
+    }, 15000);
     applyLanguage();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

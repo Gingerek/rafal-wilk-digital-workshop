@@ -185,6 +185,15 @@
     var placeholder = document.querySelector('.viewport .placeholder');
     if (placeholder) placeholder.style.display = 'none';
   };
+  window.openMc = window.openMc || function(){
+    window.__rwRequestModulePin(function(){
+      if (typeof openMyCompany === 'function') {
+        openMyCompany();
+      } else {
+        window.openApp('mycompany', 'My Projects');
+      }
+    }, 'My Projects');
+  };
   document.addEventListener('DOMContentLoaded', bindGate);
   document.addEventListener('click', function(event){
     var btn = event.target && event.target.closest ? event.target.closest('main.wrap .grid .card .btn, main.wrap .btn[data-idx]') : null;
@@ -709,96 +718,6 @@ function openApp(id, title){
 </div>
 </div>
 </div>
-<script>
-// --- Module password gate ---
-(function(){
-  const PIN = "4685";
-  const gate = document.getElementById('mc_gate');
-  const pin = document.getElementById('mc_pin');
-  const err = document.getElementById('mc_err');
-  const ok = document.getElementById('mc_ok');
-  const cancel = document.getElementById('mc_cancel');
-  const title = document.getElementById('mc_title');
-  const text = gate ? gate.querySelector('p') : null;
-  let pendingOpen = null;
-  let authorizedOnce = false;
-
-  window.__rwModulePinConsume = function(){
-    if (!authorizedOnce) return false;
-    authorizedOnce = false;
-    return true;
-  };
-
-  window.__rwRequestModulePin = function(callback, moduleTitle){
-    pendingOpen = callback;
-    authorizedOnce = false;
-    if (err) err.textContent = '';
-    if (pin) {
-      pin.value = '';
-      pin.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-    if (title) title.textContent = 'Enter PIN';
-    if (text) text.innerHTML = moduleTitle ? 'Enter the 4-digit code to open <b>' + moduleTitle + '</b>.' : 'Enter the 4-digit code to open this module.';
-    if (gate) {
-      gate.style.display = 'flex';
-      gate.setAttribute('aria-hidden', 'false');
-    }
-    setTimeout(function(){
-      try { pin && pin.focus({ preventScroll: true }); } catch(_e) { pin && pin.focus(); }
-    }, 0);
-  };
-
-  window.openMc = function(){
-    window.__rwRequestModulePin(function(){
-      if (typeof openMyCompany === 'function') {
-        openMyCompany();
-      } else {
-        openApp('mycompany', 'My Projects');
-      }
-    }, 'My Projects');
-  };
-
-  function tryUnlock(){
-    if (!pin) return;
-    if (pin.value === PIN){
-      gate.style.display = 'none';
-      gate.setAttribute('aria-hidden', 'true');
-      authorizedOnce = true;
-      const next = pendingOpen;
-      pendingOpen = null;
-      if (typeof next === 'function') next();
-    } else {
-      if (err) err.textContent = 'Incorrect code. Try again.';
-      pin.value = '';
-      pin.dispatchEvent(new Event('input', { bubbles: true }));
-      try { pin.focus({ preventScroll: true }); } catch(_e) { pin.focus(); }
-    }
-  }
-
-  if (ok) ok.addEventListener('click', tryUnlock);
-  if (cancel) cancel.addEventListener('click', ()=>{
-    pendingOpen = null;
-    authorizedOnce = false;
-    gate.style.display = 'none';
-    gate.setAttribute('aria-hidden', 'true');
-  });
-
-  if (pin){
-    pin.addEventListener('keydown', (e)=>{
-      if (e.key === 'Enter') tryUnlock();
-      if (e.key === 'Escape') {
-        pendingOpen = null;
-        authorizedOnce = false;
-        gate.style.display = 'none';
-        gate.setAttribute('aria-hidden', 'true');
-      }
-    });
-    pin.addEventListener('input', ()=>{
-      if (pin.value === PIN) tryUnlock();
-    });
-  }
-})();
-</script>
 
 <script id="rw-home-button-script">
 (function(){
@@ -1450,7 +1369,6 @@ function openApp(id, title){
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply); else apply();
   setTimeout(apply, 200);
   setTimeout(apply, 900);
-  setInterval(apply, 1500);
 })();
 </script>
 
@@ -1747,7 +1665,7 @@ function openApp(id, title){
   setTimeout(install, 2200);
 })();
 </script>
-<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260723-speed-1">
+<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260723-speed-2">
 <style id="rw-hide-title-clock-override">
 body.rw-v2-ready:not(.app-open) header.rw-header,
 body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster .rw-v2-brand-lockup,
@@ -1757,4 +1675,4 @@ body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock{
 }
 </style>
 <script src="assets/js/contact-config.js?v=20260708-18"></script>
-<script src="assets/js/platform-v2.js?v=20260723-speed-1"></script>
+<script src="assets/js/platform-v2.js?v=20260723-speed-2"></script>
