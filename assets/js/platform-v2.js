@@ -3,7 +3,6 @@
   window.__rwPlatformV2 = true;
 
   const LS_LANG = 'rw_lang';
-  const LS_PERFORMANCE = 'rw_performance_mode';
   const CONTACT_ENDPOINT = String(window.RW_CONTACT_ENDPOINT || '').trim();
   const NL_WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=51.4817&longitude=5.6611&current=temperature_2m,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m&daily=sunrise,sunset&timezone=Europe%2FAmsterdam&forecast_days=1';
   const WEATHER_CACHE_KEY = 'rw_nl_weather_v2';
@@ -14,8 +13,6 @@
   let weatherRefreshAllowedAt = Date.now() + 2500;
   let weatherRefreshScheduled = false;
   let contactRenderScheduled = false;
-  let performanceMode = false;
-  let performanceAutoReason = '';
   let nativeWallEngineStarted = false;
   let nativeWallFrame = 0;
   let nativeWallLastPaint = 0;
@@ -327,90 +324,6 @@
       style.disabled = true;
     });
   }
-  function performanceLabel(){
-    return lang() === 'en' ? 'Fast mode' : lang() === 'nl' ? 'Snelle modus' : 'Tryb szybki';
-  }
-  function updatePerformanceToggle(){
-    document.querySelectorAll('[data-rw-performance-toggle]').forEach((button) => {
-      button.setAttribute('aria-pressed', performanceMode ? 'true' : 'false');
-      button.title = performanceMode
-        ? `${performanceLabel()}: ON${performanceAutoReason ? ` (${performanceAutoReason})` : ''}`
-        : `${performanceLabel()}: OFF`;
-      button.textContent = 'FAST';
-    });
-  }
-  function setPerformanceMode(enabled, reason = ''){
-    performanceMode = !!enabled;
-    performanceAutoReason = reason || '';
-    document.documentElement.classList.toggle('rw-performance-mode', performanceMode);
-    document.body?.classList.toggle('rw-performance-mode', performanceMode);
-    document.documentElement.dataset.rwPerformance = performanceMode ? 'on' : 'off';
-    if (performanceMode) {
-      window.cancelAnimationFrame(nativeWallFrame);
-      window.clearTimeout(nativeWallFrame);
-      nativeWallFrame = 0;
-      document.querySelectorAll('.rw-v2-assistant-blink').forEach((blink) => {
-        blink.dataset.rwBlinkActive = 'performance-paused';
-      });
-      document.querySelectorAll('.rw-v2-assistant-face-video').forEach((video) => {
-        try {
-          video.pause?.();
-          video.removeAttribute('src');
-          video.load?.();
-        } catch (_e) {}
-      });
-      document.body?.classList.remove('rw-v2-video-face-ready');
-    }
-    updatePerformanceToggle();
-  }
-  function detectPerformanceMode(){
-    let saved = '';
-    try { saved = String(localStorage.getItem(LS_PERFORMANCE) || '').toLowerCase(); } catch (_e) {}
-    if (saved === 'on') return { enabled:true, reason:'manual' };
-    if (saved === 'off') return { enabled:false, reason:'manual' };
-    const nav = window.navigator || {};
-    const cores = Number(nav.hardwareConcurrency || 0);
-    const memory = Number(nav.deviceMemory || 0);
-    const reducedMotion = !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-    const smallScreen = !!window.matchMedia?.('(max-width: 820px), (max-height: 680px)')?.matches;
-    const coarsePointer = !!window.matchMedia?.('(pointer: coarse)')?.matches;
-    const saveData = !!nav.connection?.saveData;
-    const lowCpu = cores > 0 && cores <= 4;
-    const lowMemory = memory > 0 && memory <= 4;
-    if (reducedMotion) return { enabled:true, reason:'reduced-motion' };
-    if (saveData) return { enabled:true, reason:'save-data' };
-    if (lowCpu && (lowMemory || smallScreen || coarsePointer)) return { enabled:true, reason:'device' };
-    if (lowMemory && (smallScreen || coarsePointer)) return { enabled:true, reason:'memory' };
-    return { enabled:false, reason:'auto' };
-  }
-  function initPerformanceMode(){
-    const detected = detectPerformanceMode();
-    setPerformanceMode(detected.enabled, detected.enabled ? detected.reason : '');
-  }
-  function togglePerformanceMode(){
-    const next = !performanceMode;
-    try { localStorage.setItem(LS_PERFORMANCE, next ? 'on' : 'off'); } catch (_e) {}
-    setPerformanceMode(next, 'manual');
-  }
-  function monitorStartupLag(){
-    let saved = '';
-    try { saved = String(localStorage.getItem(LS_PERFORMANCE) || '').toLowerCase(); } catch (_e) {}
-    if (saved === 'on' || saved === 'off' || performanceMode) return;
-    let last = performance.now();
-    let slowFrames = 0;
-    const started = last;
-    const tick = (now) => {
-      if (document.body.classList.contains('app-open')) return;
-      if (now - last > 180) slowFrames += 1;
-      last = now;
-      if (slowFrames >= 3) {
-        setPerformanceMode(true, 'lag');
-        return;
-      }
-      if (now - started < 6500) window.requestAnimationFrame(tick);
-    };
-    window.requestAnimationFrame(tick);
-  }
   function ensureShell(){
     const main = document.querySelector('main.wrap');
     const grid = main?.querySelector('.grid');
@@ -445,7 +358,7 @@
       langControls.className = 'rw-v2-floating-lang';
       langControls.setAttribute('role', 'group');
       langControls.setAttribute('aria-label', 'Language');
-      langControls.innerHTML = '<button type="button" data-rw-home-lang="pl">PL</button><button type="button" data-rw-home-lang="en">EN</button><button type="button" data-rw-home-lang="nl">NL</button><button type="button" data-rw-performance-toggle aria-pressed="false">FAST</button>';
+      langControls.innerHTML = '<button type="button" data-rw-home-lang="pl">PL</button><button type="button" data-rw-home-lang="en">EN</button><button type="button" data-rw-home-lang="nl">NL</button>';
       shell.appendChild(langControls);
     }
     if (!shell.querySelector('.rw-v2-native-wall-canvas')) {
@@ -637,9 +550,6 @@
     const faceVideo = shell?.querySelector('.rw-v2-assistant-face-video');
     const faceCanvas = shell?.querySelector('.rw-v2-assistant-face-canvas');
     const faceMouth = shell?.querySelector('.rw-v2-assistant-mouth-sync');
-    if (blink?.dataset.rwBlinkActive === 'performance-paused' && !performanceMode) {
-      blink.dataset.rwBlinkActive = '';
-    }
     if (!blink || blink.dataset.rwBlinkActive === 'true') return;
     blink.dataset.rwBlinkActive = 'true';
     if (!faceCanvas && !faceVideo) return;
@@ -699,11 +609,6 @@
       faceVideo.poster = facePoster;
       faceVideo.preload = 'none';
       faceVideo.setAttribute('preload', 'none');
-      if (performanceMode) {
-        blink.dataset.rwBlinkActive = 'performance-paused';
-        updateVideoGeometry();
-        return;
-      }
       const videoSource = pickVideoSource();
       faceVideo.addEventListener('loadeddata', markVideoReady, { once:true });
       faceVideo.addEventListener('canplay', markVideoReady, { once:true });
@@ -1093,11 +998,9 @@
         <button type="button" data-rw-home-lang="pl">PL</button>
         <button type="button" data-rw-home-lang="en">EN</button>
         <button type="button" data-rw-home-lang="nl">NL</button>
-        <button type="button" data-rw-performance-toggle aria-pressed="false">FAST</button>
       </div>
     </div>`;
     syncHomeLang();
-    updatePerformanceToggle();
     updateWallClock();
     renderCommandUi();
   }
@@ -1120,7 +1023,6 @@
     strip.innerHTML = `<span class="rw-v2-strip-online"><i></i>${uiText('systemOnline')}</span><strong>${count}</strong><span>${uiText('quickAccess')}</span><span>${lang().toUpperCase()}</span><span>${stamp}</span>`;
   }
   function startNativeWallCanvas(){
-    if (performanceMode) return;
     if (nativeWallEngineStarted) return;
     nativeWallEngineStarted = true;
     const canvas = document.querySelector('.rw-v2-native-wall-canvas');
@@ -2526,7 +2428,6 @@
     patchPinTexts();
     updateModuleBar();
     syncHomeLang();
-    updatePerformanceToggle();
     updateWallClock();
   }
   function bindEvents(){
@@ -2542,13 +2443,6 @@
       applyLanguage();
     });
     document.addEventListener('click', (event) => {
-      if (event.target.closest('[data-rw-performance-toggle]')) {
-        event.preventDefault();
-        togglePerformanceMode();
-        if (!performanceMode) startNativeWallCanvas();
-        startAssistantBlink(document.querySelector('.rw-v2-shell'));
-        return;
-      }
       const homeLang = event.target.closest('[data-rw-home-lang]');
       if (homeLang) {
         event.preventDefault();
@@ -3218,7 +3112,6 @@
   }
   function init(){
     window.__rwPlatformV2RefreshHome = refreshHomeView;
-    initPerformanceMode();
     ensureModulePinGate();
     retireLegacyVisualLayers();
     syncBrand();
@@ -3246,7 +3139,6 @@
     }, 15000);
     applyLanguage();
     document.body.classList.add('rw-v2-ready');
-    monitorStartupLag();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
