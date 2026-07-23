@@ -1784,13 +1784,14 @@
     if (title) title.textContent = uiText('commandTitle');
     if (input) input.placeholder = uiText('commandHint');
     renderSystemStrip();
-    positionCommandTrigger();
+    scheduleCommandPosition();
   }
   function positionCommandTrigger(){
     const trigger = document.querySelector('.rw-v2-command-trigger');
     const langControls = document.querySelector('.rw-v2-floating-lang');
     if (!trigger || !langControls || document.body.classList.contains('app-open')) return;
     const langRect = langControls.getBoundingClientRect();
+    if (!langRect.width || !langRect.height) return;
     const centerX = langRect.left + langRect.width / 2;
     const top = langRect.bottom + 10;
     trigger.style.setProperty('left', `${Math.round(centerX)}px`, 'important');
@@ -1798,6 +1799,14 @@
     trigger.style.setProperty('top', `${Math.round(top)}px`, 'important');
     trigger.style.setProperty('position', 'fixed', 'important');
     trigger.style.setProperty('transform', 'translateX(-50%)', 'important');
+  }
+  function scheduleCommandPosition(){
+    [0, 40, 160, 420, 900, 1600].forEach((delay) => {
+      window.setTimeout(() => window.requestAnimationFrame(positionCommandTrigger), delay);
+    });
+    try {
+      document.fonts?.ready?.then(() => positionCommandTrigger());
+    } catch (_e) {}
   }
   function updateWallClock(){
     const clock = document.querySelector('.rw-v2-wall-clock');
@@ -3122,7 +3131,7 @@
     bindPremiumPointer();
     updateWallClock();
     setInterval(updateWallClock, 60000);
-    window.addEventListener('resize', () => window.requestAnimationFrame(positionCommandTrigger), { passive:true });
+    window.addEventListener('resize', scheduleCommandPosition, { passive:true });
     ensureOpenAppBridge();
     enhancePin();
     patchPinGateHooks();
@@ -3141,6 +3150,7 @@
     }, 15000);
     applyLanguage();
     document.body.classList.add('rw-v2-ready');
+    scheduleCommandPosition();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

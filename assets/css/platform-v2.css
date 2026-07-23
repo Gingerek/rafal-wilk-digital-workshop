@@ -8879,6 +8879,9 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-console-signature{
 /* Keep the home search control above decorative cockpit layers. */
 body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
   position:fixed!important;
+  top:calc(4.2vh + 54px)!important;
+  right:6.8vw!important;
+  left:auto!important;
   z-index:22050!important;
   display:inline-flex!important;
   align-items:center!important;
@@ -8887,6 +8890,15 @@ body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
   height:34px!important;
   pointer-events:auto!important;
   isolation:isolate!important;
+}
+
+@media (max-width:760px){
+  body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
+    top:calc(4.2vh + 48px)!important;
+    right:4.5vw!important;
+    left:auto!important;
+    transform:none!important;
+  }
 }
 
 body.app-open .rw-v2-command-trigger{
