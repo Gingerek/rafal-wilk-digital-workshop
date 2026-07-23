@@ -482,12 +482,15 @@
       clock.innerHTML = '<span class="rw-v2-wall-clock-kicker">LOCAL // TIME</span><span class="rw-v2-wall-clock-time"></span><span class="rw-v2-wall-clock-date"></span>';
       shell.appendChild(clock);
     }
-    if (!shell.querySelector('.rw-v2-command-trigger')) {
+    let trigger = document.querySelector('.rw-v2-command-trigger');
+    if (!trigger) {
       const trigger = document.createElement('button');
       trigger.type = 'button';
       trigger.className = 'rw-v2-command-trigger';
       trigger.setAttribute('data-rw-command-open', 'true');
-      shell.appendChild(trigger);
+      document.body.appendChild(trigger);
+    } else if (trigger.parentElement !== document.body) {
+      document.body.appendChild(trigger);
     }
     if (!shell.querySelector('.rw-v2-system-strip')) {
       const strip = document.createElement('div');
@@ -1786,15 +1789,14 @@
   function positionCommandTrigger(){
     const trigger = document.querySelector('.rw-v2-command-trigger');
     const langControls = document.querySelector('.rw-v2-floating-lang');
-    const shell = document.querySelector('.rw-v2-shell');
-    if (!trigger || !langControls || !shell || document.body.classList.contains('app-open')) return;
-    const shellRect = shell.getBoundingClientRect();
+    if (!trigger || !langControls || document.body.classList.contains('app-open')) return;
     const langRect = langControls.getBoundingClientRect();
-    const centerX = langRect.left - shellRect.left + langRect.width / 2;
-    const top = langRect.bottom - shellRect.top + 7;
+    const centerX = langRect.left + langRect.width / 2;
+    const top = langRect.bottom + 10;
     trigger.style.setProperty('left', `${Math.round(centerX)}px`, 'important');
     trigger.style.setProperty('right', 'auto', 'important');
     trigger.style.setProperty('top', `${Math.round(top)}px`, 'important');
+    trigger.style.setProperty('position', 'fixed', 'important');
     trigger.style.setProperty('transform', 'translateX(-50%)', 'important');
   }
   function updateWallClock(){

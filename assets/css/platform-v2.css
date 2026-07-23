@@ -8878,8 +8878,17 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-console-signature{
 
 /* Keep the home search control above decorative cockpit layers. */
 body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
-  position:absolute!important;
+  position:fixed!important;
   z-index:22050!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:86px!important;
+  height:34px!important;
   pointer-events:auto!important;
   isolation:isolate!important;
+}
+
+body.app-open .rw-v2-command-trigger{
+  display:none!important;
 }
