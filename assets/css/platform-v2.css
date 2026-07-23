@@ -8875,3 +8875,11 @@ body.rw-v2-ready.rw-v2-phase-sunset:not(.app-open) .rw-v2-console-signature{
     opacity:0!important;
   }
 }
+
+/* Keep the home search control above decorative cockpit layers. */
+body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
+  position:absolute!important;
+  z-index:22050!important;
+  pointer-events:auto!important;
+  isolation:isolate!important;
+}
