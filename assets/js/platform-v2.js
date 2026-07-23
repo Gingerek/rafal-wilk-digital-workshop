@@ -2384,8 +2384,18 @@
         const legacyIdx = moduleButton.getAttribute('data-idx');
         if (legacyIdx !== null && legacyIdx !== '') {
           event.preventDefault();
-          if (typeof window.loadApp === 'function') {
-            window.loadApp(Number(legacyIdx));
+          const openLegacyModule = () => {
+            if (window.__rwModulePinConsume) window.__rwModulePinConsume();
+            if (typeof window.loadApp === 'function') {
+              window.loadApp(Number(legacyIdx));
+            }
+          };
+          if (!window.__rwModulePinConsume || !window.__rwModulePinConsume()) {
+            if (window.__rwRequestModulePin) {
+              window.__rwRequestModulePin(openLegacyModule, activeModuleTitle || card?.querySelector('.title')?.textContent?.trim() || 'Module');
+            }
+          } else {
+            openLegacyModule();
           }
           return;
         }

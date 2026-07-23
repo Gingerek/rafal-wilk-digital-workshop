@@ -3304,6 +3304,17 @@ function openMyCompany(){
       if (window.loadApp && window.loadApp !== stubLoadApp) window.loadApp(idx);
     });
   };
+  function requestLegacyModule(idx){
+    const open = function(){
+      if (window.__rwModulePinConsume) window.__rwModulePinConsume();
+      stubLoadApp(Number(idx));
+    };
+    if (window.__rwRequestModulePin) {
+      window.__rwRequestModulePin(open, 'Module');
+      return;
+    }
+    open();
+  }
   window.__rwLoadLegacyApps = loadLegacyApps;
   window.loadApp = window.loadApp || stubLoadApp;
   window.__rwClearActiveModule = window.__rwClearActiveModule || function(){
@@ -3327,7 +3338,7 @@ function openMyCompany(){
         return;
       }
       const raw = localStorage.getItem(ACTIVE_MODULE_KEY);
-      if (raw !== null && raw !== '') stubLoadApp(Number(raw));
+      if (raw !== null && raw !== '') requestLegacyModule(Number(raw));
     }catch(_e){}
   });
 })();
@@ -3440,7 +3451,7 @@ function openApp(id, title){
 </div>
 </div>
 <script>
-// --- Module password gate disabled for local preview ---
+// --- Module password gate ---
 (function(){
   const PIN = "4685";
   const gate = document.getElementById('mc_gate');
@@ -3454,17 +3465,28 @@ function openApp(id, title){
   let authorizedOnce = false;
 
   window.__rwModulePinConsume = function(){
-    if (!authorizedOnce) return true;
+    if (!authorizedOnce) return false;
     authorizedOnce = false;
     return true;
   };
 
   window.__rwRequestModulePin = function(callback, moduleTitle){
     pendingOpen = callback;
-    authorizedOnce = true;
-    const next = pendingOpen;
-    pendingOpen = null;
-    if (typeof next === 'function') next();
+    authorizedOnce = false;
+    if (err) err.textContent = '';
+    if (pin) {
+      pin.value = '';
+      pin.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    if (title) title.textContent = 'Enter PIN';
+    if (text) text.innerHTML = moduleTitle ? 'Enter the 4-digit code to open <b>' + moduleTitle + '</b>.' : 'Enter the 4-digit code to open this module.';
+    if (gate) {
+      gate.style.display = 'flex';
+      gate.setAttribute('aria-hidden', 'false');
+    }
+    setTimeout(function(){
+      try { pin && pin.focus({ preventScroll: true }); } catch(_e) { pin && pin.focus(); }
+    }, 0);
   };
 
   window.openMc = function(){
@@ -3481,6 +3503,7 @@ function openApp(id, title){
     if (!pin) return;
     if (pin.value === PIN){
       gate.style.display = 'none';
+      gate.setAttribute('aria-hidden', 'true');
       authorizedOnce = true;
       const next = pendingOpen;
       pendingOpen = null;
@@ -3494,12 +3517,22 @@ function openApp(id, title){
   }
 
   if (ok) ok.addEventListener('click', tryUnlock);
-  if (cancel) cancel.addEventListener('click', ()=>{ gate.style.display = 'none'; });
+  if (cancel) cancel.addEventListener('click', ()=>{
+    pendingOpen = null;
+    authorizedOnce = false;
+    gate.style.display = 'none';
+    gate.setAttribute('aria-hidden', 'true');
+  });
 
   if (pin){
     pin.addEventListener('keydown', (e)=>{
       if (e.key === 'Enter') tryUnlock();
-      if (e.key === 'Escape') gate.style.display = 'none';
+      if (e.key === 'Escape') {
+        pendingOpen = null;
+        authorizedOnce = false;
+        gate.style.display = 'none';
+        gate.setAttribute('aria-hidden', 'true');
+      }
     });
     pin.addEventListener('input', ()=>{
       if (pin.value === PIN) tryUnlock();
@@ -4600,7 +4633,7 @@ select.rw-input{appearance:none;-webkit-appearance:none;background-image:linear-
   setTimeout(install, 2200);
 })();
 </script>
-<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260723-no-mp3-1">
+<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260723-secure-modules-1">
 <style id="rw-hide-title-clock-override">
 body.rw-v2-ready:not(.app-open) header.rw-header,
 body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster .rw-v2-brand-lockup,
@@ -4610,4 +4643,4 @@ body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock{
 }
 </style>
 <script src="assets/js/contact-config.js?v=20260708-18"></script>
-<script src="assets/js/platform-v2.js?v=20260723-no-mp3-1"></script>
+<script src="assets/js/platform-v2.js?v=20260723-secure-modules-1"></script>
