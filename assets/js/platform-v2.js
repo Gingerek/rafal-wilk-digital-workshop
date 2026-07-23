@@ -2058,7 +2058,95 @@
       openModuleFrame(id, title);
     };
   }
+  let modulePinPendingOpen = null;
+  let modulePinAuthorizedOnce = false;
+  function pinGateParts(){
+    const gate = document.getElementById('mc_gate');
+    return {
+      gate,
+      panel: gate?.querySelector('.panel') || null,
+      pin: document.getElementById('mc_pin'),
+      err: document.getElementById('mc_err'),
+      ok: document.getElementById('mc_ok'),
+      cancel: document.getElementById('mc_cancel'),
+      title: document.getElementById('mc_title'),
+      text: gate?.querySelector('p') || null
+    };
+  }
+  function ensureModulePinGate(){
+    window.__rwModulePinConsume = function(){
+      if (!modulePinAuthorizedOnce) return false;
+      modulePinAuthorizedOnce = false;
+      return true;
+    };
+    window.__rwRequestModulePin = function(callback, moduleTitle){
+      modulePinPendingOpen = callback;
+      modulePinAuthorizedOnce = false;
+      activeModuleTitle = moduleTitle || '';
+      const parts = pinGateParts();
+      const displayTitle = activeModuleTitle || t('pinText');
+      if (parts.gate) {
+        parts.gate.dataset.rwModuleTitle = activeModuleTitle;
+        parts.gate.style.display = 'flex';
+        parts.gate.setAttribute('aria-hidden', 'false');
+      }
+      if (parts.title) parts.title.textContent = t('pinTitle');
+      if (parts.text) parts.text.textContent = activeModuleTitle ? `${t('pinText').replace(/\.$/, '')}: ${displayTitle}` : t('pinText');
+      if (parts.err) parts.err.textContent = '';
+      if (parts.pin) {
+        parts.pin.value = '';
+        parts.pin.dispatchEvent(new Event('input', { bubbles: true }));
+        setTimeout(() => {
+          try { parts.pin.focus({ preventScroll: true }); } catch (_e) { parts.pin.focus(); }
+          parts.pin.select?.();
+        }, 0);
+      }
+      updatePinDigits();
+    };
+    bindModulePinGate();
+  }
+  function bindModulePinGate(){
+    const parts = pinGateParts();
+    if (!parts.gate || !parts.pin || parts.gate.dataset.rwPinBound === 'true') return;
+    parts.gate.dataset.rwPinBound = 'true';
+    const closeGate = () => {
+      modulePinPendingOpen = null;
+      modulePinAuthorizedOnce = false;
+      parts.gate.style.display = 'none';
+      parts.gate.setAttribute('aria-hidden', 'true');
+      parts.gate.classList.remove('rw-v2-pin-error');
+    };
+    const tryUnlock = () => {
+      if (parts.pin.value === '4685') {
+        parts.gate.style.display = 'none';
+        parts.gate.setAttribute('aria-hidden', 'true');
+        parts.gate.classList.remove('rw-v2-pin-error');
+        modulePinAuthorizedOnce = true;
+        const next = modulePinPendingOpen;
+        modulePinPendingOpen = null;
+        if (typeof next === 'function') next();
+        return;
+      }
+      if (parts.err) parts.err.textContent = t('wrongPin');
+      parts.gate.classList.add('rw-v2-pin-error');
+      setTimeout(() => parts.gate.classList.remove('rw-v2-pin-error'), 500);
+      parts.pin.value = '';
+      parts.pin.dispatchEvent(new Event('input', { bubbles: true }));
+      try { parts.pin.focus({ preventScroll: true }); } catch (_e) { parts.pin.focus(); }
+    };
+    parts.ok?.addEventListener('click', tryUnlock);
+    parts.cancel?.addEventListener('click', closeGate);
+    parts.pin.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') tryUnlock();
+      if (event.key === 'Escape') closeGate();
+    });
+    parts.pin.addEventListener('input', () => {
+      parts.pin.value = parts.pin.value.replace(/\D/g, '').slice(0, 4);
+      if (parts.pin.value === '4685') tryUnlock();
+    });
+  }
   function openModuleFrame(id, title){
+    ensureModulePinGate();
     if (!window.__rwModulePinConsume || !window.__rwModulePinConsume()){
       if (window.__rwRequestModulePin) {
         window.__rwRequestModulePin(() => openModuleFrame(id, title), title || id || 'Module');
@@ -2396,6 +2484,32 @@
             }
           } else {
             openLegacyModule();
+          }
+          return;
+        }
+        const protectedHref = moduleButton.getAttribute('href');
+        if (protectedHref) {
+          event.preventDefault();
+          const openProtectedLink = () => {
+            if (window.__rwModulePinConsume) window.__rwModulePinConsume();
+            const link = document.createElement('a');
+            link.href = moduleButton.href;
+            if (moduleButton.hasAttribute('download')) {
+              link.download = moduleButton.getAttribute('download') || '';
+            } else {
+              link.target = moduleButton.target || '_self';
+            }
+            link.rel = moduleButton.rel || 'noopener';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+          };
+          if (!window.__rwModulePinConsume || !window.__rwModulePinConsume()) {
+            if (window.__rwRequestModulePin) {
+              window.__rwRequestModulePin(openProtectedLink, activeModuleTitle || card?.querySelector('.title')?.textContent?.trim() || 'Module');
+            }
+          } else {
+            openProtectedLink();
           }
           return;
         }
@@ -2963,6 +3077,7 @@
   function init(){
     document.body.classList.add('rw-v2-ready');
     window.__rwPlatformV2RefreshHome = refreshHomeView;
+    ensureModulePinGate();
     retireLegacyVisualLayers();
     syncBrand();
     ensureShell();
