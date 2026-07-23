@@ -2366,8 +2366,7 @@
     </div>`;
     document.body.appendChild(bar);
     bar.querySelector('.rw-v2-back').addEventListener('click', () => {
-      markHomeReturn();
-      document.getElementById('rw_home_btn')?.click();
+      returnHome();
     });
     bar.querySelectorAll('[data-lang]').forEach(btn => btn.addEventListener('click', () => {
       const nextLang = normalizePlatformLang(btn.dataset.lang || 'pl');
@@ -2404,6 +2403,22 @@
     window.__rwV2HomeReturnTimer = window.setTimeout(() => {
       document.body.classList.remove('rw-v2-returning-home');
     }, 3050);
+  }
+  function returnHome(){
+    markHomeReturn();
+    try { if (window.__rwClearActiveModule) window.__rwClearActiveModule(); } catch (_e) {}
+    document.querySelectorAll('iframe').forEach((frame) => {
+      frame.classList.remove('show');
+      frame.style.boxShadow = '';
+    });
+    document.querySelector('.viewport')?.classList.remove('active');
+    document.body.classList.remove('app-open');
+    activeModuleTitle = '';
+    document.title = 'Rafal Wilk Digital Workshop';
+    if (window.history?.replaceState) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    refreshHomeView();
   }
   function applyLanguage(){
     renderHero();
