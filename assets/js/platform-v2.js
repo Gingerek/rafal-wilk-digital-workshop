@@ -3097,7 +3097,6 @@
     });
   }
   function refreshHomeView(){
-    document.body.classList.add('rw-v2-ready');
     retireLegacyVisualLayers();
     ensureShell();
     renderHero();
@@ -3108,9 +3107,10 @@
     updateModuleBar();
     syncHomeLang();
     hideStageWidgets();
+    updateWallClock();
+    document.body.classList.add('rw-v2-ready');
   }
   function init(){
-    document.body.classList.add('rw-v2-ready');
     window.__rwPlatformV2RefreshHome = refreshHomeView;
     ensureModulePinGate();
     retireLegacyVisualLayers();
@@ -3138,6 +3138,7 @@
       if (document.body.classList.contains('app-open')) skinModuleFrames();
     }, 15000);
     applyLanguage();
+    document.body.classList.add('rw-v2-ready');
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
