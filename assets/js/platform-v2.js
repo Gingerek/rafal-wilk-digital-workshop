@@ -3027,9 +3027,12 @@
       if (frame?.id === 'redukcja') return;
       const doc = frame?.contentDocument;
       if (!doc || !doc.documentElement) return;
-      doc.documentElement.classList.add('rw-premium-module-root');
+      const srcdoc = frame.getAttribute('srcdoc') || '';
+      const isCvMatchModule = /CV Match Offline|cv-input|job-input|scan-shell/.test(srcdoc)
+        || /CV Match/i.test(doc.title || '');
+      doc.documentElement.classList.toggle('rw-premium-module-root', !isCvMatchModule);
       doc.documentElement.classList.add('rw-platform-embedded');
-      if (doc.body) doc.body.classList.add('rw-premium-module');
+      if (doc.body) doc.body.classList.toggle('rw-premium-module', !isCvMatchModule);
       let dedupeStyle = doc.getElementById('rw-platform-language-dedup');
       if (!dedupeStyle) {
         dedupeStyle = doc.createElement('style');
@@ -3087,6 +3090,10 @@
         doc.__rwLanguageDedupeObserver.observe(doc.body, { childList:true, subtree:true });
       }
       integrateRekentoolMerit(frame);
+      if (isCvMatchModule) {
+        doc.getElementById('rw-premium-module-theme')?.remove();
+        return;
+      }
       if (doc.getElementById('rw-premium-module-theme')) return;
       const style = doc.createElement('style');
       style.id = 'rw-premium-module-theme';
