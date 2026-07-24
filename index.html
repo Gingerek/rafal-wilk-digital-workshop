@@ -508,9 +508,24 @@ function openMyCompany(){
 (function(){
   if (window.__rwLegacyAppsLoader) return;
   window.__rwLegacyAppsLoader = true;
-  const SRC = 'assets/js/legacy-apps-bundle.js?v=20260724-cv-match-2';
+  const LEGACY_APPS_VERSION = '20260724-cv-match-3';
+  const SRC = 'assets/js/legacy-apps-bundle.js?v=' + LEGACY_APPS_VERSION;
   const ACTIVE_MODULE_KEY = 'rw_active_module_idx';
   const ACTIVE_FRAME_KEY = 'rw_active_frame_state';
+  const LEGACY_VERSION_KEY = 'rw_legacy_apps_version';
+  function clearActiveLegacyState(){
+    try{
+      localStorage.removeItem(ACTIVE_FRAME_KEY);
+      localStorage.removeItem(ACTIVE_MODULE_KEY);
+      localStorage.removeItem('rw_module_state_v1:module:4');
+    }catch(_e){}
+  }
+  try{
+    if (localStorage.getItem(LEGACY_VERSION_KEY) !== LEGACY_APPS_VERSION) {
+      clearActiveLegacyState();
+      localStorage.setItem(LEGACY_VERSION_KEY, LEGACY_APPS_VERSION);
+    }
+  }catch(_e){}
   let pending = null;
   function loadLegacyApps(){
     if (window.__rwLegacyAppsLoaded) return Promise.resolve();
@@ -544,10 +559,7 @@ function openMyCompany(){
   window.__rwLoadLegacyApps = loadLegacyApps;
   window.loadApp = window.loadApp || stubLoadApp;
   window.__rwClearActiveModule = window.__rwClearActiveModule || function(){
-    try{
-      localStorage.removeItem(ACTIVE_MODULE_KEY);
-      localStorage.removeItem(ACTIVE_FRAME_KEY);
-    }catch(_e){}
+    clearActiveLegacyState();
   };
   window.__rwSaveActiveFrame = window.__rwSaveActiveFrame || function(id, title){
     try{
@@ -556,10 +568,7 @@ function openMyCompany(){
     }catch(_e){}
   };
   document.addEventListener('DOMContentLoaded', function(){
-    try{
-      localStorage.removeItem(ACTIVE_FRAME_KEY);
-      localStorage.removeItem(ACTIVE_MODULE_KEY);
-    }catch(_e){}
+    clearActiveLegacyState();
   });
 })();
 </script>
