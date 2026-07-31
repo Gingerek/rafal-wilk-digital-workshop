@@ -658,7 +658,6 @@
       });
     };
     if (faceVideo) {
-      const facePoster = 'assets/images/aireel-face-poster-v2.webp?v=20260721-face-poster-2';
       const videoSources = {
         high: 'assets/videos/aireel-face-hd-seamless-integrated-v4-smoothplay.mp4?v=20260721-smoothplay-1',
         fallback: 'assets/videos/aireel-face-hd-seamless-integrated-v4-fast.mp4?v=20260720-aireel-fast-1'
@@ -672,7 +671,9 @@
       let videoSyncFrame = 0;
       let videoQualityTimer = 0;
       let videoQualitySample = null;
+      let videoQualityStrikes = 0;
       let preferLightFaceVideo = false;
+      document.body.classList.add('rw-v2-video-face-mode');
       const faceVideoCanRun = () => {
         if (document.hidden || document.body.classList.contains('app-open')) return false;
         if (currentVisualPerformanceProfile().key === 'economy') return false;
@@ -732,12 +733,16 @@
           const decodedDelta = (current.totalVideoFrames || 0) - videoQualitySample.decoded;
           const droppedDelta = (current.droppedVideoFrames || 0) - videoQualitySample.dropped;
           videoQualitySample = null;
-          if (decodedDelta >= 24 && (droppedDelta >= 6 || droppedDelta / decodedDelta > .14)) {
+          const strainedPlayback = decodedDelta >= 48 && droppedDelta >= 16 && droppedDelta / decodedDelta > .26;
+          videoQualityStrikes = strainedPlayback ? videoQualityStrikes + 1 : 0;
+          if (videoQualityStrikes >= 2) {
             preferLightFaceVideo = true;
             faceVideo.dataset.rwVideoQuality = 'fallback';
             syncFaceVideoPlayback();
+          } else {
+            startVideoQualityProbe();
           }
-        }, 2800);
+        }, 3600);
       };
       const syncFaceVideoPlayback = () => {
         videoSyncFrame = 0;
@@ -746,12 +751,11 @@
           parkFaceVideo(currentVisualPerformanceProfile().key === 'economy');
           return;
         }
-        if (!faceVideo.poster || !faceVideo.poster.includes(facePoster.split('?')[0])) {
-          faceVideo.poster = facePoster;
-        }
+        faceVideo.removeAttribute('poster');
         const nextSource = pickVideoSource();
         if (!faceVideo.src || !faceVideo.src.includes(nextSource.split('?')[0])) {
           clearVideoQualityProbe();
+          videoQualityStrikes = 0;
           faceVideo.classList.remove('is-active');
           document.body.classList.remove('rw-v2-video-face-ready');
           faceVideo.dataset.rwVideoQuality = nextSource === videoSources.high ? 'high' : 'fallback';
@@ -779,6 +783,7 @@
       faceVideo.setAttribute('playsinline', '');
       faceVideo.preload = 'none';
       faceVideo.setAttribute('preload', 'none');
+      faceVideo.removeAttribute('poster');
       faceVideo.addEventListener('loadeddata', queueVideoReveal);
       faceVideo.addEventListener('canplay', queueVideoReveal);
       faceVideo.addEventListener('playing', queueVideoReveal);
