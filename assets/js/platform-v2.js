@@ -139,7 +139,7 @@
     open:{pl:'Otwórz', en:'Open', nl:'Openen'},
     openPlatform:{pl:'Otwórz w platformie', en:'Open in platform', nl:'Openen in platform'},
     pinTitle:{pl:'Dostęp do modułu', en:'Protected module access', nl:'Beveiligde moduletoegang'},
-    pinText:{pl:'Wpisz 4-cyfrowy PIN, aby otworzyć wybrany moduł.', en:'Enter the 4-digit PIN to open this module.', nl:'Voer de 4-cijferige pincode in om deze module te openen.'},
+    pinText:{pl:'Wpisz PIN, aby otworzyć wybrany moduł.', en:'Enter the PIN to open this module.', nl:'Voer de pincode in om deze module te openen.'},
     cancel:{pl:'Anuluj', en:'Cancel', nl:'Annuleren'},
     unlock:{pl:'Odblokuj', en:'Unlock', nl:'Ontgrendelen'},
     wrongPin:{pl:'Nieprawidłowy PIN. Spróbuj ponownie.', en:'Incorrect PIN. Try again.', nl:'Onjuiste pincode. Probeer opnieuw.'},
@@ -2094,6 +2094,40 @@
   }
   let modulePinPendingOpen = null;
   let modulePinAuthorizedOnce = false;
+  const DEFAULT_MODULE_PIN = '13522';
+  const MERIT_EXCEL_PIN = '4685';
+  function modulePinFor(moduleTitle){
+    const title = String(moduleTitle || '').toLowerCase();
+    return title.includes('merit excel') ? MERIT_EXCEL_PIN : DEFAULT_MODULE_PIN;
+  }
+  function activeModulePin(){
+    const gate = document.getElementById('mc_gate');
+    return modulePinFor(activeModuleTitle || gate?.dataset.rwModuleTitle || '');
+  }
+  function configurePinInput(input, pin = activeModulePin()){
+    if (!input) return;
+    const pinLength = String(pin || DEFAULT_MODULE_PIN).length;
+    input.maxLength = pinLength;
+    input.placeholder = '\u2022'.repeat(pinLength);
+  }
+  function setPinDigitLength(pinLength){
+    const count = Math.max(1, Number(pinLength) || DEFAULT_MODULE_PIN.length);
+    const gate = document.getElementById('mc_gate');
+    const digits = document.querySelector('.rw-v2-pin-digits');
+    gate?.style.setProperty('--rw-pin-length', String(count));
+    digits?.style.setProperty('--rw-pin-length', String(count));
+    if (!digits) return;
+    while (digits.children.length < count) {
+      const digit = document.createElement('span');
+      digit.className = 'rw-v2-pin-digit';
+      digits.appendChild(digit);
+    }
+    while (digits.children.length > count) {
+      digits.lastElementChild?.remove();
+    }
+  }
+  window.__rwModulePinForTitle = modulePinFor;
+  window.__rwModulePinLengthForTitle = (moduleTitle) => modulePinFor(moduleTitle).length;
   function pinGateParts(){
     const gate = document.getElementById('mc_gate');
     return {
@@ -2124,10 +2158,13 @@
         parts.gate.style.display = 'flex';
         parts.gate.setAttribute('aria-hidden', 'false');
       }
+      const expectedPin = modulePinFor(activeModuleTitle);
       if (parts.title) parts.title.textContent = t('pinTitle');
       if (parts.text) parts.text.textContent = activeModuleTitle ? `${t('pinText').replace(/\.$/, '')}: ${displayTitle}` : t('pinText');
       if (parts.err) parts.err.textContent = '';
       if (parts.pin) {
+        configurePinInput(parts.pin, expectedPin);
+        setPinDigitLength(expectedPin.length);
         parts.pin.value = '';
         parts.pin.dispatchEvent(new Event('input', { bubbles: true }));
         setTimeout(() => {
@@ -2150,8 +2187,9 @@
       parts.gate.setAttribute('aria-hidden', 'true');
       parts.gate.classList.remove('rw-v2-pin-error');
     };
+    const expectedPin = () => activeModulePin();
     const tryUnlock = () => {
-      if (parts.pin.value === '4685') {
+      if (parts.pin.value === expectedPin()) {
         parts.gate.style.display = 'none';
         parts.gate.setAttribute('aria-hidden', 'true');
         parts.gate.classList.remove('rw-v2-pin-error');
@@ -2175,8 +2213,9 @@
       if (event.key === 'Escape') closeGate();
     });
     parts.pin.addEventListener('input', () => {
-      parts.pin.value = parts.pin.value.replace(/\D/g, '').slice(0, 4);
-      if (parts.pin.value === '4685') tryUnlock();
+      const pin = expectedPin();
+      parts.pin.value = parts.pin.value.replace(/\D/g, '').slice(0, pin.length);
+      if (parts.pin.value === pin) tryUnlock();
     });
   }
   function openModuleFrame(id, title){
@@ -2261,7 +2300,6 @@
     if (!panel.querySelector('.rw-v2-pin-digits')) {
       const digits = document.createElement('div');
       digits.className = 'rw-v2-pin-digits';
-      digits.innerHTML = '<span class="rw-v2-pin-digit"></span><span class="rw-v2-pin-digit"></span><span class="rw-v2-pin-digit"></span><span class="rw-v2-pin-digit"></span>';
       input.insertAdjacentElement('afterend', digits);
     }
     if (!panel.querySelector('.rw-v2-pin-status')) {
@@ -2269,6 +2307,8 @@
       status.className = 'rw-v2-pin-status';
       input.insertAdjacentElement('beforebegin', status);
     }
+    configurePinInput(input);
+    setPinDigitLength(activeModulePin().length);
     input.addEventListener('input', updatePinDigits);
     input.addEventListener('focus', updatePinDigits);
     input.addEventListener('blur', updatePinDigits);
@@ -2280,23 +2320,28 @@
   function updatePinDigits(){
     const input = document.getElementById('mc_pin');
     const gate = document.getElementById('mc_gate');
+    const pin = activeModulePin();
+    const pinLength = pin.length;
+    configurePinInput(input, pin);
+    setPinDigitLength(pinLength);
     const digits = document.querySelectorAll('.rw-v2-pin-digit');
-    const value = String(input?.value || '').slice(0, 4);
+    const value = String(input?.value || '').slice(0, pinLength);
+    if (input && input.value !== value) input.value = value;
     const status = document.querySelector('.rw-v2-pin-status');
     const focused = document.activeElement === input;
     gate?.classList.toggle('rw-v2-pin-waiting', !value.length);
-    gate?.classList.toggle('rw-v2-pin-typing', value.length > 0 && value.length < 4);
-    gate?.classList.toggle('rw-v2-pin-complete', value.length === 4);
+    gate?.classList.toggle('rw-v2-pin-typing', value.length > 0 && value.length < pinLength);
+    gate?.classList.toggle('rw-v2-pin-complete', value.length === pinLength);
     digits.forEach((el, i) => {
       el.textContent = value[i] ? '*' : '';
       el.classList.toggle('is-filled', Boolean(value[i]));
-      el.classList.toggle('is-active', focused && i === Math.min(value.length, 3));
+      el.classList.toggle('is-active', focused && i === Math.min(value.length, pinLength - 1));
     });
     if (status) {
       const statusText = {
-        pl: value.length ? `Wpisano ${value.length}/4 cyfr` : 'Aktywne pole - wpisz PIN',
-        en: value.length ? `${value.length}/4 digits entered` : 'Active field - enter PIN',
-        nl: value.length ? `${value.length}/4 cijfers ingevoerd` : 'Actief veld - voer pincode in'
+        pl: value.length ? `Wpisano ${value.length}/${pinLength} cyfr` : 'Aktywne pole - wpisz PIN',
+        en: value.length ? `${value.length}/${pinLength} digits entered` : 'Active field - enter PIN',
+        nl: value.length ? `${value.length}/${pinLength} cijfers ingevoerd` : 'Actief veld - voer pincode in'
       };
       status.textContent = statusText[lang()] || statusText.pl;
     }

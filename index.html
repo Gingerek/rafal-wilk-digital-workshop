@@ -86,9 +86,25 @@
 </style>
 <script id="rw-module-pin-bootstrap">
 (function(){
-  var PIN = '4685';
+  var DEFAULT_PIN = '13522';
+  var MERIT_EXCEL_PIN = '4685';
+  var pendingPin = DEFAULT_PIN;
   var pendingOpen = null;
   var authorizedOnce = false;
+  function modulePinFor(moduleTitle){
+    var title = String(moduleTitle || '').toLowerCase();
+    return title.indexOf('merit excel') !== -1 ? MERIT_EXCEL_PIN : DEFAULT_PIN;
+  }
+  function configurePinInput(input, pin){
+    if (!input) return;
+    var len = String(pin || DEFAULT_PIN).length;
+    input.maxLength = len;
+    input.placeholder = Array(len + 1).join('\u2022');
+  }
+  window.__rwModulePinForTitle = modulePinFor;
+  window.__rwModulePinLengthForTitle = function(moduleTitle){
+    return modulePinFor(moduleTitle).length;
+  };
   function parts(){
     var gate = document.getElementById('mc_gate');
     return {
@@ -109,10 +125,12 @@
   window.__rwRequestModulePin = function(callback, moduleTitle){
     pendingOpen = callback;
     authorizedOnce = false;
+    pendingPin = modulePinFor(moduleTitle);
     var p = parts();
     if (p.title) p.title.textContent = 'Dostep do modulu';
     if (p.text) p.text.textContent = moduleTitle ? 'Wpisz PIN, aby otworzyc: ' + moduleTitle : 'Wpisz PIN, aby otworzyc wybrany modul.';
     if (p.err) p.err.textContent = '';
+    configurePinInput(p.pin, pendingPin);
     if (p.pin) p.pin.value = '';
     if (p.gate) {
       p.gate.style.display = 'flex';
@@ -126,6 +144,7 @@
     var p = parts();
     pendingOpen = null;
     authorizedOnce = false;
+    pendingPin = DEFAULT_PIN;
     if (p.gate) {
       p.gate.style.display = 'none';
       p.gate.setAttribute('aria-hidden', 'true');
@@ -134,7 +153,7 @@
   function tryUnlock(){
     var p = parts();
     if (!p.pin) return;
-    if (p.pin.value === PIN) {
+    if (p.pin.value === pendingPin) {
       authorizedOnce = true;
       if (p.gate) {
         p.gate.style.display = 'none';
@@ -161,8 +180,8 @@
         if (event.key === 'Escape') closeGate();
       });
       p.pin.addEventListener('input', function(){
-        p.pin.value = p.pin.value.replace(/\D/g, '').slice(0, 4);
-        if (p.pin.value === PIN) tryUnlock();
+        p.pin.value = p.pin.value.replace(/\D/g, '').slice(0, pendingPin.length);
+        if (p.pin.value === pendingPin) tryUnlock();
       });
     }
   }
@@ -673,8 +692,8 @@ function openApp(id, title){
 <div aria-labelledby="mc_title" aria-modal="true" id="mc_gate" role="dialog">
 <div class="panel">
 <h2 id="mc_title">Enter PIN</h2>
-<p>To open <b>My Projects</b>, enter the 4‑digit code.</p>
-<input autocomplete="one-time-code" id="mc_pin" inputmode="numeric" maxlength="4" placeholder="••••" type="password"/>
+<p>To open <b>My Projects</b>, enter the code.</p>
+<input autocomplete="one-time-code" id="mc_pin" inputmode="numeric" maxlength="5" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;" type="password"/>
 <div class="err" id="mc_err"></div>
 <div class="row">
 <button class="ghost" id="mc_cancel" type="button">Cancel</button>
