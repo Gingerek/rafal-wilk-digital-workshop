@@ -5,14 +5,77 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link rel="preload" as="image" href="assets/images/private-command-center-hero-personal-bg-day-v15.webp?v=20260717-personal-sharp-1" type="image/webp">
+<link rel="preload" as="style" href="assets/css/platform-v2.css?v=20260731-nextlevel-1">
+<link rel="preload" as="script" href="assets/js/platform-v2.js?v=20260731-nextlevel-1">
 <title>Rafal Wilk Digital Workshop ©</title>
 <style id="rw-critical-home-boot">
   html{background:#05080d}
   body:not(.rw-v2-ready):not(.app-open){
     background:#05080d!important;
   }
-  body:not(.rw-v2-ready):not(.app-open)>*:not(script):not(style):not(link){
+  body:not(.rw-v2-ready):not(.app-open)>*:not(script):not(style):not(link):not(#rwBootSplash){
     visibility:hidden!important;
+  }
+  #rwBootSplash{
+    position:fixed;
+    inset:0;
+    z-index:999998;
+    display:grid;
+    place-items:center;
+    padding:24px;
+    color:#eef8ff;
+    background:
+      linear-gradient(120deg, rgba(2,8,18,.86), rgba(5,16,30,.70)),
+      url("assets/images/private-command-center-hero-personal-bg-day-v15.webp?v=20260717-personal-sharp-1") center/cover no-repeat,
+      #05080d;
+    transition:opacity .24s ease, visibility .24s ease;
+  }
+  body.rw-v2-ready #rwBootSplash,
+  body.app-open #rwBootSplash{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+  .rw-boot-card{
+    width:min(460px, calc(100vw - 40px));
+    display:grid;
+    gap:14px;
+    padding:20px;
+    border:1px solid rgba(135,216,255,.22);
+    border-radius:14px;
+    background:rgba(2,8,18,.72);
+    box-shadow:0 24px 80px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .rw-boot-kicker{
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:#8bd8ff;
+  }
+  .rw-boot-title{
+    margin:0;
+    font-size:clamp(26px, 6vw, 42px);
+    line-height:1;
+    font-weight:850;
+    letter-spacing:0;
+  }
+  .rw-boot-status{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:rgba(238,248,255,.78);
+    font-size:13px;
+    font-weight:650;
+  }
+  .rw-boot-status::before{
+    content:"";
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#72f1d4;
+    box-shadow:0 0 18px rgba(114,241,212,.86);
   }
 </style>
 <style>
@@ -84,6 +147,7 @@
 #mc_gate .err{color:#fca5a5;font-size:12px;min-height:16px;margin-top:8px}
   body.app-open .privacy-footer{display:none!important}
 </style>
+<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260731-nextlevel-1">
 <script id="rw-module-pin-bootstrap">
 (function(){
   var DEFAULT_PIN = '135';
@@ -279,6 +343,13 @@
 
 </head>
 <body>
+<div id="rwBootSplash" aria-hidden="true">
+  <div class="rw-boot-card">
+    <div class="rw-boot-kicker">Rafal Wilk Digital Workshop</div>
+    <h2 class="rw-boot-title">Private Command Center</h2>
+    <div class="rw-boot-status">Loading modules</div>
+  </div>
+</div>
 
 <!-- Home / Back button (added) -->
 <button id="rw_home_btn" class="rw-home" type="button">← Powrót do startu</button>
@@ -888,7 +959,6 @@ function openApp(id, title){
   render();
 })();
 </script>
-<link rel="stylesheet" href="assets/css/platform-v2.css?v=20260723-search-boot-1">
 <style id="rw-hide-title-clock-override">
 body.rw-v2-ready:not(.app-open) header.rw-header,
 body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster .rw-v2-brand-lockup,
@@ -897,4 +967,4 @@ body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock{
   visibility:hidden!important;
 }
 </style>
-<script src="assets/js/platform-v2.js?v=20260724-cv-match-theme-1"></script>
+<script src="assets/js/platform-v2.js?v=20260731-nextlevel-1" defer></script>
