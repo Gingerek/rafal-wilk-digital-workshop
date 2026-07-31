@@ -8,8 +8,8 @@
 <link rel="preload" as="image" href="assets/images/private-command-center-hero-personal-bg-day-v17-window-clarity-mobile.webp?v=20260731-window-1" type="image/webp" media="(max-width: 760px)">
 <link rel="preload" as="image" href="assets/images/private-command-center-hero-personal-bg-day-v17-window-clarity.webp?v=20260731-window-1" type="image/webp" media="(min-width: 761px)">
 <link rel="preload" as="style" href="assets/css/platform-v2.min.css?v=20260731-cssmin-1">
-<link rel="preload" as="style" href="assets/css/platform-nextlevel.css?v=20260731-facequality-4">
-<link rel="preload" as="script" href="assets/js/platform-v2.js?v=20260731-facequality-4">
+<link rel="preload" as="style" href="assets/css/platform-nextlevel.css?v=20260731-facequality-5">
+<link rel="preload" as="script" href="assets/js/platform-v2.js?v=20260731-facequality-5">
 <title>Rafal Wilk Digital Workshop ©</title>
 <style id="rw-critical-home-boot">
   html{background:#05080d}
@@ -20,7 +20,6 @@
     visibility:hidden!important;
   }
   #rwBootSplash{
-    --rw-boot-image:url("assets/images/private-command-center-hero-personal-bg-day-v17-window-clarity.webp?v=20260731-window-1");
     position:fixed;
     inset:0;
     z-index:999998;
@@ -29,15 +28,10 @@
     padding:24px;
     color:#eef8ff;
     background:
-      linear-gradient(120deg, rgba(2,8,18,.86), rgba(5,16,30,.70)),
-      var(--rw-boot-image) center/cover no-repeat,
+      radial-gradient(ellipse at 28% 38%, rgba(36,126,185,.18), transparent 42%),
+      linear-gradient(120deg, rgba(2,8,18,.96), rgba(5,16,30,.88)),
       #05080d;
     transition:opacity .24s ease, visibility .24s ease;
-  }
-  @media (max-width:760px){
-    #rwBootSplash{
-      --rw-boot-image:url("assets/images/private-command-center-hero-personal-bg-day-v17-window-clarity-mobile.webp?v=20260731-window-1");
-    }
   }
   body.rw-v2-ready #rwBootSplash,
   body.app-open #rwBootSplash{
@@ -118,7 +112,7 @@
 .badge-copyright{background:#0b1220;color:#ffffff;border:1px solid #0b1220;font-weight:800;padding:2px 10px;border-radius:10px}
 </style>
 <link rel="stylesheet" href="assets/css/platform-v2.min.css?v=20260731-cssmin-1">
-<link rel="stylesheet" href="assets/css/platform-nextlevel.css?v=20260731-facequality-4">
+<link rel="stylesheet" href="assets/css/platform-nextlevel.css?v=20260731-facequality-5">
 <script id="rw-module-pin-bootstrap">
 (function(){
   var DEFAULT_PIN = '135';
@@ -858,4 +852,4 @@ function openApp(id, title){
   render();
 })();
 </script>
-<script src="assets/js/platform-v2.js?v=20260731-facequality-4" defer></script>
+<script src="assets/js/platform-v2.js?v=20260731-facequality-5" defer></script>
