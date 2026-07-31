@@ -86,7 +86,7 @@
 </style>
 <script id="rw-module-pin-bootstrap">
 (function(){
-  var DEFAULT_PIN = '13522';
+  var DEFAULT_PIN = '135';
   var MERIT_EXCEL_PIN = '4685';
   var pendingPin = DEFAULT_PIN;
   var pendingOpen = null;
@@ -693,7 +693,7 @@ function openApp(id, title){
 <div class="panel">
 <h2 id="mc_title">Enter PIN</h2>
 <p>To open <b>My Projects</b>, enter the code.</p>
-<input autocomplete="one-time-code" id="mc_pin" inputmode="numeric" maxlength="5" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;" type="password"/>
+<input autocomplete="one-time-code" id="mc_pin" inputmode="numeric" maxlength="3" placeholder="&#8226;&#8226;&#8226;" type="password"/>
 <div class="err" id="mc_err"></div>
 <div class="row">
 <button class="ghost" id="mc_cancel" type="button">Cancel</button>

@@ -2094,7 +2094,7 @@
   }
   let modulePinPendingOpen = null;
   let modulePinAuthorizedOnce = false;
-  const DEFAULT_MODULE_PIN = '13522';
+  const DEFAULT_MODULE_PIN = '135';
   const MERIT_EXCEL_PIN = '4685';
   function modulePinFor(moduleTitle){
     const title = String(moduleTitle || '').toLowerCase();

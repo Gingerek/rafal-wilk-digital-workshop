@@ -323,7 +323,7 @@ body.rw-v2-ready:not(.app-open) #rwPlatformApiStatus .rwValue{color:var(--v2-ink
 }
 #mc_gate.rw-v2-pin-gate h2{margin:0!important;color:var(--v2-ink)!important;font-size:22px!important;}
 #mc_gate.rw-v2-pin-gate p{margin:0!important;color:var(--v2-muted)!important;font-size:13px!important;}
-.rw-v2-pin-digits{display:grid;grid-template-columns:repeat(var(--rw-pin-length, 5),1fr);gap:8px;margin:14px 0 10px;}
+.rw-v2-pin-digits{display:grid;grid-template-columns:repeat(var(--rw-pin-length, 3),1fr);gap:8px;margin:14px 0 10px;}
 .rw-v2-pin-digit{
   height:52px;display:grid;place-items:center;border:1px solid var(--v2-line);
   border-radius:8px;background:#f8fafc;color:var(--v2-ink);font-size:22px;font-weight:850;
