@@ -424,6 +424,21 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-rim{
   filter:none!important;
 }
 
+/* Face motion quality pass */
+body.rw-v2-ready.rw-v2-visual-high:not(.app-open) .rw-v2-assistant-face-shadow,
+body.rw-v2-ready.rw-v2-visual-high:not(.app-open) .rw-v2-assistant-face-plate,
+body.rw-v2-ready.rw-v2-visual-high:not(.app-open) .rw-v2-assistant-face-halo,
+body.rw-v2-ready.rw-v2-visual-high:not(.app-open) .rw-v2-assistant-face-depth,
+body.rw-v2-ready.rw-v2-visual-high:not(.app-open) .rw-v2-assistant-face-rim,
+body.rw-v2-ready.rw-v2-visual-high:not(.app-open) .rw-v2-assistant-face-cutout,
+body.rw-v2-ready.rw-v2-visual-high:not(.app-open) .rw-v2-assistant-face-video,
+body.rw-v2-ready.rw-v2-visual-high:not(.app-open) .rw-v2-assistant-face-canvas,
+body.rw-v2-ready.rw-v2-visual-high:not(.app-open) .rw-v2-assistant-mouth-sync,
+body.rw-v2-ready.rw-v2-visual-high:not(.app-open) .rw-v2-assistant-blink{
+  will-change:transform, opacity!important;
+  backface-visibility:hidden!important;
+}
+
 /*
   Visual performance governor v2:
   JS assigns high / balanced / economy so costly effects scale with the device.
