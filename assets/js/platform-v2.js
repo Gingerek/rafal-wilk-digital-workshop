@@ -660,15 +660,19 @@
     if (faceVideo) {
       const facePoster = 'assets/images/aireel-face-poster-v2.webp?v=20260721-face-poster-2';
       const videoSources = {
-        balanced: 'assets/videos/aireel-face-hd-seamless-integrated-v4-smoothplay.mp4?v=20260721-smoothplay-1',
-        mobile: 'assets/videos/aireel-face-hd-seamless-integrated-v4-fast.mp4?v=20260720-aireel-fast-1'
+        high: 'assets/videos/aireel-face-hd-seamless-integrated-v4-smoothplay.mp4?v=20260721-smoothplay-1',
+        fallback: 'assets/videos/aireel-face-hd-seamless-integrated-v4-fast.mp4?v=20260720-aireel-fast-1'
       };
       const pickVideoSource = () => {
         const smallScreen = window.matchMedia?.('(max-width: 760px), (max-height: 620px)')?.matches;
-        return smallScreen ? videoSources.mobile : videoSources.balanced;
+        const profile = currentVisualPerformanceProfile().key;
+        return preferLightFaceVideo || smallScreen || profile !== 'high' ? videoSources.fallback : videoSources.high;
       };
       let videoRevealQueued = false;
       let videoSyncFrame = 0;
+      let videoQualityTimer = 0;
+      let videoQualitySample = null;
+      let preferLightFaceVideo = false;
       const faceVideoCanRun = () => {
         if (document.hidden || document.body.classList.contains('app-open')) return false;
         if (currentVisualPerformanceProfile().key === 'economy') return false;
@@ -677,7 +681,13 @@
         const rect = faceVideo.getBoundingClientRect();
         return rect.width > 12 && rect.height > 12;
       };
+      const clearVideoQualityProbe = () => {
+        window.clearTimeout(videoQualityTimer);
+        videoQualityTimer = 0;
+        videoQualitySample = null;
+      };
       const parkFaceVideo = (unload = false) => {
+        clearVideoQualityProbe();
         faceVideo.pause?.();
         faceVideo.classList.remove('is-active');
         document.body.classList.remove('rw-v2-video-face-ready');
@@ -707,6 +717,28 @@
           window.requestAnimationFrame(reveal);
         }
       };
+      const startVideoQualityProbe = () => {
+        if (videoQualityTimer || preferLightFaceVideo || !faceVideoCanRun()) return;
+        if (!faceVideo.getVideoPlaybackQuality || !faceVideo.src.includes(videoSources.high.split('?')[0])) return;
+        const initial = faceVideo.getVideoPlaybackQuality();
+        videoQualitySample = {
+          decoded: initial.totalVideoFrames || 0,
+          dropped: initial.droppedVideoFrames || 0
+        };
+        videoQualityTimer = window.setTimeout(() => {
+          videoQualityTimer = 0;
+          if (!videoQualitySample || preferLightFaceVideo || !faceVideoCanRun()) return;
+          const current = faceVideo.getVideoPlaybackQuality();
+          const decodedDelta = (current.totalVideoFrames || 0) - videoQualitySample.decoded;
+          const droppedDelta = (current.droppedVideoFrames || 0) - videoQualitySample.dropped;
+          videoQualitySample = null;
+          if (decodedDelta >= 24 && (droppedDelta >= 6 || droppedDelta / decodedDelta > .14)) {
+            preferLightFaceVideo = true;
+            faceVideo.dataset.rwVideoQuality = 'fallback';
+            syncFaceVideoPlayback();
+          }
+        }, 2800);
+      };
       const syncFaceVideoPlayback = () => {
         videoSyncFrame = 0;
         updateVideoGeometry();
@@ -719,14 +751,19 @@
         }
         const nextSource = pickVideoSource();
         if (!faceVideo.src || !faceVideo.src.includes(nextSource.split('?')[0])) {
+          clearVideoQualityProbe();
           faceVideo.classList.remove('is-active');
           document.body.classList.remove('rw-v2-video-face-ready');
+          faceVideo.dataset.rwVideoQuality = nextSource === videoSources.high ? 'high' : 'fallback';
           faceVideo.src = nextSource;
           faceVideo.load?.();
         }
         const playAttempt = faceVideo.play?.();
         if (playAttempt?.catch) playAttempt.catch(() => {});
-        if (faceVideo.readyState >= 3) queueVideoReveal();
+        if (faceVideo.readyState >= 3) {
+          queueVideoReveal();
+          startVideoQualityProbe();
+        }
       };
       const queueFaceVideoSync = () => {
         if (videoSyncFrame) return;
@@ -745,6 +782,7 @@
       faceVideo.addEventListener('loadeddata', queueVideoReveal);
       faceVideo.addEventListener('canplay', queueVideoReveal);
       faceVideo.addEventListener('playing', queueVideoReveal);
+      faceVideo.addEventListener('playing', startVideoQualityProbe);
       const idle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 2600));
       idle(queueFaceVideoSync, { timeout: 1400 });
       const queueVideoGeometry = () => {
