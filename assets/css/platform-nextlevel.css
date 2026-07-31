@@ -182,6 +182,67 @@ body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
   border-radius:8px!important;
 }
 
+/*
+  Performance governor:
+  keep the premium look, but remove constant paint/composite pressure
+  from decorative home layers before the legacy stylesheet is consolidated.
+*/
+body.rw-v2-ready:not(.app-open) .rw-v2-hero,
+body.rw-v2-ready:not(.app-open) .rw-v2-toolbar,
+body.rw-v2-ready:not(.app-open) main.wrap .grid{
+  contain:layout paint style!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card{
+  contain:layout paint!important;
+  content-visibility:auto!important;
+  contain-intrinsic-size:156px!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas{
+  filter:saturate(104%) contrast(102%) brightness(1.01)!important;
+  opacity:.22!important;
+  will-change:auto!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-ai-global-grade,
+body.rw-v2-ready:not(.app-open) .rw-v2-depth-field,
+body.rw-v2-ready:not(.app-open) .rw-v2-depth-field *,
+body.rw-v2-ready:not(.app-open) .rw-v2-system-strip,
+body.rw-v2-ready:not(.app-open) .rw-v2-system-strip *,
+body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock,
+body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock *{
+  animation:none!important;
+  will-change:auto!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-shadow,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-halo,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-depth,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-rim,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-cutout,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-video,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-canvas,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-mouth-sync{
+  will-change:auto!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-halo,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-depth,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-rim{
+  filter:none!important;
+}
+
+@media (max-width:1080px){
+  body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas,
+  body.rw-v2-ready:not(.app-open) .rw-v2-ai-global-grade,
+  body.rw-v2-ready:not(.app-open) .rw-v2-depth-field,
+  body.rw-v2-ready:not(.app-open) .rw-v2-system-strip,
+  body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock{
+    display:none!important;
+  }
+}
+
 @media (max-width:760px){
   body.rw-v2-ready:not(.app-open) .rw-v2-hero-inner{
     min-height:360px!important;
@@ -204,7 +265,17 @@ body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
 @media (prefers-reduced-motion:reduce){
   body.rw-v2-ready:not(.app-open) main.wrap .grid .card,
   body.rw-v2-ready:not(.app-open) .rw-v2-primary,
-  body.rw-v2-ready:not(.app-open) .rw-v2-secondary{
+  body.rw-v2-ready:not(.app-open) .rw-v2-secondary,
+  body.rw-v2-ready:not(.app-open) .rw-v2-ai-global-grade,
+  body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-shadow,
+  body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-halo,
+  body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-depth,
+  body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-rim,
+  body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-cutout,
+  body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-video,
+  body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-canvas,
+  body.rw-v2-ready:not(.app-open) .rw-v2-assistant-mouth-sync{
     transition:none!important;
+    animation:none!important;
   }
 }

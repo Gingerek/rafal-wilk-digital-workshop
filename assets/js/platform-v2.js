@@ -1739,12 +1739,21 @@
     nativeWallFrame = window.requestAnimationFrame(loop);
     window.addEventListener('resize', () => drawNativeWallFrame(performance.now()), { passive:true });
   }
+  function shouldRunNativeWallCanvas(){
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    const compactViewport = window.matchMedia?.('(max-width: 1080px)')?.matches;
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const saveData = Boolean(connection?.saveData);
+    const slowConnection = typeof connection?.effectiveType === 'string' && /(^|-)2g$|slow-2g/i.test(connection.effectiveType);
+    return !reducedMotion && !compactViewport && !saveData && !slowConnection;
+  }
   function scheduleNativeWallCanvasStart(){
     if (nativeWallEngineStarted || nativeWallStartScheduled) return;
     nativeWallStartScheduled = true;
     const start = () => {
       nativeWallStartScheduled = false;
       if (nativeWallEngineStarted || document.body.classList.contains('app-open')) return;
+      if (!shouldRunNativeWallCanvas()) return;
       startNativeWallCanvas();
     };
     const idle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 900));
