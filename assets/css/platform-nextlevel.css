@@ -117,7 +117,8 @@ body.rw-v2-ready:not(.app-open) main.wrap .grid{
   gap:clamp(10px, 1.15vw, 16px)!important;
 }
 
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card{
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card.rw-v2-card-clickable{
   min-height:156px!important;
   border-radius:8px!important;
   border:1px solid var(--rw-pro-line)!important;
@@ -130,6 +131,7 @@ body.rw-v2-ready:not(.app-open) main.wrap .grid .card{
 }
 
 body.rw-v2-ready:not(.app-open) main.wrap .grid .card:hover,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card.rw-v2-card-clickable:hover,
 body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-within{
   transform:translateY(-2px)!important;
   border-color:var(--rw-pro-line-strong)!important;
@@ -381,7 +383,8 @@ body.rw-v2-ready:not(.app-open) main.wrap .grid{
   contain:layout paint style!important;
 }
 
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card{
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card.rw-v2-card-clickable{
   contain:layout paint!important;
   content-visibility:auto!important;
   contain-intrinsic-size:156px!important;
@@ -637,7 +640,8 @@ body.rw-v2-ready:not(.app-open) .rw-v2-window-reflection{
     padding:14px!important;
   }
 
-  body.rw-v2-ready:not(.app-open) main.wrap .grid .card{
+  body.rw-v2-ready:not(.app-open) main.wrap .grid .card,
+  body.rw-v2-ready:not(.app-open) main.wrap .grid .card.rw-v2-card-clickable{
     min-height:146px!important;
   }
 }
