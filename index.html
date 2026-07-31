@@ -8,7 +8,7 @@
 <link rel="preload" as="image" href="assets/images/private-command-center-hero-personal-bg-day-v15-mobile.webp?v=20260731-mobile-1" type="image/webp" media="(max-width: 760px)">
 <link rel="preload" as="image" href="assets/images/private-command-center-hero-personal-bg-day-v15.webp?v=20260717-personal-sharp-1" type="image/webp" media="(min-width: 761px)">
 <link rel="preload" as="style" href="assets/css/platform-v2.css?v=20260731-nextlevel-1">
-<link rel="preload" as="script" href="assets/js/platform-v2.js?v=20260731-detox-1">
+<link rel="preload" as="script" href="assets/js/platform-v2.js?v=20260731-copy-1">
 <title>Rafal Wilk Digital Workshop ©</title>
 <style id="rw-critical-home-boot">
   html{background:#05080d}
@@ -193,8 +193,8 @@
     authorizedOnce = false;
     pendingPin = modulePinFor(moduleTitle);
     var p = parts();
-    if (p.title) p.title.textContent = 'Dostep do modulu';
-    if (p.text) p.text.textContent = moduleTitle ? 'Wpisz PIN, aby otworzyc: ' + moduleTitle : 'Wpisz PIN, aby otworzyc wybrany modul.';
+    if (p.title) p.title.textContent = 'Dostęp do modułu';
+    if (p.text) p.text.textContent = moduleTitle ? 'Wpisz PIN, aby otworzyć: ' + moduleTitle : 'Wpisz PIN, aby otworzyć wybrany moduł.';
     if (p.err) p.err.textContent = '';
     configurePinInput(p.pin, pendingPin);
     if (p.pin) p.pin.value = '';
@@ -349,7 +349,7 @@
   <div class="rw-boot-card">
     <div class="rw-boot-kicker">Rafal Wilk Digital Workshop</div>
     <h2 class="rw-boot-title">Private Command Center</h2>
-    <div class="rw-boot-status">Loading modules</div>
+    <div class="rw-boot-status">Ładowanie modułów</div>
   </div>
 </div>
 
@@ -969,4 +969,4 @@ body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock{
   visibility:hidden!important;
 }
 </style>
-<script src="assets/js/platform-v2.js?v=20260731-detox-1" defer></script>
+<script src="assets/js/platform-v2.js?v=20260731-copy-1" defer></script>

@@ -215,10 +215,10 @@
     const texts = {
       command:{pl:'Szukaj', en:'Command', nl:'Zoeken'},
       commandTitle:{pl:'Command Center', en:'Command Center', nl:'Command Center'},
-      commandHint:{pl:'Wpisz nazwe modulu', en:'Type a module name', nl:'Typ een modulenaam'},
-      commandEmpty:{pl:'Brak wynikow', en:'No results', nl:'Geen resultaten'},
+      commandHint:{pl:'Wpisz nazwę modułu', en:'Type a module name', nl:'Typ een modulenaam'},
+      commandEmpty:{pl:'Brak wyników', en:'No results', nl:'Geen resultaten'},
       systemOnline:{pl:'System online', en:'System online', nl:'Systeem online'},
-      quickAccess:{pl:'Szybki dostep', en:'Quick access', nl:'Snelle toegang'},
+      quickAccess:{pl:'Szybki dostęp', en:'Quick access', nl:'Snelle toegang'},
       protected:{pl:'Chroniony', en:'Protected', nl:'Beveiligd'},
       ready:{pl:'Gotowy', en:'Ready', nl:'Gereed'},
       calculator:{pl:'Kalkulator', en:'Calculator', nl:'Rekentool'},
