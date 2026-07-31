@@ -17,6 +17,77 @@
   let nativeWallStartScheduled = false;
   let nativeWallFrame = 0;
   let nativeWallLastPaint = 0;
+  let nativeWallVisible = true;
+  let nativeWallResizeFrame = 0;
+  let visualPerformanceKey = '';
+  let visualPerformanceProfile = null;
+  let visualPerformanceFrame = 0;
+  let visualPerformanceBound = false;
+  const visualPerformanceProfiles = {
+    high:{ key:'high', className:'rw-v2-visual-high', wallFrameMs:95, wallDprCap:1.6, wallIdleMs:420, blinkDelayMultiplier:1.15, blinkEnabled:true, pointerTracking:true },
+    balanced:{ key:'balanced', className:'rw-v2-visual-balanced', wallFrameMs:185, wallDprCap:1.25, wallIdleMs:720, blinkDelayMultiplier:2.1, blinkEnabled:true, pointerTracking:false },
+    economy:{ key:'economy', className:'rw-v2-visual-economy', wallFrameMs:360, wallDprCap:1, wallIdleMs:1100, blinkDelayMultiplier:3.6, blinkEnabled:false, pointerTracking:false, wallCanvas:false }
+  };
+  function connectionInfo(){
+    return navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+  }
+  function isReducedMotion(){
+    return Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
+  }
+  function computeVisualPerformanceKey(){
+    const connection = connectionInfo();
+    const effectiveType = String(connection?.effectiveType || '');
+    const saveData = Boolean(connection?.saveData);
+    const slowConnection = /(^|-)2g$|slow-2g/i.test(effectiveType);
+    const compactViewport = Boolean(window.matchMedia?.('(max-width: 760px)')?.matches);
+    const mediumViewport = Boolean(window.matchMedia?.('(max-width: 1180px)')?.matches);
+    const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4;
+    const lowCores = typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 4;
+    const touchFirst = Boolean(window.matchMedia?.('(pointer: coarse)')?.matches);
+    if (isReducedMotion() || saveData || slowConnection || compactViewport) return 'economy';
+    if (mediumViewport || lowMemory || lowCores || touchFirst) return 'balanced';
+    return 'high';
+  }
+  function applyVisualPerformanceProfile(){
+    const key = computeVisualPerformanceKey();
+    const profile = visualPerformanceProfiles[key] || visualPerformanceProfiles.balanced;
+    visualPerformanceProfile = profile;
+    if (visualPerformanceKey !== key && document.body) {
+      document.body.classList.remove(
+        visualPerformanceProfiles.high.className,
+        visualPerformanceProfiles.balanced.className,
+        visualPerformanceProfiles.economy.className
+      );
+      document.body.classList.add(profile.className);
+      document.body.dataset.rwVisualQuality = key;
+      visualPerformanceKey = key;
+    }
+    return profile;
+  }
+  function currentVisualPerformanceProfile(){
+    return visualPerformanceProfile || applyVisualPerformanceProfile();
+  }
+  function queueVisualPerformanceProfile(){
+    if (visualPerformanceFrame) return;
+    visualPerformanceFrame = window.requestAnimationFrame(() => {
+      visualPerformanceFrame = 0;
+      const previous = visualPerformanceKey;
+      const profile = applyVisualPerformanceProfile();
+      if (previous !== profile.key) scheduleNativeWallCanvasStart();
+    });
+  }
+  function bindVisualPerformanceGovernor(){
+    if (visualPerformanceBound) return;
+    visualPerformanceBound = true;
+    applyVisualPerformanceProfile();
+    window.addEventListener('resize', queueVisualPerformanceProfile, { passive:true });
+    window.addEventListener('orientationchange', queueVisualPerformanceProfile, { passive:true });
+    document.addEventListener('visibilitychange', queueVisualPerformanceProfile);
+    connectionInfo()?.addEventListener?.('change', queueVisualPerformanceProfile);
+    const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (motionQuery?.addEventListener) motionQuery.addEventListener('change', queueVisualPerformanceProfile);
+    else motionQuery?.addListener?.(queueVisualPerformanceProfile);
+  }
   const modules = [
     { match:'Contract Budget Calculator', icon:'calculator', category:'finance',
       title:{pl:'Kalkulator budżetu kontraktu', en:'Contract Budget Calculator', nl:'Contractbudget calculator'},
@@ -908,8 +979,10 @@
     faceImage.addEventListener('load', activateCanvasFace, { once:true });
     activateCanvasFace();
     const nextBlinkDelay = () => {
+      const multiplier = currentVisualPerformanceProfile().blinkDelayMultiplier || 1;
       const base = 1250 + Math.pow(Math.random(), 1.2) * 2500;
-      return Math.random() < .14 ? base + randomBetween(650, 1500) : base;
+      const delay = Math.random() < .14 ? base + randomBetween(650, 1500) : base;
+      return delay * multiplier;
     };
     const updateGeometry = () => {
       const rect = shell.getBoundingClientRect();
@@ -965,9 +1038,10 @@
     };
     const runBlink = () => {
       const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-      if (!reducedMotion && !document.body.classList.contains('app-open') && !document.hidden) {
+      const profile = currentVisualPerformanceProfile();
+      if (profile.blinkEnabled !== false && !reducedMotion && !document.body.classList.contains('app-open') && !document.hidden) {
         playBlink(randomBetween(620, 820), () => {
-          if (Math.random() < .16) {
+          if (profile.key === 'high' && Math.random() < .16) {
             window.setTimeout(() => playBlink(randomBetween(520, 680)), randomBetween(230, 410));
           }
         });
@@ -1026,13 +1100,21 @@
     const stamp = new Date().toLocaleTimeString(lang() === 'nl' ? 'nl-NL' : lang() === 'en' ? 'en-GB' : 'pl-PL', { hour:'2-digit', minute:'2-digit' });
     strip.innerHTML = `<span class="rw-v2-strip-online"><i></i>${uiText('systemOnline')}</span><strong>${count}</strong><span>${uiText('quickAccess')}</span><span>${lang().toUpperCase()}</span><span>${stamp}</span>`;
   }
+  function nativeWallCanvasCanPaint(){
+    const canvas = document.querySelector('.rw-v2-native-wall-canvas');
+    if (!canvas) return false;
+    if (window.getComputedStyle(canvas).display === 'none') return false;
+    const rect = canvas.getBoundingClientRect();
+    return rect.width > 10 && rect.height > 10;
+  }
   function startNativeWallCanvas(){
     if (nativeWallEngineStarted) return;
-    nativeWallEngineStarted = true;
     const canvas = document.querySelector('.rw-v2-native-wall-canvas');
     if (!canvas) return;
+    if (!nativeWallCanvasCanPaint()) return;
     const ctx = canvas.getContext('2d', { alpha:true });
     if (!ctx) return;
+    nativeWallEngineStarted = true;
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
     const state = {
       charts:[
@@ -1049,7 +1131,8 @@
     };
     function fitCanvas(){
       const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+      const profile = currentVisualPerformanceProfile();
+      const dpr = Math.min(profile.wallDprCap || 1.25, Math.max(1, window.devicePixelRatio || 1));
       const width = Math.max(1, Math.round(rect.width * dpr));
       const height = Math.max(1, Math.round(rect.height * dpr));
       if (canvas.width !== width || canvas.height !== height) {
@@ -1717,18 +1800,28 @@
       drawExistingScreenGestures(w, h, time, panels);
       ctx.restore();
     }
+    if ('IntersectionObserver' in window) {
+      const visibilityObserver = new IntersectionObserver((entries) => {
+        nativeWallVisible = entries.some((entry) => entry.isIntersecting && entry.intersectionRatio > 0);
+        if (nativeWallVisible && !document.hidden && !document.body.classList.contains('app-open')) {
+          drawNativeWallFrame(performance.now());
+        }
+      }, { rootMargin:'140px 0px', threshold:[0, .01] });
+      visibilityObserver.observe(canvas);
+    }
     function loop(time){
-      if (document.hidden || document.body.classList.contains('app-open')) {
+      const profile = currentVisualPerformanceProfile();
+      if (document.hidden || document.body.classList.contains('app-open') || !nativeWallVisible || profile.wallCanvas === false) {
         nativeWallFrame = window.setTimeout(() => {
           nativeWallFrame = window.requestAnimationFrame(loop);
-        }, 500);
+        }, profile.wallIdleMs || 720);
         return;
       }
       if (reducedMotion && nativeWallLastPaint) {
         nativeWallFrame = window.requestAnimationFrame(loop);
         return;
       }
-      if (!reducedMotion && time - nativeWallLastPaint < 100) {
+      if (!reducedMotion && time - nativeWallLastPaint < (profile.wallFrameMs || 185)) {
         nativeWallFrame = window.requestAnimationFrame(loop);
         return;
       }
@@ -1737,7 +1830,17 @@
       nativeWallFrame = window.requestAnimationFrame(loop);
     }
     nativeWallFrame = window.requestAnimationFrame(loop);
-    window.addEventListener('resize', () => drawNativeWallFrame(performance.now()), { passive:true });
+    const queueNativeWallResize = () => {
+      if (nativeWallResizeFrame) return;
+      nativeWallResizeFrame = window.requestAnimationFrame(() => {
+        nativeWallResizeFrame = 0;
+        if (document.hidden || document.body.classList.contains('app-open')) return;
+        if (currentVisualPerformanceProfile().wallCanvas === false) return;
+        drawNativeWallFrame(performance.now());
+      });
+    };
+    window.addEventListener('resize', queueNativeWallResize, { passive:true });
+    window.addEventListener('orientationchange', queueNativeWallResize, { passive:true });
   }
   function shouldRunNativeWallCanvas(){
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
@@ -1745,7 +1848,7 @@
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     const saveData = Boolean(connection?.saveData);
     const slowConnection = typeof connection?.effectiveType === 'string' && /(^|-)2g$|slow-2g/i.test(connection.effectiveType);
-    return !reducedMotion && !compactViewport && !saveData && !slowConnection;
+    return currentVisualPerformanceProfile().wallCanvas !== false && nativeWallCanvasCanPaint() && !reducedMotion && !compactViewport && !saveData && !slowConnection;
   }
   function scheduleNativeWallCanvasStart(){
     if (nativeWallEngineStarted || nativeWallStartScheduled) return;
@@ -2706,6 +2809,7 @@
     };
     window.addEventListener('pointermove', (event) => {
       if (document.body.classList.contains('app-open')) return;
+      if (!currentVisualPerformanceProfile().pointerTracking) return;
       nextX = Math.max(0, Math.min(100, (event.clientX / Math.max(1, window.innerWidth)) * 100));
       nextY = Math.max(0, Math.min(100, (event.clientY / Math.max(1, window.innerHeight)) * 100));
       if (!raf) raf = window.requestAnimationFrame(update);
@@ -3181,6 +3285,7 @@
     });
   }
   function refreshHomeView(){
+    applyVisualPerformanceProfile();
     retireLegacyVisualLayers();
     ensureShell();
     renderHero();
@@ -3197,6 +3302,7 @@
   }
   function init(){
     window.__rwPlatformV2RefreshHome = refreshHomeView;
+    bindVisualPerformanceGovernor();
     ensureModulePinGate();
     retireLegacyVisualLayers();
     syncBrand();
