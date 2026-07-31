@@ -482,6 +482,30 @@ body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-within .rw-v2-icon{
   transform:none!important;
 }
 
+/* Window clarity pass */
+body.rw-v2-ready,
+body.rw-v2-ready.rw-v2-phase-dawn,
+body.rw-v2-ready.rw-v2-phase-morning,
+body.rw-v2-ready.rw-v2-phase-day,
+body.rw-v2-ready.rw-v2-phase-afternoon{
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v17-window-clarity.webp?v=20260731-window-1");
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-sky-wash{
+  opacity:.16!important;
+  filter:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-live-clouds{
+  opacity:.16!important;
+  filter:blur(2px)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-window-reflection{
+  opacity:.38!important;
+  filter:none!important;
+}
+
 @media (max-width:1080px){
   body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas,
   body.rw-v2-ready:not(.app-open) .rw-v2-ai-global-grade,
@@ -512,7 +536,7 @@ body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-within .rw-v2-icon{
   body.rw-v2-ready.rw-v2-phase-morning,
   body.rw-v2-ready.rw-v2-phase-day,
   body.rw-v2-ready.rw-v2-phase-afternoon{
-    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v15-mobile.webp?v=20260731-mobile-1");
+    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v17-window-clarity-mobile.webp?v=20260731-window-1");
   }
 
   body.rw-v2-ready.rw-v2-phase-sunset{
