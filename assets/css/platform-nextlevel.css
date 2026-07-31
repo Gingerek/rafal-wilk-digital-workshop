@@ -421,6 +421,67 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-rim{
   filter:none!important;
 }
 
+/*
+  Home authority pass 2:
+  one calm interaction model for module cards, replacing historical
+  staggered animations, 3D tilts, and competing hover transforms.
+*/
+body.rw-v2-ready:not(.app-open) .rw-v2-shell::before{
+  animation:none!important;
+  will-change:auto!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid{
+  perspective:none!important;
+  transform-style:flat!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card.rw-v2-card-clickable{
+  animation:none!important;
+  animation-delay:0s!important;
+  transform-style:flat!important;
+  will-change:auto!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:hover,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-visible,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-within{
+  transform:translateY(-2px)!important;
+  border-color:var(--rw-pro-line-strong)!important;
+  box-shadow:0 18px 52px rgba(0,0,0,.28)!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-visible{
+  outline:2px solid rgba(114,241,212,.54)!important;
+  outline-offset:3px!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card::before,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card::after{
+  transition:opacity .16s ease!important;
+  will-change:auto!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:hover::before,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-visible::before,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-within::before{
+  transform:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card .rw-v2-icon,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card .rw-v2-icon::after,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card .rw-v2-icon svg,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card .rw-v2-card-status{
+  will-change:auto!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:hover .rw-v2-icon,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-visible .rw-v2-icon,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-within .rw-v2-icon{
+  transform:none!important;
+}
+
 @media (max-width:1080px){
   body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas,
   body.rw-v2-ready:not(.app-open) .rw-v2-ai-global-grade,

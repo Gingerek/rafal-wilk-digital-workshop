@@ -5481,28 +5481,11 @@ body.rw-v2-ready .rw-v2-shell::before{
     linear-gradient(90deg, rgba(127,215,255,.018) 1px, transparent 1px)!important;
   background-size:auto, auto, auto, 64px 64px, 64px 64px!important;
   opacity:.88!important;
-  animation:rwPremiumAmbient 12s ease-in-out infinite alternate!important;
 }
 
 body.rw-v2-ready:not(.app-open) main.wrap .grid{
   z-index:25!important;
 }
-
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card{
-  animation:rwPremiumCardIn .52s cubic-bezier(.2,.8,.2,1) both!important;
-  will-change:transform, opacity!important;
-}
-
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(1){animation-delay:.03s!important;}
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(2){animation-delay:.06s!important;}
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(3){animation-delay:.09s!important;}
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(4){animation-delay:.12s!important;}
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(5){animation-delay:.15s!important;}
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(6){animation-delay:.18s!important;}
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(7){animation-delay:.21s!important;}
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(8){animation-delay:.24s!important;}
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(9){animation-delay:.27s!important;}
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card:nth-child(10){animation-delay:.30s!important;}
 
 body.rw-v2-ready:not(.app-open) main.wrap .grid .card::before{
   content:""!important;
@@ -5620,16 +5603,6 @@ body.rw-v2-ready.app-open .viewport iframe.show{
   box-shadow:0 26px 90px rgba(0,0,0,.30), 0 0 42px rgba(91,174,231,.10)!important;
   animation:rwPremiumFrameIn .34s cubic-bezier(.2,.8,.2,1) both!important;
   overflow:hidden!important;
-}
-
-@keyframes rwPremiumAmbient{
-  from{opacity:.74; transform:translate3d(-8px,-4px,0) scale(1);}
-  to{opacity:.94; transform:translate3d(8px,4px,0) scale(1.012);}
-}
-
-@keyframes rwPremiumCardIn{
-  from{opacity:0; transform:translateY(14px) scale(.985);}
-  to{opacity:1; transform:translateY(0) scale(1);}
 }
 
 @keyframes rwPremiumOpenWash{
@@ -7325,12 +7298,6 @@ body.rw-v2-ready.app-open .viewport iframe.show{
   }
 }
 
-/* Premium UX polish v8: module status language, command scoring, unified cockpit chrome. */
-body.rw-v2-ready:not(.app-open) main.wrap .grid .card{
-  animation:rwV8CardRise .52s cubic-bezier(.2,.8,.2,1) both!important;
-  animation-delay:calc(var(--rw-card-index, 0) * 34ms)!important;
-}
-
 body.rw-v2-ready:not(.app-open) main.wrap .grid .card .rw-v2-card-status{
   display:flex!important;
   align-items:center!important;
@@ -7457,11 +7424,6 @@ body.rw-v2-opening-module:not(.app-open) main.wrap .grid .card.rw-v2-launching{
   transform:translate3d(0,-10px,0) scale(1.035)!important;
   border-color:rgba(165,230,255,.76)!important;
   box-shadow:0 42px 110px rgba(0,0,0,.42), 0 0 64px rgba(91,174,231,.22)!important;
-}
-
-@keyframes rwV8CardRise{
-  from{opacity:0; transform:translateY(18px) scale(.985);}
-  to{opacity:1; transform:translateY(0) scale(1);}
 }
 
 @media (max-width:760px){
