@@ -440,6 +440,15 @@ body.rw-v2-ready.rw-v2-visual-high:not(.app-open) .rw-v2-assistant-blink{
 }
 
 /* Face video clarity and no-flash startup */
+body.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-shadow,
+body.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-plate,
+body.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-halo,
+body.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-depth,
+body.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-rim,
+body.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-cutout,
+body.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-canvas,
+body.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-mouth-sync,
+body.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-blink,
 body.rw-v2-ready.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-shadow,
 body.rw-v2-ready.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-plate,
 body.rw-v2-ready.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-halo,
@@ -454,16 +463,21 @@ body.rw-v2-ready.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-ope
   visibility:hidden!important;
 }
 
+body.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-video,
 body.rw-v2-ready.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-open) .rw-v2-assistant-face-video{
   opacity:0!important;
   visibility:visible!important;
 }
 
+body.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-cutout,
+body.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-canvas,
+body.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-blink,
 body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-cutout,
 body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-canvas,
 body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-blink{
   opacity:0!important;
   visibility:hidden!important;
+  display:none!important;
 }
 
 body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-plate,
@@ -472,12 +486,19 @@ body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-
 body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-rim,
 body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video,
 body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-mouth-sync{
+  --rw-face-float-x:0px;
+  --rw-face-float-y:0px;
+  --rw-face-scale:1;
   animation:rwAssistantFaceDriftPro 45s linear infinite!important;
-  transform:translate3d(0,0,0) scale(1)!important;
+  transform:translate3d(var(--rw-face-float-x), var(--rw-face-float-y), 0) scale(var(--rw-face-scale))!important;
 }
 
 body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-shadow{
+  --rw-face-shadow-x:0px;
+  --rw-face-shadow-y:2.58px;
+  --rw-face-scale:1;
   animation:rwAssistantShadowDriftPro 45s linear infinite!important;
+  transform:translate3d(var(--rw-face-shadow-x), var(--rw-face-shadow-y), 0) scale(var(--rw-face-scale))!important;
 }
 
 body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active{
@@ -485,25 +506,31 @@ body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-
   image-rendering:auto!important;
 }
 
+@property --rw-face-scale{
+  syntax:"<number>";
+  inherits:false;
+  initial-value:1;
+}
+
 @keyframes rwAssistantFaceDriftPro{
-  0%,100%{transform:translate3d(0,-.42px,0) scale(1);}
-  10%{transform:translate3d(.045px,-.34px,0) scale(1.0007);}
-  20%{transform:translate3d(.105px,-.16px,0) scale(1.0015);}
-  30%{transform:translate3d(.145px,.12px,0) scale(1.002);}
-  40%{transform:translate3d(.12px,.43px,0) scale(1.0024);}
-  50%{transform:translate3d(.045px,.62px,0) scale(1.002);}
-  60%{transform:translate3d(-.055px,.48px,0) scale(1.0012);}
-  70%{transform:translate3d(-.13px,.18px,0) scale(1.0004);}
-  80%{transform:translate3d(-.155px,-.12px,0) scale(.9998);}
-  90%{transform:translate3d(-.07px,-.34px,0) scale(.9996);}
+  0%,100%{--rw-face-float-x:0px; --rw-face-float-y:-.42px; --rw-face-scale:1;}
+  10%{--rw-face-float-x:.045px; --rw-face-float-y:-.34px; --rw-face-scale:1.0015;}
+  20%{--rw-face-float-x:.105px; --rw-face-float-y:-.16px; --rw-face-scale:1.0032;}
+  30%{--rw-face-float-x:.145px; --rw-face-float-y:.12px; --rw-face-scale:1.0046;}
+  40%{--rw-face-float-x:.12px; --rw-face-float-y:.43px; --rw-face-scale:1.0052;}
+  50%{--rw-face-float-x:.045px; --rw-face-float-y:.62px; --rw-face-scale:1.0044;}
+  60%{--rw-face-float-x:-.055px; --rw-face-float-y:.48px; --rw-face-scale:1.0028;}
+  70%{--rw-face-float-x:-.13px; --rw-face-float-y:.18px; --rw-face-scale:1.0012;}
+  80%{--rw-face-float-x:-.155px; --rw-face-float-y:-.12px; --rw-face-scale:.9994;}
+  90%{--rw-face-float-x:-.07px; --rw-face-float-y:-.34px; --rw-face-scale:.9988;}
 }
 
 @keyframes rwAssistantShadowDriftPro{
-  0%,100%{transform:translate3d(0,2.58px,0) scale(1.002);}
-  20%{transform:translate3d(.05px,2.48px,0) scale(1.003);}
-  40%{transform:translate3d(.08px,2.36px,0) scale(1.004);}
-  60%{transform:translate3d(-.04px,2.44px,0) scale(1.003);}
-  80%{transform:translate3d(-.07px,2.55px,0) scale(1.002);}
+  0%,100%{--rw-face-shadow-x:0px; --rw-face-shadow-y:2.58px; --rw-face-scale:1.002;}
+  20%{--rw-face-shadow-x:.05px; --rw-face-shadow-y:2.48px; --rw-face-scale:1.003;}
+  40%{--rw-face-shadow-x:.08px; --rw-face-shadow-y:2.36px; --rw-face-scale:1.004;}
+  60%{--rw-face-shadow-x:-.04px; --rw-face-shadow-y:2.44px; --rw-face-scale:1.003;}
+  80%{--rw-face-shadow-x:-.07px; --rw-face-shadow-y:2.55px; --rw-face-scale:1.002;}
 }
 
 /*

@@ -445,6 +445,8 @@
       globalGrade.setAttribute('aria-hidden', 'true');
       shell.appendChild(globalGrade);
     }
+    document.body.classList.add('rw-v2-video-face-mode');
+    shell.querySelectorAll('.rw-v2-assistant-face-cutout, .rw-v2-assistant-face-canvas, .rw-v2-assistant-blink').forEach((oldFaceLayer) => oldFaceLayer.remove());
     if (!shell.querySelector('.rw-v2-assistant-face-shadow')) {
       const assistantShadow = document.createElement('div');
       assistantShadow.className = 'rw-v2-assistant-face-shadow';
@@ -475,12 +477,6 @@
       assistantRim.setAttribute('aria-hidden', 'true');
       shell.appendChild(assistantRim);
     }
-    if (!shell.querySelector('.rw-v2-assistant-face-cutout')) {
-      const assistantFace = document.createElement('div');
-      assistantFace.className = 'rw-v2-assistant-face-cutout';
-      assistantFace.setAttribute('aria-hidden', 'true');
-      shell.appendChild(assistantFace);
-    }
     if (!shell.querySelector('.rw-v2-assistant-face-video')) {
       const assistantFaceVideo = document.createElement('video');
       assistantFaceVideo.className = 'rw-v2-assistant-face-video';
@@ -505,12 +501,6 @@
     }
     shell.querySelectorAll('.rw-v2-assistant-voice').forEach((assistantVoice) => assistantVoice.remove());
     shell.querySelectorAll('.rw-v2-voice-unlock').forEach((voiceUnlock) => voiceUnlock.remove());
-    if (!shell.querySelector('.rw-v2-assistant-blink')) {
-      const assistantBlink = document.createElement('div');
-      assistantBlink.className = 'rw-v2-assistant-blink';
-      assistantBlink.setAttribute('aria-hidden', 'true');
-      shell.appendChild(assistantBlink);
-    }
     if (!shell.querySelector('.rw-v2-ambient-deck')) {
       const deck = document.createElement('div');
       deck.className = 'rw-v2-ambient-deck';
@@ -625,8 +615,9 @@
     const faceVideo = shell?.querySelector('.rw-v2-assistant-face-video');
     const faceCanvas = shell?.querySelector('.rw-v2-assistant-face-canvas');
     const faceMouth = shell?.querySelector('.rw-v2-assistant-mouth-sync');
-    if (!blink || blink.dataset.rwBlinkActive === 'true') return;
-    blink.dataset.rwBlinkActive = 'true';
+    const activeFaceNode = faceVideo || blink;
+    if (!activeFaceNode || activeFaceNode.dataset.rwBlinkActive === 'true') return;
+    activeFaceNode.dataset.rwBlinkActive = 'true';
     if (!faceCanvas && !faceVideo) return;
     const natural = { width: 1704, height: 923 };
     const faceCrop = { x: 58, y: 54, width: 446, height: 562 };
@@ -658,21 +649,13 @@
       });
     };
     if (faceVideo) {
+      [faceCutout, faceCanvas, blink].forEach((oldFaceLayer) => oldFaceLayer?.remove());
       const videoSources = {
-        high: 'assets/videos/aireel-face-hd-seamless-integrated-v4-smoothplay.mp4?v=20260721-smoothplay-1',
-        fallback: 'assets/videos/aireel-face-hd-seamless-integrated-v4-fast.mp4?v=20260720-aireel-fast-1'
+        stable: 'assets/videos/aireel-face-hd-seamless-integrated-v4-fast.mp4?v=20260720-aireel-fast-1'
       };
-      const pickVideoSource = () => {
-        const smallScreen = window.matchMedia?.('(max-width: 760px), (max-height: 620px)')?.matches;
-        const profile = currentVisualPerformanceProfile().key;
-        return preferLightFaceVideo || smallScreen || profile !== 'high' ? videoSources.fallback : videoSources.high;
-      };
+      const pickVideoSource = () => videoSources.stable;
       let videoRevealQueued = false;
       let videoSyncFrame = 0;
-      let videoQualityTimer = 0;
-      let videoQualitySample = null;
-      let videoQualityStrikes = 0;
-      let preferLightFaceVideo = false;
       document.body.classList.add('rw-v2-video-face-mode');
       const faceVideoCanRun = () => {
         if (document.hidden || document.body.classList.contains('app-open')) return false;
@@ -682,13 +665,7 @@
         const rect = faceVideo.getBoundingClientRect();
         return rect.width > 12 && rect.height > 12;
       };
-      const clearVideoQualityProbe = () => {
-        window.clearTimeout(videoQualityTimer);
-        videoQualityTimer = 0;
-        videoQualitySample = null;
-      };
       const parkFaceVideo = (unload = false) => {
-        clearVideoQualityProbe();
         faceVideo.pause?.();
         faceVideo.classList.remove('is-active');
         document.body.classList.remove('rw-v2-video-face-ready');
@@ -718,32 +695,6 @@
           window.requestAnimationFrame(reveal);
         }
       };
-      const startVideoQualityProbe = () => {
-        if (videoQualityTimer || preferLightFaceVideo || !faceVideoCanRun()) return;
-        if (!faceVideo.getVideoPlaybackQuality || !faceVideo.src.includes(videoSources.high.split('?')[0])) return;
-        const initial = faceVideo.getVideoPlaybackQuality();
-        videoQualitySample = {
-          decoded: initial.totalVideoFrames || 0,
-          dropped: initial.droppedVideoFrames || 0
-        };
-        videoQualityTimer = window.setTimeout(() => {
-          videoQualityTimer = 0;
-          if (!videoQualitySample || preferLightFaceVideo || !faceVideoCanRun()) return;
-          const current = faceVideo.getVideoPlaybackQuality();
-          const decodedDelta = (current.totalVideoFrames || 0) - videoQualitySample.decoded;
-          const droppedDelta = (current.droppedVideoFrames || 0) - videoQualitySample.dropped;
-          videoQualitySample = null;
-          const strainedPlayback = decodedDelta >= 48 && droppedDelta >= 16 && droppedDelta / decodedDelta > .26;
-          videoQualityStrikes = strainedPlayback ? videoQualityStrikes + 1 : 0;
-          if (videoQualityStrikes >= 2) {
-            preferLightFaceVideo = true;
-            faceVideo.dataset.rwVideoQuality = 'fallback';
-            syncFaceVideoPlayback();
-          } else {
-            startVideoQualityProbe();
-          }
-        }, 3600);
-      };
       const syncFaceVideoPlayback = () => {
         videoSyncFrame = 0;
         updateVideoGeometry();
@@ -754,11 +705,9 @@
         faceVideo.removeAttribute('poster');
         const nextSource = pickVideoSource();
         if (!faceVideo.src || !faceVideo.src.includes(nextSource.split('?')[0])) {
-          clearVideoQualityProbe();
-          videoQualityStrikes = 0;
           faceVideo.classList.remove('is-active');
           document.body.classList.remove('rw-v2-video-face-ready');
-          faceVideo.dataset.rwVideoQuality = nextSource === videoSources.high ? 'high' : 'fallback';
+          faceVideo.dataset.rwVideoQuality = 'stable';
           faceVideo.src = nextSource;
           faceVideo.load?.();
         }
@@ -766,7 +715,6 @@
         if (playAttempt?.catch) playAttempt.catch(() => {});
         if (faceVideo.readyState >= 3) {
           queueVideoReveal();
-          startVideoQualityProbe();
         }
       };
       const queueFaceVideoSync = () => {
@@ -787,7 +735,6 @@
       faceVideo.addEventListener('loadeddata', queueVideoReveal);
       faceVideo.addEventListener('canplay', queueVideoReveal);
       faceVideo.addEventListener('playing', queueVideoReveal);
-      faceVideo.addEventListener('playing', startVideoQualityProbe);
       const idle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 2600));
       idle(queueFaceVideoSync, { timeout: 1400 });
       const queueVideoGeometry = () => {
