@@ -14,6 +14,7 @@
   let weatherRefreshScheduled = false;
   let contactRenderScheduled = false;
   let nativeWallEngineStarted = false;
+  let nativeWallStartScheduled = false;
   let nativeWallFrame = 0;
   let nativeWallLastPaint = 0;
   const modules = [
@@ -1738,6 +1739,17 @@
     nativeWallFrame = window.requestAnimationFrame(loop);
     window.addEventListener('resize', () => drawNativeWallFrame(performance.now()), { passive:true });
   }
+  function scheduleNativeWallCanvasStart(){
+    if (nativeWallEngineStarted || nativeWallStartScheduled) return;
+    nativeWallStartScheduled = true;
+    const start = () => {
+      nativeWallStartScheduled = false;
+      if (nativeWallEngineStarted || document.body.classList.contains('app-open')) return;
+      startNativeWallCanvas();
+    };
+    const idle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 900));
+    window.setTimeout(() => idle(start, { timeout:1800 }), 220);
+  }
   function commandRows(query = ''){
     const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
     return moduleCards().map((card) => {
@@ -3172,6 +3184,7 @@
     hideStageWidgets();
     updateWallClock();
     document.body.classList.add('rw-v2-ready');
+    scheduleNativeWallCanvasStart();
   }
   function init(){
     window.__rwPlatformV2RefreshHome = refreshHomeView;
@@ -3179,7 +3192,7 @@
     retireLegacyVisualLayers();
     syncBrand();
     ensureShell();
-    startNativeWallCanvas();
+    scheduleNativeWallCanvasStart();
     bindPremiumPointer();
     updateWallClock();
     setInterval(updateWallClock, 60000);
