@@ -8,6 +8,7 @@
 <link rel="preload" as="image" href="assets/images/private-command-center-hero-personal-bg-day-v15-mobile.webp?v=20260731-mobile-1" type="image/webp" media="(max-width: 760px)">
 <link rel="preload" as="image" href="assets/images/private-command-center-hero-personal-bg-day-v15.webp?v=20260717-personal-sharp-1" type="image/webp" media="(min-width: 761px)">
 <link rel="preload" as="style" href="assets/css/platform-v2.css?v=20260731-nextlevel-1">
+<link rel="preload" as="style" href="assets/css/platform-nextlevel.css?v=20260731-organize-1">
 <link rel="preload" as="script" href="assets/js/platform-v2.js?v=20260731-copy-1">
 <title>Rafal Wilk Digital Workshop ©</title>
 <style id="rw-critical-home-boot">
@@ -19,6 +20,7 @@
     visibility:hidden!important;
   }
   #rwBootSplash{
+    --rw-boot-image:url("assets/images/private-command-center-hero-personal-bg-day-v15.webp?v=20260717-personal-sharp-1");
     position:fixed;
     inset:0;
     z-index:999998;
@@ -28,9 +30,14 @@
     color:#eef8ff;
     background:
       linear-gradient(120deg, rgba(2,8,18,.86), rgba(5,16,30,.70)),
-      url("assets/images/private-command-center-hero-personal-bg-day-v15.webp?v=20260717-personal-sharp-1") center/cover no-repeat,
+      var(--rw-boot-image) center/cover no-repeat,
       #05080d;
     transition:opacity .24s ease, visibility .24s ease;
+  }
+  @media (max-width:760px){
+    #rwBootSplash{
+      --rw-boot-image:url("assets/images/private-command-center-hero-personal-bg-day-v15-mobile.webp?v=20260731-mobile-1");
+    }
   }
   body.rw-v2-ready #rwBootSplash,
   body.app-open #rwBootSplash{
@@ -109,47 +116,9 @@
   body.app-open .viewport{display:block}
 
 .badge-copyright{background:#0b1220;color:#ffffff;border:1px solid #0b1220;font-weight:800;padding:2px 10px;border-radius:10px}
-
-/* --- Protected module password gate --- */
-#mc_gate{
-  position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:999999;
-  padding:18px;background:rgba(2,6,23,.78);backdrop-filter:blur(18px) saturate(1.08);
-  -webkit-backdrop-filter:blur(18px) saturate(1.08);
-}
-#mc_gate::before{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:.34;
-  background:
-    radial-gradient(circle at 26% 22%, rgba(20,184,166,.24), transparent 30%),
-    radial-gradient(circle at 72% 68%, rgba(14,165,233,.20), transparent 34%),
-    linear-gradient(transparent 0 95%, rgba(125,211,252,.08) 95% 100%),
-    linear-gradient(90deg, transparent 0 95%, rgba(125,211,252,.07) 95% 100%);
-  background-size:auto,auto,28px 28px,28px 28px;
-}
-#mc_gate .panel{
-  position:relative;width:min(420px,92vw);padding:24px;border-radius:18px;overflow:hidden;
-  background:linear-gradient(180deg,rgba(15,23,42,.96),rgba(7,16,28,.94));
-  border:1px solid rgba(125,211,252,.22);
-  box-shadow:0 24px 70px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.04) inset,0 0 42px rgba(20,184,166,.10);
-}
-#mc_gate h2{margin:0 0 8px;font-size:22px;color:#f8fafc;letter-spacing:0;font-weight:850}
-#mc_gate p{margin:0 0 16px;color:#a7b4c9;font-size:13px;line-height:1.5}
-#mc_gate input{
-  width:100%;min-height:46px;padding:10px 14px;border-radius:10px;border:1px solid rgba(125,211,252,.22);
-  background:rgba(2,8,23,.72);color:#f8fafc;font-size:20px;font-weight:800;letter-spacing:9px;text-align:center;
-  outline:none;box-shadow:0 0 0 1px rgba(255,255,255,.03) inset;
-}
-#mc_gate input:focus{border-color:rgba(45,212,191,.58);box-shadow:0 0 0 4px rgba(20,184,166,.14)}
-#mc_gate .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-#mc_gate button{
-  min-height:42px;border-radius:10px;border:1px solid rgba(45,212,191,.32);
-  background:linear-gradient(180deg,#14b8a6,#0f766e);color:#fff;font-weight:850;cursor:pointer;
-}
-#mc_gate .ghost{background:rgba(255,255,255,.05);border-color:rgba(148,163,184,.20);color:#dbeafe}
-#mc_gate .err{color:#fca5a5;font-size:12px;min-height:16px;margin-top:8px}
-  body.app-open .privacy-footer{display:none!important}
 </style>
 <link rel="stylesheet" href="assets/css/platform-v2.css?v=20260731-nextlevel-1">
-<link rel="stylesheet" href="assets/css/platform-nextlevel.css?v=20260731-images-1">
+<link rel="stylesheet" href="assets/css/platform-nextlevel.css?v=20260731-organize-1">
 <script id="rw-module-pin-bootstrap">
 (function(){
   var DEFAULT_PIN = '135';
@@ -664,18 +633,7 @@ function openMyCompany(){
   });
 })();
 </script>
-<footer class="privacy-footer" style="
-  position:relative;
-  margin:16px auto;
-  max-width:1100px;
-  padding:10px 14px;
-  border-radius:12px;
-  font-size:12px;
-  line-height:1.45;
-  color:#e5e7eb;
-  background:rgba(0,0,0,.35);
-  backdrop-filter:saturate(1.1) blur(4px);
-">
+<footer class="privacy-footer">
 <strong>Legal &amp; Privacy:</strong> This tool and its content are the exclusive intellectual property of Rafał Wilk. 
   Personal data entered here are used only to operate the app and are not shared externally. 
   All rights reserved © Rafał Wilk. Subject to Dutch law.
@@ -875,67 +833,6 @@ function openApp(id, title){
     return !!key && ok;
   }
 
-  const style=document.createElement('style');
-  style.textContent=`
-    #rwPlatformApiStatus{
-      position:fixed;
-      right:18px;
-      bottom:86px;
-      z-index:999996;
-      font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
-      color:#fff;
-      pointer-events:none;
-    }
-    #rwPlatformApiStatus .rwStatusCard{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:170px;
-      padding:10px 12px;
-      border-radius:16px;
-      background:linear-gradient(145deg,rgba(5,22,30,.82),rgba(3,14,20,.72));
-      border:1px solid rgba(92,226,255,.18);
-      box-shadow:0 16px 34px rgba(0,0,0,.34), 0 0 20px rgba(92,226,255,.08);
-      backdrop-filter:blur(14px) saturate(1.06);
-      -webkit-backdrop-filter:blur(14px) saturate(1.06);
-    }
-    #rwPlatformApiStatus .rwDot{
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      flex:0 0 auto;
-      background:#ff8f4a;
-      box-shadow:0 0 12px rgba(255,143,74,.68);
-    }
-    #rwPlatformApiStatus.active .rwDot{
-      background:#35f1cf;
-      box-shadow:0 0 14px rgba(53,241,207,.75);
-    }
-    #rwPlatformApiStatus .rwMeta{
-      display:grid;
-      gap:2px;
-      line-height:1.15;
-    }
-    #rwPlatformApiStatus .rwLabel{
-      font-size:11px;
-      font-weight:800;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:#80efff;
-    }
-    #rwPlatformApiStatus .rwValue{
-      font-size:13px;
-      font-weight:700;
-      color:rgba(255,255,255,.92);
-    }
-    @media (max-width:760px){
-      #rwPlatformApiStatus{right:12px;bottom:74px;}
-      #rwPlatformApiStatus .rwStatusCard{min-width:152px;padding:9px 11px;}
-      #rwPlatformApiStatus .rwValue{font-size:12px;}
-    }
-  `;
-  document.head.appendChild(style);
-
   const root=document.createElement('div');
   root.id='rwPlatformApiStatus';
   document.body.appendChild(root);
@@ -961,12 +858,4 @@ function openApp(id, title){
   render();
 })();
 </script>
-<style id="rw-hide-title-clock-override">
-body.rw-v2-ready:not(.app-open) header.rw-header,
-body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster .rw-v2-brand-lockup,
-body.rw-v2-ready:not(.app-open) .rw-v2-wall-clock{
-  display:none!important;
-  visibility:hidden!important;
-}
-</style>
 <script src="assets/js/platform-v2.js?v=20260731-copy-1" defer></script>
