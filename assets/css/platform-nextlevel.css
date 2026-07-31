@@ -1,0 +1,210 @@
+/*
+  Next Level pass 1:
+  A small, isolated polish layer for the home command center.
+  Keep this file narrow until the legacy CSS is consolidated.
+*/
+
+body.rw-v2-ready:not(.app-open){
+  --rw-pro-panel:rgba(7,14,24,.82);
+  --rw-pro-panel-strong:rgba(9,18,31,.92);
+  --rw-pro-line:rgba(156,220,255,.20);
+  --rw-pro-line-strong:rgba(156,220,255,.34);
+  --rw-pro-ink:#f4fbff;
+  --rw-pro-muted:rgba(221,236,247,.70);
+  --rw-pro-accent:#72f1d4;
+  --rw-pro-warm:#f5c76b;
+  background-color:#05080d!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-shell{
+  gap:clamp(14px, 1.7vw, 24px)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-hero{
+  border-radius:8px!important;
+  border:1px solid rgba(160,224,255,.22)!important;
+  box-shadow:0 26px 90px rgba(0,0,0,.34)!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-hero::before{
+  opacity:.38!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-hero::after{
+  opacity:.16!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-hero-inner{
+  min-height:clamp(330px, 48vh, 520px)!important;
+  padding:clamp(26px, 3.8vw, 54px)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-hero-copy{
+  max-width:min(620px, 92vw)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-eyebrow{
+  color:var(--rw-pro-accent)!important;
+  letter-spacing:.16em!important;
+  text-shadow:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-hero h2{
+  color:var(--rw-pro-ink)!important;
+  text-shadow:0 14px 44px rgba(0,0,0,.38)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-hero p,
+body.rw-v2-ready:not(.app-open) .rw-v2-owner-note{
+  color:var(--rw-pro-muted)!important;
+  max-width:54ch!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-primary,
+body.rw-v2-ready:not(.app-open) .rw-v2-secondary{
+  border-radius:8px!important;
+  min-height:42px!important;
+  padding:0 16px!important;
+  box-shadow:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-primary{
+  background:linear-gradient(180deg, #f7fbff, #dfefff)!important;
+  color:#07111f!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-secondary{
+  border:1px solid rgba(221,236,247,.24)!important;
+  background:rgba(6,16,28,.48)!important;
+  color:#eef8ff!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-toolbar{
+  border-radius:8px!important;
+  border:1px solid var(--rw-pro-line)!important;
+  background:linear-gradient(180deg, rgba(7,15,27,.86), rgba(5,12,22,.78))!important;
+  box-shadow:0 18px 54px rgba(0,0,0,.24)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-toolbar-title strong{
+  color:var(--rw-pro-ink)!important;
+  letter-spacing:0!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-toolbar-title span{
+  color:var(--rw-pro-muted)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-filter{
+  border-radius:8px!important;
+  border:1px solid rgba(156,220,255,.18)!important;
+  background:rgba(7,16,29,.52)!important;
+  color:rgba(238,248,255,.78)!important;
+  box-shadow:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-filter[aria-pressed="true"]{
+  border-color:rgba(114,241,212,.54)!important;
+  background:linear-gradient(180deg, rgba(25,86,76,.74), rgba(9,34,43,.82))!important;
+  color:#f6fffc!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid{
+  gap:clamp(10px, 1.15vw, 16px)!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card{
+  min-height:156px!important;
+  border-radius:8px!important;
+  border:1px solid var(--rw-pro-line)!important;
+  background:
+    linear-gradient(180deg, rgba(10,20,34,.92), rgba(5,12,22,.88))!important;
+  box-shadow:0 14px 42px rgba(0,0,0,.22)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:hover,
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card:focus-within{
+  transform:translateY(-2px)!important;
+  border-color:var(--rw-pro-line-strong)!important;
+  box-shadow:0 18px 52px rgba(0,0,0,.28)!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card::before{
+  opacity:.52!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card .title{
+  color:var(--rw-pro-ink)!important;
+  font-size:clamp(15px, 1.05vw, 17px)!important;
+  line-height:1.18!important;
+  letter-spacing:0!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-card-desc{
+  color:var(--rw-pro-muted)!important;
+  line-height:1.35!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-card-meta{
+  border-radius:6px!important;
+  border-color:rgba(245,199,107,.28)!important;
+  color:rgba(255,232,178,.88)!important;
+  background:rgba(93,67,22,.24)!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap .grid .card .btn{
+  border-radius:8px!important;
+  min-height:40px!important;
+  background:linear-gradient(180deg, rgba(114,241,212,.92), rgba(38,144,129,.92))!important;
+  color:#03110f!important;
+  box-shadow:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-icon{
+  border-radius:8px!important;
+  background:linear-gradient(180deg, rgba(114,241,212,.16), rgba(245,199,107,.08))!important;
+  color:#9ff8e8!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-system-strip,
+body.rw-v2-ready:not(.app-open) .rw-v2-ambient-deck{
+  opacity:.56!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
+  border-radius:8px!important;
+}
+
+@media (max-width:760px){
+  body.rw-v2-ready:not(.app-open) .rw-v2-hero-inner{
+    min-height:360px!important;
+    padding:24px!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) .rw-v2-hero-actions{
+    grid-template-columns:1fr!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) .rw-v2-toolbar{
+    padding:14px!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) main.wrap .grid .card{
+    min-height:146px!important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  body.rw-v2-ready:not(.app-open) main.wrap .grid .card,
+  body.rw-v2-ready:not(.app-open) .rw-v2-primary,
+  body.rw-v2-ready:not(.app-open) .rw-v2-secondary{
+    transition:none!important;
+  }
+}
