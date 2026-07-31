@@ -418,31 +418,43 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-mouth-sync{
   will-change:auto!important;
 }
 
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-shadow,
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-halo,
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-depth,
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-rim{
+  opacity:0!important;
+  visibility:hidden!important;
   filter:none!important;
+  background:none!important;
+  box-shadow:none!important;
 }
 
-/* Background face blocker: covers the face baked into the hero image, below the live face video. */
+/* Background face blocker: crisp wall patch under the live face, with no mist or glow. */
 body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-face-bg-mask{
   position:fixed!important;
   left:0!important;
   top:0!important;
   bottom:0!important;
-  width:clamp(340px, 36vw, 620px)!important;
+  width:clamp(318px, 27vw, 460px)!important;
   z-index:115!important;
   pointer-events:none!important;
-  opacity:.98!important;
+  opacity:1!important;
   background:
-    radial-gradient(ellipse at 32% 32%, rgba(12,50,82,.52) 0 16%, rgba(3,12,24,.95) 50%, rgba(1,6,14,.99) 76%, transparent 100%),
-    repeating-linear-gradient(90deg, rgba(116,219,255,.045) 0 1px, transparent 1px 38px),
-    repeating-linear-gradient(0deg, rgba(116,219,255,.032) 0 1px, transparent 1px 46px),
-    linear-gradient(90deg, rgba(1,6,14,.99) 0%, rgba(2,10,21,.98) 62%, rgba(2,10,21,.74) 82%, transparent 100%)!important;
-  box-shadow:inset -34px 0 62px rgba(7,22,38,.66)!important;
+    linear-gradient(90deg, rgba(1,7,14,.99) 0%, rgba(2,10,20,.99) 72%, rgba(2,10,20,.78) 91%, transparent 100%),
+    repeating-linear-gradient(90deg, rgba(112,210,255,.035) 0 1px, transparent 1px 44px),
+    repeating-linear-gradient(0deg, rgba(112,210,255,.024) 0 1px, transparent 1px 54px)!important;
+  box-shadow:none!important;
   mix-blend-mode:normal!important;
-  -webkit-mask-image:linear-gradient(90deg, #000 0 74%, rgba(0,0,0,.82) 86%, transparent 100%)!important;
-  mask-image:linear-gradient(90deg, #000 0 74%, rgba(0,0,0,.82) 86%, transparent 100%)!important;
+  filter:none!important;
+  -webkit-mask-image:linear-gradient(90deg, #000 0 84%, rgba(0,0,0,.62) 94%, transparent 100%)!important;
+  mask-image:linear-gradient(90deg, #000 0 84%, rgba(0,0,0,.62) 94%, transparent 100%)!important;
+}
+
+body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-ai-global-grade{
+  opacity:0!important;
+  visibility:hidden!important;
+  background:none!important;
+  animation:none!important;
 }
 
 body.app-open .rw-v2-face-bg-mask{
@@ -523,11 +535,11 @@ body.rw-v2-ready.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-ope
   --rw-face-scale:1;
   display:block!important;
   visibility:visible!important;
-  opacity:.74!important;
+  opacity:.64!important;
   z-index:121!important;
   animation:rwAssistantFaceDriftPro 45s linear infinite!important;
   transform:translate3d(var(--rw-face-float-x), var(--rw-face-float-y), 0) scale(var(--rw-face-scale))!important;
-  filter:saturate(1.08) brightness(.98)!important;
+  filter:none!important;
 }
 
 body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-plate,
@@ -547,7 +559,7 @@ body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-
   --rw-face-shadow-x:0px;
   --rw-face-shadow-y:2.58px;
   --rw-face-scale:1;
-  animation:rwAssistantShadowDriftPro 45s linear infinite!important;
+  animation:none!important;
   transform:translate3d(var(--rw-face-shadow-x), var(--rw-face-shadow-y), 0) scale(var(--rw-face-scale))!important;
 }
 
