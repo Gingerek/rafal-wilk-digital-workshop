@@ -430,16 +430,16 @@ body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-face-bg-mask{
   left:0!important;
   top:0!important;
   bottom:0!important;
-  width:clamp(360px, 45vw, 640px)!important;
+  width:clamp(340px, 36vw, 620px)!important;
   z-index:115!important;
   pointer-events:none!important;
   opacity:.98!important;
   background:
-    radial-gradient(ellipse at 42% 34%, rgba(18,68,106,.78) 0 18%, rgba(3,12,24,.94) 52%, rgba(1,6,14,.98) 76%, transparent 100%),
-    repeating-linear-gradient(90deg, rgba(116,219,255,.08) 0 1px, transparent 1px 34px),
-    repeating-linear-gradient(0deg, rgba(116,219,255,.055) 0 1px, transparent 1px 42px),
-    linear-gradient(90deg, rgba(1,6,14,.99) 0%, rgba(2,10,21,.98) 58%, rgba(2,10,21,.82) 76%, transparent 100%)!important;
-  box-shadow:inset -42px 0 70px rgba(7,22,38,.72)!important;
+    radial-gradient(ellipse at 32% 32%, rgba(12,50,82,.52) 0 16%, rgba(3,12,24,.95) 50%, rgba(1,6,14,.99) 76%, transparent 100%),
+    repeating-linear-gradient(90deg, rgba(116,219,255,.045) 0 1px, transparent 1px 38px),
+    repeating-linear-gradient(0deg, rgba(116,219,255,.032) 0 1px, transparent 1px 46px),
+    linear-gradient(90deg, rgba(1,6,14,.99) 0%, rgba(2,10,21,.98) 62%, rgba(2,10,21,.74) 82%, transparent 100%)!important;
+  box-shadow:inset -34px 0 62px rgba(7,22,38,.66)!important;
   mix-blend-mode:normal!important;
   -webkit-mask-image:linear-gradient(90deg, #000 0 74%, rgba(0,0,0,.82) 86%, transparent 100%)!important;
   mask-image:linear-gradient(90deg, #000 0 74%, rgba(0,0,0,.82) 86%, transparent 100%)!important;
@@ -455,10 +455,10 @@ body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-dept
 body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-rim,
 body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-video,
 body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-mouth-sync{
-  left:clamp(-18px, -1vw, 0px)!important;
-  top:clamp(34px, 5vh, 66px)!important;
-  width:clamp(360px, 43vw, 570px)!important;
-  height:clamp(443px, 52.9vw, 702px)!important;
+  left:clamp(28px, 2.8vw, 62px)!important;
+  top:clamp(78px, 10vh, 132px)!important;
+  width:clamp(250px, 22vw, 390px)!important;
+  height:clamp(308px, 27.1vw, 480px)!important;
 }
 
 /* Face motion quality pass */
@@ -523,7 +523,7 @@ body.rw-v2-ready.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-ope
   --rw-face-scale:1;
   display:block!important;
   visibility:visible!important;
-  opacity:.94!important;
+  opacity:.74!important;
   z-index:121!important;
   animation:rwAssistantFaceDriftPro 45s linear infinite!important;
   transform:translate3d(var(--rw-face-float-x), var(--rw-face-float-y), 0) scale(var(--rw-face-scale))!important;
@@ -552,7 +552,7 @@ body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-
 }
 
 body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active{
-  filter:brightness(1.245) contrast(1.085) saturate(1.07)!important;
+  filter:brightness(1.14) contrast(1.055) saturate(1.02)!important;
   image-rendering:auto!important;
 }
 
