@@ -244,6 +244,22 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-rim{
 }
 
 @media (max-width:760px){
+  body.rw-v2-ready,
+  body.rw-v2-ready.rw-v2-phase-dawn,
+  body.rw-v2-ready.rw-v2-phase-morning,
+  body.rw-v2-ready.rw-v2-phase-day,
+  body.rw-v2-ready.rw-v2-phase-afternoon{
+    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v15-mobile.webp?v=20260731-mobile-1");
+  }
+
+  body.rw-v2-ready.rw-v2-phase-sunset{
+    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v14-mobile.webp?v=20260731-mobile-1");
+  }
+
+  body.rw-v2-ready.rw-v2-phase-night{
+    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v16-mobile.webp?v=20260731-mobile-1");
+  }
+
   body.rw-v2-ready:not(.app-open) .rw-v2-hero-inner{
     min-height:360px!important;
     padding:24px!important;
