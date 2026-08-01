@@ -452,6 +452,12 @@
       faceMask.setAttribute('aria-hidden', 'true');
       shell.appendChild(faceMask);
     }
+    if (!shell.querySelector('.rw-v2-face-neural-bridge')) {
+      const neuralBridge = document.createElement('div');
+      neuralBridge.className = 'rw-v2-face-neural-bridge';
+      neuralBridge.setAttribute('aria-hidden', 'true');
+      shell.appendChild(neuralBridge);
+    }
     shell.querySelectorAll('.rw-v2-assistant-face-cutout, .rw-v2-assistant-face-canvas, .rw-v2-assistant-blink').forEach((oldFaceLayer) => oldFaceLayer.remove());
     if (!shell.querySelector('.rw-v2-assistant-face-shadow')) {
       const assistantShadow = document.createElement('div');
