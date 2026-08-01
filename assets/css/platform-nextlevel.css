@@ -455,59 +455,6 @@ body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-bg-mask{
   visibility:hidden!important;
 }
 
-body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-face-neural-bridge{
-  position:fixed!important;
-  left:clamp(190px, 17.5vw, 330px)!important;
-  top:clamp(118px, 15vh, 190px)!important;
-  width:clamp(470px, 44vw, 840px)!important;
-  height:clamp(290px, 36vh, 455px)!important;
-  z-index:121!important;
-  pointer-events:none!important;
-  opacity:.74!important;
-  background:
-    linear-gradient(9deg, transparent 0 38%, rgba(107,222,255,.50) 38.15% 38.5%, transparent 38.8%),
-    linear-gradient(-12deg, transparent 0 46%, rgba(83,236,207,.36) 46.12% 46.45%, transparent 46.8%),
-    linear-gradient(23deg, transparent 0 54%, rgba(113,217,255,.34) 54.1% 54.36%, transparent 54.7%),
-    linear-gradient(-31deg, transparent 0 62%, rgba(147,229,255,.28) 62.08% 62.34%, transparent 62.7%),
-    radial-gradient(circle at 3% 43%, rgba(189,247,255,.88) 0 1.4px, transparent 2.8px),
-    radial-gradient(circle at 18% 38%, rgba(121,226,255,.76) 0 1.5px, transparent 3px),
-    radial-gradient(circle at 35% 52%, rgba(123,238,213,.70) 0 1.4px, transparent 2.9px),
-    radial-gradient(circle at 54% 42%, rgba(150,232,255,.68) 0 1.5px, transparent 3px),
-    radial-gradient(circle at 72% 57%, rgba(112,225,255,.58) 0 1.4px, transparent 2.9px),
-    radial-gradient(circle at 88% 47%, rgba(170,239,255,.55) 0 1.4px, transparent 2.8px)!important;
-  mix-blend-mode:screen!important;
-  filter:none!important;
-  box-shadow:none!important;
-  -webkit-mask-image:linear-gradient(90deg, transparent 0%, #000 7%, #000 94%, transparent 100%)!important;
-  mask-image:linear-gradient(90deg, transparent 0%, #000 7%, #000 94%, transparent 100%)!important;
-}
-
-body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-face-neural-bridge::before,
-body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-face-neural-bridge::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-}
-
-body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-face-neural-bridge::before{
-  background:
-    linear-gradient(36deg, transparent 0 50%, rgba(105,226,255,.34) 50.1% 50.42%, transparent 50.72%),
-    linear-gradient(-18deg, transparent 0 34%, rgba(117,240,214,.30) 34.08% 34.38%, transparent 34.7%),
-    linear-gradient(3deg, transparent 0 71%, rgba(172,239,255,.24) 71.05% 71.34%, transparent 71.7%)!important;
-  opacity:.72!important;
-}
-
-body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-face-neural-bridge::after{
-  background:
-    radial-gradient(circle at 9% 56%, rgba(185,246,255,.82) 0 1.25px, transparent 2.8px),
-    radial-gradient(circle at 27% 66%, rgba(112,225,255,.66) 0 1.35px, transparent 2.9px),
-    radial-gradient(circle at 44% 32%, rgba(125,241,216,.62) 0 1.25px, transparent 2.8px),
-    radial-gradient(circle at 66% 24%, rgba(170,239,255,.58) 0 1.25px, transparent 2.8px),
-    radial-gradient(circle at 82% 68%, rgba(112,225,255,.52) 0 1.25px, transparent 2.8px)!important;
-  opacity:.82!important;
-}
-
 body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-ai-global-grade{
   opacity:.28!important;
   visibility:visible!important;
@@ -520,10 +467,6 @@ body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-ai-global-grade{
 }
 
 body.app-open .rw-v2-face-bg-mask{
-  display:none!important;
-}
-
-body.app-open .rw-v2-face-neural-bridge{
   display:none!important;
 }
 
@@ -824,12 +767,6 @@ body.rw-v2-ready:not(.app-open) .rw-v2-window-reflection{
 }
 
 @media (max-width:1080px){
-  body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-bridge{
-    opacity:.46!important;
-    left:clamp(154px, 18vw, 230px)!important;
-    width:clamp(360px, 46vw, 580px)!important;
-  }
-
   body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas,
   body.rw-v2-ready:not(.app-open) .rw-v2-ai-global-grade,
   body.rw-v2-ready:not(.app-open) .rw-v2-depth-field,
@@ -840,10 +777,6 @@ body.rw-v2-ready:not(.app-open) .rw-v2-window-reflection{
 }
 
 @media (max-width:760px){
-  body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-bridge{
-    display:none!important;
-  }
-
   #rwPlatformApiStatus{
     right:12px;
     bottom:74px;
