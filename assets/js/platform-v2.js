@@ -194,7 +194,7 @@
 
   const copy = {
     eyebrow:{pl:'Platforma modułów pracy', en:'Work modules platform', nl:'Platform voor werkmodules'},
-    headline:{pl:'Private Command Center.', en:'Private Command Center.', nl:'Private Command Center.'},
+    headline:{pl:'Rafal Wilk Digital Workshop.', en:'Rafal Wilk Digital Workshop.', nl:'Rafal Wilk Digital Workshop.'},
     intro:{pl:'Prywatne centrum operacyjne.',
       en:'Private operations center.',
       nl:'Prive operationeel centrum.'},
@@ -624,6 +624,7 @@
     const activeFaceNode = faceVideo || blink;
     if (!activeFaceNode || activeFaceNode.dataset.rwBlinkActive === 'true') return;
     activeFaceNode.dataset.rwBlinkActive = 'true';
+    if (!faceVideo) return;
     if (!faceCanvas && !faceVideo) return;
     const natural = { width: 1704, height: 923 };
     const faceCrop = { x: 58, y: 54, width: 446, height: 562 };
@@ -765,9 +766,7 @@
     }
     const faceImage = new Image();
     const faceSource = { x: 315, y: 65, width: 650, height: 850 };
-    const faceUrl = 'assets/images/private-command-center-assistant-face-user-reference-v1.png?v=20260720-user-face-blink-1';
     faceImage.decoding = 'async';
-    faceImage.src = faceUrl;
     const blinkCurve = (t) => {
       const x = clamp(t);
       if (x < .38) return easeInOut(x / .38);
