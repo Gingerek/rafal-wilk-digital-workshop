@@ -2200,6 +2200,13 @@ function parsePercentMetricFromOCR(text,labels,min,max){
     if(score>=45)out.push({value,score,context:context.replace(/\s+/g," ").slice(0,180)});
   };
   for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    const nline=norm(line);
+    if(!labelNorms.some(l=>l&&nline.includes(l)))continue;
+    const matches=Array.from(line.matchAll(/(\d{1,2}(?:[,.]\d{1,2})?)\s*%/g));
+    matches.forEach(match=>push(num(match[1]),line,118));
+  }
+  for(let i=0;i<lines.length;i++){
     const block=lines.slice(Math.max(0,i-1),Math.min(lines.length,i+3)).join(" ");
     const nblock=norm(block);
     if(!labelNorms.some(l=>l&&nblock.includes(l)))continue;
@@ -2217,11 +2224,11 @@ function parseBodyCompositionFromOCR(text){
   const muscle=parseBodyCompositionValueFromOCR(text,["masa mięśni szkieletowych","masa miesni szkieletowych","masa mięśni","masa miesni","mięśnie","miesnie","muscle mass","skeletal muscle mass","skeletal muscle","muscle"],10,160);
   const bone=parseBodyCompositionValueFromOCR(text,["masa kostna","masa kości","masa kosci","kości","kosci","bone mass","bone"],1,20);
   const weight=summary.weight??parseWeightFromOCR(text)?.value;
-  const pct=Number.isFinite(num(summary.fatPct))?num(summary.fatPct):(fatPercent?.value??null);
+  const pct=Number.isFinite(num(fatPercent?.value))?num(fatPercent.value):(Number.isFinite(num(summary.fatPct))?num(summary.fatPct):null);
   const fatKgDirect=fatMass?.value??null;
   const fatKgComputed=Number.isFinite(num(weight))&&Number.isFinite(num(pct))?Number((num(weight)*num(pct)/100).toFixed(1)):null;
   const bc={
-    fatKg:Number.isFinite(num(summary.fatKg))?summary.fatKg:(Number.isFinite(num(fatKgDirect))?num(fatKgDirect):fatKgComputed),
+    fatKg:Number.isFinite(num(fatKgDirect))?num(fatKgDirect):(Number.isFinite(num(fatKgComputed))?fatKgComputed:(Number.isFinite(num(summary.fatKg))?summary.fatKg:null)),
     muscleKg:Number.isFinite(num(summary.muscleKg))?summary.muscleKg:(muscle?.value??null),
     boneKg:Number.isFinite(num(summary.boneKg))?summary.boneKg:(bone?.value??null),
     fatPct:Number.isFinite(num(pct))?num(pct):null,
@@ -2402,8 +2409,24 @@ function parseManualBurned(text,fitatuDays){
   String(text||"").split(/\n+/).forEach(line=>{const m=line.match(/(pon|wt|śr|sr|czw|cz|pt|sob|so|nie|niedz)\w*[^0-9]*(\d[\d\s.]{2,6})/i);if(!m)return;const label=dayLabel(m[1]), value=num(m[2]);if(label&&value>500)out[labelToIso[label]||label]=value});
   return out;
 }
+function isGarminDateRangeLine(line){
+  const n=norm(line);
+  if(/^\d{4}-\d{2}-\d{2}$/.test(n))return false;
+  const digitGroups=n.match(/\b\d{1,2}\b/g)||[];
+  return /[-–—]/.test(n)&&digitGroups.length>=2&&/(sty|lut|mar|kwi|maj|cze|lip|sie|wrz|paz|paź|lis|gru)/.test(n);
+}
+function leadingDayLabel(line){
+  const m=String(line||"").trim().match(/^[^A-Za-zĄĆĘŁŃÓŚŹŻąćęłńóśźż]*(?:[A-Za-zĄĆĘŁŃÓŚŹŻąćęłńóśźż]{1,3}\s+)?([A-Za-zĄĆĘŁŃÓŚŹŻąćęłńóśźż]{2,16})/);
+  return m?dayLabel(m[1]):null;
+}
+function candidateMatchesDate(candidate,iso){
+  const expected=labelFromDate(iso);
+  const candidateLabel=leadingDayLabel(candidate?.context||"");
+  return !candidateLabel||!expected||candidateLabel===expected;
+}
 function parseCaloriesFromOCR(text,fitatuDays){
   const out={};
+  const assigned={};
   const knownYear=(fitatuDays.find(d=>d.dateISO)?.dateISO||String(new Date().getFullYear())).slice(0,4);
   const lines=String(text||"").split(/\r?\n/).map(s=>s.replace(/\s+/g," ").trim()).filter(Boolean);
   const fitatuIso=new Set(fitatuDays.map(d=>d.dateISO).filter(Boolean));
@@ -2419,6 +2442,7 @@ function parseCaloriesFromOCR(text,fitatuDays){
   ];
   const dates=[];
   lines.forEach((line,index)=>{
+    if(isGarminDateRangeLine(line))return;
     let iso=null;
     let m=line.match(datePatterns[0]);
     if(m)iso=isoFromPolish(m[1],m[2],m[3]||knownYear);
@@ -2454,25 +2478,35 @@ function parseCaloriesFromOCR(text,fitatuDays){
 
   // Najpierw dopasowanie z tej samej linii, potem z wiersza bezpośrednio nad datą
   // (tak Garmin pokazuje listę: „4 510 Suma”, a pod nią „11 lipca”).
+  const assignCandidate=(iso,chosen,dateIndex)=>{
+    if(!chosen)return false;
+    const confidence=chosen.score-(Math.abs(chosen.index-dateIndex)*8)+(chosen.index<=dateIndex?6:0);
+    const prev=assigned[iso];
+    if(prev&&prev.value!==chosen.value&&confidence<=prev.confidence+12)return false;
+    out[iso]=chosen.value;
+    assigned[iso]={value:chosen.value,confidence};
+    chosen.used=true;
+    return true;
+  };
   dates.forEach((d,di)=>{
-    let pool=dedup.filter(c=>!c.used&&c.index===d.index);
+    let pool=dedup.filter(c=>!c.used&&c.index===d.index&&candidateMatchesDate(c,d.iso));
     if(!pool.length){
       const previousDateIndex=di>0?dates[di-1].index:-1;
-      pool=dedup.filter(c=>!c.used&&c.index>d.index-4&&c.index<=d.index&&c.index>previousDateIndex);
+      pool=dedup.filter(c=>!c.used&&c.index>d.index-4&&c.index<=d.index&&c.index>previousDateIndex&&candidateMatchesDate(c,d.iso));
     }
-    if(!pool.length)pool=dedup.filter(c=>!c.used&&Math.abs(c.index-d.index)<=2);
+    if(!pool.length)pool=dedup.filter(c=>!c.used&&c.index>d.index&&c.index<=d.index+2&&candidateMatchesDate(c,d.iso));
     pool.sort((a,b)=>b.score-a.score||Math.abs(a.index-d.index)-Math.abs(b.index-d.index)||b.index-a.index);
     const chosen=pool[0];
-    if(chosen){out[d.iso]=chosen.value;chosen.used=true}
+    assignCandidate(d.iso,chosen,d.index);
   });
 
   // Awaryjnie: rozpoznanie po nazwie dnia tygodnia, gdy OCR uszkodzi datę.
   lines.forEach((line,index)=>{
-    const label=dayLabel(line);
+    const label=leadingDayLabel(line)||dayLabel(line);
     const iso=labelToIso[label];
     if(!label||!iso||Number.isFinite(out[iso]))return;
-    const pool=dedup.filter(c=>!c.used&&Math.abs(c.index-index)<=2).sort((a,b)=>b.score-a.score||Math.abs(a.index-index)-Math.abs(b.index-index));
-    if(pool.length){out[iso]=pool[0].value;pool[0].used=true}
+    const pool=dedup.filter(c=>!c.used&&Math.abs(c.index-index)<=2&&candidateMatchesDate(c,iso)).sort((a,b)=>b.score-a.score||Math.abs(a.index-index)-Math.abs(b.index-index));
+    if(pool.length)assignCandidate(iso,pool[0],index);
   });
   return out;
 }
@@ -2492,6 +2526,31 @@ function extractOcrNumberNear(text, labels, min, max){
   }
   return out[0]||null;
 }
+function extractOcrAverageNumberNear(text, labels, min, max){
+  const lines=String(text||"").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  const labelNorms=(labels||[]).map(norm);
+  const out=[];
+  for(let i=0;i<lines.length;i++){
+    const ctx=[lines[i],lines[i+1]||"",lines[i+2]||""].join(" ");
+    const nctx=norm(ctx);
+    const labelIndex=labelNorms.map(label=>nctx.indexOf(label)).filter(idx=>idx>=0).sort((a,b)=>a-b)[0];
+    if(labelIndex===undefined)continue;
+    const searchable=ctx.slice(labelIndex);
+    const matches=Array.from(searchable.matchAll(/\d{1,3}(?:[\s.,]\d{3})+|\d{1,6}(?:[,.]\d{1,2})?/g));
+    matches.forEach(match=>{
+      const value=num(match[0]);
+      if(!Number.isFinite(value)||value<min||value>max)return;
+      const local=norm(searchable.slice(Math.max(0,(match.index||0)-34),Math.min(searchable.length,(match.index||0)+match[0].length+34)));
+      let score=50;
+      if(/srednia|średnia|average|avg/.test(local))score+=80;
+      if(/ostatnie\s+7\s+dni|last\s+7/.test(nctx))score+=12;
+      if(!/srednia|średnia|average|avg/.test(local))score-=24;
+      out.push({value,context:ctx.replace(/\s+/g," ").slice(0,140),score,index:i});
+    });
+  }
+  out.sort((a,b)=>b.score-a.score||a.index-b.index);
+  return out[0]||extractOcrNumberNear(text,labels,min,max);
+}
 function ocrContextAfterLabel(text, labels, nextLines=3){
   const lines=String(text||"").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
   for(let i=0;i<lines.length;i++){
@@ -2502,8 +2561,20 @@ function ocrContextAfterLabel(text, labels, nextLines=3){
   }
   return "";
 }
+function ocrContextAroundLabel(text, labels, previousLines=1, nextLines=3){
+  const lines=String(text||"").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  const labelNorms=(labels||[]).map(norm);
+  for(let i=0;i<lines.length;i++){
+    const current=norm(lines[i]);
+    const labelIndex=labelNorms.map(label=>current.indexOf(label)).filter(idx=>idx>=0).sort((a,b)=>a-b)[0];
+    if(labelIndex===undefined)continue;
+    return lines.slice(Math.max(0,i-previousLines),i+nextLines+1).join(" ").replace(/\s+/g," ").slice(0,220);
+  }
+  return "";
+}
 function parseSleepSummaryFromOCR(text){
-  let ctx=ocrContextAfterLabel(text,["ocena jakosci snu","jakosc snu","jakość snu","sleep score","sen"],3);
+  const sleepLabels=["ocena jakosci snu","jakosc snu","jakość snu","sleep score"];
+  let ctx=ocrContextAfterLabel(text,[...sleepLabels,"sen"],3);
   if(!ctx){
     const lines=String(text||"").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
     for(let i=0;i<lines.length;i++){
@@ -2526,9 +2597,11 @@ function parseSleepSummaryFromOCR(text){
   }
   if(!ctx)return {};
   const out={sleepContext:ctx};
-  const hours=durationHours(ctx);
+  const around=ocrContextAroundLabel(text,sleepLabels,1,2);
+  const fullCtx=around||ctx;
+  const hours=durationHours(fullCtx);
   if(Number.isFinite(hours)&&hours>0)out.sleepAvg=hours;
-  const nctx=norm(ctx);
+  const nctx=norm(fullCtx);
   const durationIndex=nctx.search(/\d{1,2}\s*h\s*\d{1,2}\s*m/);
   const scoreZone=durationIndex>0?nctx.slice(0,durationIndex):nctx;
   const nums=Array.from(scoreZone.matchAll(/\d{1,3}(?:[,.]\d{1,2})?/g)).map(m=>num(m[0])).filter(v=>Number.isFinite(v)&&v>=1&&v<=100);
@@ -2576,13 +2649,13 @@ function parseActivitySummaryFromOCR(text){
 }
 function parseGarminHomeSummaryFromOCR(text){
   const summary={};
-  const steps=extractOcrNumberNear(text,["kroki","steps"],1000,50000);
+  const steps=extractOcrAverageNumberNear(text,["kroki","steps"],1000,50000);
   if(steps)summary.stepsAvg=steps.value, summary.stepsContext=steps.context;
-  const burned=extractOcrNumberNear(text,["spalone kalorie","kalorie spalone","calories burned","burned calories"],1000,9000);
+  const burned=extractOcrAverageNumberNear(text,["spalone kalorie","kalorie spalone","calories burned","burned calories"],1000,9000);
   if(burned)summary.burnedAvg=burned.value, summary.burnedContext=burned.context;
   const resting=extractOcrNumberNear(text,["tetno","tętno","resting"],30,120);
   if(resting)summary.restingHrAvg=resting.value;
-  const stress=extractOcrNumberNear(text,["stres","stress"],1,100);
+  const stress=extractOcrAverageNumberNear(text,["stres","stress"],1,100);
   if(stress)summary.stressAvg=stress.value;
   Object.assign(summary,parseSleepSummaryFromOCR(text));
   Object.assign(summary,parseActivitySummaryFromOCR(text));
