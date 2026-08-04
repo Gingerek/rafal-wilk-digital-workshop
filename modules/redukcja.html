@@ -1154,6 +1154,53 @@
     .fill.yellow{background:var(--yellow)}
     .historyLayout{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px;margin-top:16px}
     .monthSummaryPanel{grid-column:1/-1}
+    .monthlyFocus{
+      display:grid;
+      grid-template-columns:minmax(0,1.45fr) minmax(280px,.55fr);
+      gap:14px;
+      margin-top:14px;
+      align-items:stretch;
+    }
+    .monthlyWeightCard,
+    .monthlyScenarioCard{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(2,6,23,.28);
+      border-radius:18px;
+      padding:16px;
+      min-width:0;
+    }
+    .monthlyFocusHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+    .monthlyFocusLabel{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:950}
+    .monthlyFocusTitle{font-size:24px;font-weight:950;color:#fff;line-height:1.1;margin-top:4px}
+    .monthlyFocusNote{font-size:12px;color:var(--muted);line-height:1.45;margin-top:5px}
+    .monthlyWeightChartWrap{height:300px;min-height:300px;margin-top:8px}
+    .monthlyWeightChartWrap canvas{height:100%!important;max-height:none!important}
+    .monthlyMilestones{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+    .monthlyMilestones div{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      background:rgba(255,255,255,.055);
+      color:var(--muted);
+      font-size:11px;
+      min-width:0;
+    }
+    .monthlyMilestones strong{display:block;font-size:20px;color:#fff;line-height:1.1;margin-top:3px}
+    .monthlyScenarioValue{font-size:34px;font-weight:950;color:#fff;line-height:1;margin-top:10px}
+    .monthlyScenarioMeta{font-size:13px;color:#d7e2f5;line-height:1.45;margin-top:10px}
+    .monthlyScenarioStats{display:grid;gap:8px;margin-top:14px}
+    .monthlyScenarioStats div{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:rgba(255,255,255,.055);
+      color:var(--muted);
+      font-size:12px;
+    }
+    .monthlyScenarioStats strong{color:#fff;text-align:right}
     .monthSummaryGrid{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
@@ -1728,8 +1775,36 @@
 
   <section class="historyLayout">
     <div class="card monthSummaryPanel">
-      <h2>Podsumowania miesięczne</h2>
-      <p class="muted">Miesiące liczą deficyt z dni, minuty sportu z zapisanych aktywności tygodnia i zmianę wagi między pierwszym a ostatnim pomiarem w miesiącu.</p>
+      <h2>Miesięczny raport redukcji</h2>
+      <p class="muted">Najpierw waga i droga do celu, potem deficyt oraz miesiące w krótkich kartach.</p>
+      <div class="monthlyFocus">
+        <div class="monthlyWeightCard">
+          <div class="monthlyFocusHead">
+            <div>
+              <div class="monthlyFocusLabel">Waga: start -> teraz -> cel</div>
+              <div id="monthlyWeightHeadline" class="monthlyFocusTitle">Brak historii wagi</div>
+              <div id="monthlyWeightNote" class="monthlyFocusNote">Zapisz pomiary, żeby zobaczyć prosty wykres trendu.</div>
+            </div>
+            <div class="monthBadge">cel 110 kg</div>
+          </div>
+          <div class="monthlyWeightChartWrap"><canvas id="monthlyWeightChart"></canvas></div>
+          <div id="monthlyMilestones" class="monthlyMilestones">
+            <div><span>Start</span><strong>-</strong></div>
+            <div><span>Teraz</span><strong>-</strong></div>
+            <div><span>Cel</span><strong>110,0 kg</strong></div>
+          </div>
+        </div>
+        <div id="monthlyScenarioCard" class="monthlyScenarioCard">
+          <div class="monthlyFocusLabel">Scenariusz celu</div>
+          <div class="monthlyScenarioValue">-</div>
+          <div class="monthlyScenarioMeta">Brak wystarczającej historii wagi.</div>
+          <div class="monthlyScenarioStats">
+            <div><span>Obecne tempo</span><strong>-</strong></div>
+            <div><span>Do celu</span><strong>-</strong></div>
+            <div><span>Ostatni miesiąc</span><strong>-</strong></div>
+          </div>
+        </div>
+      </div>
       <div id="monthlySummaryList" class="monthSummaryGrid"><div class="hint">Brak zapisanych miesięcy.</div></div>
     </div>
     <div class="card">
@@ -1791,6 +1866,7 @@
 let chart = null;
 let waterfallChart = null;
 let historyChart = null;
+let monthlyWeightChart = null;
 let riskMatrixChart = null;
 let macroDonutChart = null;
 let performanceRadarChart = null;
@@ -1905,7 +1981,7 @@ function installProShell(){
       ["energy","Energia"],
       ["analysis","Analiza"],
       ["plan","Plan"],
-      ["history","Historia"]
+      ["history","Miesiące"]
     ].map(([id,label])=>`<button type="button" data-view="${id}" onclick="setProView('${id}')">${label}</button>`).join("");
     kpi.insertAdjacentElement("afterend",nav);
   }
@@ -1939,7 +2015,7 @@ function setProView(view){
     btn.classList.toggle("active",btn.dataset.view===activeProView);
   });
   requestAnimationFrame(()=>{
-    [chart,waterfallChart,historyChart,riskMatrixChart,macroDonutChart,performanceRadarChart,forecastChart,recoveryChart].forEach(c=>{try{c?.resize();c?.update("none")}catch(e){}});
+    [chart,waterfallChart,historyChart,monthlyWeightChart,riskMatrixChart,macroDonutChart,performanceRadarChart,forecastChart,recoveryChart].forEach(c=>{try{c?.resize();c?.update("none")}catch(e){}});
   });
   refreshIcons();
 }
@@ -4219,10 +4295,154 @@ function buildMonthlySummaries(history=getHistory()){
     return month;
   }).sort((a,b)=>b.key.localeCompare(a.key));
 }
+function historyWeightPoints(history=getHistory()){
+  return history
+    .map(week=>{
+      const weight=num(week?.weight?.curW);
+      const date=isoDateOnly(week?.end)||isoDateOnly(week?.start)||isoDateOnly(week?.createdAt);
+      return Number.isFinite(weight)&&date?{date,weight,id:week.id||""}:null;
+    })
+    .filter(Boolean)
+    .sort((a,b)=>a.date.localeCompare(b.date));
+}
+function estimateGoalScenarioFromHistory(history=getHistory()){
+  const weights=historyWeightPoints(history);
+  if(!weights.length)return {ok:false,reason:"Brak historii wagi"};
+  const first=weights[0], latest=weights[weights.length-1];
+  const remaining=latest.weight-TARGET_WEIGHT;
+  if(remaining<=0)return {ok:true,done:true,first,latest,remaining:0,rate:0,targetDate:new Date(latest.date+"T12:00:00"),source:"cel osiągnięty"};
+
+  const latestTime=Date.parse(latest.date+"T12:00:00");
+  let recent=weights.filter(point=>latestTime-Date.parse(point.date+"T12:00:00")<=120*24*3600*1000);
+  if(recent.length<2)recent=weights.slice(-5);
+  let rate=NaN, source="waga";
+  if(recent.length>=2){
+    const a=recent[0], b=recent[recent.length-1];
+    const spanWeeks=(Date.parse(b.date+"T12:00:00")-Date.parse(a.date+"T12:00:00"))/(7*24*3600*1000);
+    const loss=a.weight-b.weight;
+    if(spanWeeks>0&&loss>0)rate=loss/spanWeeks;
+  }
+  if(!Number.isFinite(rate)||rate<0.05){
+    const deficits=history
+      .sort((a,b)=>(a.start||"").localeCompare(b.start||""))
+      .map(week=>num(week?.summary?.deficit))
+      .filter(Number.isFinite)
+      .slice(-4);
+    const avgDef=deficits.length?avg(deficits):NaN;
+    const deficitRate=Number.isFinite(avgDef)&&avgDef>0?avgDef/7700:NaN;
+    if(Number.isFinite(deficitRate)&&deficitRate>=0.05){
+      rate=deficitRate;
+      source="deficyt";
+    }
+  }
+  if(!Number.isFinite(rate)||rate<=0)return {ok:false,first,latest,remaining,reason:"Brak stabilnego tempa spadku"};
+  const weeks=remaining/rate;
+  const targetDate=addDays(new Date(),weeks*7);
+  return {ok:true,done:false,first,latest,remaining,rate,weeks,targetDate,source};
+}
+function renderMonthlyWeightOverview(history,months){
+  const weights=historyWeightPoints(history);
+  const scenario=estimateGoalScenarioFromHistory(history);
+  const headline=document.getElementById("monthlyWeightHeadline");
+  const note=document.getElementById("monthlyWeightNote");
+  const milestones=document.getElementById("monthlyMilestones");
+  const scenarioCard=document.getElementById("monthlyScenarioCard");
+  const canvas=document.getElementById("monthlyWeightChart");
+
+  if(headline)headline.textContent=weights.length?`${f1(weights[0].weight)} kg -> ${f1(weights[weights.length-1].weight)} kg`:"Brak historii wagi";
+  if(note){
+    note.textContent=weights.length>=2
+      ? `Zmiana od startu: ${f1(weights[weights.length-1].weight-weights[0].weight)} kg.`
+      : "Zapisz co najmniej dwa pomiary, żeby zobaczyć tempo.";
+  }
+  if(milestones){
+    const first=weights[0], latest=weights[weights.length-1];
+    milestones.innerHTML=[
+      `<div><span>Start</span><strong>${first?f1(first.weight)+" kg":"-"}</strong><small>${first?esc(first.date):""}</small></div>`,
+      `<div><span>Teraz</span><strong>${latest?f1(latest.weight)+" kg":"-"}</strong><small>${latest?esc(latest.date):""}</small></div>`,
+      `<div><span>Cel</span><strong>${f1(TARGET_WEIGHT)} kg</strong><small>${scenario.ok&&!scenario.done?esc(monthYearPL(scenario.targetDate)):""}</small></div>`
+    ].join("");
+  }
+  if(scenarioCard){
+    const latestMonth=months[0];
+    const latestDeficit=latestMonth&&latestMonth.knownDeficitDays?`${latestMonth.deficit>=0?"-":"+"}${fmt(Math.abs(latestMonth.deficit))} kcal`:"-";
+    let value="-", meta="Brak wystarczającej historii wagi.", rate="-", remaining="-";
+    if(scenario.ok&&scenario.done){
+      value="Cel osiągnięty";
+      meta=`Ostatnia waga: ${f1(scenario.latest.weight)} kg.`;
+      rate="0 kg/tydz.";
+      remaining="0 kg";
+    }else if(scenario.ok){
+      value=monthYearPL(scenario.targetDate);
+      meta=`Przy obecnym tempie dojście do ${f1(TARGET_WEIGHT)} kg zajmie około ${Math.max(1,Math.round(scenario.weeks))} tygodni.`;
+      rate=`${f1(scenario.rate)} kg/tydz.`;
+      remaining=`${f1(scenario.remaining)} kg`;
+    }else if(scenario.latest){
+      meta=`Ostatnia waga: ${f1(scenario.latest.weight)} kg. ${scenario.reason}.`;
+      remaining=Number.isFinite(scenario.remaining)?`${f1(scenario.remaining)} kg`:"-";
+    }
+    scenarioCard.innerHTML=`<div class="monthlyFocusLabel">Scenariusz celu</div>
+      <div class="monthlyScenarioValue">${esc(value)}</div>
+      <div class="monthlyScenarioMeta">${esc(meta)}</div>
+      <div class="monthlyScenarioStats">
+        <div><span>Obecne tempo</span><strong>${esc(rate)}</strong></div>
+        <div><span>Do celu</span><strong>${esc(remaining)}</strong></div>
+        <div><span>Ostatni miesiąc</span><strong>${esc(latestDeficit)}</strong></div>
+      </div>`;
+  }
+
+  if(!canvas||!window.Chart)return;
+  if(monthlyWeightChart)monthlyWeightChart.destroy();
+  if(!weights.length){
+    monthlyWeightChart=null;
+    return;
+  }
+
+  const labels=weights.map(point=>point.date.slice(5));
+  const weightValues=weights.map(point=>point.weight);
+  const targetValues=weights.map(()=>TARGET_WEIGHT);
+  const projectionData=weights.map(()=>null);
+  let allValues=[...weightValues,TARGET_WEIGHT];
+  if(scenario.ok&&!scenario.done){
+    labels.push(scenario.targetDate.toLocaleDateString("pl-PL",{month:"short",year:"2-digit"}));
+    weightValues.push(null);
+    targetValues.push(TARGET_WEIGHT);
+    projectionData[projectionData.length-1]=scenario.latest.weight;
+    projectionData.push(TARGET_WEIGHT);
+    allValues.push(scenario.latest.weight,TARGET_WEIGHT);
+  }
+  const minY=Math.floor(Math.min(...allValues)-2);
+  const maxY=Math.ceil(Math.max(...allValues)+2);
+  monthlyWeightChart=new Chart(canvas,{
+    type:"line",
+    data:{
+      labels,
+      datasets:[
+        {label:"Waga",data:weightValues,borderColor:"#f97316",backgroundColor:"rgba(249,115,22,.14)",pointBackgroundColor:"#f97316",pointBorderColor:"#fff7ed",pointRadius:5,borderWidth:4,tension:.22,spanGaps:false},
+        {label:"Cel",data:targetValues,borderColor:"#54ff9f",backgroundColor:"transparent",pointRadius:0,borderWidth:3,borderDash:[6,6]},
+        {label:"Scenariusz",data:projectionData,borderColor:"#00e5ff",backgroundColor:"transparent",pointBackgroundColor:"#00e5ff",pointRadius:4,borderWidth:3,borderDash:[4,5],tension:0,spanGaps:true}
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      interaction:{mode:"index",intersect:false},
+      plugins:{
+        legend:{position:"bottom",labels:{color:"#e5edff",font:{weight:"800"},boxWidth:14,boxHeight:10}},
+        tooltip:{callbacks:{label:(ctx)=>`${ctx.dataset.label}: ${f1(ctx.parsed.y)} kg`}}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{color:"#dbeafe",font:{weight:"800"},maxRotation:0,autoSkip:true}},
+        y:{min:minY,max:maxY,grid:{color:"rgba(255,255,255,.10)"},ticks:{color:"#dbeafe",callback:v=>`${f1(v)} kg`}}
+      }
+    }
+  });
+}
 function renderMonthlySummary(history=getHistory()){
   const box=document.getElementById("monthlySummaryList");
   if(!box)return;
   const months=buildMonthlySummaries(history);
+  renderMonthlyWeightOverview(history,months);
   if(!months.length){
     box.innerHTML='<div class="signal warn"><span class="sig">i</span><div><strong>Brak miesięcy</strong><p>Zapisz pierwszy tydzień, a miesięczne podsumowanie pojawi się tutaj automatycznie.</p></div></div>';
     return;
