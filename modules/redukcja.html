@@ -1153,6 +1153,47 @@
     .fill.green{background:var(--green)}
     .fill.yellow{background:var(--yellow)}
     .historyLayout{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px;margin-top:16px}
+    .monthSummaryPanel{grid-column:1/-1}
+    .monthSummaryGrid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:12px;
+      margin-top:14px;
+    }
+    .monthItem{
+      border:1px solid rgba(0,229,255,.18);
+      background:
+        linear-gradient(160deg,rgba(255,255,255,.085),rgba(255,255,255,.045)),
+        linear-gradient(90deg,rgba(0,229,255,.08),rgba(84,255,159,.045));
+      border-radius:22px;
+      padding:16px;
+    }
+    .monthTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .monthName{font-size:18px;font-weight:950;color:#fff;line-height:1.15}
+    .monthMeta{font-size:12px;color:var(--muted);line-height:1.35;margin-top:4px}
+    .monthBadge{
+      flex:0 0 auto;
+      border-radius:999px;
+      padding:6px 9px;
+      background:rgba(52,211,153,.12);
+      color:#bbf7d0;
+      border:1px solid rgba(52,211,153,.30);
+      font-size:11px;
+      font-weight:950;
+      white-space:nowrap;
+    }
+    .monthStats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .monthStats div{
+      background:rgba(2,6,23,.32);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:11px;
+      color:var(--muted);
+      font-size:11px;
+      min-width:0;
+    }
+    .monthStats strong{display:block;font-size:18px;color:#fff;line-height:1.1;margin-bottom:5px}
+    .monthStats small{display:block;color:var(--muted);line-height:1.3}
     .storageLine{
       display:flex;justify-content:space-between;gap:12px;
       border:1px solid var(--line);
@@ -1379,7 +1420,7 @@
       .weekEntry>.card:nth-child(2) .compositionBadge{justify-self:start}
       .weekEntry>.card:nth-child(2) .compositionHeroGrid{grid-template-columns:1fr 1fr}
     }
-    @media(max-width:640px){.wrap{padding:12px}.weekMap{grid-template-columns:1fr}.weekStats{grid-template-columns:1fr}.heroPanel{grid-template-columns:1fr}.towerStage{grid-template-columns:repeat(2,1fr)}.missionValue{font-size:30px}.weekEntry>.card:nth-child(2) .compositionHero{padding:16px}.weekEntry>.card:nth-child(2) .compositionHeroGrid{grid-template-columns:1fr}.weekEntry>.card:nth-child(2) .compositionMetricCard{min-height:132px;grid-template-columns:60px minmax(0,1fr);padding:14px}.weekEntry>.card:nth-child(2) .compositionMetricIcon{width:60px;height:60px;font-size:28px}.weekEntry>.card:nth-child(2) .compositionMetricMeta strong{font-size:clamp(24px,10vw,38px)}.weekEntry>.card:nth-child(2) .compositionMetricMeta small{max-width:none}.weekEntry>.card:nth-child(1),.weekEntry>.card:nth-child(2),.weekEntry>.card:nth-child(3){padding:16px}}
+    @media(max-width:640px){.wrap{padding:12px}.weekMap{grid-template-columns:1fr}.weekStats,.monthStats{grid-template-columns:1fr}.heroPanel{grid-template-columns:1fr}.towerStage{grid-template-columns:repeat(2,1fr)}.missionValue{font-size:30px}.weekEntry>.card:nth-child(2) .compositionHero{padding:16px}.weekEntry>.card:nth-child(2) .compositionHeroGrid{grid-template-columns:1fr}.weekEntry>.card:nth-child(2) .compositionMetricCard{min-height:132px;grid-template-columns:60px minmax(0,1fr);padding:14px}.weekEntry>.card:nth-child(2) .compositionMetricIcon{width:60px;height:60px;font-size:28px}.weekEntry>.card:nth-child(2) .compositionMetricMeta strong{font-size:clamp(24px,10vw,38px)}.weekEntry>.card:nth-child(2) .compositionMetricMeta small{max-width:none}.weekEntry>.card:nth-child(1),.weekEntry>.card:nth-child(2),.weekEntry>.card:nth-child(3){padding:16px}}
   </style>
 </head>
 <body>
@@ -1686,6 +1727,11 @@
   </section>
 
   <section class="historyLayout">
+    <div class="card monthSummaryPanel">
+      <h2>Podsumowania miesięczne</h2>
+      <p class="muted">Miesiące liczą deficyt z dni, minuty sportu z zapisanych aktywności tygodnia i zmianę wagi między pierwszym a ostatnim pomiarem w miesiącu.</p>
+      <div id="monthlySummaryList" class="monthSummaryGrid"><div class="hint">Brak zapisanych miesięcy.</div></div>
+    </div>
     <div class="card">
       <h2>Historia</h2>
       <p class="muted">Tygodnie zapisują się automatycznie, żeby trend był widoczny od razu po kolejnym raporcie.</p>
@@ -4098,9 +4144,117 @@ async function runAnalysis(autoStarted=false){
     setStatus("Błąd: "+e.message);
   }
 }
+function isoDateOnly(value){
+  const iso=String(value||"").slice(0,10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(iso)?iso:null;
+}
+function monthKeyFromIso(value){
+  const iso=isoDateOnly(value);
+  return iso?iso.slice(0,7):null;
+}
+function monthLabelFromKey(key){
+  const d=new Date(`${key}-01T12:00:00`);
+  return isNaN(d)?key:d.toLocaleDateString("pl-PL",{month:"long",year:"numeric"});
+}
+function monthBucket(map,key){
+  if(!key)return null;
+  if(!map.has(key))map.set(key,{key,label:monthLabelFromKey(key),days:0,knownDeficitDays:0,deficit:0,sportMinutes:0,sportWeeks:0,weights:[]});
+  return map.get(key);
+}
+function weeklySportMinutes(week){
+  const hours=num(week?.summary?.activityDurationHours);
+  return Number.isFinite(hours)&&hours>0?hours*60:NaN;
+}
+function buildMonthlySummaries(history=getHistory()){
+  const buckets=new Map();
+  history.forEach(week=>{
+    const days=Array.isArray(week.data)?week.data:[];
+    const dayCounts={};
+    days.forEach(day=>{
+      const key=monthKeyFromIso(day.dateISO);
+      if(!key)return;
+      const bucket=monthBucket(buckets,key);
+      bucket.days+=1;
+      dayCounts[key]=(dayCounts[key]||0)+1;
+      const deficit=num(day.deficit);
+      if(Number.isFinite(deficit)){
+        bucket.deficit+=deficit;
+        bucket.knownDeficitDays+=1;
+      }
+    });
+
+    const minutes=weeklySportMinutes(week);
+    if(Number.isFinite(minutes)){
+      const countedDays=sum(Object.values(dayCounts));
+      if(countedDays){
+        Object.entries(dayCounts).forEach(([key,count])=>{
+          const bucket=monthBucket(buckets,key);
+          bucket.sportMinutes+=minutes*(count/countedDays);
+          bucket.sportWeeks+=1;
+        });
+      }else{
+        const key=monthKeyFromIso(week.end)||monthKeyFromIso(week.start)||monthKeyFromIso(week.createdAt);
+        const bucket=monthBucket(buckets,key);
+        if(bucket){
+          bucket.sportMinutes+=minutes;
+          bucket.sportWeeks+=1;
+        }
+      }
+    }
+
+    const weight=num(week?.weight?.curW);
+    const weightIso=isoDateOnly(week.end)||isoDateOnly(week.start)||isoDateOnly(week.createdAt);
+    const weightKey=monthKeyFromIso(weightIso);
+    if(Number.isFinite(weight)&&weightKey){
+      monthBucket(buckets,weightKey).weights.push({date:weightIso,weight,id:week.id||""});
+    }
+  });
+
+  return Array.from(buckets.values()).map(month=>{
+    month.weights.sort((a,b)=>a.date.localeCompare(b.date));
+    const first=month.weights[0], last=month.weights[month.weights.length-1];
+    month.weightDelta=first&&last&&month.weights.length>=2?last.weight-first.weight:NaN;
+    month.firstWeight=first||null;
+    month.lastWeight=last||null;
+    return month;
+  }).sort((a,b)=>b.key.localeCompare(a.key));
+}
+function renderMonthlySummary(history=getHistory()){
+  const box=document.getElementById("monthlySummaryList");
+  if(!box)return;
+  const months=buildMonthlySummaries(history);
+  if(!months.length){
+    box.innerHTML='<div class="signal warn"><span class="sig">i</span><div><strong>Brak miesięcy</strong><p>Zapisz pierwszy tydzień, a miesięczne podsumowanie pojawi się tutaj automatycznie.</p></div></div>';
+    return;
+  }
+  box.innerHTML=months.map(month=>{
+    const deficitText=month.knownDeficitDays?`${month.deficit>=0?"-":"+"}${fmt(Math.abs(month.deficit))}`:"-";
+    const deficitCls=month.deficit>=0?"goodText":"badText";
+    const sportText=month.sportMinutes>0?`${fmt(month.sportMinutes)} min`:"-";
+    const weightText=Number.isFinite(month.weightDelta)?`${month.weightDelta>0?"+":""}${f1(month.weightDelta)} kg`:"-";
+    const weightCls=Number.isFinite(month.weightDelta)?(month.weightDelta<=0?"goodText":"badText"):"warnText";
+    const weightMeta=Number.isFinite(month.weightDelta)
+      ? `${f1(month.firstWeight.weight)} -> ${f1(month.lastWeight.weight)} kg`
+      : month.weights.length===1
+        ? `1 pomiar: ${f1(month.weights[0].weight)} kg`
+        : "brak pomiaru";
+    return `<div class="monthItem">
+      <div class="monthTop">
+        <div><div class="monthName">${esc(month.label)}</div><div class="monthMeta">${month.days} dni danych, ${month.knownDeficitDays} dni z deficytem</div></div>
+        <div class="monthBadge">${esc(month.key)}</div>
+      </div>
+      <div class="monthStats">
+        <div><strong class="${deficitCls}">${deficitText}</strong><small>deficyt kcal</small></div>
+        <div><strong class="blueText">${sportText}</strong><small>minuty sportu</small></div>
+        <div><strong class="${weightCls}">${weightText}</strong><small>${esc(weightMeta)}</small></div>
+      </div>
+    </div>`;
+  }).join("");
+}
 function renderHistory(){
   const history=getHistory().sort((a,b)=>(a.start||"").localeCompare(b.start||""));
   const list=document.getElementById("historyList"), trend=document.getElementById("historyTrendSummary");
+  renderMonthlySummary(history);
   if(!history.length){
     trend.innerHTML="";
     list.innerHTML='<div class="signal warn"><span class="sig">i</span><div><strong>Brak historii</strong><p>Po dodaniu wagi i raportów tydzień zapisze się automatycznie.</p></div></div>';
@@ -4120,7 +4274,25 @@ function renderHistory(){
   refreshIcons();
   renderHistoryChart();
 }
-function summarizeWeekData(data,week){const known=data.filter(d=>Number.isFinite(d.deficit));return {eaten:sum(data.map(d=>d.eaten)),burned:sum(known.map(d=>d.burned)),deficit:sum(known.map(d=>d.deficit)),knownDays:known.length,avgEaten:avg(data.map(d=>d.eaten)),avgProtein:avg(data.map(d=>d.protein)),stepsAvg:week.summary?.stepsAvg??null,sleepAvg:week.summary?.sleepAvg??null,activityCount:week.summary?.activityCount??null}}
+function summarizeWeekData(data,week){
+  const known=data.filter(d=>Number.isFinite(d.deficit));
+  return {
+    eaten:sum(data.map(d=>d.eaten)),
+    burned:sum(known.map(d=>d.burned)),
+    deficit:sum(known.map(d=>d.deficit)),
+    knownDays:known.length,
+    avgEaten:avg(data.map(d=>d.eaten)),
+    avgProtein:avg(data.map(d=>d.protein)),
+    stepsAvg:week.summary?.stepsAvg??null,
+    sleepAvg:week.summary?.sleepAvg??null,
+    sleepScoreAvg:week.summary?.sleepScoreAvg??null,
+    activityCount:week.summary?.activityCount??null,
+    activityDurationHours:week.summary?.activityDurationHours??null,
+    stressAvg:week.summary?.stressAvg??null,
+    restingHrAvg:week.summary?.restingHrAvg??null,
+    burnedAvgFromScreen:week.summary?.burnedAvgFromScreen??null
+  };
+}
 function editWeek(id){
   const week=getHistory().find(w=>w.id===id);if(!week)return;
   document.getElementById("editWeekId").value=week.id;
