@@ -184,6 +184,91 @@ body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
   border-radius:8px!important;
 }
 
+body.rw-v2-ready:not(.app-open) .rw-v2-domain-hud{
+  position:fixed!important;
+  left:clamp(20px,3vw,58px)!important;
+  top:calc(4.2vh + 2px)!important;
+  z-index:22040!important;
+  min-width:clamp(178px,15vw,250px)!important;
+  display:grid!important;
+  gap:2px!important;
+  padding:10px 15px 11px!important;
+  border-radius:10px!important;
+  border:1px solid rgba(151,221,255,.30)!important;
+  background:
+    linear-gradient(150deg, rgba(242,250,255,.13), rgba(50,83,113,.18) 46%, rgba(5,15,27,.54)),
+    radial-gradient(circle at 92% 16%, rgba(114,241,212,.18), transparent 42%)!important;
+  color:rgba(245,251,255,.94)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16), 0 16px 36px rgba(2,8,18,.22), 0 0 24px rgba(82,194,255,.10)!important;
+  backdrop-filter:blur(16px) saturate(126%)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(126%)!important;
+  pointer-events:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-domain-hud::before{
+  content:""!important;
+  position:absolute!important;
+  left:12px!important;
+  top:9px!important;
+  bottom:9px!important;
+  width:2px!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg, rgba(114,241,212,.88), rgba(126,225,255,.18))!important;
+  box-shadow:0 0 16px rgba(114,241,212,.38)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-domain-hud span{
+  padding-left:8px!important;
+  font:800 clamp(14px,1.08vw,20px)/1.05 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-domain-hud strong{
+  padding-left:8px!important;
+  font:700 clamp(10px,.74vw,13px)/1.15 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;
+  letter-spacing:.12em!important;
+  text-transform:lowercase!important;
+  color:rgba(168,236,255,.78)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-floating-lang{
+  position:fixed!important;
+  left:auto!important;
+  top:calc(4.2vh + 2px)!important;
+  right:clamp(14px,5.8vw,98px)!important;
+  width:auto!important;
+  min-height:42px!important;
+  gap:5px!important;
+  padding:5px!important;
+  z-index:22050!important;
+  border-radius:10px!important;
+  border:1px solid rgba(151,221,255,.30)!important;
+  background:linear-gradient(155deg, rgba(245,250,255,.14), rgba(72,97,123,.20) 48%, rgba(7,22,38,.44))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16), 0 14px 32px rgba(3,10,22,.20)!important;
+  backdrop-filter:blur(16px) saturate(126%)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(126%)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-floating-lang button{
+  width:36px!important;
+  min-width:36px!important;
+  height:32px!important;
+  min-height:32px!important;
+  border-radius:8px!important;
+  font-size:12px!important;
+  font-weight:850!important;
+  letter-spacing:0!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
+  top:calc(4.2vh + 52px)!important;
+  right:clamp(14px,5.8vw,98px)!important;
+  min-width:116px!important;
+  height:36px!important;
+  border-radius:10px!important;
+}
+
 /* Organized shell utilities moved out of index.html. */
 #mc_gate{
   position:fixed;
@@ -429,30 +514,18 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-rim{
   box-shadow:none!important;
 }
 
-/* Startup-only face blocker: tight wall patch under the live face, without darkening the room. */
+/* The old embedded face is removed from the v18 background assets, so no startup patch is needed. */
 body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-face-bg-mask{
-  position:fixed!important;
-  left:clamp(18px, 2.1vw, 50px)!important;
-  top:clamp(62px, 8.4vh, 118px)!important;
-  width:clamp(286px, 24vw, 420px)!important;
-  height:clamp(350px, 29.5vw, 516px)!important;
-  z-index:115!important;
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
   pointer-events:none!important;
-  opacity:.74!important;
-  background:
-    repeating-linear-gradient(90deg, rgba(118,217,255,.048) 0 1px, transparent 1px 42px),
-    repeating-linear-gradient(0deg, rgba(118,217,255,.034) 0 1px, transparent 1px 52px),
-    linear-gradient(90deg, rgba(2,10,20,.84), rgba(2,10,20,.72) 70%, transparent 100%)!important;
-  box-shadow:none!important;
-  mix-blend-mode:normal!important;
-  filter:none!important;
-  -webkit-mask-image:radial-gradient(ellipse at 49% 48%, #000 0 45%, rgba(0,0,0,.72) 58%, transparent 74%)!important;
-  mask-image:radial-gradient(ellipse at 49% 48%, #000 0 45%, rgba(0,0,0,.72) 58%, transparent 74%)!important;
 }
 
 body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-bg-mask{
-  opacity:0!important;
+  display:none!important;
   visibility:hidden!important;
+  opacity:0!important;
 }
 
 body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-ai-global-grade{
@@ -542,10 +615,10 @@ body.rw-v2-ready.rw-v2-video-face-mode:not(.rw-v2-video-face-ready):not(.app-ope
   --rw-face-float-x:0px;
   --rw-face-float-y:0px;
   --rw-face-scale:1;
-  display:block!important;
-  visibility:visible!important;
-  opacity:.64!important;
-  z-index:121!important;
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  z-index:117!important;
   animation:rwAssistantFaceDriftPro 45s linear infinite!important;
   transform:translate3d(var(--rw-face-float-x), var(--rw-face-float-y), 0) scale(var(--rw-face-scale))!important;
   filter:none!important;
@@ -748,7 +821,15 @@ body.rw-v2-ready.rw-v2-phase-dawn,
 body.rw-v2-ready.rw-v2-phase-morning,
 body.rw-v2-ready.rw-v2-phase-day,
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v17-window-clarity.webp?v=20260731-window-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v18-cleanwall.webp?v=20260806-cleanwall-1");
+}
+
+body.rw-v2-ready.rw-v2-phase-sunset{
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v18-cleanwall.webp?v=20260806-cleanwall-1");
+}
+
+body.rw-v2-ready.rw-v2-phase-night{
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v18-cleanwall.webp?v=20260806-cleanwall-1");
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-sky-wash{
@@ -764,6 +845,10 @@ body.rw-v2-ready:not(.app-open) .rw-v2-live-clouds{
 body.rw-v2-ready:not(.app-open) .rw-v2-window-reflection{
   opacity:.38!important;
   filter:none!important;
+}
+
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active{
+  filter:brightness(1.16) contrast(1.06) saturate(1.04) drop-shadow(0 0 22px rgba(82,194,255,.20)) drop-shadow(0 18px 44px rgba(0,0,0,.30))!important;
 }
 
 @media (max-width:1080px){
@@ -796,15 +881,56 @@ body.rw-v2-ready:not(.app-open) .rw-v2-window-reflection{
   body.rw-v2-ready.rw-v2-phase-morning,
   body.rw-v2-ready.rw-v2-phase-day,
   body.rw-v2-ready.rw-v2-phase-afternoon{
-    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v17-window-clarity-mobile.webp?v=20260731-window-1");
+    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v18-cleanwall-mobile.webp?v=20260806-cleanwall-1");
   }
 
   body.rw-v2-ready.rw-v2-phase-sunset{
-    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v14-mobile.webp?v=20260731-mobile-1");
+    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v18-cleanwall-mobile.webp?v=20260806-cleanwall-1");
   }
 
   body.rw-v2-ready.rw-v2-phase-night{
-    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v16-mobile.webp?v=20260731-mobile-1");
+    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v18-cleanwall-mobile.webp?v=20260806-cleanwall-1");
+  }
+
+  body.rw-v2-ready:not(.app-open) .rw-v2-face-bg-mask{
+    display:none!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) .rw-v2-domain-hud{
+    left:14px!important;
+    top:16px!important;
+    min-width:168px!important;
+    padding:9px 12px 10px!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) .rw-v2-domain-hud span{
+    font-size:13px!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) .rw-v2-domain-hud strong{
+    font-size:10px!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) .rw-v2-floating-lang{
+    top:16px!important;
+    right:12px!important;
+    padding:4px!important;
+    gap:3px!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) .rw-v2-floating-lang button{
+    width:31px!important;
+    min-width:31px!important;
+    height:30px!important;
+    min-height:30px!important;
+    font-size:11px!important;
+  }
+
+  body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger{
+    top:62px!important;
+    right:12px!important;
+    min-width:86px!important;
+    height:32px!important;
   }
 
   body.rw-v2-ready:not(.app-open) .rw-v2-hero-inner{

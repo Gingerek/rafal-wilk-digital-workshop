@@ -380,12 +380,12 @@
   }
   function syncBrand(){
     document.querySelectorAll('.rw-brand-main').forEach((el) => {
-      el.textContent = 'Rafal Wilk Digital Workshop';
+      el.textContent = 'Rafal Wilk AI';
     });
     document.querySelectorAll('.rw-title').forEach((el) => {
-      el.setAttribute('aria-label', 'Rafal Wilk Digital Workshop');
+      el.setAttribute('aria-label', 'Rafal Wilk AI');
     });
-    document.title = 'Rafal Wilk Digital Workshop';
+    document.title = 'Rafal Wilk AI';
   }
   function retireLegacyVisualLayers(){
     legacyVisualStyleIds.forEach((id) => {
@@ -432,6 +432,13 @@
       langControls.setAttribute('aria-label', 'Language');
       langControls.innerHTML = '<button type="button" data-rw-home-lang="pl">PL</button><button type="button" data-rw-home-lang="en">EN</button><button type="button" data-rw-home-lang="nl">NL</button>';
       shell.appendChild(langControls);
+    }
+    if (!shell.querySelector('.rw-v2-domain-hud')) {
+      const domainHud = document.createElement('div');
+      domainHud.className = 'rw-v2-domain-hud';
+      domainHud.setAttribute('aria-hidden', 'true');
+      domainHud.innerHTML = '<span>Rafal Wilk AI</span><strong>rafalwilkai.com</strong>';
+      shell.appendChild(domainHud);
     }
     if (!shell.querySelector('.rw-v2-native-wall-canvas')) {
       const wallCanvas = document.createElement('canvas');
@@ -525,16 +532,17 @@
       const signature = document.createElement('div');
       signature.className = 'rw-v2-floor-signature';
       signature.setAttribute('aria-hidden', 'true');
-      signature.innerHTML = '<span>Rafal Wilk Digital Workshop</span>';
+      signature.innerHTML = '<span>Rafal Wilk AI</span>';
       shell.appendChild(signature);
     }
     if (!shell.querySelector('.rw-v2-console-signature')) {
       const consoleSignature = document.createElement('div');
       consoleSignature.className = 'rw-v2-console-signature';
       consoleSignature.setAttribute('aria-hidden', 'true');
-      consoleSignature.innerHTML = '<span class="rw-v2-console-seal">RW</span><span class="rw-v2-console-name">Rafa&#322; Wilk Digital Workshop</span>';
+      consoleSignature.innerHTML = '<span class="rw-v2-console-seal">AI</span><span class="rw-v2-console-name">Rafal Wilk AI</span>';
       shell.appendChild(consoleSignature);
     }
+    shell.querySelectorAll('.rw-v2-table-signature').forEach((tableSignature) => tableSignature.remove());
     shell.querySelectorAll('.rw-v2-window-sun,.rw-v2-window-moon,.rw-v2-city-lights').forEach((el) => el.remove());
     if (!shell.querySelector('.rw-v2-depth-field')) {
       const depth = document.createElement('div');
@@ -1117,8 +1125,9 @@
     if (!hero) return;
     hero.innerHTML = `<div class="rw-v2-hero-poster">
       <h2 class="rw-v2-brand-lockup">
-        <span>Rafal Wilk Digital Workshop</span>
+        <span>Rafal Wilk AI</span>
         <span class="rw-v2-copy-mark" title="Copyright" aria-label="Copyright">&copy;</span>
+        <span class="rw-v2-brand-domain">rafalwilkai.com</span>
       </h2>
       <div class="rw-v2-home-lang" role="group" aria-label="Language">
         <button type="button" data-rw-home-lang="pl">PL</button>
