@@ -856,8 +856,9 @@ body.rw-v2-ready:not(.app-open) .rw-v2-sky-wash{
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-live-clouds{
-  opacity:.16!important;
-  filter:blur(2px)!important;
+  opacity:0!important;
+  filter:none!important;
+  display:none!important;
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-window-reflection{
@@ -865,8 +866,100 @@ body.rw-v2-ready:not(.app-open) .rw-v2-window-reflection{
   filter:none!important;
 }
 
+body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active,
 body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active{
-  filter:brightness(1.16) contrast(1.06) saturate(1.04) drop-shadow(0 0 22px rgba(82,194,255,.20)) drop-shadow(0 18px 44px rgba(0,0,0,.30))!important;
+  opacity:.78!important;
+  mix-blend-mode:screen!important;
+  filter:brightness(1.04) contrast(1.24) saturate(.98)!important;
+  box-shadow:none!important;
+  -webkit-mask-image:
+    radial-gradient(ellipse 43% 49% at 50% 50%, #000 0 97%, transparent 98%),
+    linear-gradient(90deg, transparent 0 11%, #000 18% 81%, transparent 89%),
+    linear-gradient(180deg, transparent 0 3%, #000 8% 90%, transparent 96%)!important;
+  -webkit-mask-composite:source-in!important;
+  mask-image:
+    radial-gradient(ellipse 43% 49% at 50% 50%, #000 0 97%, transparent 98%),
+    linear-gradient(90deg, transparent 0 11%, #000 18% 81%, transparent 89%),
+    linear-gradient(180deg, transparent 0 3%, #000 8% 90%, transparent 96%)!important;
+  mask-composite:intersect!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-domain-hud,
+body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster .rw-v2-brand-lockup{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+}
+
+body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-ai-global-grade{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  background:none!important;
+  filter:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-link{
+  position:fixed!important;
+  left:calc(var(--rw-face-left, 0px) - 58px)!important;
+  top:calc(var(--rw-face-top, 0px) - 28px)!important;
+  width:calc(var(--rw-face-width, 0px) + 126px)!important;
+  height:calc(var(--rw-face-height, 0px) + 92px)!important;
+  z-index:121!important;
+  display:block!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  opacity:0!important;
+  mix-blend-mode:screen!important;
+  filter:none!important;
+  box-shadow:none!important;
+  background:
+    linear-gradient(28deg, transparent 0 29%, rgba(121,224,255,.62) 29.1% 29.35%, transparent 29.5% 100%),
+    linear-gradient(-20deg, transparent 0 38%, rgba(62,202,255,.48) 38.1% 38.32%, transparent 38.48% 100%),
+    linear-gradient(12deg, transparent 0 52%, rgba(131,255,225,.40) 52.1% 52.33%, transparent 52.48% 100%),
+    linear-gradient(-38deg, transparent 0 64%, rgba(121,224,255,.44) 64.08% 64.30%, transparent 64.46% 100%),
+    radial-gradient(circle at 12% 26%, rgba(151,238,255,.92) 0 1.8px, transparent 2px),
+    radial-gradient(circle at 21% 46%, rgba(98,215,255,.82) 0 1.6px, transparent 1.9px),
+    radial-gradient(circle at 32% 18%, rgba(147,255,225,.74) 0 1.5px, transparent 1.8px),
+    radial-gradient(circle at 42% 59%, rgba(130,225,255,.76) 0 1.6px, transparent 1.9px),
+    radial-gradient(circle at 61% 36%, rgba(151,238,255,.82) 0 1.7px, transparent 2px),
+    radial-gradient(circle at 78% 54%, rgba(99,218,255,.72) 0 1.5px, transparent 1.8px),
+    radial-gradient(circle at 88% 31%, rgba(148,255,224,.66) 0 1.4px, transparent 1.7px)!important;
+  background-size:100% 100%!important;
+  background-repeat:no-repeat!important;
+  transition:opacity 220ms ease!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-link::before,
+body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-link::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  filter:none!important;
+  box-shadow:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-link::before{
+  background:
+    linear-gradient(90deg, transparent 0 7%, rgba(126,225,255,.52) 7.12% 7.32%, transparent 7.46% 100%),
+    linear-gradient(90deg, transparent 0 18%, rgba(126,225,255,.34) 18.08% 18.24%, transparent 18.38% 100%),
+    linear-gradient(0deg, transparent 0 23%, rgba(126,225,255,.28) 23.08% 23.24%, transparent 23.38% 100%),
+    linear-gradient(0deg, transparent 0 72%, rgba(126,225,255,.22) 72.08% 72.24%, transparent 72.38% 100%)!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-link::after{
+  background:
+    radial-gradient(circle at 8% 50%, rgba(151,238,255,.86) 0 1.7px, transparent 2px),
+    radial-gradient(circle at 18% 24%, rgba(151,238,255,.74) 0 1.5px, transparent 1.8px),
+    radial-gradient(circle at 36% 72%, rgba(147,255,225,.70) 0 1.4px, transparent 1.7px),
+    radial-gradient(circle at 70% 42%, rgba(126,225,255,.80) 0 1.6px, transparent 1.9px),
+    radial-gradient(circle at 96% 58%, rgba(147,255,225,.66) 0 1.4px, transparent 1.7px)!important;
+}
+
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-neural-link{
+  visibility:visible!important;
+  opacity:.74!important;
 }
 
 @media (max-width:1080px){

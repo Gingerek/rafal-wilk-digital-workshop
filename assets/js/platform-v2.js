@@ -433,13 +433,7 @@
       langControls.innerHTML = '<button type="button" data-rw-home-lang="pl">PL</button><button type="button" data-rw-home-lang="en">EN</button><button type="button" data-rw-home-lang="nl">NL</button>';
       shell.appendChild(langControls);
     }
-    if (!shell.querySelector('.rw-v2-domain-hud')) {
-      const domainHud = document.createElement('div');
-      domainHud.className = 'rw-v2-domain-hud';
-      domainHud.setAttribute('aria-hidden', 'true');
-      domainHud.innerHTML = '<span>Rafal Wilk AI</span><strong>rafalwilkai.com</strong>';
-      shell.appendChild(domainHud);
-    }
+    shell.querySelectorAll('.rw-v2-domain-hud').forEach((domainHud) => domainHud.remove());
     if (!shell.querySelector('.rw-v2-native-wall-canvas')) {
       const wallCanvas = document.createElement('canvas');
       wallCanvas.className = 'rw-v2-native-wall-canvas';
@@ -451,6 +445,12 @@
       globalGrade.className = 'rw-v2-ai-global-grade';
       globalGrade.setAttribute('aria-hidden', 'true');
       shell.appendChild(globalGrade);
+    }
+    if (!shell.querySelector('.rw-v2-face-neural-link')) {
+      const faceNeuralLink = document.createElement('div');
+      faceNeuralLink.className = 'rw-v2-face-neural-link';
+      faceNeuralLink.setAttribute('aria-hidden', 'true');
+      shell.appendChild(faceNeuralLink);
     }
     document.body.classList.add('rw-v2-video-face-mode');
     if (!shell.querySelector('.rw-v2-face-bg-mask')) {
@@ -629,6 +629,7 @@
     const faceVideo = shell?.querySelector('.rw-v2-assistant-face-video');
     const faceCanvas = shell?.querySelector('.rw-v2-assistant-face-canvas');
     const faceMouth = shell?.querySelector('.rw-v2-assistant-mouth-sync');
+    const faceNeuralLink = shell?.querySelector('.rw-v2-face-neural-link');
     const activeFaceNode = faceVideo || blink;
     if (!activeFaceNode || activeFaceNode.dataset.rwBlinkActive === 'true') return;
     activeFaceNode.dataset.rwBlinkActive = 'true';
@@ -655,7 +656,7 @@
       const renderedHeight = natural.height * scale;
       const offsetX = (rect.width - renderedWidth) / 2;
       const offsetY = (rect.height - renderedHeight) / 2;
-      [faceShadow, facePlate, faceHalo, faceDepth, faceRim, faceCutout, faceVideo, faceCanvas, faceMouth].forEach((faceLayer) => {
+      [faceShadow, facePlate, faceHalo, faceDepth, faceRim, faceCutout, faceVideo, faceCanvas, faceMouth, faceNeuralLink].forEach((faceLayer) => {
         if (!faceLayer) return;
         faceLayer.style.setProperty('--rw-face-left', `${offsetX + faceCrop.x * scale}px`);
         faceLayer.style.setProperty('--rw-face-top', `${offsetY + faceCrop.y * scale}px`);
@@ -1137,11 +1138,6 @@
     const hero = document.querySelector('.rw-v2-hero');
     if (!hero) return;
     hero.innerHTML = `<div class="rw-v2-hero-poster">
-      <h2 class="rw-v2-brand-lockup">
-        <span>Rafal Wilk AI</span>
-        <span class="rw-v2-copy-mark" title="Copyright" aria-label="Copyright">&copy;</span>
-        <span class="rw-v2-brand-domain">rafalwilkai.com</span>
-      </h2>
       <div class="rw-v2-home-lang" role="group" aria-label="Language">
         <button type="button" data-rw-home-lang="pl">PL</button>
         <button type="button" data-rw-home-lang="en">EN</button>
