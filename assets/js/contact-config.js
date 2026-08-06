@@ -1,6 +1,6 @@
 window.RW_CONTACT_ENDPOINT = '';
 (function installRafalWorkshopHomepageFix(){
-  var heroUrl = 'assets/images/private-command-center-hero-bracelets.webp?v=20260708-bracelets-1';
+  var heroUrl = 'assets/images/private-command-center-hero-personal-bg-day-v18-cleanwall.webp?v=20260806-cleanwall-2';
   var css = `
 html,body{min-height:100%!important;}
 body:not(.app-open){

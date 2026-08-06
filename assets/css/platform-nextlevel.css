@@ -821,15 +821,15 @@ body.rw-v2-ready.rw-v2-phase-dawn,
 body.rw-v2-ready.rw-v2-phase-morning,
 body.rw-v2-ready.rw-v2-phase-day,
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v18-cleanwall.webp?v=20260806-cleanwall-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v18-cleanwall.webp?v=20260806-cleanwall-2");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v18-cleanwall.webp?v=20260806-cleanwall-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v18-cleanwall.webp?v=20260806-cleanwall-2");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v18-cleanwall.webp?v=20260806-cleanwall-1");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v18-cleanwall.webp?v=20260806-cleanwall-2");
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-sky-wash{
@@ -881,15 +881,15 @@ body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-vid
   body.rw-v2-ready.rw-v2-phase-morning,
   body.rw-v2-ready.rw-v2-phase-day,
   body.rw-v2-ready.rw-v2-phase-afternoon{
-    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v18-cleanwall-mobile.webp?v=20260806-cleanwall-1");
+    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v18-cleanwall-mobile.webp?v=20260806-cleanwall-2");
   }
 
   body.rw-v2-ready.rw-v2-phase-sunset{
-    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v18-cleanwall-mobile.webp?v=20260806-cleanwall-1");
+    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v18-cleanwall-mobile.webp?v=20260806-cleanwall-2");
   }
 
   body.rw-v2-ready.rw-v2-phase-night{
-    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v18-cleanwall-mobile.webp?v=20260806-cleanwall-1");
+    --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v18-cleanwall-mobile.webp?v=20260806-cleanwall-2");
   }
 
   body.rw-v2-ready:not(.app-open) .rw-v2-face-bg-mask{

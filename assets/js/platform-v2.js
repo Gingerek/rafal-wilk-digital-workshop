@@ -670,7 +670,9 @@
       };
       const pickVideoSource = () => videoSources.stable;
       let videoRevealQueued = false;
+      let videoRevealTimer = 0;
       let videoSyncFrame = 0;
+      const videoRevealReadyAt = performance.now() + 1600;
       document.body.classList.add('rw-v2-video-face-mode');
       const faceVideoCanRun = () => {
         if (document.hidden || document.body.classList.contains('app-open')) return false;
@@ -681,6 +683,8 @@
         return rect.width > 12 && rect.height > 12;
       };
       const parkFaceVideo = (unload = false) => {
+        window.clearTimeout(videoRevealTimer);
+        videoRevealQueued = false;
         faceVideo.pause?.();
         faceVideo.classList.remove('is-active');
         document.body.classList.remove('rw-v2-video-face-ready');
@@ -700,6 +704,14 @@
       const queueVideoReveal = () => {
         if (videoRevealQueued || !faceVideoCanRun()) return;
         videoRevealQueued = true;
+        const revealDelay = Math.max(0, videoRevealReadyAt - performance.now());
+        if (revealDelay > 0) {
+          videoRevealTimer = window.setTimeout(() => {
+            videoRevealQueued = false;
+            queueVideoReveal();
+          }, revealDelay);
+          return;
+        }
         const reveal = () => {
           videoRevealQueued = false;
           markVideoReady();
