@@ -8028,6 +8028,24 @@ body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-plate{
   transition:opacity 260ms ease!important;
 }
 
+body.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-shadow,
+body.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-plate,
+body.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-halo,
+body.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-depth,
+body.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-rim,
+body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-shadow,
+body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-plate,
+body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-halo,
+body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-depth,
+body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-assistant-face-rim{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+}
+
 body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-halo{
   z-index:123!important;
   background-image:

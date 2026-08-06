@@ -664,7 +664,8 @@
       });
     };
     if (faceVideo) {
-      [faceCutout, faceCanvas, blink].forEach((oldFaceLayer) => oldFaceLayer?.remove());
+      [faceShadow, facePlate, faceHalo, faceDepth, faceRim, faceCutout, faceCanvas, blink].forEach((oldFaceLayer) => oldFaceLayer?.remove());
+      shell.querySelectorAll('.rw-v2-face-bg-mask').forEach((oldFaceMask) => oldFaceMask.remove());
       const videoSources = {
         stable: 'assets/videos/aireel-face-hd-seamless-integrated-v4-fast.mp4?v=20260720-aireel-fast-1'
       };
