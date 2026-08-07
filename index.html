@@ -5,6 +5,17 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
+<script id="rw-enforce-https">
+(function(){
+  var host = window.location.hostname.toLowerCase();
+  if (window.location.protocol === 'http:' && (host === 'rafalwilkai.com' || host === 'www.rafalwilkai.com')) {
+    window.location.replace('https://rafalwilkai.com' + window.location.pathname + window.location.search + window.location.hash);
+  }
+})();
+</script>
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+<meta name="description" content="Rafal Wilk AI provides business tools and calculators for HR, recruitment, staffing, budgeting, workforce planning, and business administration.">
+<link rel="canonical" href="https://rafalwilkai.com/">
 <link rel="preload" as="image" href="assets/images/private-command-center-hero-personal-bg-day-v18-cleanwall-mobile.webp?v=20260806-cleanwall-2" type="image/webp" media="(max-width: 760px)">
 <link rel="preload" as="image" href="assets/images/private-command-center-hero-personal-bg-day-v18-cleanwall.webp?v=20260806-cleanwall-2" type="image/webp" media="(min-width: 761px)">
 <link rel="preload" as="style" href="assets/css/platform-v2.min.css?v=20260806-cleanwall-2">
