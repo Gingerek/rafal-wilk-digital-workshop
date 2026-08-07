@@ -839,15 +839,15 @@ body.rw-v2-ready.rw-v2-phase-dawn,
 body.rw-v2-ready.rw-v2-phase-morning,
 body.rw-v2-ready.rw-v2-phase-day,
 body.rw-v2-ready.rw-v2-phase-afternoon{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v18-cleanwall.webp?v=20260806-cleanwall-2");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-day-v21-fully-clean.png?v=20260807-fully-clean-bg-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-sunset{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v18-cleanwall.webp?v=20260806-cleanwall-2");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-sunset-v21-fully-clean.png?v=20260807-fully-clean-bg-1");
 }
 
 body.rw-v2-ready.rw-v2-phase-night{
-  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v18-cleanwall.webp?v=20260806-cleanwall-2");
+  --rw-home-bg:url("../images/private-command-center-hero-personal-bg-night-v21-fully-clean.png?v=20260807-fully-clean-bg-1");
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-sky-wash{
@@ -868,20 +868,26 @@ body.rw-v2-ready:not(.app-open) .rw-v2-window-reflection{
 
 body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active,
 body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active{
-  opacity:.78!important;
-  mix-blend-mode:screen!important;
-  filter:brightness(1.04) contrast(1.24) saturate(.98)!important;
+  opacity:1!important;
+  mix-blend-mode:normal!important;
+  filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
   box-shadow:none!important;
-  -webkit-mask-image:
-    radial-gradient(ellipse 43% 49% at 50% 50%, #000 0 97%, transparent 98%),
-    linear-gradient(90deg, transparent 0 11%, #000 18% 81%, transparent 89%),
-    linear-gradient(180deg, transparent 0 3%, #000 8% 90%, transparent 96%)!important;
-  -webkit-mask-composite:source-in!important;
-  mask-image:
-    radial-gradient(ellipse 43% 49% at 50% 50%, #000 0 97%, transparent 98%),
-    linear-gradient(90deg, transparent 0 11%, #000 18% 81%, transparent 89%),
-    linear-gradient(180deg, transparent 0 3%, #000 8% 90%, transparent 96%)!important;
-  mask-composite:intersect!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  clip-path:none!important;
+  transform-origin:52% 46%!important;
+  animation:rwRebuiltFaceZoom 11s cubic-bezier(.45,0,.55,1) infinite!important;
+  transition:opacity 120ms linear!important;
+  will-change:transform!important;
+  backface-visibility:hidden!important;
+  contain:paint!important;
+}
+
+@keyframes rwRebuiltFaceZoom{
+  0%,100%{transform:translate3d(0,0,0) scale(.976);}
+  50%{transform:translate3d(0,0,0) scale(1.026);}
 }
 
 body.rw-v2-ready:not(.app-open) .rw-v2-domain-hud,
@@ -1079,4 +1085,99 @@ body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-neural-link{
     transition:none!important;
     animation:none!important;
   }
+}
+
+/* Keep the original blinking video face; remove only its line and fog overlays. */
+body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-link,
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-neural-link,
+body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-link::before,
+body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-link::after{
+  content:none!important;
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  background:none!important;
+  filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-face-bg-mask,
+body.rw-v2-ready.rw-v2-video-face-mode:not(.app-open) .rw-v2-face-bg-mask,
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-bg-mask,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-shadow,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-plate,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-halo,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-depth,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-rim{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  background:none!important;
+  filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+
+/* Final zero-shadow composition: raw clean background plus the hard-alpha video only. */
+body.rw-v2-ready:not(.app-open) .rw-v2-sky-wash,
+body.rw-v2-ready:not(.app-open) .rw-v2-live-clouds,
+body.rw-v2-ready:not(.app-open) .rw-v2-ai-global-grade,
+body.rw-v2-ready:not(.app-open) .rw-v2-window-reflection,
+body.rw-v2-ready:not(.app-open) .rw-v2-face-bg-mask,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-shadow,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-plate,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-halo,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-depth,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-rim,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-cutout,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-canvas,
+body.rw-v2-ready:not(.app-open) .rw-v2-assistant-mouth-sync,
+body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-link{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  background:none!important;
+  filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+
+body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active,
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active{
+  --rw-clean-face-zoom:.976;
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  background:transparent!important;
+  mix-blend-mode:normal!important;
+  filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  outline:none!important;
+  border:0!important;
+  -webkit-mask:none!important;
+  mask:none!important;
+  clip-path:none!important;
+  transform:translate3d(0,0,0) scale(var(--rw-clean-face-zoom))!important;
+  transform-origin:52% 46%!important;
+  animation:rwCleanFaceZoom 11s cubic-bezier(.45,0,.55,1) infinite!important;
+  will-change:transform!important;
+}
+
+@property --rw-clean-face-zoom{
+  syntax:"<number>";
+  inherits:false;
+  initial-value:.976;
+}
+
+@keyframes rwCleanFaceZoom{
+  0%,100%{--rw-clean-face-zoom:.976;}
+  50%{--rw-clean-face-zoom:1.026;}
 }

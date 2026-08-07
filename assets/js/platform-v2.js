@@ -496,13 +496,14 @@
       assistantFaceVideo.setAttribute('aria-hidden', 'true');
       assistantFaceVideo.muted = true;
       assistantFaceVideo.loop = true;
-      assistantFaceVideo.autoplay = false;
+      assistantFaceVideo.autoplay = true;
       assistantFaceVideo.playsInline = true;
-      assistantFaceVideo.preload = 'none';
+      assistantFaceVideo.preload = 'auto';
       assistantFaceVideo.setAttribute('muted', '');
       assistantFaceVideo.setAttribute('loop', '');
+      assistantFaceVideo.setAttribute('autoplay', '');
       assistantFaceVideo.setAttribute('playsinline', '');
-      assistantFaceVideo.setAttribute('preload', 'none');
+      assistantFaceVideo.setAttribute('preload', 'auto');
       shell.appendChild(assistantFaceVideo);
     }
     if (!shell.querySelector('.rw-v2-assistant-mouth-sync')) {
@@ -668,17 +669,16 @@
       [faceShadow, facePlate, faceHalo, faceDepth, faceRim, faceCutout, faceCanvas, blink].forEach((oldFaceLayer) => oldFaceLayer?.remove());
       shell.querySelectorAll('.rw-v2-face-bg-mask').forEach((oldFaceMask) => oldFaceMask.remove());
       const videoSources = {
-        stable: 'assets/videos/aireel-face-hd-seamless-integrated-v4-fast.mp4?v=20260720-aireel-fast-1'
+        stable: 'assets/videos/aireel-face-transparent-clean-v4-lossless.webm?v=20260807-binary-alpha-1'
       };
       const pickVideoSource = () => videoSources.stable;
       let videoRevealQueued = false;
       let videoRevealTimer = 0;
       let videoSyncFrame = 0;
-      const videoRevealReadyAt = performance.now() + 1600;
+      const videoRevealReadyAt = performance.now();
       document.body.classList.add('rw-v2-video-face-mode');
       const faceVideoCanRun = () => {
         if (document.hidden || document.body.classList.contains('app-open')) return false;
-        if (currentVisualPerformanceProfile().key === 'economy') return false;
         const styles = window.getComputedStyle(faceVideo);
         if (styles.display === 'none' || styles.visibility === 'hidden') return false;
         const rect = faceVideo.getBoundingClientRect();
@@ -752,20 +752,20 @@
       };
       faceVideo.muted = true;
       faceVideo.loop = true;
-      faceVideo.autoplay = false;
+      faceVideo.autoplay = true;
       faceVideo.playsInline = true;
       faceVideo.playbackRate = 1;
       faceVideo.setAttribute('muted', '');
       faceVideo.setAttribute('loop', '');
+      faceVideo.setAttribute('autoplay', '');
       faceVideo.setAttribute('playsinline', '');
-      faceVideo.preload = 'none';
-      faceVideo.setAttribute('preload', 'none');
+      faceVideo.preload = 'auto';
+      faceVideo.setAttribute('preload', 'auto');
       faceVideo.removeAttribute('poster');
       faceVideo.addEventListener('loadeddata', queueVideoReveal);
       faceVideo.addEventListener('canplay', queueVideoReveal);
       faceVideo.addEventListener('playing', queueVideoReveal);
-      const idle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 2600));
-      idle(queueFaceVideoSync, { timeout: 1400 });
+      queueFaceVideoSync();
       const queueVideoGeometry = () => {
         window.cancelAnimationFrame(raf);
         raf = window.requestAnimationFrame(() => {
