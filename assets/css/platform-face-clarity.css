@@ -1,0 +1,120 @@
+/*
+  Production clarity pass.
+  Keep the blinking AI face subtle, while leaving the command-center scene
+  sharp, visible, and free from extra haze.
+*/
+
+body.rw-v2-ready:not(.app-open) {
+  background-color: #05080d !important;
+}
+
+body.rw-v2-ready:not(.app-open)::before,
+body.rw-v2-ready:not(.app-open)::after,
+body.rw-v2-ready:not(.app-open) .rw-v2-shell::before,
+body.rw-v2-ready:not(.app-open) .rw-v2-shell::after,
+body.rw-v2-ready:not(.app-open) .rw-v2-hero::before,
+body.rw-v2-ready:not(.app-open) .rw-v2-hero::after {
+  content: none !important;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-shell,
+body.rw-v2-ready:not(.app-open) .rw-v2-hero {
+  filter: none !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-daylight-system,
+body.rw-v2-ready:not(.app-open) .rw-v2-sky-wash,
+body.rw-v2-ready:not(.app-open) .rw-v2-window-reflection,
+body.rw-v2-ready:not(.app-open) .rw-v2-live-clouds,
+body.rw-v2-ready:not(.app-open) .rw-v2-live-stars,
+body.rw-v2-ready:not(.app-open) .rw-v2-live-moon,
+body.rw-v2-ready:not(.app-open) .rw-v2-live-sun,
+body.rw-v2-ready:not(.app-open) .rw-v2-live-rain,
+body.rw-v2-ready:not(.app-open) .rw-v2-ai-global-grade,
+body.rw-v2-ready:not(.app-open) .rw-v2-depth-field,
+body.rw-v2-ready:not(.app-open) .rw-v2-ambient-deck,
+body.rw-v2-ready:not(.app-open) .rw-v2-native-wall-canvas,
+body.rw-v2-ready:not(.app-open) .rw-v2-face-neural-link,
+body.rw-v2-ready:not(.app-open) .rw-v2-face-bg-mask {
+  content: none !important;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  background: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  mix-blend-mode: normal !important;
+}
+
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active,
+body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active {
+  display: block !important;
+  visibility: visible !important;
+  opacity: .52 !important;
+  mix-blend-mode: screen !important;
+  filter:
+    saturate(.82)
+    contrast(1.13)
+    brightness(.78)
+    hue-rotate(-4deg)
+    blur(.18px)
+    drop-shadow(0 0 10px rgba(120, 220, 255, .20)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  outline: none !important;
+  border: 0 !important;
+  -webkit-mask-image:
+    radial-gradient(ellipse at 51% 47%, #000 0 45%, rgba(0, 0, 0, .72) 58%, transparent 78%),
+    linear-gradient(90deg, transparent 0%, #000 14%, #000 82%, transparent 100%) !important;
+  mask-image:
+    radial-gradient(ellipse at 51% 47%, #000 0 45%, rgba(0, 0, 0, .72) 58%, transparent 78%),
+    linear-gradient(90deg, transparent 0%, #000 14%, #000 82%, transparent 100%) !important;
+  -webkit-mask-composite: source-in !important;
+  mask-composite: intersect !important;
+  clip-path: ellipse(48% 49% at 51% 48%) !important;
+  transform-origin: 52% 48% !important;
+  animation: rwCinematicFacePresence 18s ease-in-out infinite !important;
+  will-change: transform, opacity, filter !important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-home-lang,
+body.rw-v2-ready:not(.app-open) .rw-v2-floating-lang,
+body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger,
+body.rw-v2-ready:not(.app-open) #rwPlatformApiStatus,
+body.rw-v2-ready:not(.app-open) #rwVoiceLauncher {
+  filter: none !important;
+  z-index: 22080 !important;
+}
+
+@keyframes rwCinematicFacePresence {
+  0%, 100% {
+    opacity: .49;
+    transform: translate3d(-.4px, -.2px, 0) scale(.988);
+  }
+  42% {
+    opacity: .57;
+    transform: translate3d(.55px, .75px, 0) scale(1.012);
+  }
+  63% {
+    opacity: .51;
+    transform: translate3d(.2px, .35px, 0) scale(1.004);
+  }
+}
+
+@media (max-width: 760px) {
+  body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active {
+    opacity: .42 !important;
+  }
+}
