@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MSD CAO Salary Check v4</title>
+<style>
+:root{
+  --page:#f7f8fa;
+  --surface:#ffffff;
+  --surface-soft:#fbfcfd;
+  --text:#1f2933;
+  --muted:#667085;
+  --line:#d8dee7;
+  --teal:#00857c;
+  --teal-soft:#e6f4f2;
+  --blue:#2f5f8f;
+  --blue-soft:#eef5fb;
+  --green:#087443;
+  --green-soft:#ecfdf3;
+  --amber:#b54708;
+  --amber-soft:#fff7ed;
+  --red:#b42318;
+  --red-soft:#fff1f0;
+  --shadow:0 10px 24px rgba(31,41,51,.07);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--page);
+  color:var(--text);
+}
+.topbar{
+  border-bottom:1px solid var(--line);
+  background:var(--surface);
+}
+.topbar-inner{
+  max-width:1180px;
+  margin:0 auto;
+  padding:18px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+h1{
+  margin:0;
+  font-size:22px;
+  line-height:1.2;
+  letter-spacing:0;
+}
+.version{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:700;
+}
+main{
+  max-width:1180px;
+  margin:22px auto 36px;
+  padding:0 16px;
+}
+.layout{
+  display:grid;
+  grid-template-columns:minmax(300px,380px) minmax(0,1fr);
+  gap:18px;
+  align-items:start;
+}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+}
+.panel{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:8px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.panel-head{
+  padding:15px 17px;
+  border-bottom:1px solid var(--line);
+  background:var(--surface-soft);
+  font-size:16px;
+  font-weight:800;
+}
+.panel-body{
+  padding:17px;
+}
+.field{
+  margin-bottom:14px;
+}
+.field label{
+  display:block;
+  margin-bottom:6px;
+  color:#344054;
+  font-size:13px;
+  font-weight:750;
+}
+input,select,textarea{
+  width:100%;
+  min-height:42px;
+  padding:10px 12px;
+  border:1px solid #c8d3df;
+  border-radius:8px;
+  background:#fff;
+  color:#101828;
+  font:inherit;
+  font-size:14px;
+}
+textarea{
+  min-height:174px;
+  resize:vertical;
+  line-height:1.45;
+  font-family:Consolas,Menlo,monospace;
+  font-size:12px;
+}
+input:focus,select:focus,textarea:focus{
+  outline:3px solid rgba(0,133,124,.16);
+  border-color:var(--teal);
+}
+.inline{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+@media(max-width:540px){
+  .inline{grid-template-columns:1fr}
+}
+.segments{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.segment{
+  min-height:44px;
+  border:1px solid #c8d3df;
+  border-radius:8px;
+  background:#fff;
+  color:#1f2933;
+  cursor:pointer;
+  font-weight:800;
+}
+.segment.active{
+  border-color:var(--teal);
+  background:var(--teal-soft);
+  color:#00645e;
+  box-shadow:0 0 0 3px rgba(0,133,124,.12);
+}
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:16px;
+}
+.btn{
+  min-height:40px;
+  border:0;
+  border-radius:8px;
+  padding:10px 13px;
+  font:inherit;
+  font-weight:800;
+  cursor:pointer;
+}
+.btn.primary{background:var(--teal);color:#fff}
+.btn.secondary{background:#e8eef5;color:#1f2933}
+.btn.ghost{background:#fff;border:1px solid #c8d3df;color:#1f2933}
+.result-strip{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:16px 17px;
+  border-bottom:1px solid var(--line);
+  background:#fff;
+}
+@media(max-width:620px){
+  .result-strip{align-items:flex-start;flex-direction:column}
+}
+.scale-block small{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:850;
+  text-transform:uppercase;
+}
+.scale-block strong{
+  display:block;
+  margin-top:4px;
+  font-size:42px;
+  line-height:1;
+  color:var(--teal);
+}
+.path-text{
+  margin-top:6px;
+  color:#475467;
+  font-size:13px;
+}
+.status{
+  display:inline-flex;
+  align-items:center;
+  min-height:32px;
+  padding:7px 10px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:850;
+  background:var(--blue-soft);
+  color:var(--blue);
+  white-space:nowrap;
+}
+.status.ok{background:var(--green-soft);color:var(--green)}
+.status.warn{background:var(--amber-soft);color:var(--amber)}
+.status.stop{background:var(--red-soft);color:var(--red)}
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+@media(max-width:960px){
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+  .summary-grid{grid-template-columns:1fr}
+}
+.metric{
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:12px;
+  background:#fff;
+  min-height:84px;
+}
+.metric small{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:850;
+  text-transform:uppercase;
+}
+.metric strong{
+  display:block;
+  margin-top:6px;
+  color:#1f2933;
+  font-size:20px;
+}
+.metric span{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:12px;
+}
+.range-line{
+  margin-top:14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:13px;
+  background:#fff;
+}
+.range-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:#344054;
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+.track{
+  position:relative;
+  height:12px;
+  border-radius:999px;
+  background:#e7edf4;
+  overflow:hidden;
+}
+.track-fill{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--blue),var(--teal));
+  transition:width .2s ease;
+}
+.message{
+  margin-top:14px;
+  border-radius:8px;
+  padding:12px;
+  font-size:13px;
+  line-height:1.45;
+  font-weight:700;
+  background:var(--blue-soft);
+  color:var(--blue);
+  border:1px solid #cadeee;
+}
+.message.ok{background:var(--green-soft);color:var(--green);border-color:#abefc6}
+.message.warn{background:var(--amber-soft);color:var(--amber);border-color:#fedf89}
+.message.stop{background:var(--red-soft);color:var(--red);border-color:#fecdca}
+details{
+  margin-top:10px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#fff;
+  overflow:hidden;
+}
+summary{
+  cursor:pointer;
+  padding:13px 15px;
+  background:var(--surface-soft);
+  font-weight:850;
+}
+.details-body{
+  padding:14px 15px 15px;
+  border-top:1px solid var(--line);
+}
+.scenario-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+@media(max-width:760px){
+  .scenario-grid{grid-template-columns:1fr}
+}
+.scenario{
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:12px;
+  background:#fff;
+}
+.scenario.active{
+  border-color:#8cd4ce;
+  background:#f3fbfa;
+}
+.scenario-name{
+  color:#344054;
+  font-size:13px;
+  font-weight:850;
+}
+.scenario-scale{
+  margin-top:5px;
+  color:var(--teal);
+  font-size:26px;
+  font-weight:900;
+}
+.scenario-sub{
+  margin-top:3px;
+  color:var(--muted);
+  font-size:12px;
+}
+.scenario-status{
+  display:inline-flex;
+  margin-top:9px;
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:12px;
+  font-weight:850;
+  background:var(--blue-soft);
+  color:var(--blue);
+}
+.scenario-status.ok{background:var(--green-soft);color:var(--green)}
+.scenario-status.warn{background:var(--amber-soft);color:var(--amber)}
+.scenario-status.stop{background:var(--red-soft);color:var(--red)}
+.table-wrap{
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  font-size:13px;
+}
+th{
+  padding:10px;
+  background:#f0f3f7;
+  color:#344054;
+  text-align:left;
+  white-space:nowrap;
+  border-bottom:1px solid var(--line);
+}
+td{
+  padding:10px;
+  border-top:1px solid var(--line);
+  white-space:nowrap;
+}
+tr.selected td{
+  background:#f3fbfa;
+  color:#00645e;
+  font-weight:850;
+}
+.note{
+  margin:10px 0 0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+@media print{
+  .topbar,.input-panel,.actions,summary{display:none}
+  body{background:#fff}
+  main{max-width:none;margin:0}
+  .layout{display:block}
+  .panel{border:0;box-shadow:none}
+  details{border:0}
+  .details-body{border:0;padding:0}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <h1>MSD CAO Salary Check</h1>
+    <div class="version">v4</div>
+  </div>
+</header>
+
+<main>
+  <div class="layout">
+    <section class="panel input-panel">
+      <div class="panel-head">Inputs</div>
+      <div class="panel-body">
+        <div class="field">
+          <label for="candidate">Candidate name</label>
+          <input id="candidate" autocomplete="off" placeholder="Optional" />
+        </div>
+
+        <div class="field">
+          <label for="position">Position</label>
+          <select id="position"></select>
+        </div>
+
+        <div class="field">
+          <label>Profile level</label>
+          <div class="segments" role="group" aria-label="Profile level">
+            <button class="segment" type="button" data-profile="starter">Starter</button>
+            <button class="segment active" type="button" data-profile="matching">Matching</button>
+            <button class="segment" type="button" data-profile="senior">Senior</button>
+          </div>
+        </div>
+
+        <div class="inline">
+          <div class="field">
+            <label for="age">Age</label>
+            <select id="age"></select>
+          </div>
+          <div class="field">
+            <label for="rate">Hourly rate</label>
+            <input id="rate" type="number" step="0.01" min="0" placeholder="e.g. 29.27" />
+          </div>
+        </div>
+
+        <details>
+          <summary>Advanced scale override</summary>
+          <div class="details-body">
+            <div class="field">
+              <label for="scaleMode">Scale selection</label>
+              <select id="scaleMode">
+                <option value="auto">Use profile level recommendation</option>
+                <option value="manual">Choose exact CAO scale manually</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="manualScale">Manual CAO scale</label>
+              <select id="manualScale"></select>
+            </div>
+            <p class="note" id="overrideNote"></p>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button class="btn primary" id="copyBtn" type="button">Copy summary</button>
+          <button class="btn secondary" type="button" onclick="window.print()">Print / save PDF</button>
+          <button class="btn ghost" id="resetBtn" type="button">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="result-strip">
+        <div class="scale-block">
+          <small>Recommended CAO scale</small>
+          <strong id="scaleOut">-</strong>
+          <div class="path-text" id="pathOut">-</div>
+        </div>
+        <div class="status" id="statusOut">Enter hourly rate</div>
+      </div>
+
+      <div class="panel-body">
+        <div class="summary-grid">
+          <div class="metric">
+            <small>Hourly range</small>
+            <strong id="hourlyRange">-</strong>
+            <span id="annualRange">-</span>
+          </div>
+          <div class="metric">
+            <small>Proposed rate</small>
+            <strong id="rateOut">-</strong>
+            <span id="rangeCheck">-</span>
+          </div>
+          <div class="metric">
+            <small>Midpoint position</small>
+            <strong id="midpointOut">-</strong>
+            <span id="midpointText">-</span>
+          </div>
+          <div class="metric">
+            <small>Merit increase</small>
+            <strong id="meritOut">-</strong>
+            <span id="meritBand">-</span>
+          </div>
+        </div>
+
+        <div class="range-line" aria-hidden="true">
+          <div class="range-top">
+            <span>Position against midpoint</span>
+            <span id="meterLabel">-</span>
+          </div>
+          <div class="track"><div class="track-fill" id="meterFill"></div></div>
+        </div>
+
+        <div class="message" id="messageOut">Enter the hourly rate to calculate checks.</div>
+
+        <details>
+          <summary>Scenario comparison</summary>
+          <div class="details-body">
+            <div class="scenario-grid" id="scenarioGrid"></div>
+          </div>
+        </details>
+
+        <details>
+          <summary>Recommendation summary</summary>
+          <div class="details-body">
+            <div class="field">
+              <textarea id="summary" readonly></textarea>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>Audit details</summary>
+          <div class="details-body">
+            <div class="table-wrap"><table id="availableTable"></table></div>
+            <p class="note">Profile level maps to the lower, middle or higher scale available for the selected position.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>All CAO scales A to M</summary>
+          <div class="details-body">
+            <div class="table-wrap"><table id="allScalesTable"></table></div>
+          </div>
+        </details>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+const scales = {
+  A:{annual:[24300,33600,42300],hour:[10.49,14.50,18.26]},
+  B:{annual:[31400,42400,53400],hour:[13.55,18.30,23.05]},
+  C:{annual:[34400,46500,58600],hour:[14.85,20.07,25.29]},
+  D:{annual:[37800,51100,64400],hour:[16.32,22.06,27.80]},
+  E:{annual:[41600,56100,70600],hour:[17.96,24.21,30.47]},
+  F:{annual:[45800,61800,77800],hour:[19.77,26.68,33.58]},
+  G:{annual:[50200,67800,85400],hour:[21.67,29.27,36.86]},
+  H:{annual:[55200,74600,93900],hour:[23.83,32.20,40.53]},
+  I:{annual:[60700,81900,103200],hour:[26.20,35.35,44.55]},
+  J:{annual:[66800,90200,113600],hour:[28.83,38.93,49.03]},
+  K:{annual:[73400,99000,124700],hour:[31.68,42.73,53.83]},
+  L:{annual:[80800,109000,137300],hour:[34.88,47.05,59.26]},
+  M:{annual:[88800,119900,150900],hour:[38.33,51.75,65.13]}
+};
+
+const pathways = {
+  "Business Support":{B1:["A"],B2:["B","C"],B3:["D"],B4:["E","F"]},
+  "Research / Data & Digital":{R1:["E","F","G"],R2:["G","H","I"],R3:["J","K"],R4:["L","M"]},
+  "Production & Operations":{O1:["A"],"O2 Low":["A","B"],"O2 Mid":["B","C","D"],"O2 High":["C","D"],O3:["D","E"],O4:["F","G"]},
+  "Sales":{S1:["G"],S2:["H","I"],S3:["J"],"M1 Sales":["I"],"M2 Sales":["K","L"]},
+  "Professional":{P1:["F","G"],P2:["G","H"],P3:["I","J","K"],P4:["K","L","M"]},
+  "Management":{M1:["I","J"],M2:["K","L","M"]}
+};
+
+const minimumWage = {21:14.71,20:11.77,19:8.83,18:7.36,17:5.81,16:5.07,15:4.41};
+const merit = [
+  {label:"Under minimum",min:-Infinity,max:74.1,inc:4.80},
+  {label:"1st third",min:74.1,max:91.4,inc:4.00},
+  {label:"2nd third",min:91.4,max:108.6,inc:3.20},
+  {label:"3rd third",min:108.6,max:125.9,inc:2.24},
+  {label:"Above maximum",min:125.9,max:Infinity,inc:1.60}
+];
+
+const profileLabels = {
+  starter:"Starter",
+  matching:"Matching",
+  senior:"Senior"
+};
+
+const profileLogic = {
+  starter:"Starter / developing profile, lower scale in pathway range",
+  matching:"Fully matching profile, middle scale where available",
+  senior:"Strong / senior profile, higher scale in pathway range"
+};
+
+let activeProfile = "matching";
+
+const el = id => document.getElementById(id);
+const euro = value => new Intl.NumberFormat("nl-NL",{style:"currency",currency:"EUR",minimumFractionDigits:2}).format(value);
+const intfmt = value => new Intl.NumberFormat("nl-NL",{maximumFractionDigits:0}).format(value);
+
+function selectedPosition(){
+  const [category, pathway] = el("position").value.split("||");
+  return {
+    category,
+    pathway,
+    allowed:pathways[category][pathway],
+    label:`${category} - ${pathway}`
+  };
+}
+
+function scaleForProfile(allowed, profile){
+  if(profile === "starter") return allowed[0];
+  if(profile === "senior") return allowed[allowed.length - 1];
+  return allowed[Math.floor((allowed.length - 1) / 2)];
+}
+
+function selectedScale(allowed){
+  if(el("scaleMode").value === "manual") return el("manualScale").value || allowed[0];
+  return scaleForProfile(allowed, activeProfile);
+}
+
+function currentRate(){
+  const value = Number.parseFloat(el("rate").value);
+  return Number.isFinite(value) ? value : null;
+}
+
+function meritFor(rate, midpoint){
+  if(rate === null) return null;
+  const pct = rate / midpoint * 100;
+  return {pct,band:merit.find(item => pct >= item.min && pct < item.max)};
+}
+
+function checkStatus(rate, row, minWage){
+  if(rate === null) return {kind:"", label:"Enter hourly rate", message:"Enter the hourly rate to calculate checks."};
+  if(rate < minWage) return {kind:"stop", label:"Below legal minimum wage", message:`Rate is below legal minimum wage of ${euro(minWage)}.`};
+  if(rate < row.hour[0]) return {kind:"warn", label:"Below CAO scale minimum", message:`Rate is below the selected CAO scale minimum of ${euro(row.hour[0])}.`};
+  if(rate > row.hour[2]) return {kind:"stop", label:"Above CAO scale maximum", message:`Rate is above the selected CAO scale maximum of ${euro(row.hour[2])}.`};
+  return {kind:"ok", label:"Within range", message:"Rate is within the selected CAO scale and minimum wage checks."};
+}
+
+function fillInputs(){
+  el("position").innerHTML = Object.entries(pathways).map(([category, group]) => {
+    const options = Object.entries(group).map(([pathway, allowed]) => {
+      return `<option value="${category}||${pathway}">${category} - ${pathway} · scales ${allowed.join("-")}</option>`;
+    }).join("");
+    return `<optgroup label="${category}">${options}</optgroup>`;
+  }).join("");
+  el("age").innerHTML = `<option value="21">21 or older</option>` + [20,19,18,17,16,15].map(age => `<option value="${age}">${age}</option>`).join("");
+  updateManualScaleOptions();
+  buildAllScalesTable();
+}
+
+function updateManualScaleOptions(){
+  const selected = selectedPosition();
+  const previous = el("manualScale").value;
+  el("manualScale").innerHTML = selected.allowed.map(scale => {
+    const row = scales[scale];
+    return `<option value="${scale}">${scale} (${euro(row.hour[0])} - ${euro(row.hour[2])})</option>`;
+  }).join("");
+  if(selected.allowed.includes(previous)) el("manualScale").value = previous;
+}
+
+function scenarioStatus(rate, scale, age){
+  const row = scales[scale];
+  const wage = minimumWage[age] || minimumWage[21];
+  return checkStatus(rate, row, wage);
+}
+
+function buildScenarios(selected, rate, age){
+  return ["starter","matching","senior"].map(profile => {
+    const scale = scaleForProfile(selected.allowed, profile);
+    const row = scales[scale];
+    const status = scenarioStatus(rate, scale, age);
+    const active = profile === activeProfile && el("scaleMode").value !== "manual";
+    return `<div class="scenario ${active ? "active" : ""}">
+      <div class="scenario-name">${profileLabels[profile]}</div>
+      <div class="scenario-scale">${scale}</div>
+      <div class="scenario-sub">${euro(row.hour[0])} - ${euro(row.hour[2])}</div>
+      <span class="scenario-status ${status.kind}">${status.label}</span>
+    </div>`;
+  }).join("");
+}
+
+function buildAvailableTable(activeScale){
+  const selected = selectedPosition();
+  let html = "<tr><th>Scale</th><th>Min hour</th><th>Mid hour</th><th>Max hour</th><th>Min year</th><th>Mid year</th><th>Max year</th></tr>";
+  selected.allowed.forEach(scale => {
+    const row = scales[scale];
+    html += `<tr class="${scale === activeScale ? "selected" : ""}"><td><b>${scale}</b></td><td>${euro(row.hour[0])}</td><td>${euro(row.hour[1])}</td><td>${euro(row.hour[2])}</td><td>EUR ${intfmt(row.annual[0])}</td><td>EUR ${intfmt(row.annual[1])}</td><td>EUR ${intfmt(row.annual[2])}</td></tr>`;
+  });
+  el("availableTable").innerHTML = html;
+}
+
+function buildAllScalesTable(){
+  let html = "<tr><th>Scale</th><th>Min year</th><th>Min hour</th><th>Mid year</th><th>Mid hour</th><th>Max year</th><th>Max hour</th></tr>";
+  Object.keys(scales).forEach(scale => {
+    const row = scales[scale];
+    html += `<tr><td><b>${scale}</b></td><td>EUR ${intfmt(row.annual[0])}</td><td>${euro(row.hour[0])}</td><td>EUR ${intfmt(row.annual[1])}</td><td>${euro(row.hour[1])}</td><td>EUR ${intfmt(row.annual[2])}</td><td>${euro(row.hour[2])}</td></tr>`;
+  });
+  el("allScalesTable").innerHTML = html;
+}
+
+function buildSummary(selected, scale, row, rate, age, wage, meritResult, status){
+  const candidate = el("candidate").value.trim() || "Candidate";
+  const logic = el("scaleMode").value === "manual" ? "Manual CAO scale override" : profileLogic[activeProfile];
+  let text = `${candidate} - CAO salary matrix assessment\n\n`;
+  text += `Position: ${selected.label}\n`;
+  text += `Allowed CAO scales: ${selected.allowed.join(", ")}\n`;
+  text += `Selected CAO scale: ${scale}\n`;
+  text += `Selection logic: ${logic}\n\n`;
+  text += `Hourly range: ${euro(row.hour[0])} - ${euro(row.hour[2])}\n`;
+  text += `Annual range: EUR ${intfmt(row.annual[0])} - EUR ${intfmt(row.annual[2])}\n`;
+  text += `Midpoint: ${euro(row.hour[1])}\n`;
+  if(rate !== null){
+    const rangeCheck = rate < row.hour[0] ? "Below selected scale minimum" : rate > row.hour[2] ? "Above selected scale maximum" : "Within selected scale range";
+    text += `\nCurrent/proposed hourly rate: ${euro(rate)}\n`;
+    text += `Position vs midpoint: ${meritResult.pct.toFixed(1)}%\n`;
+    text += `Merit matrix band: ${meritResult.band.label}\n`;
+    text += `Merit increase percentage: ${meritResult.band.inc.toFixed(2)}%\n`;
+    text += `Legal minimum wage check for age ${age}: ${rate >= wage ? "OK" : "Below minimum wage"}\n`;
+    text += `CAO range check: ${rangeCheck}\n`;
+    text += `Overall status: ${status.label}\n`;
+  }
+  text += "\nNote: if the selected pathway contains multiple scales, the exact scale should be validated by the manager based on job level, responsibilities and candidate profile before final approval.";
+  return text;
+}
+
+function update(){
+  updateManualScaleOptions();
+  const selected = selectedPosition();
+  const scale = selectedScale(selected.allowed);
+  const row = scales[scale];
+  const rate = currentRate();
+  const age = Number(el("age").value || 21);
+  const wage = minimumWage[age] || minimumWage[21];
+  const meritResult = meritFor(rate, row.hour[1]);
+  const status = checkStatus(rate, row, wage);
+
+  el("scaleOut").textContent = scale;
+  el("pathOut").textContent = `${selected.label} · allowed scales ${selected.allowed.join(", ")}`;
+  el("statusOut").textContent = status.label;
+  el("statusOut").className = `status ${status.kind}`;
+  el("hourlyRange").textContent = `${euro(row.hour[0])} - ${euro(row.hour[2])}`;
+  el("annualRange").textContent = `Annual EUR ${intfmt(row.annual[0])} - EUR ${intfmt(row.annual[2])}`;
+  el("rateOut").textContent = rate === null ? "-" : euro(rate);
+  el("rangeCheck").textContent = rate === null ? "Enter hourly rate" : status.label;
+
+  if(rate === null){
+    el("midpointOut").textContent = "-";
+    el("midpointText").textContent = "Enter hourly rate";
+    el("meritOut").textContent = "-";
+    el("meritBand").textContent = "-";
+    el("meterLabel").textContent = "-";
+    el("meterFill").style.width = "0%";
+  } else {
+    el("midpointOut").textContent = `${meritResult.pct.toFixed(1)}%`;
+    el("midpointText").textContent = `${euro(rate)} vs midpoint ${euro(row.hour[1])}`;
+    el("meritOut").textContent = `${meritResult.band.inc.toFixed(2)}%`;
+    el("meritBand").textContent = meritResult.band.label;
+    el("meterLabel").textContent = `${meritResult.pct.toFixed(1)}%`;
+    el("meterFill").style.width = `${Math.max(0, Math.min(100, meritResult.pct / 130 * 100))}%`;
+  }
+
+  el("messageOut").textContent = status.message;
+  el("messageOut").className = `message ${status.kind}`;
+  el("scenarioGrid").innerHTML = buildScenarios(selected, rate, age);
+  el("overrideNote").textContent = `Available scales for ${selected.label}: ${selected.allowed.join(", ")}`;
+  buildAvailableTable(scale);
+  el("summary").value = buildSummary(selected, scale, row, rate, age, wage, meritResult, status);
+}
+
+function reset(){
+  el("candidate").value = "";
+  el("rate").value = "";
+  el("position").selectedIndex = 0;
+  el("age").value = "21";
+  el("scaleMode").value = "auto";
+  activeProfile = "matching";
+  document.querySelectorAll(".segment").forEach(button => button.classList.toggle("active", button.dataset.profile === activeProfile));
+  update();
+}
+
+document.querySelectorAll(".segment").forEach(button => {
+  button.addEventListener("click", () => {
+    activeProfile = button.dataset.profile;
+    document.querySelectorAll(".segment").forEach(item => item.classList.toggle("active", item === button));
+    update();
+  });
+});
+
+el("position").addEventListener("change", update);
+el("age").addEventListener("change", update);
+el("rate").addEventListener("input", update);
+el("candidate").addEventListener("input", update);
+el("scaleMode").addEventListener("change", update);
+el("manualScale").addEventListener("change", update);
+el("resetBtn").addEventListener("click", reset);
+el("copyBtn").addEventListener("click", async () => {
+  try{
+    await navigator.clipboard.writeText(el("summary").value);
+    el("copyBtn").textContent = "Copied";
+    setTimeout(() => { el("copyBtn").textContent = "Copy summary"; }, 1200);
+  }catch(error){
+    el("summary").focus();
+    el("summary").select();
+  }
+});
+
+fillInputs();
+update();
+</script>
+</body>
+</html>
