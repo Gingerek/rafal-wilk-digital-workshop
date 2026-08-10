@@ -4,6 +4,75 @@
   sharp, visible, and free from extra haze.
 */
 
+:root {
+  --rw-face-opacity: .66;
+  --rw-face-blend: normal;
+  --rw-face-saturate: .70;
+  --rw-face-contrast: 1.12;
+  --rw-face-brightness: .90;
+  --rw-face-hue: -8deg;
+  --rw-face-anim-low: .60;
+  --rw-face-anim-peak: .70;
+  --rw-face-anim-mid: .63;
+  --rw-face-mobile-opacity: .54;
+  --rw-face-data-opacity: .38;
+  --rw-face-data-low: .30;
+  --rw-face-data-high: .44;
+  --rw-face-data-blend: lighten;
+  --rw-face-eye-harmonize: .28;
+}
+
+html.rw-face-preset-hologram-subtle {
+  --rw-face-opacity: .52;
+  --rw-face-blend: normal;
+  --rw-face-saturate: .48;
+  --rw-face-contrast: 1;
+  --rw-face-brightness: .82;
+  --rw-face-hue: -6deg;
+  --rw-face-anim-low: .46;
+  --rw-face-anim-peak: .56;
+  --rw-face-anim-mid: .50;
+  --rw-face-mobile-opacity: .43;
+  --rw-face-data-opacity: .22;
+  --rw-face-data-low: .16;
+  --rw-face-data-high: .26;
+  --rw-face-eye-harmonize: .16;
+}
+
+html.rw-face-preset-ai-presence {
+  --rw-face-opacity: .60;
+  --rw-face-blend: normal;
+  --rw-face-saturate: .58;
+  --rw-face-contrast: 1.06;
+  --rw-face-brightness: .86;
+  --rw-face-hue: -4deg;
+  --rw-face-anim-low: .54;
+  --rw-face-anim-peak: .64;
+  --rw-face-anim-mid: .57;
+  --rw-face-mobile-opacity: .49;
+  --rw-face-data-opacity: .30;
+  --rw-face-data-low: .24;
+  --rw-face-data-high: .34;
+  --rw-face-eye-harmonize: .20;
+}
+
+html.rw-face-preset-cinematic-command {
+  --rw-face-opacity: .66;
+  --rw-face-blend: normal;
+  --rw-face-saturate: .70;
+  --rw-face-contrast: 1.12;
+  --rw-face-brightness: .90;
+  --rw-face-hue: -8deg;
+  --rw-face-anim-low: .60;
+  --rw-face-anim-peak: .70;
+  --rw-face-anim-mid: .63;
+  --rw-face-mobile-opacity: .54;
+  --rw-face-data-opacity: .38;
+  --rw-face-data-low: .30;
+  --rw-face-data-high: .44;
+  --rw-face-eye-harmonize: .28;
+}
+
 body.rw-v2-ready:not(.app-open) {
   background-color: #05080d !important;
 }
@@ -60,15 +129,13 @@ body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-vid
 body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active {
   display: block !important;
   visibility: visible !important;
-  opacity: .52 !important;
-  mix-blend-mode: screen !important;
+  opacity: var(--rw-face-opacity, .60) !important;
+  mix-blend-mode: var(--rw-face-blend, normal) !important;
   filter:
-    saturate(.82)
-    contrast(1.13)
-    brightness(.78)
-    hue-rotate(-4deg)
-    blur(.18px)
-    drop-shadow(0 0 10px rgba(120, 220, 255, .20)) !important;
+    saturate(var(--rw-face-saturate, .58))
+    contrast(var(--rw-face-contrast, 1.06))
+    brightness(var(--rw-face-brightness, .86))
+    hue-rotate(var(--rw-face-hue, -4deg)) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   box-shadow: none !important;
@@ -76,14 +143,12 @@ body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-
   outline: none !important;
   border: 0 !important;
   -webkit-mask-image:
-    radial-gradient(ellipse at 51% 47%, #000 0 45%, rgba(0, 0, 0, .72) 58%, transparent 78%),
-    linear-gradient(90deg, transparent 0%, #000 14%, #000 82%, transparent 100%) !important;
+    linear-gradient(90deg, transparent 0%, #000 8%, #000 90%, transparent 100%) !important;
   mask-image:
-    radial-gradient(ellipse at 51% 47%, #000 0 45%, rgba(0, 0, 0, .72) 58%, transparent 78%),
-    linear-gradient(90deg, transparent 0%, #000 14%, #000 82%, transparent 100%) !important;
+    linear-gradient(90deg, transparent 0%, #000 8%, #000 90%, transparent 100%) !important;
   -webkit-mask-composite: source-in !important;
   mask-composite: intersect !important;
-  clip-path: ellipse(48% 49% at 51% 48%) !important;
+  clip-path: none !important;
   transform-origin: 52% 48% !important;
   animation: rwCinematicFacePresence 18s ease-in-out infinite !important;
   will-change: transform, opacity, filter !important;
@@ -100,21 +165,102 @@ body.rw-v2-ready:not(.app-open) #rwVoiceLauncher {
 
 @keyframes rwCinematicFacePresence {
   0%, 100% {
-    opacity: .49;
+    opacity: var(--rw-face-anim-low, .54);
     transform: translate3d(-.4px, -.2px, 0) scale(.988);
   }
   42% {
-    opacity: .57;
+    opacity: var(--rw-face-anim-peak, .64);
     transform: translate3d(.55px, .75px, 0) scale(1.012);
   }
   63% {
-    opacity: .51;
+    opacity: var(--rw-face-anim-mid, .57);
     transform: translate3d(.2px, .35px, 0) scale(1.004);
   }
 }
 
 @media (max-width: 760px) {
   body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active {
-    opacity: .42 !important;
+    opacity: var(--rw-face-mobile-opacity, .49) !important;
+  }
+}
+
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-neural-link,
+body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-neural-link {
+  position: fixed !important;
+  left: calc(var(--rw-face-left, 0px) - 18px) !important;
+  top: calc(var(--rw-face-top, 0px) - 10px) !important;
+  width: calc(var(--rw-face-width, 0px) + 42px) !important;
+  height: calc(var(--rw-face-height, 0px) + 32px) !important;
+  z-index: 122 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: var(--rw-face-data-opacity, .30) !important;
+  pointer-events: none !important;
+  mix-blend-mode: var(--rw-face-data-blend, lighten) !important;
+  filter: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background:
+    repeating-linear-gradient(90deg, rgba(116, 220, 255, .18) 0 1px, transparent 1px 23px),
+    repeating-linear-gradient(0deg, rgba(116, 220, 255, .10) 0 1px, transparent 1px 31px),
+    linear-gradient(180deg, transparent 0 9%, rgba(121, 224, 255, .18) 9.2% 9.45%, transparent 9.7% 100%),
+    linear-gradient(180deg, transparent 0 47%, rgba(121, 224, 255, .14) 47.2% 47.42%, transparent 47.7% 100%),
+    linear-gradient(180deg, transparent 0 74%, rgba(121, 224, 255, .11) 74.2% 74.38%, transparent 74.7% 100%) !important;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0%, #000 11%, #000 88%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 8%, #000 94%, transparent 100%) !important;
+  mask-image:
+    linear-gradient(90deg, transparent 0%, #000 11%, #000 88%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 8%, #000 94%, transparent 100%) !important;
+  -webkit-mask-composite: source-in !important;
+  mask-composite: intersect !important;
+  animation: rwFaceDataIntegration 9s linear infinite !important;
+}
+
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-neural-link::before,
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-neural-link::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-neural-link::before {
+  opacity: .52 !important;
+  background:
+    radial-gradient(circle at 33% 43%, rgba(78, 226, 255, var(--rw-face-eye-harmonize, .20)) 0 3.2%, transparent 4.9%),
+    radial-gradient(circle at 63% 43%, rgba(78, 226, 255, var(--rw-face-eye-harmonize, .20)) 0 3.2%, transparent 4.9%),
+    radial-gradient(circle at 18% 24%, rgba(132, 228, 255, .52) 0 1.2px, transparent 1.5px),
+    radial-gradient(circle at 42% 15%, rgba(132, 228, 255, .34) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 54% 52%, rgba(132, 228, 255, .42) 0 1.1px, transparent 1.5px),
+    radial-gradient(circle at 78% 34%, rgba(132, 228, 255, .30) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 65% 78%, rgba(132, 228, 255, .28) 0 1px, transparent 1.4px) !important;
+}
+
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-neural-link::after {
+  opacity: .34 !important;
+  background:
+    linear-gradient(24deg, transparent 0 22%, rgba(132, 228, 255, .32) 22.05% 22.22%, transparent 22.42% 100%),
+    linear-gradient(-18deg, transparent 0 61%, rgba(132, 228, 255, .24) 61.08% 61.22%, transparent 61.40% 100%) !important;
+}
+
+@keyframes rwFaceDataIntegration {
+  0% {
+    opacity: var(--rw-face-data-low, .24);
+    transform: translate3d(-.35px, -.2px, 0);
+    background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+  }
+  50% {
+    opacity: var(--rw-face-data-high, .34);
+    transform: translate3d(.25px, .35px, 0);
+    background-position: 14px 0, 0 18px, 0 4px, 0 -3px, 0 5px;
+  }
+  100% {
+    opacity: var(--rw-face-data-low, .24);
+    transform: translate3d(-.35px, -.2px, 0);
+    background-position: 28px 0, 0 36px, 0 8px, 0 -6px, 0 10px;
   }
 }
