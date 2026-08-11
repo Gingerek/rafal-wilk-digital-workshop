@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MSD CAO Salary Check v10</title>
+<title>MSD CAO Salary Check v11</title>
 <style>
 :root{
   --page:#f7f8fa;
@@ -383,10 +383,11 @@ input:focus,select:focus,textarea:focus{
 .message.stop{background:var(--red-soft);color:var(--red);border-color:#fecdca}
 .visual-panel{
   margin-bottom:14px;
-  border:1px solid var(--line);
+  border:1px solid #bfd8e8;
   border-radius:8px;
-  padding:18px 18px 14px;
-  background:#fff;
+  padding:18px 18px 16px;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
 }
 .visual-head{
   display:flex;
@@ -408,42 +409,76 @@ input:focus,select:focus,textarea:focus{
 }
 .range-map{
   position:relative;
-  min-height:92px;
-  padding-top:28px;
+  min-height:132px;
+  padding-top:44px;
 }
 .range-track-visual{
   display:block;
-  height:20px;
+  position:relative;
+  height:36px;
   border:0;
   border-radius:999px;
   overflow:hidden;
-  background:linear-gradient(90deg,var(--blue-soft) 0,var(--blue-soft) var(--mid-pos,50%),var(--teal-soft) var(--mid-pos,50%),var(--teal-soft) 100%);
-  box-shadow:inset 0 0 0 1px var(--line);
+  background:linear-gradient(90deg,#eef9f6 0,#eef9f6 var(--mid-pos,50%),#fff2f0 var(--mid-pos,50%),#fff2f0 100%);
+  box-shadow:inset 0 0 0 1px #bfd8e8,0 10px 22px rgba(47,95,143,.10);
+}
+.range-track-visual::before{
+  content:"";
+  position:absolute;
+  left:4px;
+  top:4px;
+  bottom:4px;
+  width:calc(var(--mid-pos,50%) - 4px);
+  min-width:0;
+  border-radius:999px 0 0 999px;
+  background:linear-gradient(90deg,#66c9dd 0%,#00a79d 52%,#087443 100%);
+  box-shadow:0 0 18px rgba(0,133,124,.22);
+}
+.range-track-visual::after{
+  content:"";
+  position:absolute;
+  top:4px;
+  right:4px;
+  bottom:4px;
+  left:var(--mid-pos,50%);
+  border-radius:0 999px 999px 0;
+  background:
+    repeating-linear-gradient(135deg,rgba(180,35,24,.22) 0 8px,rgba(180,35,24,.07) 8px 16px),
+    linear-gradient(90deg,#fff4f2,#ffe6e2);
+}
+.range-map.mid-exceeded .range-track-visual{
+  box-shadow:inset 0 0 0 1px #f97066,0 14px 28px rgba(180,35,24,.16);
+}
+.range-map.mid-exceeded .range-track-visual::after{
+  background:
+    repeating-linear-gradient(135deg,rgba(180,35,24,.34) 0 8px,rgba(180,35,24,.11) 8px 16px),
+    linear-gradient(90deg,#fff0ee,#ffd5cf);
 }
 .range-zone{
   display:none;
 }
 .map-marker{
   position:absolute;
-  top:18px;
+  top:37px;
   left:0;
   width:0;
-  min-height:54px;
+  min-height:80px;
   transform:translateX(-50%);
+  z-index:2;
 }
 .map-marker::before{
   content:"";
   position:absolute;
-  top:10px;
+  top:-3px;
   left:50%;
   width:2px;
-  height:36px;
+  height:58px;
   background:#1f2933;
 }
 .map-marker::after{
   content:"";
   position:absolute;
-  top:4px;
+  top:-9px;
   left:50%;
   width:12px;
   height:12px;
@@ -466,7 +501,7 @@ input:focus,select:focus,textarea:focus{
 }
 .map-label{
   position:absolute;
-  top:51px;
+  top:61px;
   left:50%;
   transform:translateX(-50%);
   min-width:76px;
@@ -483,8 +518,38 @@ input:focus,select:focus,textarea:focus{
   box-shadow:0 8px 18px rgba(31,41,51,.08);
 }
 .map-marker:not(.rate) .map-label{display:none}
-.map-marker:not(.rate)::before{height:24px;background:#667085}
+.map-marker:not(.rate)::before{height:34px;background:#667085}
 .map-marker:not(.rate)::after{display:none}
+#midMarker{
+  z-index:4;
+}
+#midMarker::before{
+  top:-31px;
+  width:5px;
+  height:94px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#ffb4aa 0%,#b42318 42%,#b42318 100%);
+  box-shadow:0 0 0 5px rgba(180,35,24,.10),0 0 24px rgba(180,35,24,.28);
+}
+#midMarker::after{
+  display:block;
+  top:-40px;
+  width:18px;
+  height:18px;
+  border-radius:4px;
+  background:#b42318;
+  box-shadow:0 0 0 4px #fff,0 0 18px rgba(180,35,24,.24);
+  transform:translateX(-50%) rotate(45deg);
+}
+#midMarker .map-label{
+  display:block;
+  top:-34px;
+  min-width:94px;
+  border-color:#fecdca;
+  background:#fff;
+  color:#b42318;
+  box-shadow:0 10px 24px rgba(180,35,24,.12);
+}
 .map-marker.rate .map-label{
   color:#fff;
   background:var(--blue);
@@ -502,10 +567,29 @@ input:focus,select:focus,textarea:focus{
   display:flex;
   justify-content:space-between;
   gap:8px;
-  margin-top:12px;
+  margin-top:14px;
   color:var(--muted);
   font-size:12px;
   font-weight:800;
+}
+.map-axis span:nth-child(2){
+  color:#b42318;
+  font-weight:900;
+}
+@media(max-width:520px){
+  .range-map{
+    min-height:118px;
+  }
+  .map-marker.rate .map-label{
+    display:none;
+  }
+  .map-marker.rate::before{
+    height:48px;
+  }
+  .map-axis{
+    font-size:11px;
+    gap:4px;
+  }
 }
 .check-grid{
   display:grid;
@@ -698,7 +782,7 @@ tr.selected td{
           <button id="langNl" type="button">NL</button>
         </div>
       </div>
-      <div class="version">v10</div>
+      <div class="version">v11</div>
     </div>
   </div>
 </header>
@@ -1293,6 +1377,7 @@ function updateVisuals(row, rate, wage, status, midpointResult){
   const mid = row.hour[1];
   const max = row.hour[2];
   el("rangeMap").style.setProperty("--mid-pos", `${markerPosition(mid, min, max)}%`);
+  el("rangeMap").classList.toggle("mid-exceeded", rate !== null && midpointResult.above);
   el("axisMin").textContent = `${t("minShort")} ${euro(min)}`;
   el("axisMid").textContent = `${t("midShort")} ${euro(mid)}`;
   el("axisMax").textContent = `${t("maxShort")} ${euro(max)}`;
@@ -1310,7 +1395,8 @@ function updateVisuals(row, rate, wage, status, midpointResult){
   } else {
     rateMarker.style.display = "block";
     rateMarker.style.left = `${markerPosition(rate, min, max)}%`;
-    rateMarker.className = `map-marker rate ${status.kind || ""}`;
+    const rateKind = midpointResult.above ? "stop" : status.kind;
+    rateMarker.className = `map-marker rate ${rateKind || ""}`;
     el("rateMarkerLabel").textContent = `${t("rateShort")}\n${euro(rate)}`;
     el("visualValue").textContent = `${t("rateShort")}: ${euro(rate)}`;
   }
