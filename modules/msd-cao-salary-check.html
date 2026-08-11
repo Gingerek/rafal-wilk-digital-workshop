@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MSD CAO Salary Check v8</title>
+<title>MSD CAO Salary Check v9</title>
 <style>
 :root{
   --page:#f7f8fa;
@@ -698,7 +698,7 @@ tr.selected td{
           <button id="langNl" type="button">NL</button>
         </div>
       </div>
-      <div class="version">v8</div>
+      <div class="version">v9</div>
     </div>
   </div>
 </header>
@@ -719,11 +719,11 @@ tr.selected td{
         </div>
 
         <div class="field">
-          <label id="profileLabel">Profile level</label>
-          <div class="segments" role="group" aria-label="Profile level">
-            <button class="segment" type="button" data-profile="starter">Starter</button>
-            <button class="segment active" type="button" data-profile="matching">Matching</button>
-            <button class="segment" type="button" data-profile="senior">Senior</button>
+          <label id="profileLabel">Point selection</label>
+          <div class="segments" role="group" aria-label="Point selection">
+            <button class="segment" type="button" data-profile="starter">Min point</button>
+            <button class="segment active" type="button" data-profile="matching">Mid point</button>
+            <button class="segment" type="button" data-profile="senior">Max point</button>
           </div>
         </div>
 
@@ -880,7 +880,7 @@ tr.selected td{
 
             <h3 id="pointsSummary" style="margin:18px 0 10px;font-size:15px">Minimum / Mid / Maximum by selected position</h3>
             <div class="table-wrap"><table id="availableTable"></table></div>
-            <p class="note" id="auditNote">Profile level maps to the lower, middle or higher scale available for the selected position.</p>
+            <p class="note" id="auditNote">Point selection maps to the lower, middle or higher scale available for the selected position.</p>
 
             <h3 id="allScalesSummary" style="margin:18px 0 10px;font-size:15px">All CAO scales A to M</h3>
             <div class="table-wrap"><table id="allScalesTable"></table></div>
@@ -927,10 +927,10 @@ const translations = {
     defaultCandidate:"Candidate",
     optional:"Optional",
     position:"Position",
-    profileLevel:"Profile level",
-    starter:"Starter",
-    matching:"Matching",
-    senior:"Senior",
+    profileLevel:"Point selection",
+    starter:"Min point",
+    matching:"Mid point",
+    senior:"Max point",
     age:"Age",
     hourlyRate:"Hourly rate",
     advanced:"Advanced scale override",
@@ -982,7 +982,7 @@ const translations = {
     scenarioComparison:"Scenario comparison",
     recommendationSummary:"Recommendation summary",
     pointsByPosition:"Minimum / Mid / Maximum by selected position",
-    auditNote:"Profile level maps to the lower, middle or higher scale available for the selected position.",
+    auditNote:"Point selection maps to the lower, middle or higher scale available for the selected position.",
     allScales:"All CAO scales A to M",
     allowedScales:"allowed scales",
     scales:"scales",
@@ -1000,9 +1000,9 @@ const translations = {
     atOrBelowMidpoint:"At or below mid point",
     aboveMidpoint:"Rate exceeds mid point",
     profileLogic:{
-      starter:"Starter / developing profile, lower scale in pathway range",
-      matching:"Fully matching profile, middle scale where available",
-      senior:"Strong / senior profile, higher scale in pathway range"
+      starter:"Min point selection, lower scale in pathway range",
+      matching:"Mid point selection, middle scale where available",
+      senior:"Max point selection, higher scale in pathway range"
     },
     category:{
       "Business Support":"Business Support",
@@ -1046,10 +1046,10 @@ const translations = {
     defaultCandidate:"Kandidaat",
     optional:"Optioneel",
     position:"Functie",
-    profileLevel:"Profielniveau",
-    starter:"Starter",
-    matching:"Passend",
-    senior:"Senior",
+    profileLevel:"Puntselectie",
+    starter:"Min point",
+    matching:"Mid point",
+    senior:"Max point",
     age:"Leeftijd",
     hourlyRate:"Uurtarief",
     advanced:"Geavanceerde schaalkeuze",
@@ -1101,7 +1101,7 @@ const translations = {
     scenarioComparison:"Scenariovergelijking",
     recommendationSummary:"Aanbevelingssamenvatting",
     pointsByPosition:"Minimum / Mid / Maximum per geselecteerde functie",
-    auditNote:"Het profielniveau wordt gekoppeld aan de lagere, middelste of hogere schaal die beschikbaar is voor de geselecteerde functie.",
+    auditNote:"De puntselectie wordt gekoppeld aan de lagere, middelste of hogere schaal die beschikbaar is voor de geselecteerde functie.",
     allScales:"Alle CAO-schalen A t/m M",
     allowedScales:"toegestane schalen",
     scales:"schalen",
@@ -1119,9 +1119,9 @@ const translations = {
     atOrBelowMidpoint:"Op of onder midpoint",
     aboveMidpoint:"Uurtarief overschrijdt het midpoint",
     profileLogic:{
-      starter:"Starter / ontwikkelend profiel, lagere schaal binnen de pathway-range",
-      matching:"Volledig passend profiel, middelste schaal waar beschikbaar",
-      senior:"Sterk / senior profiel, hogere schaal binnen de pathway-range"
+      starter:"Min point selectie, lagere schaal binnen de pathway-range",
+      matching:"Mid point selectie, middelste schaal waar beschikbaar",
+      senior:"Max point selectie, hogere schaal binnen de pathway-range"
     },
     category:{
       "Business Support":"Business Support",
