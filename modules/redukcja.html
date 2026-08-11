@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Redukcja Pro Control v34 — poprawiony Garmin OCR</title>
+  <title>Redukcja v35 — prosty wynik tygodnia</title>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.min.mjs" type="module"></script>
@@ -1456,8 +1456,134 @@
     th,td{padding:10px;border-bottom:1px solid var(--line);text-align:right}
     th:first-child,td:first-child{text-align:left}
     th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+    body.reduction-simple .qualityDock,
+    body.reduction-simple #sourceCommand,
+    body.reduction-simple .missionDeck,
+    body.reduction-simple .kpiDeck,
+    body.reduction-simple .energySection,
+    body.reduction-simple .analyticsGrid,
+    body.reduction-simple .proChartGrid,
+    body.reduction-simple .proInsightsGrid,
+    body.reduction-simple .legacyWeekMapSection,
+    body.reduction-simple .legacyInsightGrid,
+    body.reduction-simple .historyLayout,
+    body.reduction-simple #quality,
+    body.reduction-simple #proTabs,
+    body.reduction-simple .compositionHero,
+    body.reduction-simple .extraInput{display:none!important}
+    body.reduction-simple .wrap{max-width:1180px}
+    body.reduction-simple .hero{grid-template-columns:1fr;min-height:auto}
+    body.reduction-simple .heroPanel{display:none}
+    body.reduction-simple .hero h1{font-size:clamp(34px,5vw,58px)}
+    body.reduction-simple .hero p{max-width:760px;font-size:17px}
+    body.reduction-simple .weekEntry{grid-template-columns:1.1fr .9fr .9fr}
+    .simpleBoard{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:16px}
+    .simpleResultCard{
+      background:linear-gradient(135deg,rgba(7,17,35,.98),rgba(15,23,42,.94));
+      border:1px solid rgba(148,163,184,.26);
+      box-shadow:0 26px 80px rgba(2,6,23,.34);
+      overflow:hidden;
+    }
+    .simpleTop{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}
+    .simpleLabel{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#9fb0c7;font-weight:950}
+    .simpleWeekCode{font-size:18px;font-weight:950;color:#fff;margin-top:4px}
+    .simpleDelta{
+      margin-top:8px;
+      font-size:clamp(42px,7vw,78px);
+      line-height:.95;
+      color:#fff;
+      font-weight:950;
+      letter-spacing:0;
+    }
+    .simpleDelta.good{color:#54ff9f}
+    .simpleDelta.bad{color:#ff6b7f}
+    .simpleDelta.neutral{color:#e5edff}
+    .simpleDeltaNote{font-size:15px;color:#c8d5e8;margin-top:10px;line-height:1.4}
+    .simplePill{
+      border:1px solid rgba(148,163,184,.28);
+      background:rgba(15,23,42,.72);
+      color:#e5edff;
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:13px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .simpleMetrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .simpleMetric{
+      border:1px solid rgba(148,163,184,.24);
+      background:rgba(255,255,255,.055);
+      border-radius:16px;
+      padding:16px;
+      min-height:112px;
+    }
+    .simpleMetric span{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#9fb0c7;font-weight:950}
+    .simpleMetric strong{display:block;font-size:clamp(25px,3.2vw,36px);line-height:1.05;color:#fff;margin-top:10px;letter-spacing:0}
+    .simpleMetric small{display:block;margin-top:8px;color:#9fb0c7;font-weight:800;line-height:1.35}
+    .simpleMetric.def strong{color:#54ff9f}
+    .simpleMetric.food strong{color:#ffd166}
+    .simpleMetric.burn strong{color:#60a5fa}
+    .simpleMetric.sport strong{color:#c084fc}
+    .simplePanel{margin-top:16px}
+    .simplePanelHead{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px}
+    .simplePanelHead h2{margin:0}
+    .simpleList{display:grid;gap:10px}
+    .simpleWeekRow{
+      display:grid;
+      grid-template-columns:1.2fr repeat(6, minmax(105px,1fr));
+      gap:10px;
+      align-items:center;
+      border:1px solid rgba(148,163,184,.22);
+      background:rgba(255,255,255,.045);
+      border-radius:14px;
+      padding:12px;
+    }
+    .simpleMonthRow{
+      display:grid;
+      grid-template-columns:1.2fr repeat(5, minmax(110px,1fr));
+      gap:10px;
+      align-items:center;
+      border:1px solid rgba(148,163,184,.22);
+      background:rgba(255,255,255,.045);
+      border-radius:14px;
+      padding:12px;
+    }
+    .simpleWeekRow.header,.simpleMonthRow.header{
+      background:transparent;
+      border-color:transparent;
+      padding:0 12px 2px;
+      color:#9fb0c7;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      font-weight:950;
+    }
+    .simpleWeekRow strong,.simpleMonthRow strong{color:#fff}
+    .simpleWeekRow small,.simpleMonthRow small{display:block;margin-top:4px;color:#9fb0c7;font-size:11px;font-weight:850;line-height:1.25}
+    .simpleWeekRow span,.simpleMonthRow span{color:#c8d5e8;font-weight:800}
+    .simpleChange.good{color:#54ff9f!important}
+    .simpleChange.bad{color:#ff6b7f!important}
+    .simpleChange.neutral{color:#e5edff!important}
+    .simpleHistoryDialog{
+      width:min(1080px,calc(100vw - 28px));
+      max-height:86vh;
+      border:1px solid rgba(148,163,184,.28);
+      border-radius:18px;
+      padding:0;
+      background:#071123;
+      color:#e5edff;
+      box-shadow:0 40px 120px rgba(0,0,0,.55);
+    }
+    .simpleHistoryDialog::backdrop{background:rgba(2,6,23,.72)}
+    .simpleDialogInner{padding:18px}
+    .simpleDialogHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .simpleDialogHead h2{margin:0}
+    .simpleDialogBody{max-height:68vh;overflow:auto;padding-right:4px}
     @media(max-width:1050px){
-      .hero,.grid3,.grid2,.grid4,.historyLayout{grid-template-columns:1fr}
+      .hero,.grid3,.grid2,.grid4,.historyLayout,.simpleBoard{grid-template-columns:1fr}
+      body.reduction-simple .weekEntry{grid-template-columns:1fr}
+      .simpleWeekRow,.simpleMonthRow{grid-template-columns:1fr 1fr}
+      .simpleWeekRow.header,.simpleMonthRow.header{display:none}
       .flow{grid-template-columns:1fr}.arrow{margin:auto}
       .weekMap{grid-template-columns:repeat(2,1fr)}
       .weekEntry{grid-template-columns:1fr;grid-template-areas:"new" "weight" "actions"}
@@ -1470,12 +1596,12 @@
     @media(max-width:640px){.wrap{padding:12px}.weekMap{grid-template-columns:1fr}.weekStats,.monthStats{grid-template-columns:1fr}.heroPanel{grid-template-columns:1fr}.towerStage{grid-template-columns:repeat(2,1fr)}.missionValue{font-size:30px}.weekEntry>.card:nth-child(2) .compositionHero{padding:16px}.weekEntry>.card:nth-child(2) .compositionHeroGrid{grid-template-columns:1fr}.weekEntry>.card:nth-child(2) .compositionMetricCard{min-height:132px;grid-template-columns:60px minmax(0,1fr);padding:14px}.weekEntry>.card:nth-child(2) .compositionMetricIcon{width:60px;height:60px;font-size:28px}.weekEntry>.card:nth-child(2) .compositionMetricMeta strong{font-size:clamp(24px,10vw,38px)}.weekEntry>.card:nth-child(2) .compositionMetricMeta small{max-width:none}.weekEntry>.card:nth-child(1),.weekEntry>.card:nth-child(2),.weekEntry>.card:nth-child(3){padding:16px}}
   </style>
 </head>
-<body>
+<body class="reduction-simple">
 <div class="wrap">
   <section class="hero">
     <div>
-      <h1>Redukcja Pro Control</h1>
-      <p class="muted">Krótki obraz tygodnia, pewność danych, ryzyka i najbliższy ruch. Najpierw decyzja, potem szczegóły.</p>
+      <h1>Redukcja</h1>
+      <p class="muted">Tygodniowy wynik: waga względem poprzedniego tygodnia, deficyt, sport, zjedzone i spalone kalorie.</p>
     </div>
     <div class="heroPanel">
       <div class="ring" id="deficitRing"><div class="ringInner"><div class="ringBig" id="ringPct">0%</div><div class="ringSmall">cel</div></div></div>
@@ -1531,17 +1657,17 @@
       <label>Waga z tego tygodnia, kg</label>
       <input id="weeklyWeight" type="number" step="0.1" placeholder="np. 136.4">
       <div id="weightAutoStatus" class="hint"></div>
-      <label>Tłuszcz, kg</label>
-      <input id="weeklyFatMass" type="number" step="0.1" placeholder="np. 48.2">
-      <label>Mięśnie, kg</label>
-      <input id="weeklyMuscleMass" type="number" step="0.1" placeholder="np. 74.5">
-      <label>Kości, kg</label>
-      <input id="weeklyBoneMass" type="number" step="0.1" placeholder="np. 4.2">
-      <div id="bodyCompositionStatus" class="hint"></div>
-      <label>Nazwa tygodnia, opcjonalnie</label>
-      <input id="weekName" type="text" placeholder="np. Tydzień po urlopie">
-      <label>Notatka, opcjonalnie</label>
-      <textarea id="weekNote" placeholder="np. alkohol w weekend, dobra aktywność, słaby sen"></textarea>
+      <label class="extraInput">Tłuszcz, kg</label>
+      <input id="weeklyFatMass" class="extraInput" type="number" step="0.1" placeholder="np. 48.2">
+      <label class="extraInput">Mięśnie, kg</label>
+      <input id="weeklyMuscleMass" class="extraInput" type="number" step="0.1" placeholder="np. 74.5">
+      <label class="extraInput">Kości, kg</label>
+      <input id="weeklyBoneMass" class="extraInput" type="number" step="0.1" placeholder="np. 4.2">
+      <div id="bodyCompositionStatus" class="hint extraInput"></div>
+      <label class="extraInput">Nazwa tygodnia, opcjonalnie</label>
+      <input id="weekName" class="extraInput" type="text" placeholder="np. Tydzień po urlopie">
+      <label class="extraInput">Notatka, opcjonalnie</label>
+      <textarea id="weekNote" class="extraInput" placeholder="np. alkohol w weekend, dobra aktywność, słaby sen"></textarea>
     </div>
     <div class="card">
       <h2><span class="step">3</span>Akcje</h2>
@@ -1553,6 +1679,57 @@
       <div id="status" class="status">Wpisz wagę i dodaj raporty. Tydzień policzy się i zapisze automatycznie.</div>
     </div>
   </section>
+
+  <section id="simpleResults" class="simpleBoard">
+    <div class="card simpleResultCard">
+      <div class="simpleTop">
+        <div>
+          <div class="simpleLabel">Zmiana wagi od poprzedniego tygodnia</div>
+          <div id="simpleWeekCode" class="simpleWeekCode">Brak zapisanego tygodnia</div>
+        </div>
+        <div id="simpleCurrentWeight" class="simplePill">Waga: -</div>
+      </div>
+      <div id="simpleWeightDelta" class="simpleDelta neutral">-</div>
+      <div id="simpleWeightDeltaNote" class="simpleDeltaNote">Wpisz wagę i dodaj raporty. Po zapisie kolejnego tygodnia porównanie pojawi się tutaj.</div>
+    </div>
+    <div class="simpleMetrics">
+      <div class="simpleMetric def"><span>Deficyt</span><strong id="simpleDeficit">-</strong><small id="simpleDeficitMeta">tydzień</small></div>
+      <div class="simpleMetric sport"><span>Sport</span><strong id="simpleSport">-</strong><small id="simpleSportMeta">czas lub liczba aktywności</small></div>
+      <div class="simpleMetric food"><span>Zjedzone</span><strong id="simpleEaten">-</strong><small id="simpleEatenMeta">suma kcal</small></div>
+      <div class="simpleMetric burn"><span>Spalone</span><strong id="simpleBurned">-</strong><small id="simpleBurnedMeta">suma kcal</small></div>
+    </div>
+  </section>
+
+  <section class="card simplePanel" id="simpleHistoryPanel">
+    <div class="simplePanelHead">
+      <div>
+        <h2>Historia tygodni</h2>
+        <p class="muted">Lista zapisanych tygodni i najważniejsze liczby bez dodatkowych analiz.</p>
+      </div>
+      <button id="openSimpleHistoryBtn" class="primary" onclick="openSimpleHistory()" title="Pokaż wszystkie tygodnie"><i data-lucide="list"></i>Pokaż wszystkie tygodnie</button>
+    </div>
+    <div id="simpleHistoryPreview" class="simpleList"><div class="hint">Brak zapisanych tygodni.</div></div>
+  </section>
+
+  <section class="card simplePanel" id="simpleFourWeekPanel">
+    <div class="simplePanelHead">
+      <div>
+        <h2>Podsumowanie co 4 tygodnie</h2>
+        <p class="muted">Każde zestawienie obejmuje kolejne cztery zapisane tygodnie.</p>
+      </div>
+    </div>
+    <div id="simpleFourWeekList" class="simpleList"><div class="hint">Zapisz minimum jeden tydzień.</div></div>
+  </section>
+
+  <dialog id="simpleHistoryDialog" class="simpleHistoryDialog">
+    <div class="simpleDialogInner">
+      <div class="simpleDialogHead">
+        <h2>Wszystkie zapisane tygodnie</h2>
+        <button onclick="closeSimpleHistory()" title="Zamknij"><i data-lucide="x"></i>Zamknij</button>
+      </div>
+      <div id="simpleHistoryDialogList" class="simpleDialogBody simpleList"></div>
+    </div>
+  </dialog>
 
   <div id="quality" class="chips"><span class="chip warn">Brak analizy</span></div>
 
@@ -1762,12 +1939,12 @@
     </div>
   </section>
 
-  <section class="card" style="margin-top:16px">
+  <section class="card legacyWeekMapSection" style="margin-top:16px">
     <h2>Mapa tygodnia</h2>
     <div id="weekMap" class="weekMap"></div>
   </section>
 
-  <section class="grid3">
+  <section class="grid3 legacyInsightGrid">
     <div class="card"><h2>Dźwignie wyniku</h2><div id="drivers" class="list"></div></div>
     <div class="card"><h2>Ryzyka</h2><div id="risks" class="list"></div></div>
     <div class="card"><h2>Następny ruch</h2><div id="plan" class="list"></div></div>
@@ -2840,6 +3017,8 @@ function summarize(data,garmin){
   const ocrActivities=garmin.ocrSummary?.activities||[];
   const ocrActivityCount=Number.isFinite(garmin.ocrSummary?.activityCount)?garmin.ocrSummary.activityCount:sum(ocrActivities.map(a=>a.count||0));
   const activityCount=csvActivityCount||ocrActivityCount||0;
+  const activityDurationValues=(garmin.activities||[]).map(a=>num(a.durationHours)).filter(Number.isFinite);
+  const activityDurationHours=activityDurationValues.length?sum(activityDurationValues):(Number.isFinite(garmin.ocrSummary?.activityDurationHours)?garmin.ocrSummary.activityDurationHours:NaN);
   const actsByType={};
   (garmin.activities||[]).forEach(a=>{if(a.type)actsByType[a.type]=(actsByType[a.type]||0)+(a.count||1)});
   if(!csvActivityCount)ocrActivities.forEach(a=>{if(a.type)actsByType[a.type]=(actsByType[a.type]||0)+(a.count||1)});
@@ -2854,7 +3033,7 @@ function summarize(data,garmin){
     stepsTotal:stepValues.length?sum(stepValues):NaN,stepsAvg,stepGoalDays:(garmin.steps||[]).filter(s=>Number.isFinite(s.goal)&&s.steps>=s.goal).length,stepsSource:stepValues.length?"daily":Number.isFinite(ocrStepsAvg)?"screenAvg":"none",
     sleepAvg:sleepValues.length?avg(sleepValues):(Number.isFinite(garmin.ocrSummary?.sleepAvg)?garmin.ocrSummary.sleepAvg:NaN),
     sleepScoreAvg:sleepScoreValues.length?avg(sleepScoreValues):(Number.isFinite(garmin.ocrSummary?.sleepScoreAvg)?garmin.ocrSummary.sleepScoreAvg:NaN),
-    activityCount,activityDurationHours:garmin.ocrSummary?.activityDurationHours||NaN,actsByType,
+    activityCount,activityDurationHours,actsByType,
     stressAvg:Number.isFinite(garmin.ocrSummary?.stressAvg)?garmin.ocrSummary.stressAvg:NaN,
     restingHrAvg:Number.isFinite(garmin.ocrSummary?.restingHrAvg)?garmin.ocrSummary.restingHrAvg:NaN,
     burnedAvgFromScreen:Number.isFinite(garmin.ocrSummary?.burnedAvg)?garmin.ocrSummary.burnedAvg:NaN
@@ -3174,6 +3353,165 @@ function foodRisks(products){
   (products||[]).forEach(p=>{const n=norm(p.name);if(/aperol|prosecco|wino|piwo|limoncello|corona|peroni|alkohol/.test(n))g.alkohol+=p.kcal;else if(/oliwa|olej|maslo|majonez|pesto|orzech|hummus/.test(n))g.tluszcze+=p.kcal;else if(/karkow|kabanos|kielbas|mieso|wieprz|wolow/.test(n))g.mieso+=p.kcal;else if(/lody|wafle|czekolad|ciasto|crumble|bar|baton/.test(n))g.slodycze+=p.kcal;else if(/parmezan|mozzarella|feta|ser/.test(n))g.sery+=p.kcal;else g.inne+=p.kcal});
   return g;
 }
+function simpleInt(value){
+  return Number.isFinite(value)?String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g," "):"-";
+}
+function simpleDeficitText(value){
+  return Number.isFinite(value)?`${value>=0?"-":"+"}${simpleInt(Math.abs(value))} kcal`:"-";
+}
+function simpleKcalText(value){
+  return Number.isFinite(value)?`${simpleInt(value)} kcal`:"-";
+}
+function simpleWeightText(value){
+  return Number.isFinite(value)?`${f1(value)} kg`:"-";
+}
+function simpleWeightDeltaClass(value){
+  if(!Number.isFinite(value)||Math.abs(value)<0.05)return "neutral";
+  return value<0?"good":"bad";
+}
+function simpleWeightDeltaText(value){
+  return Number.isFinite(value)?`${value>0?"+":""}${f1(value)} kg`:"-";
+}
+function simpleSportText(summary={}){
+  const minutes=weeklySportMinutes({summary});
+  if(Number.isFinite(minutes)&&minutes>0)return `${simpleInt(minutes)} min`;
+  const count=num(summary.activityCount);
+  return Number.isFinite(count)&&count>0?`${simpleInt(count)} aktywności`:"-";
+}
+function simpleHistorySorted(){
+  return getHistory().slice().sort((a,b)=>(a.start||a.createdAt||"").localeCompare(b.start||b.createdAt||""));
+}
+function simplePreviousWeight(history,index){
+  for(let i=index-1;i>=0;i--){
+    const weight=num(history[i]?.weight?.curW);
+    if(Number.isFinite(weight))return {weight,id:history[i].id||""};
+  }
+  return null;
+}
+function resetSimpleCurrent(){
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value};
+  const delta=document.getElementById("simpleWeightDelta");
+  set("simpleWeekCode","Brak zapisanego tygodnia");
+  set("simpleCurrentWeight","Waga: -");
+  if(delta){delta.textContent="-";delta.className="simpleDelta neutral"}
+  set("simpleWeightDeltaNote","Wpisz wagę i dodaj raporty. Po zapisie kolejnego tygodnia porównanie pojawi się tutaj.");
+  set("simpleDeficit","-");
+  set("simpleSport","-");
+  set("simpleEaten","-");
+  set("simpleBurned","-");
+  set("simpleDeficitMeta","tydzień");
+  set("simpleSportMeta","czas lub liczba aktywności");
+  set("simpleEatenMeta","suma kcal");
+  set("simpleBurnedMeta","suma kcal");
+}
+function renderSimpleCurrent(result){
+  if(!result){resetSimpleCurrent();return}
+  const s=result.summary||{};
+  const curW=num(result.weight?.curW);
+  const diff=num(result.weight?.weightDiff);
+  const delta=document.getElementById("simpleWeightDelta");
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value};
+  set("simpleWeekCode",`${result.id||"-"}${result.weekName?` - ${result.weekName}`:""}`);
+  set("simpleCurrentWeight",`Waga: ${simpleWeightText(curW)}`);
+  if(delta){
+    delta.textContent=simpleWeightDeltaText(diff);
+    delta.className=`simpleDelta ${simpleWeightDeltaClass(diff)}`;
+  }
+  const previousText=Number.isFinite(diff)
+    ? `Poprzedni tydzień: ${result.weight?.previousWeekId||"-"}. Obecnie ${simpleWeightText(curW)}.`
+    : "Brak poprzedniego tygodnia z wagą do porównania.";
+  set("simpleWeightDeltaNote",previousText);
+  set("simpleDeficit",simpleDeficitText(num(s.deficit)));
+  set("simpleSport",simpleSportText(s));
+  set("simpleEaten",simpleKcalText(num(s.eaten)));
+  set("simpleBurned",simpleKcalText(num(s.burned)));
+  set("simpleDeficitMeta",`${num(s.knownDays)||0}/7 dni ze spalaniem`);
+  set("simpleSportMeta",Number.isFinite(num(s.activityDurationHours))?"czas aktywności":"liczba aktywności");
+  set("simpleEatenMeta",`średnio ${simpleKcalText(num(s.avgEaten))}`);
+  set("simpleBurnedMeta",`średnio ${simpleKcalText(num(s.avgBurned))}`);
+}
+function simpleWeekRow(week,index,history){
+  const weight=num(week?.weight?.curW);
+  const prev=simplePreviousWeight(history,index);
+  const diff=Number.isFinite(weight)&&prev?weight-prev.weight:NaN;
+  const s=week.summary||{};
+  const label=`${esc(week.id||"-")}${week.start||week.end?`<small>${esc(week.start||"")} - ${esc(week.end||"")}</small>`:""}`;
+  return `<div class="simpleWeekRow">
+    <strong>${label}</strong>
+    <span>${esc(simpleWeightText(weight))}</span>
+    <span class="simpleChange ${simpleWeightDeltaClass(diff)}">${esc(simpleWeightDeltaText(diff))}</span>
+    <span>${esc(simpleDeficitText(num(s.deficit)))}</span>
+    <span>${esc(simpleSportText(s))}</span>
+    <span>${esc(simpleKcalText(num(s.eaten)))}</span>
+    <span>${esc(simpleKcalText(num(s.burned)))}</span>
+  </div>`;
+}
+function simpleWeekHeader(){
+  return `<div class="simpleWeekRow header"><span>Tydzień</span><span>Waga</span><span>Zmiana</span><span>Deficyt</span><span>Sport</span><span>Zjedzone</span><span>Spalone</span></div>`;
+}
+function renderSimpleHistory(history=simpleHistorySorted()){
+  const preview=document.getElementById("simpleHistoryPreview");
+  const dialogList=document.getElementById("simpleHistoryDialogList");
+  const sorted=history.slice().sort((a,b)=>(a.start||a.createdAt||"").localeCompare(b.start||b.createdAt||""));
+  const rows=sorted.map((week,index)=>simpleWeekRow(week,index,sorted));
+  if(preview){
+    preview.innerHTML=rows.length
+      ? simpleWeekHeader()+rows.slice(-5).reverse().join("")
+      : '<div class="hint">Brak zapisanych tygodni.</div>';
+  }
+  if(dialogList){
+    dialogList.innerHTML=rows.length
+      ? simpleWeekHeader()+rows.slice().reverse().join("")
+      : '<div class="hint">Brak zapisanych tygodni.</div>';
+  }
+  renderSimpleFourWeekSummary(sorted);
+}
+function buildFourWeekBlocks(history){
+  const blocks=[];
+  for(let i=0;i<history.length;i+=4){
+    const weeks=history.slice(i,i+4);
+    if(!weeks.length)continue;
+    const firstWeight=weeks.map(w=>num(w?.weight?.curW)).find(Number.isFinite);
+    const lastWeight=weeks.slice().reverse().map(w=>num(w?.weight?.curW)).find(Number.isFinite);
+    blocks.push({
+      label:`${weeks[0]?.id||"-"} - ${weeks[weeks.length-1]?.id||"-"}`,
+      weeks:weeks.length,
+      weightDelta:Number.isFinite(firstWeight)&&Number.isFinite(lastWeight)?lastWeight-firstWeight:NaN,
+      deficit:sum(weeks.map(w=>num(w?.summary?.deficit)).filter(Number.isFinite)),
+      eaten:sum(weeks.map(w=>num(w?.summary?.eaten)).filter(Number.isFinite)),
+      burned:sum(weeks.map(w=>num(w?.summary?.burned)).filter(Number.isFinite)),
+      sportMinutes:sum(weeks.map(weeklySportMinutes).filter(Number.isFinite))
+    });
+  }
+  return blocks;
+}
+function renderSimpleFourWeekSummary(history=simpleHistorySorted()){
+  const box=document.getElementById("simpleFourWeekList");
+  if(!box)return;
+  const blocks=buildFourWeekBlocks(history);
+  if(!blocks.length){
+    box.innerHTML='<div class="hint">Zapisz minimum jeden tydzień.</div>';
+    return;
+  }
+  const header='<div class="simpleMonthRow header"><span>Zakres</span><span>Zmiana wagi</span><span>Deficyt</span><span>Sport</span><span>Zjedzone</span><span>Spalone</span></div>';
+  box.innerHTML=header+blocks.reverse().map(block=>`<div class="simpleMonthRow">
+    <strong>${esc(block.label)}<small>${block.weeks}/4 tyg.</small></strong>
+    <span class="simpleChange ${simpleWeightDeltaClass(block.weightDelta)}">${esc(simpleWeightDeltaText(block.weightDelta))}</span>
+    <span>${esc(simpleDeficitText(block.deficit))}</span>
+    <span>${block.sportMinutes>0?`${simpleInt(block.sportMinutes)} min`:"-"}</span>
+    <span>${esc(simpleKcalText(block.eaten))}</span>
+    <span>${esc(simpleKcalText(block.burned))}</span>
+  </div>`).join("");
+}
+function openSimpleHistory(){
+  renderSimpleHistory();
+  const dialog=document.getElementById("simpleHistoryDialog");
+  if(dialog?.showModal)dialog.showModal();
+}
+function closeSimpleHistory(){
+  const dialog=document.getElementById("simpleHistoryDialog");
+  if(dialog?.close)dialog.close();
+}
 function render(data,garmin,fitatu){
   if(chart)chart.destroy();
   const s=summarize(data,garmin), curW=num(document.getElementById("weeklyWeight").value), prev=previousWeek(data), prevW=Number.isFinite(prev?.weight?.curW)?prev.weight.curW:NaN, weightDiff=Number.isFinite(prevW)&&Number.isFinite(curW)?curW-prevW:NaN;
@@ -3181,6 +3519,7 @@ function render(data,garmin,fitatu){
   const targetEstimate=estimateTargetWeight(curW,s,id);
   const bodyComposition=bodyCompositionFromInputs(garmin.ocrSummary?.bodyComposition||{});
   lastResult={id,weekName:name,weekNote:note,data,garmin,fitatu,summary:s,weight:{prevW,curW,weightDiff,previousWeekId:prev?.id||null},bodyComposition,createdAt:new Date().toISOString()};
+  renderSimpleCurrent(lastResult);
   document.getElementById("deficitRing").style.setProperty("--pct",`${Math.min(100,pct)*3.6}deg`);
   document.getElementById("ringPct").textContent=`${Math.round(pct)}%`;
   const verdict=s.knownDays===0?"Niepełny":s.deficit>=6500?"Bardzo dobry":s.deficit>=3500?"Dobry":s.deficit>0?"Słaby deficyt":"Brak deficytu";
@@ -4520,6 +4859,7 @@ function renderMonthlySummary(history=getHistory()){
 }
 function renderHistory(){
   const history=getHistory().sort((a,b)=>(a.start||"").localeCompare(b.start||""));
+  renderSimpleHistory(history);
   const list=document.getElementById("historyList"), trend=document.getElementById("historyTrendSummary");
   renderMonthlySummary(history);
   if(!history.length){
@@ -4775,6 +5115,7 @@ async function clearHistory(){if(confirm("Usunąć całą historię?")){localSto
 function startNewWeek(){
   lastResult=null;lastAutoSignature="";folderFiles=[];lastQualityReport=null;detectedWeightInfo=null;
   clearEntryDraft();
+  resetSimpleCurrent();
   if(chart){chart.destroy();chart=null}
   if(waterfallChart){waterfallChart.destroy();waterfallChart=null}
   if(riskMatrixChart){riskMatrixChart.destroy();riskMatrixChart=null}
@@ -4864,6 +5205,8 @@ window.downloadWeek=downloadWeek;
 window.loadDemo=loadDemo;
 window.applyMetricCorrections=applyMetricCorrections;
 window.setProView=setProView;
+window.openSimpleHistory=openSimpleHistory;
+window.closeSimpleHistory=closeSimpleHistory;
 
 window.addEventListener("load",async()=>{
   installProShell();
@@ -4903,6 +5246,7 @@ window.addEventListener("load",async()=>{
   if(manual)manual.addEventListener("input",scheduleAutoAnalysis);
   detectUploadedFiles();
   updateWeightSectionVisuals();
+  renderSimpleHistory();
   scheduleAutoAnalysis();
 });
 </script>
