@@ -1883,8 +1883,9 @@ let detectedWeightInfo = null;
 let activeProView = "start";
 
 const HISTORY_KEY = "rafal_redukcja_master_history_clean_v1";
-const HISTORY_RESET_KEY = "rafal_redukcja_history_reset_20260713_empty";
+const HISTORY_RESET_KEY = "rafal_redukcja_history_reset_20260811_fresh_start";
 const METRIC_OVERRIDE_KEY = "rafal_redukcja_metric_overrides_v25";
+const ENTRY_DRAFT_KEY = "rafal_redukcja_entry_draft_v1";
 const LEGACY_HISTORY_KEYS = [];
 const OLD_HISTORY_KEYS = ["rafal_redukcja_master_history","rafal_redukcja_tygodnie_v2_folder","rafal_redukcja_tygodnie_v1","rafal_clear_ocr_reduction_history_v1","rafal_reduction_dashboard_history_v3"];
 const HISTORY_DB = "rafal_redukcja_v23_db";
@@ -2919,6 +2920,8 @@ async function resetStoredHistoryOnce(){
   try{
     if(localStorage.getItem(HISTORY_RESET_KEY)==="1")return false;
     localStorage.removeItem(HISTORY_KEY);
+    localStorage.removeItem(METRIC_OVERRIDE_KEY);
+    localStorage.removeItem(ENTRY_DRAFT_KEY);
     LEGACY_HISTORY_KEYS.forEach(key=>localStorage.removeItem(key));
     OLD_HISTORY_KEYS.forEach(key=>localStorage.removeItem(key));
     await clearHistoryIndexedDB();
@@ -2930,6 +2933,49 @@ async function resetStoredHistoryOnce(){
 }
 function setHistory(items){localStorage.setItem(HISTORY_KEY,JSON.stringify(items));saveMasterPrivate(items);saveHistoryIndexedDB(items)}
 resetStoredHistoryOnce();
+const ENTRY_DRAFT_FIELDS = ["manualBurned","weeklyWeight","weeklyFatMass","weeklyMuscleMass","weeklyBoneMass","weekName","weekNote","correctWeight","correctSteps","correctSleep","correctActivities"];
+function collectEntryDraft(){
+  const fields={};
+  ENTRY_DRAFT_FIELDS.forEach(id=>{const el=document.getElementById(id);if(el)fields[id]=el.value||""});
+  return {fields,updatedAt:new Date().toISOString()};
+}
+function saveEntryDraft(){
+  try{localStorage.setItem(ENTRY_DRAFT_KEY,JSON.stringify(collectEntryDraft()))}catch(e){}
+}
+function clearEntryDraft(){
+  try{localStorage.removeItem(ENTRY_DRAFT_KEY)}catch(e){}
+}
+function restoreEntryDraft(){
+  try{
+    const draft=JSON.parse(localStorage.getItem(ENTRY_DRAFT_KEY)||"null");
+    if(!draft||!draft.fields||typeof draft.fields!=="object")return false;
+    let restored=false;
+    ENTRY_DRAFT_FIELDS.forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el||draft.fields[id]===undefined)return;
+      el.value=draft.fields[id]||"";
+      restored=restored||!!el.value;
+    });
+    if(restored){
+      const weight=document.getElementById("weeklyWeight");
+      if(weight)delete weight.dataset.autoWeight;
+      Object.values(bodyCompositionInputs()).forEach(el=>{if(el){delete el.dataset.autoComposition;delete el.dataset.fatPct}});
+      updateWeightSectionVisuals();
+      setStatus("Przywrócono zapisany szkic. Dodaj raporty, żeby przeliczyć tydzień.");
+    }
+    return restored;
+  }catch(e){
+    return false;
+  }
+}
+function bindEntryDraftAutosave(){
+  ENTRY_DRAFT_FIELDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.addEventListener("input",saveEntryDraft);
+    el.addEventListener("change",saveEntryDraft);
+  });
+}
 function previousWeek(data){
   const id=weekId(data), start=(data.map(d=>d.dateISO).filter(Boolean).sort()[0]||"");
   const h=getHistory().filter(w=>w.id!==id&&Number.isFinite(w.weight?.curW)).sort((a,b)=>(a.start||"").localeCompare(b.start||""));
@@ -3039,6 +3085,7 @@ async function saveCurrentWeek(auto=false){
   history.push(merged);
   history.sort((a,b)=>(a.start||"").localeCompare(b.start||""));
   setHistory(history);
+  clearEntryDraft();
   await saveWeekPrivate(merged);
   await saveWeekVisible(merged);
   renderHistory();
@@ -4724,9 +4771,10 @@ function exportHistoryPdf(){
 
 function exportHistory(){const blob=new Blob([JSON.stringify(getHistory(),null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="historia_redukcji_master.json";a.click();URL.revokeObjectURL(a.href)}
 async function importHistoryFile(file){if(!file)return;const imported=JSON.parse(await file.text());if(Array.isArray(imported)){setHistory(imported);renderHistory()}}
-async function clearHistory(){if(confirm("Usunąć całą historię?")){localStorage.removeItem(HISTORY_KEY);await clearHistoryIndexedDB();renderHistory();setStatus("Historia usunięta.")}}
+async function clearHistory(){if(confirm("Usunąć całą historię?")){localStorage.removeItem(HISTORY_KEY);localStorage.removeItem(METRIC_OVERRIDE_KEY);clearEntryDraft();await clearHistoryIndexedDB();renderHistory();setStatus("Historia usunięta.")}}
 function startNewWeek(){
   lastResult=null;lastAutoSignature="";folderFiles=[];lastQualityReport=null;detectedWeightInfo=null;
+  clearEntryDraft();
   if(chart){chart.destroy();chart=null}
   if(waterfallChart){waterfallChart.destroy();waterfallChart=null}
   if(riskMatrixChart){riskMatrixChart.destroy();riskMatrixChart=null}
@@ -4826,10 +4874,12 @@ window.addEventListener("load",async()=>{
   await resetStoredHistoryOnce();
   await hydrateHistoryFromIndexedDB();
   renderHistory();
-  loadLatestWeekPreview();
+  const draftRestored=restoreEntryDraft();
+  if(!draftRestored)loadLatestWeekPreview();
   const reports=document.getElementById("allReports");
   const weight=document.getElementById("weeklyWeight");
   const manual=document.getElementById("manualBurned");
+  bindEntryDraftAutosave();
   if(reports)reports.addEventListener("change",scheduleAutoAnalysis);
   if(weight)weight.addEventListener("input",()=>{
     delete weight.dataset.autoWeight;
