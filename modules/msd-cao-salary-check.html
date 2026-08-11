@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MSD CAO Salary Check v4</title>
+<title>MSD CAO Salary Check v8</title>
 <style>
 :root{
   --page:#f7f8fa;
@@ -25,6 +25,7 @@
   --shadow:0 10px 24px rgba(31,41,51,.07);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{
   margin:0;
   font-family:Segoe UI,Roboto,Arial,sans-serif;
@@ -54,6 +55,47 @@ h1{
   color:var(--muted);
   font-size:13px;
   font-weight:700;
+}
+.topbar-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.language-switch{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.language-switch-label{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:800;
+}
+.language-switch-buttons{
+  display:flex;
+  gap:4px;
+  padding:3px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#fff;
+}
+.language-switch-buttons button{
+  min-height:30px;
+  min-width:42px;
+  border:0;
+  border-radius:6px;
+  background:transparent;
+  color:var(--muted);
+  cursor:pointer;
+  font:inherit;
+  font-size:12px;
+  font-weight:850;
+}
+.language-switch-buttons button.active{
+  background:var(--teal);
+  color:#fff;
 }
 main{
   max-width:1180px;
@@ -247,6 +289,55 @@ input:focus,select:focus,textarea:focus{
   color:var(--muted);
   font-size:12px;
 }
+.point-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:0;
+  margin:0 0 14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+  background:#fff;
+}
+@media(max-width:760px){
+  .point-grid{grid-template-columns:1fr}
+  .point-card{
+    border-right:0;
+    border-bottom:1px solid var(--line);
+  }
+  .point-card:last-child{border-bottom:0}
+}
+.point-card{
+  border:0;
+  border-right:1px solid var(--line);
+  border-radius:0;
+  padding:12px 14px;
+  background:#fff;
+}
+.point-card:last-child{border-right:0}
+.point-card.mid{
+  border-color:var(--line);
+  background:#f3fbfa;
+}
+.point-card small{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:850;
+  text-transform:uppercase;
+}
+.point-card strong{
+  display:block;
+  margin-top:6px;
+  color:#1f2933;
+  font-size:22px;
+}
+.point-card span{
+  display:none;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:12px;
+}
 .range-line{
   margin-top:14px;
   border:1px solid var(--line);
@@ -290,6 +381,195 @@ input:focus,select:focus,textarea:focus{
 .message.ok{background:var(--green-soft);color:var(--green);border-color:#abefc6}
 .message.warn{background:var(--amber-soft);color:var(--amber);border-color:#fedf89}
 .message.stop{background:var(--red-soft);color:var(--red);border-color:#fecdca}
+.visual-panel{
+  margin-bottom:14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:18px 18px 14px;
+  background:#fff;
+}
+.visual-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:12px;
+}
+.visual-title{
+  color:#344054;
+  font-size:15px;
+  font-weight:850;
+}
+.visual-value{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:750;
+  text-align:right;
+}
+.range-map{
+  position:relative;
+  min-height:92px;
+  padding-top:28px;
+}
+.range-track-visual{
+  display:block;
+  height:20px;
+  border:0;
+  border-radius:999px;
+  overflow:hidden;
+  background:linear-gradient(90deg,var(--blue-soft) 0,var(--blue-soft) var(--mid-pos,50%),var(--teal-soft) var(--mid-pos,50%),var(--teal-soft) 100%);
+  box-shadow:inset 0 0 0 1px var(--line);
+}
+.range-zone{
+  display:none;
+}
+.map-marker{
+  position:absolute;
+  top:18px;
+  left:0;
+  width:0;
+  min-height:54px;
+  transform:translateX(-50%);
+}
+.map-marker::before{
+  content:"";
+  position:absolute;
+  top:10px;
+  left:50%;
+  width:2px;
+  height:36px;
+  background:#1f2933;
+}
+.map-marker::after{
+  content:"";
+  position:absolute;
+  top:4px;
+  left:50%;
+  width:12px;
+  height:12px;
+  border-radius:999px;
+  background:#1f2933;
+  transform:translateX(-50%);
+  box-shadow:0 0 0 3px #fff;
+}
+.map-marker.rate::before,
+.map-marker.rate::after{
+  background:var(--blue);
+}
+.map-marker.rate.warn::before,
+.map-marker.rate.warn::after{
+  background:var(--amber);
+}
+.map-marker.rate.stop::before,
+.map-marker.rate.stop::after{
+  background:var(--red);
+}
+.map-label{
+  position:absolute;
+  top:51px;
+  left:50%;
+  transform:translateX(-50%);
+  min-width:76px;
+  padding:5px 7px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#fff;
+  color:#344054;
+  font-size:11px;
+  line-height:1.25;
+  font-weight:850;
+  text-align:center;
+  white-space:pre-line;
+  box-shadow:0 8px 18px rgba(31,41,51,.08);
+}
+.map-marker:not(.rate) .map-label{display:none}
+.map-marker:not(.rate)::before{height:24px;background:#667085}
+.map-marker:not(.rate)::after{display:none}
+.map-marker.rate .map-label{
+  color:#fff;
+  background:var(--blue);
+  border-color:var(--blue);
+}
+.map-marker.rate.warn .map-label{
+  background:var(--amber);
+  border-color:var(--amber);
+}
+.map-marker.rate.stop .map-label{
+  background:var(--red);
+  border-color:var(--red);
+}
+.map-axis{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:12px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+.check-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:0;
+}
+@media(max-width:760px){
+  .check-grid{grid-template-columns:1fr}
+}
+.check-card{
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:12px;
+  background:#fff;
+  min-height:92px;
+}
+.check-card.ok{border-color:#abefc6;background:var(--green-soft)}
+.check-card.warn{border-color:#fedf89;background:var(--amber-soft)}
+.check-card.stop{border-color:#fecdca;background:var(--red-soft)}
+.check-card small{
+  display:block;
+  color:#475467;
+  font-size:11px;
+  font-weight:850;
+  text-transform:uppercase;
+}
+.check-card strong{
+  display:block;
+  margin-top:7px;
+  color:#1f2933;
+  font-size:18px;
+}
+.check-card span{
+  display:block;
+  margin-top:5px;
+  color:#475467;
+  font-size:12px;
+  line-height:1.35;
+}
+.midpoint-alert{
+  margin:0 0 14px;
+  border:2px solid var(--red);
+  border-radius:8px;
+  padding:16px;
+  background:var(--red-soft);
+  color:var(--red);
+  font-size:24px;
+  line-height:1.2;
+  font-weight:900;
+  text-align:center;
+}
+.secondary-field{
+  display:none;
+}
+.main-actions{
+  margin:12px 0 0;
+}
+.midpoint-alert span{
+  display:block;
+  margin-top:6px;
+  font-size:13px;
+  font-weight:750;
+}
 details{
   margin-top:10px;
   border:1px solid var(--line);
@@ -340,6 +620,12 @@ summary{
   margin-top:3px;
   color:var(--muted);
   font-size:12px;
+}
+.scenario-points{
+  margin-top:7px;
+  color:#344054;
+  font-size:12px;
+  line-height:1.45;
 }
 .scenario-status{
   display:inline-flex;
@@ -404,27 +690,36 @@ tr.selected td{
 <header class="topbar">
   <div class="topbar-inner">
     <h1>MSD CAO Salary Check</h1>
-    <div class="version">v4</div>
+      <div class="topbar-actions">
+      <div class="language-switch">
+        <span class="language-switch-label" id="languageSwitchLabel">Language</span>
+        <div class="language-switch-buttons">
+          <button id="langEn" type="button" class="active">EN</button>
+          <button id="langNl" type="button">NL</button>
+        </div>
+      </div>
+      <div class="version">v8</div>
+    </div>
   </div>
 </header>
 
 <main>
   <div class="layout">
     <section class="panel input-panel">
-      <div class="panel-head">Inputs</div>
+      <div class="panel-head" id="inputsHead">Inputs</div>
       <div class="panel-body">
-        <div class="field">
-          <label for="candidate">Candidate name</label>
+        <div class="field secondary-field">
+          <label for="candidate" id="candidateLabel">Candidate name</label>
           <input id="candidate" autocomplete="off" placeholder="Optional" />
         </div>
 
         <div class="field">
-          <label for="position">Position</label>
+          <label for="position" id="positionLabel">Position</label>
           <select id="position"></select>
         </div>
 
         <div class="field">
-          <label>Profile level</label>
+          <label id="profileLabel">Profile level</label>
           <div class="segments" role="group" aria-label="Profile level">
             <button class="segment" type="button" data-profile="starter">Starter</button>
             <button class="segment active" type="button" data-profile="matching">Matching</button>
@@ -434,45 +729,40 @@ tr.selected td{
 
         <div class="inline">
           <div class="field">
-            <label for="age">Age</label>
+            <label for="age" id="ageLabel">Age</label>
             <select id="age"></select>
           </div>
           <div class="field">
-            <label for="rate">Hourly rate</label>
+            <label for="rate" id="rateLabel">Hourly rate</label>
             <input id="rate" type="number" step="0.01" min="0" placeholder="e.g. 29.27" />
           </div>
         </div>
 
         <details>
-          <summary>Advanced scale override</summary>
+          <summary id="advancedSummary">Advanced scale override</summary>
           <div class="details-body">
             <div class="field">
-              <label for="scaleMode">Scale selection</label>
+              <label for="scaleMode" id="scaleModeLabel">Scale selection</label>
               <select id="scaleMode">
                 <option value="auto">Use profile level recommendation</option>
                 <option value="manual">Choose exact CAO scale manually</option>
               </select>
             </div>
             <div class="field">
-              <label for="manualScale">Manual CAO scale</label>
+              <label for="manualScale" id="manualScaleLabel">Manual CAO scale</label>
               <select id="manualScale"></select>
             </div>
             <p class="note" id="overrideNote"></p>
           </div>
         </details>
 
-        <div class="actions">
-          <button class="btn primary" id="copyBtn" type="button">Copy summary</button>
-          <button class="btn secondary" type="button" onclick="window.print()">Print / save PDF</button>
-          <button class="btn ghost" id="resetBtn" type="button">Reset</button>
-        </div>
       </div>
     </section>
 
     <section class="panel">
       <div class="result-strip">
         <div class="scale-block">
-          <small>Recommended CAO scale</small>
+          <small id="recommendedScaleLabel">Recommended CAO scale</small>
           <strong id="scaleOut">-</strong>
           <div class="path-text" id="pathOut">-</div>
         </div>
@@ -480,66 +770,119 @@ tr.selected td{
       </div>
 
       <div class="panel-body">
-        <div class="summary-grid">
-          <div class="metric">
-            <small>Hourly range</small>
-            <strong id="hourlyRange">-</strong>
-            <span id="annualRange">-</span>
+        <div class="visual-panel">
+          <div class="visual-head">
+            <div class="visual-title" id="visualTitle">Salary range</div>
+            <div class="visual-value" id="visualValue">Enter hourly rate</div>
           </div>
-          <div class="metric">
-            <small>Proposed rate</small>
-            <strong id="rateOut">-</strong>
-            <span id="rangeCheck">-</span>
-          </div>
-          <div class="metric">
-            <small>Midpoint position</small>
-            <strong id="midpointOut">-</strong>
-            <span id="midpointText">-</span>
-          </div>
-          <div class="metric">
-            <small>Merit increase</small>
-            <strong id="meritOut">-</strong>
-            <span id="meritBand">-</span>
+          <div class="range-map" id="rangeMap">
+            <div class="range-track-visual">
+              <div class="range-zone low" id="zoneBelowMid">Minimum to mid</div>
+              <div class="range-zone mid" id="zoneAboveMid">Mid to maximum</div>
+              <div class="range-zone high" id="zoneOutside">Outside range</div>
+            </div>
+            <div class="map-marker" id="minMarker"><div class="map-label" id="minMarkerLabel">Min</div></div>
+            <div class="map-marker" id="midMarker"><div class="map-label" id="midMarkerLabel">Mid</div></div>
+            <div class="map-marker" id="maxMarker"><div class="map-label" id="maxMarkerLabel">Max</div></div>
+            <div class="map-marker rate" id="rateMarker"><div class="map-label" id="rateMarkerLabel">Rate</div></div>
+            <div class="map-axis">
+              <span id="axisMin">-</span>
+              <span id="axisMid">-</span>
+              <span id="axisMax">-</span>
+            </div>
           </div>
         </div>
 
-        <div class="range-line" aria-hidden="true">
-          <div class="range-top">
-            <span>Position against midpoint</span>
-            <span id="meterLabel">-</span>
+        <div class="point-grid">
+          <div class="point-card">
+            <small id="minPointLabel">Minimum point</small>
+            <strong id="minPoint">-</strong>
+            <span id="minPointAnnual">-</span>
           </div>
-          <div class="track"><div class="track-fill" id="meterFill"></div></div>
+          <div class="point-card mid">
+            <small id="midPointLabel">Mid point</small>
+            <strong id="midPoint">-</strong>
+            <span id="midPointAnnual">-</span>
+          </div>
+          <div class="point-card">
+            <small id="maxPointLabel">Maximum point</small>
+            <strong id="maxPoint">-</strong>
+            <span id="maxPointAnnual">-</span>
+          </div>
         </div>
 
+        <div class="midpoint-alert" id="midpointAlert" hidden><span id="midpointAlertTitle">Rate exceeds mid point</span><span id="midpointAlertText"></span></div>
         <div class="message" id="messageOut">Enter the hourly rate to calculate checks.</div>
 
         <details>
-          <summary>Scenario comparison</summary>
+          <summary id="moreDetailsSummary">Details</summary>
           <div class="details-body">
-            <div class="scenario-grid" id="scenarioGrid"></div>
-          </div>
-        </details>
+            <h3 id="checksSummary" style="margin:0 0 10px;font-size:15px">Checks</h3>
+            <div class="check-grid">
+              <div class="check-card" id="visualWageCheck">
+                <small id="visualWageTitle">Minimum wage</small>
+                <strong id="visualWageStatus">-</strong>
+                <span id="visualWageText">-</span>
+              </div>
+              <div class="check-card" id="visualRangeCheck">
+                <small id="visualRangeTitle">CAO range</small>
+                <strong id="visualRangeStatus">-</strong>
+                <span id="visualRangeText">-</span>
+              </div>
+              <div class="check-card" id="visualMidpointCheck">
+                <small id="visualMidpointTitle">Mid point</small>
+                <strong id="visualMidpointStatus">-</strong>
+                <span id="visualMidpointText">-</span>
+              </div>
+            </div>
+            <div class="summary-grid" style="margin-top:10px">
+              <div class="metric">
+                <small id="proposedRateLabel">Proposed rate</small>
+                <strong id="rateOut">-</strong>
+                <span id="rateText">-</span>
+              </div>
+              <div class="metric">
+                <small id="caoRangeCheckLabel">CAO range check</small>
+                <strong id="rangeCheck">-</strong>
+                <span id="rangeText">-</span>
+              </div>
+              <div class="metric">
+                <small id="midpointPositionLabel">Mid point position</small>
+                <strong id="midpointOut">-</strong>
+                <span id="midpointText">-</span>
+              </div>
+              <div class="metric">
+                <small id="minimumWageLabel">Minimum wage</small>
+                <strong id="wageOut">-</strong>
+                <span id="wageText">-</span>
+              </div>
+            </div>
+            <div class="range-line" aria-hidden="true">
+              <div class="range-top">
+                <span id="meterTitle">Position against mid point</span>
+                <span id="meterLabel">-</span>
+              </div>
+              <div class="track"><div class="track-fill" id="meterFill"></div></div>
+            </div>
 
-        <details>
-          <summary>Recommendation summary</summary>
-          <div class="details-body">
+            <h3 id="scenarioSummary" style="margin:18px 0 10px;font-size:15px">Scenario comparison</h3>
+            <div class="scenario-grid" id="scenarioGrid"></div>
+
+            <h3 id="recommendationSummary" style="margin:18px 0 10px;font-size:15px">Recommendation summary</h3>
             <div class="field">
               <textarea id="summary" readonly></textarea>
             </div>
-          </div>
-        </details>
+            <div class="actions main-actions">
+              <button class="btn primary" id="copyBtn" type="button">Copy summary</button>
+              <button class="btn secondary" id="printBtn" type="button" onclick="window.print()">Print / save PDF</button>
+              <button class="btn ghost" id="resetBtn" type="button">Reset</button>
+            </div>
 
-        <details>
-          <summary>Audit details</summary>
-          <div class="details-body">
+            <h3 id="pointsSummary" style="margin:18px 0 10px;font-size:15px">Minimum / Mid / Maximum by selected position</h3>
             <div class="table-wrap"><table id="availableTable"></table></div>
-            <p class="note">Profile level maps to the lower, middle or higher scale available for the selected position.</p>
-          </div>
-        </details>
+            <p class="note" id="auditNote">Profile level maps to the lower, middle or higher scale available for the selected position.</p>
 
-        <details>
-          <summary>All CAO scales A to M</summary>
-          <div class="details-body">
+            <h3 id="allScalesSummary" style="margin:18px 0 10px;font-size:15px">All CAO scales A to M</h3>
             <div class="table-wrap"><table id="allScalesTable"></table></div>
           </div>
         </details>
@@ -575,31 +918,265 @@ const pathways = {
 };
 
 const minimumWage = {21:14.71,20:11.77,19:8.83,18:7.36,17:5.81,16:5.07,15:4.41};
-const merit = [
-  {label:"Under minimum",min:-Infinity,max:74.1,inc:4.80},
-  {label:"1st third",min:74.1,max:91.4,inc:4.00},
-  {label:"2nd third",min:91.4,max:108.6,inc:3.20},
-  {label:"3rd third",min:108.6,max:125.9,inc:2.24},
-  {label:"Above maximum",min:125.9,max:Infinity,inc:1.60}
-];
 
-const profileLabels = {
-  starter:"Starter",
-  matching:"Matching",
-  senior:"Senior"
+const translations = {
+  en:{
+    language:"Language",
+    inputs:"Inputs",
+    candidateName:"Candidate name",
+    defaultCandidate:"Candidate",
+    optional:"Optional",
+    position:"Position",
+    profileLevel:"Profile level",
+    starter:"Starter",
+    matching:"Matching",
+    senior:"Senior",
+    age:"Age",
+    hourlyRate:"Hourly rate",
+    advanced:"Advanced scale override",
+    scaleSelection:"Scale selection",
+    autoScale:"Use profile level recommendation",
+    manualScaleMode:"Choose exact CAO scale manually",
+    manualScale:"Manual CAO scale",
+    copySummary:"Copy summary",
+    copied:"Copied",
+    printPdf:"Print / save PDF",
+    reset:"Reset",
+    recommendedScale:"Recommended CAO scale",
+    enterRate:"Enter hourly rate",
+    payPositionMap:"Salary range",
+    minimumToMid:"Minimum to mid",
+    midToMaximum:"Mid to maximum",
+    outsideRange:"Outside range",
+    minShort:"Min",
+    midShort:"Mid",
+    maxShort:"Max",
+    rateShort:"Rate",
+    noRateYet:"Enter hourly rate",
+    minPoint:"Minimum point",
+    midPoint:"Mid point",
+    maxPoint:"Maximum point",
+    annual:"Annual",
+    proposedRate:"Proposed rate",
+    selectedScale:"Selected scale",
+    vsMidpointShort:"vs mid point",
+    caoRangeCheck:"CAO range check",
+    midpointPosition:"Mid point position",
+    minimumWage:"Minimum wage",
+    caoRange:"CAO range",
+    midpointVisual:"Mid point",
+    ok:"OK",
+    review:"Review",
+    stop:"Stop",
+    midpointOk:"At or below mid point",
+    midpointTooHigh:"Above mid point",
+    midpointTileDetail:(rate, mid)=>`${rate} vs mid point ${mid}`,
+    wageTileDetail:(rate, wage)=>rate === null ? `Minimum wage: ${wage}` : `${rate} vs minimum wage ${wage}`,
+    rangeTileDetail:(rate, min, max)=>rate === null ? `${min} - ${max}` : `${rate} against ${min} - ${max}`,
+    minimumWageForAge:"Minimum wage for age",
+    positionAgainstMidpoint:"Position against mid point",
+    midpointAlert:"Rate exceeds mid point",
+    midpointAlertDetail:(rate, mid)=>`${rate} is above mid point ${mid}.`,
+    moreDetails:"Details",
+    checks:"Checks",
+    scenarioComparison:"Scenario comparison",
+    recommendationSummary:"Recommendation summary",
+    pointsByPosition:"Minimum / Mid / Maximum by selected position",
+    auditNote:"Profile level maps to the lower, middle or higher scale available for the selected position.",
+    allScales:"All CAO scales A to M",
+    allowedScales:"allowed scales",
+    scales:"scales",
+    availableScales:"Available scales for",
+    age21:"21 or older",
+    belowLegalMinimum:"Below legal minimum wage",
+    belowCaoMinimum:"Below CAO scale minimum",
+    aboveCaoMaximum:"Above CAO scale maximum",
+    withinRange:"Within range",
+    missingRateMessage:"Enter the hourly rate to calculate checks.",
+    belowLegalMinimumMessage:wage=>`Rate is below legal minimum wage of ${wage}.`,
+    belowCaoMinimumMessage:min=>`Rate is below the selected CAO scale minimum of ${min}.`,
+    aboveCaoMaximumMessage:max=>`Rate is above the selected CAO scale maximum of ${max}.`,
+    withinRangeMessage:"Rate is within the selected CAO scale and minimum wage checks.",
+    atOrBelowMidpoint:"At or below mid point",
+    aboveMidpoint:"Rate exceeds mid point",
+    profileLogic:{
+      starter:"Starter / developing profile, lower scale in pathway range",
+      matching:"Fully matching profile, middle scale where available",
+      senior:"Strong / senior profile, higher scale in pathway range"
+    },
+    category:{
+      "Business Support":"Business Support",
+      "Research / Data & Digital":"Research / Data & Digital",
+      "Production & Operations":"Production & Operations",
+      "Sales":"Sales",
+      "Professional":"Professional",
+      "Management":"Management"
+    },
+    table:{
+      scale:"Scale", minHour:"Min hour", midHour:"Mid hour", maxHour:"Max hour",
+      minYear:"Min year", midYear:"Mid year", maxYear:"Max year"
+    },
+    summary:{
+      title:"CAO salary matrix assessment",
+      position:"Position",
+      allowed:"Allowed CAO scales",
+      selected:"Selected CAO scale",
+      logic:"Selection logic",
+      min:"Minimum point",
+      mid:"Mid point",
+      max:"Maximum point",
+      current:"Current/proposed hourly rate",
+      vsMid:"Position vs mid point",
+      midCheck:"Mid point check",
+      legal:"Legal minimum wage check for age",
+      range:"CAO range check",
+      status:"Overall status",
+      ok:"OK",
+      belowWage:"Below minimum wage",
+      belowMin:"Below selected scale minimum",
+      aboveMax:"Above selected scale maximum",
+      within:"Within selected scale range",
+      note:"Note: if the selected pathway contains multiple scales, the exact scale should be validated by the manager based on job level, responsibilities and candidate profile before final approval."
+    }
+  },
+  nl:{
+    language:"Taal",
+    inputs:"Invoer",
+    candidateName:"Naam kandidaat",
+    defaultCandidate:"Kandidaat",
+    optional:"Optioneel",
+    position:"Functie",
+    profileLevel:"Profielniveau",
+    starter:"Starter",
+    matching:"Passend",
+    senior:"Senior",
+    age:"Leeftijd",
+    hourlyRate:"Uurtarief",
+    advanced:"Geavanceerde schaalkeuze",
+    scaleSelection:"Schaalkeuze",
+    autoScale:"Gebruik aanbeveling op basis van profielniveau",
+    manualScaleMode:"Kies handmatig de exacte CAO-schaal",
+    manualScale:"Handmatige CAO-schaal",
+    copySummary:"Samenvatting kopiëren",
+    copied:"Gekopieerd",
+    printPdf:"Printen / opslaan als PDF",
+    reset:"Reset",
+    recommendedScale:"Aanbevolen CAO-schaal",
+    enterRate:"Voer uurtarief in",
+    payPositionMap:"Salarisrange",
+    minimumToMid:"Minimum tot midpoint",
+    midToMaximum:"Midpoint tot maximum",
+    outsideRange:"Buiten range",
+    minShort:"Min",
+    midShort:"Mid",
+    maxShort:"Max",
+    rateShort:"Tarief",
+    noRateYet:"Nog geen tarief ingevoerd",
+    minPoint:"Minimum point",
+    midPoint:"Midpoint",
+    maxPoint:"Maximum point",
+    annual:"Jaar",
+    proposedRate:"Voorgesteld tarief",
+    selectedScale:"Geselecteerde schaal",
+    vsMidpointShort:"t.o.v. midpoint",
+    caoRangeCheck:"CAO-range check",
+    midpointPosition:"Positie t.o.v. midpoint",
+    minimumWage:"Minimumloon",
+    caoRange:"CAO-range",
+    midpointVisual:"Midpoint",
+    ok:"OK",
+    review:"Review",
+    stop:"Stop",
+    midpointOk:"Op of onder midpoint",
+    midpointTooHigh:"Boven midpoint",
+    midpointTileDetail:(rate, mid)=>`${rate} t.o.v. midpoint ${mid}`,
+    wageTileDetail:(rate, wage)=>rate === null ? `Minimumloon: ${wage}` : `${rate} t.o.v. minimumloon ${wage}`,
+    rangeTileDetail:(rate, min, max)=>rate === null ? `${min} - ${max}` : `${rate} t.o.v. ${min} - ${max}`,
+    minimumWageForAge:"Minimumloon voor leeftijd",
+    positionAgainstMidpoint:"Positie ten opzichte van midpoint",
+    midpointAlert:"Uurtarief overschrijdt het midpoint",
+    midpointAlertDetail:(rate, mid)=>`${rate} ligt boven het midpoint ${mid}.`,
+    moreDetails:"Details",
+    checks:"Controles",
+    scenarioComparison:"Scenariovergelijking",
+    recommendationSummary:"Aanbevelingssamenvatting",
+    pointsByPosition:"Minimum / Mid / Maximum per geselecteerde functie",
+    auditNote:"Het profielniveau wordt gekoppeld aan de lagere, middelste of hogere schaal die beschikbaar is voor de geselecteerde functie.",
+    allScales:"Alle CAO-schalen A t/m M",
+    allowedScales:"toegestane schalen",
+    scales:"schalen",
+    availableScales:"Beschikbare schalen voor",
+    age21:"21 of ouder",
+    belowLegalMinimum:"Onder wettelijk minimumloon",
+    belowCaoMinimum:"Onder minimum CAO-schaal",
+    aboveCaoMaximum:"Boven maximum CAO-schaal",
+    withinRange:"Binnen range",
+    missingRateMessage:"Voer het uurtarief in om de controles te berekenen.",
+    belowLegalMinimumMessage:wage=>`Tarief ligt onder het wettelijk minimumloon van ${wage}.`,
+    belowCaoMinimumMessage:min=>`Tarief ligt onder het minimum van de geselecteerde CAO-schaal: ${min}.`,
+    aboveCaoMaximumMessage:max=>`Tarief ligt boven het maximum van de geselecteerde CAO-schaal: ${max}.`,
+    withinRangeMessage:"Tarief ligt binnen de geselecteerde CAO-schaal en minimumlooncontrole.",
+    atOrBelowMidpoint:"Op of onder midpoint",
+    aboveMidpoint:"Uurtarief overschrijdt het midpoint",
+    profileLogic:{
+      starter:"Starter / ontwikkelend profiel, lagere schaal binnen de pathway-range",
+      matching:"Volledig passend profiel, middelste schaal waar beschikbaar",
+      senior:"Sterk / senior profiel, hogere schaal binnen de pathway-range"
+    },
+    category:{
+      "Business Support":"Business Support",
+      "Research / Data & Digital":"Research / Data & Digital",
+      "Production & Operations":"Productie & Operations",
+      "Sales":"Sales",
+      "Professional":"Professional",
+      "Management":"Management"
+    },
+    table:{
+      scale:"Schaal", minHour:"Min uur", midHour:"Mid uur", maxHour:"Max uur",
+      minYear:"Min jaar", midYear:"Mid jaar", maxYear:"Max jaar"
+    },
+    summary:{
+      title:"CAO salarischeck",
+      position:"Functie",
+      allowed:"Toegestane CAO-schalen",
+      selected:"Geselecteerde CAO-schaal",
+      logic:"Selectielogica",
+      min:"Minimum point",
+      mid:"Midpoint",
+      max:"Maximum point",
+      current:"Huidig/voorgesteld uurtarief",
+      vsMid:"Positie t.o.v. midpoint",
+      midCheck:"Midpoint check",
+      legal:"Minimumlooncheck voor leeftijd",
+      range:"CAO-range check",
+      status:"Algemene status",
+      ok:"OK",
+      belowWage:"Onder minimumloon",
+      belowMin:"Onder minimum geselecteerde schaal",
+      aboveMax:"Boven maximum geselecteerde schaal",
+      within:"Binnen geselecteerde schaalrange",
+      note:"Let op: als de geselecteerde pathway meerdere schalen bevat, moet de exacte schaal vóór finale goedkeuring door de manager worden gevalideerd op basis van functieniveau, verantwoordelijkheden en kandidaatprofiel."
+    }
+  }
 };
 
-const profileLogic = {
-  starter:"Starter / developing profile, lower scale in pathway range",
-  matching:"Fully matching profile, middle scale where available",
-  senior:"Strong / senior profile, higher scale in pathway range"
-};
-
+const LANG_KEY = "msd_cao_salary_check_language";
 let activeProfile = "matching";
+let currentLanguage = normalizeLanguage(localStorage.getItem(LANG_KEY) || localStorage.getItem("rw_lang") || "en");
 
 const el = id => document.getElementById(id);
-const euro = value => new Intl.NumberFormat("nl-NL",{style:"currency",currency:"EUR",minimumFractionDigits:2}).format(value);
-const intfmt = value => new Intl.NumberFormat("nl-NL",{maximumFractionDigits:0}).format(value);
+function normalizeLanguage(lang){
+  const normalized = String(lang || "").toLowerCase().slice(0,2);
+  return normalized === "nl" ? "nl" : "en";
+}
+function t(key){
+  return translations[currentLanguage][key] || translations.en[key] || key;
+}
+function locale(){
+  return currentLanguage === "nl" ? "nl-NL" : "en-IE";
+}
+const euro = value => new Intl.NumberFormat(locale(),{style:"currency",currency:"EUR",minimumFractionDigits:2}).format(value);
+const intfmt = value => new Intl.NumberFormat(locale(),{maximumFractionDigits:0}).format(value);
 
 function selectedPosition(){
   const [category, pathway] = el("position").value.split("||");
@@ -627,28 +1204,41 @@ function currentRate(){
   return Number.isFinite(value) ? value : null;
 }
 
-function meritFor(rate, midpoint){
+function midpointFor(rate, midpoint){
   if(rate === null) return null;
   const pct = rate / midpoint * 100;
-  return {pct,band:merit.find(item => pct >= item.min && pct < item.max)};
+  return {pct,above:rate > midpoint};
+}
+
+function clamp(value, min, max){
+  return Math.max(min, Math.min(max, value));
+}
+
+function markerPosition(value, min, max){
+  const span = max - min || 1;
+  return clamp((value - min) / span * 100, 0, 100);
 }
 
 function checkStatus(rate, row, minWage){
-  if(rate === null) return {kind:"", label:"Enter hourly rate", message:"Enter the hourly rate to calculate checks."};
-  if(rate < minWage) return {kind:"stop", label:"Below legal minimum wage", message:`Rate is below legal minimum wage of ${euro(minWage)}.`};
-  if(rate < row.hour[0]) return {kind:"warn", label:"Below CAO scale minimum", message:`Rate is below the selected CAO scale minimum of ${euro(row.hour[0])}.`};
-  if(rate > row.hour[2]) return {kind:"stop", label:"Above CAO scale maximum", message:`Rate is above the selected CAO scale maximum of ${euro(row.hour[2])}.`};
-  return {kind:"ok", label:"Within range", message:"Rate is within the selected CAO scale and minimum wage checks."};
+  if(rate === null) return {kind:"", label:t("enterRate"), message:t("missingRateMessage")};
+  if(rate < minWage) return {kind:"stop", label:t("belowLegalMinimum"), message:t("belowLegalMinimumMessage")(euro(minWage))};
+  if(rate < row.hour[0]) return {kind:"warn", label:t("belowCaoMinimum"), message:t("belowCaoMinimumMessage")(euro(row.hour[0]))};
+  if(rate > row.hour[2]) return {kind:"stop", label:t("aboveCaoMaximum"), message:t("aboveCaoMaximumMessage")(euro(row.hour[2]))};
+  return {kind:"ok", label:t("withinRange"), message:t("withinRangeMessage")};
 }
 
 function fillInputs(){
+  const previousPosition = el("position").value;
+  const previousAge = el("age").value;
   el("position").innerHTML = Object.entries(pathways).map(([category, group]) => {
     const options = Object.entries(group).map(([pathway, allowed]) => {
-      return `<option value="${category}||${pathway}">${category} - ${pathway} · scales ${allowed.join("-")}</option>`;
+      return `<option value="${category}||${pathway}">${translations[currentLanguage].category[category]} - ${pathway}</option>`;
     }).join("");
-    return `<optgroup label="${category}">${options}</optgroup>`;
+    return `<optgroup label="${translations[currentLanguage].category[category]}">${options}</optgroup>`;
   }).join("");
-  el("age").innerHTML = `<option value="21">21 or older</option>` + [20,19,18,17,16,15].map(age => `<option value="${age}">${age}</option>`).join("");
+  if(previousPosition) el("position").value = previousPosition;
+  el("age").innerHTML = `<option value="21">${t("age21")}</option>` + [20,19,18,17,16,15].map(age => `<option value="${age}">${age}</option>`).join("");
+  if(previousAge) el("age").value = previousAge;
   updateManualScaleOptions();
   buildAllScalesTable();
 }
@@ -676,9 +1266,10 @@ function buildScenarios(selected, rate, age){
     const status = scenarioStatus(rate, scale, age);
     const active = profile === activeProfile && el("scaleMode").value !== "manual";
     return `<div class="scenario ${active ? "active" : ""}">
-      <div class="scenario-name">${profileLabels[profile]}</div>
+      <div class="scenario-name">${t(profile)}</div>
       <div class="scenario-scale">${scale}</div>
       <div class="scenario-sub">${euro(row.hour[0])} - ${euro(row.hour[2])}</div>
+      <div class="scenario-points">${t("minPoint")}: ${euro(row.hour[0])}<br>${t("midPoint")}: ${euro(row.hour[1])}<br>${t("maxPoint")}: ${euro(row.hour[2])}</div>
       <span class="scenario-status ${status.kind}">${status.label}</span>
     </div>`;
   }).join("");
@@ -686,7 +1277,8 @@ function buildScenarios(selected, rate, age){
 
 function buildAvailableTable(activeScale){
   const selected = selectedPosition();
-  let html = "<tr><th>Scale</th><th>Min hour</th><th>Mid hour</th><th>Max hour</th><th>Min year</th><th>Mid year</th><th>Max year</th></tr>";
+  const th = translations[currentLanguage].table;
+  let html = `<tr><th>${th.scale}</th><th>${th.minHour}</th><th>${th.midHour}</th><th>${th.maxHour}</th><th>${th.minYear}</th><th>${th.midYear}</th><th>${th.maxYear}</th></tr>`;
   selected.allowed.forEach(scale => {
     const row = scales[scale];
     html += `<tr class="${scale === activeScale ? "selected" : ""}"><td><b>${scale}</b></td><td>${euro(row.hour[0])}</td><td>${euro(row.hour[1])}</td><td>${euro(row.hour[2])}</td><td>EUR ${intfmt(row.annual[0])}</td><td>EUR ${intfmt(row.annual[1])}</td><td>EUR ${intfmt(row.annual[2])}</td></tr>`;
@@ -695,7 +1287,8 @@ function buildAvailableTable(activeScale){
 }
 
 function buildAllScalesTable(){
-  let html = "<tr><th>Scale</th><th>Min year</th><th>Min hour</th><th>Mid year</th><th>Mid hour</th><th>Max year</th><th>Max hour</th></tr>";
+  const th = translations[currentLanguage].table;
+  let html = `<tr><th>${th.scale}</th><th>${th.minYear}</th><th>${th.minHour}</th><th>${th.midYear}</th><th>${th.midHour}</th><th>${th.maxYear}</th><th>${th.maxHour}</th></tr>`;
   Object.keys(scales).forEach(scale => {
     const row = scales[scale];
     html += `<tr><td><b>${scale}</b></td><td>EUR ${intfmt(row.annual[0])}</td><td>${euro(row.hour[0])}</td><td>EUR ${intfmt(row.annual[1])}</td><td>${euro(row.hour[1])}</td><td>EUR ${intfmt(row.annual[2])}</td><td>${euro(row.hour[2])}</td></tr>`;
@@ -703,28 +1296,87 @@ function buildAllScalesTable(){
   el("allScalesTable").innerHTML = html;
 }
 
-function buildSummary(selected, scale, row, rate, age, wage, meritResult, status){
-  const candidate = el("candidate").value.trim() || "Candidate";
-  const logic = el("scaleMode").value === "manual" ? "Manual CAO scale override" : profileLogic[activeProfile];
-  let text = `${candidate} - CAO salary matrix assessment\n\n`;
-  text += `Position: ${selected.label}\n`;
-  text += `Allowed CAO scales: ${selected.allowed.join(", ")}\n`;
-  text += `Selected CAO scale: ${scale}\n`;
-  text += `Selection logic: ${logic}\n\n`;
-  text += `Hourly range: ${euro(row.hour[0])} - ${euro(row.hour[2])}\n`;
-  text += `Annual range: EUR ${intfmt(row.annual[0])} - EUR ${intfmt(row.annual[2])}\n`;
-  text += `Midpoint: ${euro(row.hour[1])}\n`;
-  if(rate !== null){
-    const rangeCheck = rate < row.hour[0] ? "Below selected scale minimum" : rate > row.hour[2] ? "Above selected scale maximum" : "Within selected scale range";
-    text += `\nCurrent/proposed hourly rate: ${euro(rate)}\n`;
-    text += `Position vs midpoint: ${meritResult.pct.toFixed(1)}%\n`;
-    text += `Merit matrix band: ${meritResult.band.label}\n`;
-    text += `Merit increase percentage: ${meritResult.band.inc.toFixed(2)}%\n`;
-    text += `Legal minimum wage check for age ${age}: ${rate >= wage ? "OK" : "Below minimum wage"}\n`;
-    text += `CAO range check: ${rangeCheck}\n`;
-    text += `Overall status: ${status.label}\n`;
+function setCheckCard(id, kind, status, detail){
+  const card = el(id);
+  card.className = `check-card ${kind || ""}`;
+  card.querySelector("strong").textContent = status;
+  card.querySelector("span").textContent = detail;
+}
+
+function updateVisuals(row, rate, wage, status, midpointResult){
+  const min = row.hour[0];
+  const mid = row.hour[1];
+  const max = row.hour[2];
+  el("rangeMap").style.setProperty("--mid-pos", `${markerPosition(mid, min, max)}%`);
+  el("axisMin").textContent = `${t("minShort")} ${euro(min)}`;
+  el("axisMid").textContent = `${t("midShort")} ${euro(mid)}`;
+  el("axisMax").textContent = `${t("maxShort")} ${euro(max)}`;
+  el("minMarker").style.left = `${markerPosition(min, min, max)}%`;
+  el("midMarker").style.left = `${markerPosition(mid, min, max)}%`;
+  el("maxMarker").style.left = `${markerPosition(max, min, max)}%`;
+  el("minMarkerLabel").textContent = `${t("minShort")}\n${euro(min)}`;
+  el("midMarkerLabel").textContent = `${t("midShort")}\n${euro(mid)}`;
+  el("maxMarkerLabel").textContent = `${t("maxShort")}\n${euro(max)}`;
+
+  const rateMarker = el("rateMarker");
+  if(rate === null){
+    rateMarker.style.display = "none";
+    el("visualValue").textContent = t("noRateYet");
+  } else {
+    rateMarker.style.display = "block";
+    rateMarker.style.left = `${markerPosition(rate, min, max)}%`;
+    rateMarker.className = `map-marker rate ${status.kind || ""}`;
+    el("rateMarkerLabel").textContent = `${t("rateShort")}\n${euro(rate)}`;
+    el("visualValue").textContent = `${t("rateShort")}: ${euro(rate)}`;
   }
-  text += "\nNote: if the selected pathway contains multiple scales, the exact scale should be validated by the manager based on job level, responsibilities and candidate profile before final approval.";
+
+  const wageOk = rate === null ? "" : rate >= wage ? "ok" : "stop";
+  setCheckCard(
+    "visualWageCheck",
+    wageOk,
+    rate === null ? "-" : rate >= wage ? t("ok") : t("stop"),
+    t("wageTileDetail")(rate === null ? null : euro(rate), euro(wage))
+  );
+
+  const rangeKind = rate === null ? "" : rate < min || rate > max ? "stop" : "ok";
+  setCheckCard(
+    "visualRangeCheck",
+    rangeKind,
+    rate === null ? "-" : status.label,
+    t("rangeTileDetail")(rate === null ? null : euro(rate), euro(min), euro(max))
+  );
+
+  const midKind = rate === null ? "" : midpointResult.above ? "stop" : "ok";
+  setCheckCard(
+    "visualMidpointCheck",
+    midKind,
+    rate === null ? "-" : midpointResult.above ? t("midpointTooHigh") : t("midpointOk"),
+    rate === null ? `${t("midPoint")}: ${euro(mid)}` : t("midpointTileDetail")(euro(rate), euro(mid))
+  );
+}
+
+function buildSummary(selected, scale, row, rate, age, wage, midpointResult, status){
+  const s = translations[currentLanguage].summary;
+  const candidate = el("candidate").value.trim() || t("defaultCandidate");
+  const logic = el("scaleMode").value === "manual" ? t("manualScale") : translations[currentLanguage].profileLogic[activeProfile];
+  let text = `${candidate} - ${s.title}\n\n`;
+  text += `${s.position}: ${selected.label}\n`;
+  text += `${s.allowed}: ${selected.allowed.join(", ")}\n`;
+  text += `${s.selected}: ${scale}\n`;
+  text += `${s.logic}: ${logic}\n\n`;
+  text += `${s.min}: ${euro(row.hour[0])} / EUR ${intfmt(row.annual[0])} ${t("annual").toLowerCase()}\n`;
+  text += `${s.mid}: ${euro(row.hour[1])} / EUR ${intfmt(row.annual[1])} ${t("annual").toLowerCase()}\n`;
+  text += `${s.max}: ${euro(row.hour[2])} / EUR ${intfmt(row.annual[2])} ${t("annual").toLowerCase()}\n`;
+  if(rate !== null){
+    const rangeCheck = rate < row.hour[0] ? s.belowMin : rate > row.hour[2] ? s.aboveMax : s.within;
+    text += `\n${s.current}: ${euro(rate)}\n`;
+    text += `${s.vsMid}: ${midpointResult.pct.toFixed(1)}%\n`;
+    text += `${s.midCheck}: ${midpointResult.above ? t("aboveMidpoint") : t("atOrBelowMidpoint")}\n`;
+    text += `${s.legal} ${age}: ${rate >= wage ? s.ok : s.belowWage}\n`;
+    text += `${s.range}: ${rangeCheck}\n`;
+    text += `${s.status}: ${status.label}\n`;
+  }
+  text += `\n${s.note}`;
   return text;
 }
 
@@ -736,40 +1388,53 @@ function update(){
   const rate = currentRate();
   const age = Number(el("age").value || 21);
   const wage = minimumWage[age] || minimumWage[21];
-  const meritResult = meritFor(rate, row.hour[1]);
+  const midpointResult = midpointFor(rate, row.hour[1]);
   const status = checkStatus(rate, row, wage);
 
   el("scaleOut").textContent = scale;
-  el("pathOut").textContent = `${selected.label} · allowed scales ${selected.allowed.join(", ")}`;
-  el("statusOut").textContent = status.label;
-  el("statusOut").className = `status ${status.kind}`;
-  el("hourlyRange").textContent = `${euro(row.hour[0])} - ${euro(row.hour[2])}`;
-  el("annualRange").textContent = `Annual EUR ${intfmt(row.annual[0])} - EUR ${intfmt(row.annual[2])}`;
+  el("pathOut").textContent = `${selected.label} - ${t("allowedScales")} ${selected.allowed.join(", ")}`;
+  const mainStatusKind = rate !== null && midpointResult.above ? "stop" : status.kind;
+  const mainStatusLabel = rate !== null && midpointResult.above ? t("aboveMidpoint") : status.label;
+  el("statusOut").textContent = mainStatusLabel;
+  el("statusOut").className = `status ${mainStatusKind}`;
+  el("statusOut").hidden = rate !== null && midpointResult.above && status.kind === "ok";
+  el("minPoint").textContent = euro(row.hour[0]);
+  el("midPoint").textContent = euro(row.hour[1]);
+  el("maxPoint").textContent = euro(row.hour[2]);
+  el("minPointAnnual").textContent = `${t("annual")} EUR ${intfmt(row.annual[0])}`;
+  el("midPointAnnual").textContent = `${t("annual")} EUR ${intfmt(row.annual[1])}`;
+  el("maxPointAnnual").textContent = `${t("annual")} EUR ${intfmt(row.annual[2])}`;
   el("rateOut").textContent = rate === null ? "-" : euro(rate);
-  el("rangeCheck").textContent = rate === null ? "Enter hourly rate" : status.label;
+  el("rateText").textContent = rate === null ? t("enterRate") : `${t("selectedScale")} ${scale}`;
+  el("rangeCheck").textContent = rate === null ? "-" : status.label;
+  el("rangeText").textContent = `${euro(row.hour[0])} - ${euro(row.hour[2])}`;
+  el("wageOut").textContent = euro(wage);
+  el("wageText").textContent = `${t("minimumWageForAge")} ${age}`;
+  updateVisuals(row, rate, wage, status, midpointResult);
 
   if(rate === null){
     el("midpointOut").textContent = "-";
-    el("midpointText").textContent = "Enter hourly rate";
-    el("meritOut").textContent = "-";
-    el("meritBand").textContent = "-";
+    el("midpointText").textContent = t("enterRate");
     el("meterLabel").textContent = "-";
     el("meterFill").style.width = "0%";
+    el("midpointAlert").hidden = true;
+    el("midpointAlertText").textContent = "";
   } else {
-    el("midpointOut").textContent = `${meritResult.pct.toFixed(1)}%`;
-    el("midpointText").textContent = `${euro(rate)} vs midpoint ${euro(row.hour[1])}`;
-    el("meritOut").textContent = `${meritResult.band.inc.toFixed(2)}%`;
-    el("meritBand").textContent = meritResult.band.label;
-    el("meterLabel").textContent = `${meritResult.pct.toFixed(1)}%`;
-    el("meterFill").style.width = `${Math.max(0, Math.min(100, meritResult.pct / 130 * 100))}%`;
+    el("midpointOut").textContent = `${midpointResult.pct.toFixed(1)}%`;
+    el("midpointText").textContent = `${euro(rate)} ${t("vsMidpointShort")} ${euro(row.hour[1])}`;
+    el("meterLabel").textContent = `${midpointResult.pct.toFixed(1)}%`;
+    el("meterFill").style.width = `${Math.max(0, Math.min(100, midpointResult.pct / 130 * 100))}%`;
+    el("midpointAlert").hidden = !midpointResult.above;
+    el("midpointAlertText").textContent = midpointResult.above ? t("midpointAlertDetail")(euro(rate), euro(row.hour[1])) : "";
   }
 
   el("messageOut").textContent = status.message;
   el("messageOut").className = `message ${status.kind}`;
+  el("messageOut").hidden = rate !== null && status.kind === "ok";
   el("scenarioGrid").innerHTML = buildScenarios(selected, rate, age);
-  el("overrideNote").textContent = `Available scales for ${selected.label}: ${selected.allowed.join(", ")}`;
+  el("overrideNote").textContent = `${t("availableScales")} ${selected.label}: ${selected.allowed.join(", ")}`;
   buildAvailableTable(scale);
-  el("summary").value = buildSummary(selected, scale, row, rate, age, wage, meritResult, status);
+  el("summary").value = buildSummary(selected, scale, row, rate, age, wage, midpointResult, status);
 }
 
 function reset(){
@@ -781,6 +1446,78 @@ function reset(){
   activeProfile = "matching";
   document.querySelectorAll(".segment").forEach(button => button.classList.toggle("active", button.dataset.profile === activeProfile));
   update();
+}
+
+function updateScaleModeOptions(){
+  const previous = el("scaleMode").value || "auto";
+  el("scaleMode").innerHTML = `<option value="auto">${t("autoScale")}</option><option value="manual">${t("manualScaleMode")}</option>`;
+  el("scaleMode").value = previous;
+}
+
+function updateStaticLanguage(){
+  document.documentElement.lang = currentLanguage;
+  document.body.dataset.lang = currentLanguage;
+  el("languageSwitchLabel").textContent = t("language");
+  el("inputsHead").textContent = t("inputs");
+  el("candidateLabel").textContent = t("candidateName");
+  el("candidate").placeholder = t("optional");
+  el("positionLabel").textContent = t("position");
+  el("profileLabel").textContent = t("profileLevel");
+  document.querySelector(".segments").setAttribute("aria-label", t("profileLevel"));
+  document.querySelectorAll(".segment").forEach(button => {
+    button.textContent = t(button.dataset.profile);
+  });
+  el("ageLabel").textContent = t("age");
+  el("rateLabel").textContent = t("hourlyRate");
+  el("advancedSummary").textContent = t("advanced");
+  el("scaleModeLabel").textContent = t("scaleSelection");
+  updateScaleModeOptions();
+  el("manualScaleLabel").textContent = t("manualScale");
+  el("copyBtn").textContent = t("copySummary");
+  el("printBtn").textContent = t("printPdf");
+  el("resetBtn").textContent = t("reset");
+  el("recommendedScaleLabel").textContent = t("recommendedScale");
+  el("statusOut").textContent = t("enterRate");
+  el("visualTitle").textContent = t("payPositionMap");
+  el("visualValue").textContent = t("noRateYet");
+  el("zoneBelowMid").textContent = t("minimumToMid");
+  el("zoneAboveMid").textContent = t("midToMaximum");
+  el("zoneOutside").textContent = t("outsideRange");
+  el("visualWageTitle").textContent = t("minimumWage");
+  el("visualRangeTitle").textContent = t("caoRange");
+  el("visualMidpointTitle").textContent = t("midpointVisual");
+  el("moreDetailsSummary").textContent = t("moreDetails");
+  el("checksSummary").textContent = t("checks");
+  el("minPointLabel").textContent = t("minPoint");
+  el("midPointLabel").textContent = t("midPoint");
+  el("maxPointLabel").textContent = t("maxPoint");
+  el("proposedRateLabel").textContent = t("proposedRate");
+  el("caoRangeCheckLabel").textContent = t("caoRangeCheck");
+  el("midpointPositionLabel").textContent = t("midpointPosition");
+  el("minimumWageLabel").textContent = t("minimumWage");
+  el("meterTitle").textContent = t("positionAgainstMidpoint");
+  el("midpointAlertTitle").textContent = t("midpointAlert");
+  el("scenarioSummary").textContent = t("scenarioComparison");
+  el("recommendationSummary").textContent = t("recommendationSummary");
+  el("pointsSummary").textContent = t("pointsByPosition");
+  el("auditNote").textContent = t("auditNote");
+  el("allScalesSummary").textContent = t("allScales");
+  el("langEn").classList.toggle("active", currentLanguage === "en");
+  el("langNl").classList.toggle("active", currentLanguage === "nl");
+}
+
+function setLanguage(language, notifyParent = false){
+  currentLanguage = normalizeLanguage(language);
+  localStorage.setItem(LANG_KEY, currentLanguage);
+  localStorage.setItem("rw_lang", currentLanguage);
+  localStorage.setItem("doc_lang", currentLanguage);
+  localStorage.setItem("supplier_lang", currentLanguage);
+  updateStaticLanguage();
+  fillInputs();
+  update();
+  if(notifyParent && window.parent && window.parent !== window){
+    try{ window.parent.postMessage({type:"rw:setLang", lang:currentLanguage}, "*"); }catch(error){}
+  }
 }
 
 document.querySelectorAll(".segment").forEach(button => {
@@ -798,19 +1535,25 @@ el("candidate").addEventListener("input", update);
 el("scaleMode").addEventListener("change", update);
 el("manualScale").addEventListener("change", update);
 el("resetBtn").addEventListener("click", reset);
+el("langEn").addEventListener("click", () => setLanguage("en", true));
+el("langNl").addEventListener("click", () => setLanguage("nl", true));
 el("copyBtn").addEventListener("click", async () => {
   try{
     await navigator.clipboard.writeText(el("summary").value);
-    el("copyBtn").textContent = "Copied";
-    setTimeout(() => { el("copyBtn").textContent = "Copy summary"; }, 1200);
+    el("copyBtn").textContent = t("copied");
+    setTimeout(() => { el("copyBtn").textContent = t("copySummary"); }, 1200);
   }catch(error){
     el("summary").focus();
     el("summary").select();
   }
 });
 
-fillInputs();
-update();
+window.__rwApplyModuleLang = language => setLanguage(language);
+window.addEventListener("message", event => {
+  if(event.data && event.data.type === "rw:setLang") setLanguage(event.data.lang);
+});
+
+setLanguage(currentLanguage);
 </script>
 </body>
 </html>
