@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MSD CAO Salary Check v14</title>
+<title>MSD CAO Salary Check v15</title>
 <style>
 :root{
   --page:#f7f8fa;
@@ -290,7 +290,7 @@ input:focus,select:focus,textarea:focus{
   font-size:12px;
 }
 .point-grid{
-  display:grid;
+  display:none;
   grid-template-columns:repeat(3,1fr);
   gap:0;
   margin:0 0 14px;
@@ -401,12 +401,7 @@ input:focus,select:focus,textarea:focus{
   font-size:15px;
   font-weight:850;
 }
-.visual-value{
-  color:var(--muted);
-  font-size:13px;
-  font-weight:750;
-  text-align:right;
-}
+.visual-value{display:none}
 .range-map{
   --mid-pos:50%;
   --rate-pos:50%;
@@ -415,83 +410,59 @@ input:focus,select:focus,textarea:focus{
   position:relative;
 }
 .range-alert{
-  display:grid;
-  grid-template-columns:36px 1fr;
-  align-items:center;
-  gap:12px;
-  margin:0 0 12px;
-  border:1px solid rgba(180,35,24,.35);
-  border-left:5px solid #d92d20;
+  display:block;
+  margin:0 0 10px;
+  border:1px solid #d13438;
+  border-left:4px solid #d13438;
   border-radius:8px;
-  padding:11px 13px;
-  background:linear-gradient(135deg,#fff7f5 0%,#ffffff 62%,#fff0ee 100%);
-  color:#b42318;
-  box-shadow:0 14px 30px rgba(180,35,24,.12);
-  animation:warningReveal .34s cubic-bezier(.2,.8,.2,1);
+  padding:10px 12px;
+  background:#fff4f4;
+  color:#a4262c;
+  box-shadow:none;
+  animation:warningReveal .24s ease-out;
 }
 .range-alert[hidden],
 .rate-pin[hidden],
-.rate-beam[hidden],
-.range-delta[hidden]{
+.rate-beam[hidden]{
   display:none;
 }
 .range-alert-icon{
-  width:36px;
-  height:36px;
-  border-radius:999px;
-  display:grid;
-  place-items:center;
-  background:#d92d20;
-  color:#fff;
-  font-size:21px;
-  font-weight:900;
-  line-height:1;
-  box-shadow:0 0 0 7px rgba(217,45,32,.10);
+  display:none;
 }
 .range-alert-copy strong{
   display:block;
-  font-size:15px;
+  font-size:14px;
   line-height:1.25;
+  font-weight:850;
 }
 .range-alert-copy span{
-  display:block;
-  margin-top:3px;
-  color:#912018;
-  font-size:12px;
-  font-weight:800;
+  display:none;
 }
 .range-board{
   position:relative;
-  min-height:248px;
-  border:1px solid #bfd8e8;
+  min-height:214px;
+  border:1px solid #d1d1d1;
   border-radius:8px;
   overflow:hidden;
-  padding:18px 18px 16px;
-  background:
-    radial-gradient(circle at 26% 88%,rgba(95,199,223,.20) 0,transparent 32%),
-    radial-gradient(circle at 78% 14%,rgba(217,45,32,.10) 0,transparent 24%),
-    linear-gradient(180deg,#fbfdff 0%,#f4f9fc 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
+  padding:18px;
+  background:#ffffff;
+  box-shadow:none;
 }
 .range-board::before{
   content:"";
   position:absolute;
   inset:0;
   background:
-    linear-gradient(rgba(47,95,143,.07) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(47,95,143,.07) 1px,transparent 1px);
-  background-size:34px 34px;
-  mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 86%,transparent 100%);
-  opacity:.55;
+    linear-gradient(90deg,transparent 0,transparent calc(var(--mid-pos,50%) - 1px),rgba(209,52,56,.08) calc(var(--mid-pos,50%) - 1px),rgba(209,52,56,.08) 100%);
+  opacity:1;
 }
 .range-board-top,
-.range-corridor,
-.range-delta{
+.range-corridor{
   position:relative;
   z-index:1;
 }
 .range-board-top{
-  display:flex;
+  display:none;
   justify-content:space-between;
   gap:14px;
   align-items:flex-start;
@@ -499,17 +470,17 @@ input:focus,select:focus,textarea:focus{
 .range-threshold-copy span,
 .range-board-status span{
   display:block;
-  color:#667085;
-  font-size:10px;
+  color:#605e5c;
+  font-size:11px;
   font-weight:850;
-  letter-spacing:.06em;
+  letter-spacing:.03em;
   text-transform:uppercase;
 }
 .range-threshold-copy strong{
   display:block;
   margin-top:4px;
-  color:#1f2933;
-  font-size:22px;
+  color:#201f1e;
+  font-size:20px;
   line-height:1;
 }
 .range-board-status{
@@ -519,70 +490,66 @@ input:focus,select:focus,textarea:focus{
 .range-board-status strong{
   display:block;
   margin-top:4px;
-  color:#2f5f8f;
-  font-size:18px;
+  color:#0078d4;
+  font-size:20px;
   line-height:1.1;
 }
 .range-map.mid-exceeded .range-board-status strong{
-  color:#b42318;
+  color:#a4262c;
 }
 .range-corridor{
-  height:142px;
-  margin-top:16px;
-  padding:50px 18px 0;
+  height:118px;
+  margin-top:18px;
+  padding:46px 0 0;
 }
 .range-rail{
   position:relative;
-  height:34px;
-  border-radius:999px;
+  height:22px;
+  border-radius:4px;
   overflow:hidden;
-  background:#e6edf4;
-  box-shadow:inset 0 0 0 1px #c9d8e4,0 16px 26px rgba(47,95,143,.12);
+  background:#f3f2f1;
+  box-shadow:inset 0 0 0 1px #d2d0ce;
 }
 .range-rail-safe{
   position:absolute;
   inset:0 auto 0 0;
   width:var(--mid-pos,50%);
-  border-radius:999px 0 0 999px;
-  background:linear-gradient(90deg,#6fd3e5 0%,#17b9aa 48%,#079455 100%);
-  box-shadow:0 0 28px rgba(0,133,124,.22);
+  border-radius:4px 0 0 4px;
+  background:#deecf9;
+  border-right:1px solid rgba(0,120,212,.25);
 }
 .range-rail-risk{
   position:absolute;
   inset:0 0 0 var(--mid-pos,50%);
-  border-radius:0 999px 999px 0;
-  background:
-    repeating-linear-gradient(135deg,rgba(217,45,32,.24) 0 9px,rgba(217,45,32,.07) 9px 18px),
-    linear-gradient(90deg,#fff4f2 0%,#ffe7e3 100%);
-  opacity:.62;
+  border-radius:0 4px 4px 0;
+  background:#fdf3f4;
+  border-left:1px solid rgba(209,52,56,.22);
+  opacity:1;
 }
 .range-map.mid-exceeded .range-rail-risk{
-  background:
-    repeating-linear-gradient(135deg,rgba(217,45,32,.36) 0 9px,rgba(217,45,32,.12) 9px 18px),
-    linear-gradient(90deg,#fff0ed 0%,#ffd8d2 100%);
-  opacity:1;
+  background:#fde7e9;
 }
 .range-excess{
   position:absolute;
   left:var(--excess-start,50%);
-  top:-5px;
+  top:0;
   width:var(--excess-width,0%);
-  height:44px;
-  border-radius:0 999px 999px 0;
-  background:linear-gradient(90deg,#f97066 0%,#d92d20 100%);
-  box-shadow:0 0 0 4px rgba(217,45,32,.10),0 0 24px rgba(217,45,32,.22);
+  height:22px;
+  border-radius:0 4px 4px 0;
+  background:#d13438;
+  box-shadow:none;
   opacity:0;
   transform-origin:left center;
 }
 .range-map.mid-exceeded .range-excess{
-  opacity:.95;
-  animation:excessReveal .42s cubic-bezier(.2,.8,.2,1);
+  opacity:1;
+  animation:excessReveal .28s ease-out;
 }
 .range-mid-gate{
   position:absolute;
   left:var(--mid-pos,50%);
-  top:20px;
-  bottom:18px;
+  top:30px;
+  bottom:20px;
   width:0;
   transform:translateX(-50%);
   z-index:5;
@@ -593,149 +560,131 @@ input:focus,select:focus,textarea:focus{
   left:50%;
   top:0;
   bottom:0;
-  width:5px;
+  width:3px;
   transform:translateX(-50%);
-  border-radius:999px;
-  background:linear-gradient(180deg,#f97066 0%,#b42318 100%);
-  box-shadow:0 0 0 6px rgba(180,35,24,.08),0 0 22px rgba(180,35,24,.24);
+  border-radius:2px;
+  background:#d13438;
+  box-shadow:none;
 }
 .range-mid-gate::after{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:28px;
-  width:24px;
-  height:24px;
-  transform:translate(-50%,-50%);
-  border-radius:999px;
-  background:#b42318;
-  box-shadow:0 0 0 6px #fff,0 0 22px rgba(180,35,24,.22);
-}
-.range-map.mid-exceeded .range-mid-gate::before,
-.range-map.mid-exceeded .range-mid-gate::after{
-  animation:gatePulse .9s ease-out 1;
+  display:none;
 }
 .mid-gate-label{
   position:absolute;
   left:50%;
-  bottom:-24px;
+  bottom:-20px;
   transform:translateX(-50%);
-  min-width:116px;
+  min-width:92px;
   text-align:center;
-  color:#b42318;
+  color:#a4262c;
   font-size:11px;
-  font-weight:900;
+  font-weight:850;
   white-space:nowrap;
 }
 .rate-beam{
   position:absolute;
   left:var(--rate-pos,50%);
-  top:34px;
-  bottom:26px;
+  top:24px;
+  bottom:20px;
   width:2px;
   transform:translateX(-50%);
-  background:#2f5f8f;
-  box-shadow:0 0 18px rgba(47,95,143,.28);
+  background:#0078d4;
+  box-shadow:none;
   z-index:4;
 }
 .range-map.mid-exceeded .rate-beam{
-  background:#d92d20;
-  box-shadow:0 0 22px rgba(217,45,32,.35);
+  background:#a4262c;
 }
 .rate-pin{
   position:absolute;
   left:var(--rate-pos,50%);
-  top:0;
+  top:4px;
   transform:translateX(var(--pin-shift,-50%));
   z-index:7;
-  transition:left .32s cubic-bezier(.2,.8,.2,1);
+  transition:left .24s ease-out;
 }
 .pin-card{
-  min-width:108px;
-  border:1px solid #b8d5e8;
-  border-radius:8px;
-  padding:8px 10px;
+  min-width:104px;
+  border:1px solid #8a8886;
+  border-radius:4px;
+  padding:7px 9px;
   background:#fff;
-  box-shadow:0 14px 30px rgba(47,95,143,.14);
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
 }
 .pin-card span{
   display:block;
-  color:#667085;
+  color:#605e5c;
   font-size:10px;
   font-weight:850;
-  letter-spacing:.05em;
+  letter-spacing:.03em;
   text-transform:uppercase;
 }
 .pin-card strong{
   display:block;
   margin-top:2px;
-  color:#1f2933;
-  font-size:18px;
+  color:#201f1e;
+  font-size:17px;
   line-height:1;
 }
+.pin-card em{
+  display:none;
+  margin-top:4px;
+  color:#a4262c;
+  font-size:11px;
+  font-style:normal;
+  font-weight:800;
+}
 .rate-pin.stop .pin-card{
-  border-color:#f97066;
-  background:#fff7f5;
-  box-shadow:0 16px 34px rgba(180,35,24,.17);
+  border-color:#d13438;
+  background:#fff;
+  box-shadow:0 4px 14px rgba(209,52,56,.14);
 }
 .rate-pin.stop .pin-card span,
 .rate-pin.stop .pin-card strong{
-  color:#b42318;
+  color:#a4262c;
 }
-.range-map.mid-exceeded .rate-pin.stop{
-  animation:pinStop .44s cubic-bezier(.2,.8,.2,1);
+.rate-pin.stop .pin-card em{
+  display:block;
 }
 .range-scale{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:10px;
-  margin-top:10px;
+  margin-top:12px;
 }
 .range-scale span{
   min-width:0;
-  border:1px solid #d8e2ec;
-  border-radius:8px;
-  padding:10px 11px;
-  background:#fff;
+  border:0;
+  border-top:1px solid #edebe9;
+  border-radius:0;
+  padding:9px 0 0;
+  background:transparent;
 }
 .range-scale small{
   display:block;
-  color:#667085;
-  font-size:10px;
+  color:#605e5c;
+  font-size:11px;
   font-weight:850;
   text-transform:uppercase;
 }
 .range-scale strong{
   display:block;
   margin-top:3px;
-  color:#1f2933;
+  color:#201f1e;
   font-size:15px;
   white-space:nowrap;
 }
 .range-scale .mid-scale{
-  border-color:#f7b7b2;
-  background:#fff8f7;
+  border-color:#edebe9;
+  background:transparent;
+  text-align:center;
+}
+.range-scale span:last-child{
+  text-align:right;
 }
 .range-scale .mid-scale small,
 .range-scale .mid-scale strong{
-  color:#b42318;
-}
-.range-delta{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  margin-top:12px;
-  border:1px solid #fecdca;
-  border-radius:8px;
-  padding:8px 10px;
-  background:#fff7f5;
-  color:#b42318;
-  font-size:12px;
-  font-weight:850;
-  animation:warningReveal .34s cubic-bezier(.2,.8,.2,1);
-}
-.range-delta strong{
-  font-size:14px;
+  color:#a4262c;
 }
 @media(max-width:620px){
   .range-alert{
@@ -756,11 +705,11 @@ input:focus,select:focus,textarea:focus{
     font-size:10px;
   }
   .range-board{
-    min-height:226px;
+    min-height:214px;
     padding:14px 12px;
   }
   .range-board-top{
-    display:block;
+    display:none;
   }
   .range-board-status{
     margin-top:9px;
@@ -768,12 +717,12 @@ input:focus,select:focus,textarea:focus{
     text-align:left;
   }
   .range-corridor{
-    height:128px;
+    height:112px;
     margin-top:10px;
-    padding:48px 10px 0;
+    padding:44px 0 0;
   }
   .pin-card{
-    min-width:92px;
+    min-width:88px;
     padding:7px 8px;
   }
   .pin-card strong{
@@ -801,23 +750,11 @@ input:focus,select:focus,textarea:focus{
   from{transform:scaleX(.08);opacity:.25}
   to{transform:scaleX(1);opacity:.95}
 }
-@keyframes gatePulse{
-  0%{box-shadow:0 0 0 5px rgba(180,35,24,.05),0 0 14px rgba(180,35,24,.12)}
-  55%{box-shadow:0 0 0 12px rgba(217,45,32,.16),0 0 32px rgba(217,45,32,.40)}
-  100%{box-shadow:0 0 0 6px rgba(180,35,24,.08),0 0 22px rgba(180,35,24,.24)}
-}
-@keyframes pinStop{
-  0%,100%{transform:translateX(var(--pin-shift,-50%))}
-  35%{transform:translateX(var(--pin-shift,-50%)) translateY(-5px)}
-  70%{transform:translateX(var(--pin-shift,-50%)) translateY(2px)}
-}
 @media(prefers-reduced-motion:reduce){
   .range-alert,
-  .range-delta,
   .range-map.mid-exceeded .range-excess,
   .range-map.mid-exceeded .range-mid-gate::before,
-  .range-map.mid-exceeded .range-mid-gate::after,
-  .range-map.mid-exceeded .rate-pin.stop{
+  .range-map.mid-exceeded .range-mid-gate::after{
     animation:none;
   }
   .rate-pin{
@@ -1015,7 +952,7 @@ tr.selected td{
           <button id="langNl" type="button">NL</button>
         </div>
       </div>
-      <div class="version">v14</div>
+      <div class="version">v15</div>
     </div>
   </div>
 </header>
@@ -1127,12 +1064,9 @@ tr.selected td{
                   <div class="pin-card">
                     <span id="ratePinLabel">Rate</span>
                     <strong id="ratePinValue">-</strong>
+                    <em id="ratePinMeta"></em>
                   </div>
                 </div>
-              </div>
-              <div class="range-delta" id="rangeDelta" hidden>
-                <span id="rangeDeltaLabel">Over mid point</span>
-                <strong id="rangeDeltaValue">-</strong>
               </div>
             </div>
             <div class="range-scale">
@@ -1295,7 +1229,6 @@ const translations = {
     rangeBoardDesc:"Minimum, mid point, maximum and entered hourly rate shown on one decision line.",
     thresholdLabel:"Mid point threshold",
     currentRate:"Current rate",
-    overMidpoint:"Over mid point",
     midToMaximum:"Mid to maximum",
     outsideRange:"Outside range",
     minShort:"Min",
@@ -1416,7 +1349,6 @@ const translations = {
     rangeBoardDesc:"Minimum, midpoint, maximum en ingevoerd uurtarief op een beslislijn.",
     thresholdLabel:"Midpoint grens",
     currentRate:"Huidig tarief",
-    overMidpoint:"Boven midpoint",
     midToMaximum:"Midpoint tot maximum",
     outsideRange:"Buiten range",
     minShort:"Min",
@@ -1673,24 +1605,20 @@ function updateVisuals(row, rate, wage, status, midpointResult){
 
   const ratePin = el("ratePin");
   const rateBeam = el("rateBeam");
-  const rangeDelta = el("rangeDelta");
   if(rate === null){
     ratePin.hidden = true;
     rateBeam.hidden = true;
-    rangeDelta.hidden = true;
     el("visualValue").textContent = t("noRateYet");
     el("rangeBoardStatus").textContent = t("noRateYet");
   } else {
     const rateKind = midExceeded ? "stop" : status.kind || "ok";
     ratePin.hidden = false;
     rateBeam.hidden = false;
-    rangeDelta.hidden = !midExceeded;
     ratePin.className = `rate-pin ${rateKind}`;
     el("ratePinLabel").textContent = t("rateShort");
     el("ratePinValue").textContent = euro(rate);
+    el("ratePinMeta").textContent = midExceeded ? `+${euro(Math.max(0, rate - mid))}` : "";
     el("rangeBoardStatus").textContent = euro(rate);
-    el("rangeDeltaLabel").textContent = t("overMidpoint");
-    el("rangeDeltaValue").textContent = `+${euro(Math.max(0, rate - mid))}`;
     el("visualValue").textContent = `${t("rateShort")}: ${euro(rate)}`;
   }
 
