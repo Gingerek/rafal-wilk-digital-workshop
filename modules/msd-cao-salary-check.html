@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MSD CAO Salary Check v9</title>
+<title>MSD CAO Salary Check v10</title>
 <style>
 :root{
   --page:#f7f8fa;
@@ -698,7 +698,7 @@ tr.selected td{
           <button id="langNl" type="button">NL</button>
         </div>
       </div>
-      <div class="version">v9</div>
+      <div class="version">v10</div>
     </div>
   </div>
 </header>
@@ -882,8 +882,6 @@ tr.selected td{
             <div class="table-wrap"><table id="availableTable"></table></div>
             <p class="note" id="auditNote">Point selection maps to the lower, middle or higher scale available for the selected position.</p>
 
-            <h3 id="allScalesSummary" style="margin:18px 0 10px;font-size:15px">All CAO scales A to M</h3>
-            <div class="table-wrap"><table id="allScalesTable"></table></div>
           </div>
         </details>
       </div>
@@ -983,7 +981,6 @@ const translations = {
     recommendationSummary:"Recommendation summary",
     pointsByPosition:"Minimum / Mid / Maximum by selected position",
     auditNote:"Point selection maps to the lower, middle or higher scale available for the selected position.",
-    allScales:"All CAO scales A to M",
     allowedScales:"allowed scales",
     scales:"scales",
     availableScales:"Available scales for",
@@ -1102,7 +1099,6 @@ const translations = {
     recommendationSummary:"Aanbevelingssamenvatting",
     pointsByPosition:"Minimum / Mid / Maximum per geselecteerde functie",
     auditNote:"De puntselectie wordt gekoppeld aan de lagere, middelste of hogere schaal die beschikbaar is voor de geselecteerde functie.",
-    allScales:"Alle CAO-schalen A t/m M",
     allowedScales:"toegestane schalen",
     scales:"schalen",
     availableScales:"Beschikbare schalen voor",
@@ -1240,7 +1236,6 @@ function fillInputs(){
   el("age").innerHTML = `<option value="21">${t("age21")}</option>` + [20,19,18,17,16,15].map(age => `<option value="${age}">${age}</option>`).join("");
   if(previousAge) el("age").value = previousAge;
   updateManualScaleOptions();
-  buildAllScalesTable();
 }
 
 function updateManualScaleOptions(){
@@ -1284,16 +1279,6 @@ function buildAvailableTable(activeScale){
     html += `<tr class="${scale === activeScale ? "selected" : ""}"><td><b>${scale}</b></td><td>${euro(row.hour[0])}</td><td>${euro(row.hour[1])}</td><td>${euro(row.hour[2])}</td><td>EUR ${intfmt(row.annual[0])}</td><td>EUR ${intfmt(row.annual[1])}</td><td>EUR ${intfmt(row.annual[2])}</td></tr>`;
   });
   el("availableTable").innerHTML = html;
-}
-
-function buildAllScalesTable(){
-  const th = translations[currentLanguage].table;
-  let html = `<tr><th>${th.scale}</th><th>${th.minYear}</th><th>${th.minHour}</th><th>${th.midYear}</th><th>${th.midHour}</th><th>${th.maxYear}</th><th>${th.maxHour}</th></tr>`;
-  Object.keys(scales).forEach(scale => {
-    const row = scales[scale];
-    html += `<tr><td><b>${scale}</b></td><td>EUR ${intfmt(row.annual[0])}</td><td>${euro(row.hour[0])}</td><td>EUR ${intfmt(row.annual[1])}</td><td>${euro(row.hour[1])}</td><td>EUR ${intfmt(row.annual[2])}</td><td>${euro(row.hour[2])}</td></tr>`;
-  });
-  el("allScalesTable").innerHTML = html;
 }
 
 function setCheckCard(id, kind, status, detail){
@@ -1501,7 +1486,6 @@ function updateStaticLanguage(){
   el("recommendationSummary").textContent = t("recommendationSummary");
   el("pointsSummary").textContent = t("pointsByPosition");
   el("auditNote").textContent = t("auditNote");
-  el("allScalesSummary").textContent = t("allScales");
   el("langEn").classList.toggle("active", currentLanguage === "en");
   el("langNl").classList.toggle("active", currentLanguage === "nl");
 }
