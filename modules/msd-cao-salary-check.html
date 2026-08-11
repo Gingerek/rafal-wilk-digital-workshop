@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MSD CAO Salary Check v16</title>
+<title>MSD CAO Salary Check v17</title>
 <style>
 :root{
   --page:#f7f8fa;
@@ -409,24 +409,34 @@ input:focus,select:focus,textarea:focus{
   --excess-width:0%;
   position:relative;
 }
-.range-alert{
+.range-alert,
+.range-ok-notice{
   display:block;
   margin:0 0 10px;
-  border:1px solid #d13438;
-  border-left:4px solid #d13438;
   border-radius:8px;
   padding:10px 12px;
+  box-shadow:none;
+}
+.range-alert{
+  border:1px solid #d13438;
+  border-left:4px solid #d13438;
   background:#fff4f4;
   color:#a4262c;
-  box-shadow:none;
-  animation:warningReveal .24s ease-out;
+}
+.range-ok-notice{
+  border:1px solid #107c10;
+  border-left:4px solid #107c10;
+  background:#f1faf4;
+  color:#087443;
 }
 .range-alert[hidden],
+.range-ok-notice[hidden],
 .rate-pin[hidden],
 .rate-beam[hidden]{
   display:none;
 }
-.range-alert-copy strong{
+.range-alert-copy strong,
+.range-ok-copy strong{
   display:block;
   font-size:14px;
   line-height:1.25;
@@ -447,8 +457,16 @@ input:focus,select:focus,textarea:focus{
   position:absolute;
   inset:0;
   background:
-    linear-gradient(90deg,transparent 0,transparent calc(var(--mid-pos,50%) - 1px),rgba(209,52,56,.08) calc(var(--mid-pos,50%) - 1px),rgba(209,52,56,.08) 100%);
+    linear-gradient(90deg,transparent 0,transparent calc(var(--mid-pos,50%) - 1px),rgba(96,94,92,.045) calc(var(--mid-pos,50%) - 1px),rgba(96,94,92,.045) 100%);
   opacity:1;
+}
+.range-map.range-ok .range-board::before{
+  background:
+    linear-gradient(90deg,rgba(16,124,16,.07) 0,rgba(16,124,16,.07) var(--mid-pos,50%),rgba(96,94,92,.035) var(--mid-pos,50%),rgba(96,94,92,.035) 100%);
+}
+.range-map.mid-exceeded .range-board::before{
+  background:
+    linear-gradient(90deg,transparent 0,transparent calc(var(--mid-pos,50%) - 1px),rgba(209,52,56,.08) calc(var(--mid-pos,50%) - 1px),rgba(209,52,56,.08) 100%);
 }
 .range-board-top,
 .range-corridor{
@@ -488,6 +506,9 @@ input:focus,select:focus,textarea:focus{
   font-size:20px;
   line-height:1.1;
 }
+.range-map.range-ok .range-board-status strong{
+  color:#107c10;
+}
 .range-map.mid-exceeded .range-board-status strong{
   color:#a4262c;
 }
@@ -516,9 +537,13 @@ input:focus,select:focus,textarea:focus{
   position:absolute;
   inset:0 0 0 var(--mid-pos,50%);
   border-radius:0 4px 4px 0;
-  background:#fdf3f4;
-  border-left:1px solid rgba(209,52,56,.22);
+  background:#faf9f8;
+  border-left:1px solid rgba(96,94,92,.16);
   opacity:1;
+}
+.range-map.range-ok .range-rail-safe{
+  background:#dff6dd;
+  border-right:1px solid rgba(16,124,16,.34);
 }
 .range-map.mid-exceeded .range-rail-risk{
   background:#fde7e9;
@@ -557,8 +582,14 @@ input:focus,select:focus,textarea:focus{
   width:3px;
   transform:translateX(-50%);
   border-radius:2px;
-  background:#d13438;
+  background:#605e5c;
   box-shadow:none;
+}
+.range-map.range-ok .range-mid-gate::before{
+  background:#107c10;
+}
+.range-map.mid-exceeded .range-mid-gate::before{
+  background:#d13438;
 }
 .range-mid-gate::after{
   display:none;
@@ -570,10 +601,16 @@ input:focus,select:focus,textarea:focus{
   transform:translateX(-50%);
   min-width:92px;
   text-align:center;
-  color:#a4262c;
+  color:#605e5c;
   font-size:11px;
   font-weight:850;
   white-space:nowrap;
+}
+.range-map.range-ok .mid-gate-label{
+  color:#107c10;
+}
+.range-map.mid-exceeded .mid-gate-label{
+  color:#a4262c;
 }
 .rate-beam{
   position:absolute;
@@ -588,6 +625,9 @@ input:focus,select:focus,textarea:focus{
 }
 .range-map.mid-exceeded .rate-beam{
   background:#a4262c;
+}
+.range-map.range-ok .rate-beam{
+  background:#107c10;
 }
 .rate-pin{
   position:absolute;
@@ -633,9 +673,18 @@ input:focus,select:focus,textarea:focus{
   background:#fff;
   box-shadow:0 4px 14px rgba(209,52,56,.14);
 }
+.rate-pin.ok .pin-card{
+  border-color:#107c10;
+  background:#fff;
+  box-shadow:0 4px 14px rgba(16,124,16,.14);
+}
 .rate-pin.stop .pin-card span,
 .rate-pin.stop .pin-card strong{
   color:#a4262c;
+}
+.rate-pin.ok .pin-card span,
+.rate-pin.ok .pin-card strong{
+  color:#087443;
 }
 .rate-pin.stop .pin-card em{
   display:block;
@@ -678,13 +727,23 @@ input:focus,select:focus,textarea:focus{
 }
 .range-scale .mid-scale small,
 .range-scale .mid-scale strong{
+  color:#605e5c;
+}
+.range-map.range-ok .range-scale .mid-scale small,
+.range-map.range-ok .range-scale .mid-scale strong{
+  color:#087443;
+}
+.range-map.mid-exceeded .range-scale .mid-scale small,
+.range-map.mid-exceeded .range-scale .mid-scale strong{
   color:#a4262c;
 }
 @media(max-width:620px){
-  .range-alert{
+  .range-alert,
+  .range-ok-notice{
     padding:10px;
   }
-  .range-alert-copy strong{
+  .range-alert-copy strong,
+  .range-ok-copy strong{
     font-size:13px;
   }
   .mid-gate-label{
@@ -738,6 +797,7 @@ input:focus,select:focus,textarea:focus{
 }
 @media(prefers-reduced-motion:reduce){
   .range-alert,
+  .range-ok-notice,
   .range-map.mid-exceeded .range-excess,
   .range-map.mid-exceeded .range-mid-gate::before,
   .range-map.mid-exceeded .range-mid-gate::after{
@@ -938,7 +998,7 @@ tr.selected td{
           <button id="langNl" type="button">NL</button>
         </div>
       </div>
-      <div class="version">v16</div>
+      <div class="version">v17</div>
     </div>
   </div>
 </header>
@@ -1016,6 +1076,11 @@ tr.selected td{
             <div class="visual-value" id="visualValue">Enter hourly rate</div>
           </div>
           <div class="range-map" id="rangeMap">
+            <div class="range-ok-notice" id="rangeOkNotice" hidden>
+              <div class="range-ok-copy">
+                <strong id="rangeOkTitle">Rate is within required range</strong>
+              </div>
+            </div>
             <div class="range-alert" id="rangeAlert" hidden>
               <div class="range-alert-copy">
                 <strong id="rangeAlertTitle">Rate exceeds mid point</strong>
@@ -1243,6 +1308,7 @@ const translations = {
     minimumWageForAge:"Minimum wage for age",
     positionAgainstMidpoint:"Position against mid point",
     midpointAlert:"Rate exceeds mid point",
+    rangeOkNotice:"Rate is within required range",
     moreDetails:"Details",
     checks:"Checks",
     scenarioComparison:"Scenario comparison",
@@ -1362,6 +1428,7 @@ const translations = {
     minimumWageForAge:"Minimumloon voor leeftijd",
     positionAgainstMidpoint:"Positie ten opzichte van midpoint",
     midpointAlert:"Uurtarief overschrijdt het midpoint",
+    rangeOkNotice:"Uurtarief valt binnen de vereiste range",
     moreDetails:"Details",
     checks:"Controles",
     scenarioComparison:"Scenariovergelijking",
@@ -1565,6 +1632,7 @@ function updateVisuals(row, rate, wage, status, midpointResult){
   const midPosition = markerPosition(mid, min, max);
   const ratePosition = rate === null ? midPosition : markerPosition(rate, min, max);
   const excessWidth = midExceeded ? Math.max(ratePosition - midPosition, 1.6) : 0;
+  const rangeOk = rate !== null && status.kind === "ok" && !midExceeded;
   const pinShift = ratePosition < 9 ? "0%" : ratePosition > 91 ? "-100%" : "-50%";
   el("rangeMap").style.setProperty("--mid-pos", `${midPosition}%`);
   el("rangeMap").style.setProperty("--rate-pos", `${ratePosition}%`);
@@ -1572,6 +1640,9 @@ function updateVisuals(row, rate, wage, status, midpointResult){
   el("rangeMap").style.setProperty("--excess-width", `${excessWidth}%`);
   el("rangeMap").style.setProperty("--pin-shift", pinShift);
   el("rangeMap").classList.toggle("mid-exceeded", midExceeded);
+  el("rangeMap").classList.toggle("range-ok", rangeOk);
+  el("rangeOkNotice").hidden = !rangeOk;
+  el("rangeOkTitle").textContent = t("rangeOkNotice");
   el("rangeAlert").hidden = !midExceeded;
   el("rangeAlertTitle").textContent = t("midpointAlert");
   el("rangeBoardTitle").textContent = t("payPositionMap");
