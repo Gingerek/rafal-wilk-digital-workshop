@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MSD CAO Salary Check v12</title>
+<title>MSD CAO Salary Check v13</title>
 <style>
 :root{
   --page:#f7f8fa;
@@ -409,37 +409,38 @@ input:focus,select:focus,textarea:focus{
 }
 .range-map{
   position:relative;
-  min-height:auto;
-  padding-top:0;
 }
 .range-alert{
-  display:flex;
+  display:grid;
+  grid-template-columns:38px 1fr;
   align-items:center;
   gap:12px;
-  min-height:56px;
-  margin:2px 0 16px;
-  border:2px solid #d92d20;
+  margin:0 0 12px;
+  border:1px solid rgba(217,45,32,.36);
   border-radius:8px;
-  padding:10px 13px;
-  background:linear-gradient(90deg,#fff1f0 0%,#ffe3df 100%);
+  padding:11px 13px;
+  background:
+    radial-gradient(circle at 16px 16px,rgba(217,45,32,.16),transparent 46px),
+    linear-gradient(135deg,#fff7f5 0%,#ffffff 55%,#fff1ef 100%);
   color:#b42318;
-  box-shadow:0 12px 28px rgba(180,35,24,.14);
-  animation:rangeWarningPulse 1.15s ease-in-out infinite alternate;
+  box-shadow:0 14px 34px rgba(180,35,24,.13);
+  animation:warningReveal .36s cubic-bezier(.2,.8,.2,1);
+}
+.range-alert[hidden]{
+  display:none;
 }
 .range-alert-icon{
-  flex:0 0 34px;
-  width:34px;
-  height:34px;
+  width:38px;
+  height:38px;
   border-radius:999px;
   display:grid;
   place-items:center;
-  background:#d92d20;
+  background:linear-gradient(135deg,#f04438,#b42318);
   color:#fff;
   font-size:22px;
   font-weight:900;
   line-height:1;
-  box-shadow:0 0 0 6px rgba(217,45,32,.12);
-  animation:rangeAlertPop .9s ease-in-out infinite alternate;
+  box-shadow:0 0 0 6px rgba(217,45,32,.10);
 }
 .range-alert-copy strong{
   display:block;
@@ -449,165 +450,224 @@ input:focus,select:focus,textarea:focus{
 .range-alert-copy span{
   display:block;
   margin-top:3px;
+  color:#912018;
   font-size:12px;
   font-weight:800;
 }
-.range-track-stage{
+.range-gauge-shell{
   position:relative;
-  min-height:102px;
-  padding-top:28px;
-}
-.range-track-visual{
-  display:block;
-  position:relative;
-  height:32px;
-  border:0;
-  border-radius:999px;
+  min-height:276px;
+  border:1px solid #d4e3ef;
+  border-radius:8px;
   overflow:hidden;
-  background:linear-gradient(90deg,#eef9f6 0,#eef9f6 var(--mid-pos,50%),#fff2f0 var(--mid-pos,50%),#fff2f0 100%);
-  box-shadow:inset 0 0 0 1px #bfd8e8,0 10px 22px rgba(47,95,143,.10);
-}
-.range-track-visual::before{
-  content:"";
-  position:absolute;
-  left:4px;
-  top:4px;
-  bottom:4px;
-  width:calc(var(--mid-pos,50%) - 4px);
-  min-width:0;
-  border-radius:999px 0 0 999px;
-  background:linear-gradient(90deg,#66c9dd 0%,#00a79d 52%,#087443 100%);
-  box-shadow:0 0 18px rgba(0,133,124,.22);
-}
-.range-track-visual::after{
-  content:"";
-  position:absolute;
-  top:4px;
-  right:4px;
-  bottom:4px;
-  left:var(--mid-pos,50%);
-  border-radius:0 999px 999px 0;
   background:
-    repeating-linear-gradient(135deg,rgba(180,35,24,.22) 0 8px,rgba(180,35,24,.07) 8px 16px),
-    linear-gradient(90deg,#fff4f2,#ffe6e2);
-  background-size:24px 24px,auto;
+    radial-gradient(circle at 50% 88%,rgba(42,157,143,.14) 0,rgba(42,157,143,.06) 20%,transparent 46%),
+    linear-gradient(180deg,#fbfdff 0%,#f4f9fc 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
 }
-.range-map.mid-exceeded .range-track-visual{
-  box-shadow:inset 0 0 0 1px #f97066,0 14px 28px rgba(180,35,24,.16);
-}
-.range-map.mid-exceeded .range-track-visual::after{
+.range-gauge-shell::before{
+  content:"";
+  position:absolute;
+  inset:0;
   background:
-    repeating-linear-gradient(135deg,rgba(180,35,24,.34) 0 8px,rgba(180,35,24,.11) 8px 16px),
-    linear-gradient(90deg,#fff0ee,#ffd5cf);
-  background-size:24px 24px,auto;
-  animation:rangeWarningStripes .85s linear infinite;
+    linear-gradient(rgba(47,95,143,.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(47,95,143,.08) 1px,transparent 1px);
+  background-size:34px 34px;
+  mask-image:radial-gradient(circle at 50% 92%,#000 0,transparent 68%);
+  opacity:.45;
 }
-.range-zone{
-  display:none;
-}
-.map-marker{
-  position:absolute;
-  top:28px;
-  left:0;
-  width:0;
-  min-height:80px;
-  transform:translateX(-50%);
-  z-index:2;
-}
-.map-marker::before{
+.range-gauge-shell::after{
   content:"";
   position:absolute;
-  top:-5px;
   left:50%;
-  width:2px;
-  height:48px;
-  background:#1f2933;
-}
-.map-marker::after{
-  content:"";
-  position:absolute;
-  top:-11px;
-  left:50%;
-  width:12px;
-  height:12px;
-  border-radius:999px;
-  background:#1f2933;
+  bottom:20px;
+  width:52%;
+  height:34px;
   transform:translateX(-50%);
-  box-shadow:0 0 0 3px #fff;
-}
-.map-marker.rate::before,
-.map-marker.rate::after{
-  background:var(--blue);
-}
-.map-marker.rate.warn::before,
-.map-marker.rate.warn::after{
-  background:var(--amber);
-}
-.map-marker.rate.stop::before,
-.map-marker.rate.stop::after{
-  background:var(--red);
-}
-.map-label{
-  display:none;
-}
-.map-marker:not(.rate)::before{height:34px;background:#667085}
-.map-marker:not(.rate)::after{display:none}
-#midMarker{
-  z-index:4;
-}
-#midMarker::before{
-  top:-22px;
-  width:6px;
-  height:78px;
   border-radius:999px;
-  background:linear-gradient(180deg,#ffb4aa 0%,#b42318 42%,#b42318 100%);
-  box-shadow:0 0 0 5px rgba(180,35,24,.10),0 0 24px rgba(180,35,24,.28);
+  background:rgba(15,76,92,.09);
+  filter:blur(18px);
 }
-#midMarker::after{
+.salary-gauge{
+  position:relative;
+  z-index:1;
   display:block;
-  top:-36px;
-  width:20px;
-  height:20px;
-  border-radius:999px;
-  background:#b42318;
-  box-shadow:0 0 0 4px #fff,0 0 18px rgba(180,35,24,.24);
+  width:100%;
+  height:auto;
+}
+.salary-gauge .gauge-base{
+  fill:none;
+  stroke:#dfeaf2;
+  stroke-width:28;
+  stroke-linecap:round;
+}
+.salary-gauge .gauge-safe,
+.salary-gauge .gauge-risk,
+.salary-gauge .gauge-rate-safe,
+.salary-gauge .gauge-rate-risk{
+  fill:none;
+  stroke-width:30;
+  stroke-linecap:round;
+}
+.salary-gauge .gauge-safe{
+  stroke:url(#gaugeSafeGradient);
+}
+.salary-gauge .gauge-risk{
+  stroke:url(#gaugeRiskGradient);
+  stroke-dasharray:2 15;
+  opacity:.46;
+}
+.salary-gauge .gauge-rate-safe{
+  stroke:url(#gaugeActiveGradient);
+  opacity:.85;
+  transition:d .32s ease;
+}
+.salary-gauge .gauge-rate-risk{
+  stroke:url(#gaugeStopGradient);
+  opacity:0;
+  transition:d .32s ease,opacity .2s ease;
+}
+.range-map.mid-exceeded .gauge-rate-risk{
+  opacity:1;
+}
+.salary-gauge .gauge-tick{
+  stroke:#98a8b8;
+  stroke-width:2;
+  stroke-linecap:round;
+  opacity:.8;
+}
+.salary-gauge .gauge-mid-gate{
+  stroke:#b42318;
+  stroke-width:8;
+  stroke-linecap:round;
+  filter:url(#gateGlow);
+  transition:x1 .3s ease,y1 .3s ease,x2 .3s ease,y2 .3s ease;
+}
+.salary-gauge .gauge-mid-dot{
+  fill:#b42318;
+  stroke:#fff;
+  stroke-width:6;
+  filter:url(#gateGlow);
+}
+.range-map.mid-exceeded .gauge-mid-gate,
+.range-map.mid-exceeded .gauge-mid-dot{
+  animation:gateFlash 1.05s ease-out 1;
+}
+.salary-gauge .rate-needle{
+  transition:transform .36s cubic-bezier(.2,.8,.2,1);
+  transform-origin:340px 230px;
+}
+.salary-gauge .needle-line{
+  stroke:#2563a5;
+  stroke-width:5;
+  stroke-linecap:round;
+}
+.salary-gauge .needle-core{
+  fill:#2563a5;
+  stroke:#fff;
+  stroke-width:7;
+}
+.salary-gauge .rate-orb{
+  fill:#2563a5;
+  stroke:#fff;
+  stroke-width:7;
+  filter:url(#orbGlow);
+  transition:cx .36s cubic-bezier(.2,.8,.2,1),cy .36s cubic-bezier(.2,.8,.2,1),fill .2s ease;
+}
+.range-map.mid-exceeded .needle-line,
+.range-map.mid-exceeded .needle-core,
+.range-map.mid-exceeded .rate-orb{
+  stroke:#fff;
+  fill:#d92d20;
+}
+.range-map.mid-exceeded .needle-line{
+  stroke:#d92d20;
+}
+.range-map.mid-exceeded .rate-needle{
+  animation:needleStop .58s ease-out 1;
+}
+.gauge-center{
+  position:absolute;
+  z-index:2;
+  left:50%;
+  bottom:28px;
+  width:min(270px,72%);
   transform:translateX(-50%);
+  text-align:center;
+  color:#1f2933;
 }
-.range-map.mid-exceeded #midMarker::before{
-  animation:midpointBarrierPulse .9s ease-in-out infinite alternate;
-}
-.range-map.mid-exceeded #rateMarker::after{
-  animation:rateMarkerWarning .7s ease-in-out infinite alternate;
-}
-.map-marker.rate .map-label{
-  display:none;
-}
-.map-marker.rate.warn .map-label{
-  background:var(--amber);
-  border-color:var(--amber);
-}
-.map-marker.rate.stop .map-label{
-  background:var(--red);
-  border-color:var(--red);
-}
-.map-axis{
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  margin-top:14px;
+.gauge-center span{
+  display:block;
   color:var(--muted);
+  font-size:11px;
+  font-weight:850;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+.gauge-center strong{
+  display:block;
+  margin-top:3px;
+  font-size:34px;
+  line-height:1;
+  color:#101828;
+}
+.gauge-center .gauge-sub{
+  margin-top:7px;
+  color:#475467;
   font-size:12px;
-  font-weight:800;
+  line-height:1.25;
+  text-transform:none;
+  letter-spacing:0;
 }
-.map-axis span:nth-child(2){
+.range-map.mid-exceeded .gauge-center strong,
+.range-map.mid-exceeded .gauge-center .gauge-sub{
   color:#b42318;
-  font-weight:900;
 }
-@media(max-width:520px){
+.gauge-scale{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:10px;
+}
+.gauge-scale span{
+  min-width:0;
+  border:1px solid #d8e2ec;
+  border-radius:8px;
+  padding:10px 11px;
+  background:#fff;
+}
+.gauge-scale small{
+  display:block;
+  color:#667085;
+  font-size:10px;
+  font-weight:850;
+  text-transform:uppercase;
+}
+.gauge-scale strong{
+  display:block;
+  margin-top:3px;
+  color:#1f2933;
+  font-size:15px;
+  white-space:nowrap;
+}
+.gauge-scale .mid-scale{
+  border-color:#f7b7b2;
+  background:#fff8f7;
+}
+.gauge-scale .mid-scale small,
+.gauge-scale .mid-scale strong{
+  color:#b42318;
+}
+@media(max-width:620px){
   .range-alert{
-    align-items:flex-start;
-    padding:10px;
+    grid-template-columns:32px 1fr;
     gap:10px;
+    padding:10px;
+  }
+  .range-alert-icon{
+    width:32px;
+    height:32px;
+    font-size:18px;
   }
   .range-alert-copy strong{
     font-size:13px;
@@ -615,45 +675,57 @@ input:focus,select:focus,textarea:focus{
   .range-alert-copy span{
     font-size:11px;
   }
-  .range-track-stage{
-    min-height:98px;
-    padding-top:26px;
+  .range-gauge-shell{
+    min-height:230px;
   }
-  .map-marker.rate::before{
-    height:48px;
+  .gauge-center{
+    bottom:21px;
+    width:82%;
   }
-  .map-axis{
-    font-size:11px;
-    gap:4px;
+  .gauge-center strong{
+    font-size:28px;
+  }
+  .gauge-scale{
+    grid-template-columns:1fr;
+    gap:7px;
+  }
+  .gauge-scale span{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+  .gauge-scale strong{
+    margin-top:0;
   }
 }
-@keyframes rangeWarningPulse{
-  from{box-shadow:0 8px 20px rgba(180,35,24,.10)}
-  to{box-shadow:0 14px 34px rgba(180,35,24,.24)}
+@keyframes warningReveal{
+  from{opacity:0;transform:translateY(-8px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
 }
-@keyframes rangeAlertPop{
-  from{transform:scale(.96)}
-  to{transform:scale(1.05)}
+@keyframes gateFlash{
+  0%{filter:url(#gateGlow);opacity:1}
+  35%{filter:url(#strongGateGlow);opacity:1}
+  70%{filter:url(#strongGateGlow);opacity:.72}
+  100%{filter:url(#gateGlow);opacity:1}
 }
-@keyframes rangeWarningStripes{
-  from{background-position:0 0,0 0}
-  to{background-position:24px 0,0 0}
-}
-@keyframes midpointBarrierPulse{
-  from{box-shadow:0 0 0 5px rgba(180,35,24,.10),0 0 18px rgba(180,35,24,.22)}
-  to{box-shadow:0 0 0 9px rgba(180,35,24,.16),0 0 30px rgba(180,35,24,.36)}
-}
-@keyframes rateMarkerWarning{
-  from{transform:translateX(-50%) scale(1)}
-  to{transform:translateX(-50%) scale(1.18)}
+@keyframes needleStop{
+  0%,100%{transform:rotate(var(--needle-angle,0deg))}
+  35%{transform:rotate(calc(var(--needle-angle,0deg) + 3deg))}
+  65%{transform:rotate(calc(var(--needle-angle,0deg) - 2deg))}
 }
 @media(prefers-reduced-motion:reduce){
   .range-alert,
-  .range-alert-icon,
-  .range-map.mid-exceeded .range-track-visual::after,
-  .range-map.mid-exceeded #midMarker::before,
-  .range-map.mid-exceeded #rateMarker::after{
+  .range-map.mid-exceeded .gauge-mid-gate,
+  .range-map.mid-exceeded .gauge-mid-dot,
+  .range-map.mid-exceeded .rate-needle{
     animation:none;
+  }
+  .salary-gauge .rate-needle,
+  .salary-gauge .rate-orb,
+  .salary-gauge .gauge-rate-safe,
+  .salary-gauge .gauge-rate-risk{
+    transition:none;
   }
 }
 .check-grid{
@@ -847,7 +919,7 @@ tr.selected td{
           <button id="langNl" type="button">NL</button>
         </div>
       </div>
-      <div class="version">v12</div>
+      <div class="version">v13</div>
     </div>
   </div>
 </header>
@@ -932,21 +1004,68 @@ tr.selected td{
                 <span id="rangeAlertText"></span>
               </div>
             </div>
-            <div class="range-track-stage">
-              <div class="range-track-visual">
-                <div class="range-zone low" id="zoneBelowMid">Minimum to mid</div>
-                <div class="range-zone mid" id="zoneAboveMid">Mid to maximum</div>
-                <div class="range-zone high" id="zoneOutside">Outside range</div>
+            <div class="range-gauge-shell">
+              <svg class="salary-gauge" viewBox="0 0 680 292" role="img" aria-labelledby="gaugeTitle gaugeDesc" preserveAspectRatio="xMidYMid meet">
+                <title id="gaugeTitle">Salary range</title>
+                <desc id="gaugeDesc">Minimum, mid point and maximum salary range with the proposed hourly rate.</desc>
+                <defs>
+                  <linearGradient id="gaugeSafeGradient" x1="92" y1="230" x2="340" y2="20" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#5fc7df" />
+                    <stop offset=".55" stop-color="#14b8a6" />
+                    <stop offset="1" stop-color="#039855" />
+                  </linearGradient>
+                  <linearGradient id="gaugeRiskGradient" x1="340" y1="20" x2="588" y2="230" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#ffb4a8" />
+                    <stop offset="1" stop-color="#f04438" />
+                  </linearGradient>
+                  <linearGradient id="gaugeActiveGradient" x1="92" y1="230" x2="340" y2="20" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#84d7e9" />
+                    <stop offset="1" stop-color="#10b981" />
+                  </linearGradient>
+                  <linearGradient id="gaugeStopGradient" x1="340" y1="20" x2="588" y2="230" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#ff877d" />
+                    <stop offset="1" stop-color="#d92d20" />
+                  </linearGradient>
+                  <filter id="gateGlow" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="5" result="blur" />
+                    <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.72 0 0.24 0 0 0.13 0 0 0.12 0 0.09 0 0 0 .50 0" result="glow" />
+                    <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                  <filter id="strongGateGlow" x="-45%" y="-45%" width="190%" height="190%">
+                    <feGaussianBlur stdDeviation="8" result="blur" />
+                    <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.86 0 0.25 0 0 0.18 0 0 0.16 0 0.13 0 0 0 .78 0" result="glow" />
+                    <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                  <filter id="orbGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="6" result="blur" />
+                    <feColorMatrix in="blur" type="matrix" values="0.09 0 0 0 0.10 0 0.26 0 0 0.36 0 0 0.40 0 0.65 0 0 0 .42 0" result="glow" />
+                    <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                </defs>
+                <path class="gauge-base" id="gaugeBaseArc" />
+                <path class="gauge-safe" id="gaugeSafeArc" />
+                <path class="gauge-risk" id="gaugeRiskArc" />
+                <path class="gauge-rate-safe" id="gaugeRateSafeArc" />
+                <path class="gauge-rate-risk" id="gaugeRateRiskArc" />
+                <g id="gaugeTicks"></g>
+                <line class="gauge-mid-gate" id="gaugeMidGate" />
+                <circle class="gauge-mid-dot" id="gaugeMidDot" r="15" />
+                <g class="rate-needle" id="rateNeedle" hidden>
+                  <line class="needle-line" x1="340" y1="230" x2="340" y2="82" />
+                  <circle class="needle-core" cx="340" cy="230" r="17" />
+                </g>
+                <circle class="rate-orb" id="rateOrb" r="15" hidden />
+              </svg>
+              <div class="gauge-center">
+                <span id="gaugeCenterKicker">Mid point</span>
+                <strong id="gaugeCenterValue">-</strong>
+                <span class="gauge-sub" id="gaugeCenterSub">Enter hourly rate</span>
               </div>
-              <div class="map-marker" id="minMarker"><div class="map-label" id="minMarkerLabel">Min</div></div>
-              <div class="map-marker" id="midMarker"><div class="map-label" id="midMarkerLabel">Mid</div></div>
-              <div class="map-marker" id="maxMarker"><div class="map-label" id="maxMarkerLabel">Max</div></div>
-              <div class="map-marker rate" id="rateMarker"><div class="map-label" id="rateMarkerLabel">Rate</div></div>
-              <div class="map-axis">
-                <span id="axisMin">-</span>
-                <span id="axisMid">-</span>
-                <span id="axisMax">-</span>
-              </div>
+            </div>
+            <div class="gauge-scale">
+              <span><small id="axisMinLabel">Minimum point</small><strong id="axisMin">-</strong></span>
+              <span class="mid-scale"><small id="axisMidLabel">Mid point</small><strong id="axisMid">-</strong></span>
+              <span><small id="axisMaxLabel">Maximum point</small><strong id="axisMax">-</strong></span>
             </div>
           </div>
         </div>
@@ -1100,6 +1219,7 @@ const translations = {
     recommendedScale:"Recommended CAO scale",
     enterRate:"Enter hourly rate",
     payPositionMap:"Salary range",
+    gaugeDesc:"Gauge showing minimum, mid point, maximum and the entered hourly rate.",
     minimumToMid:"Minimum to mid",
     midToMaximum:"Mid to maximum",
     outsideRange:"Outside range",
@@ -1218,6 +1338,7 @@ const translations = {
     recommendedScale:"Aanbevolen CAO-schaal",
     enterRate:"Voer uurtarief in",
     payPositionMap:"Salarisrange",
+    gaugeDesc:"Gauge met minimum, midpoint, maximum en ingevoerd uurtarief.",
     minimumToMid:"Minimum tot midpoint",
     midToMaximum:"Midpoint tot maximum",
     outsideRange:"Buiten range",
@@ -1372,6 +1493,52 @@ function markerPosition(value, min, max){
   return clamp((value - min) / span * 100, 0, 100);
 }
 
+const gaugeGeometry = {cx:340, cy:230, radius:220};
+function gaugePoint(percent, radius = gaugeGeometry.radius){
+  const pct = clamp(percent, 0, 100);
+  const angle = Math.PI - pct / 100 * Math.PI;
+  return {
+    x:gaugeGeometry.cx + Math.cos(angle) * radius,
+    y:gaugeGeometry.cy - Math.sin(angle) * radius
+  };
+}
+
+function gaugeArc(startPercent, endPercent, radius = gaugeGeometry.radius){
+  const start = clamp(startPercent, 0, 100);
+  const end = clamp(endPercent, 0, 100);
+  const span = end - start;
+  const steps = Math.max(2, Math.ceil(Math.abs(span) / 3));
+  const points = Array.from({length:steps + 1}, (_, index) => gaugePoint(start + span * index / steps, radius));
+  return points.map((point, index) => `${index ? "L" : "M"} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`).join(" ");
+}
+
+function setGaugeLine(id, percent, innerRadius, outerRadius){
+  const inner = gaugePoint(percent, innerRadius);
+  const outer = gaugePoint(percent, outerRadius);
+  const line = el(id);
+  line.setAttribute("x1", inner.x.toFixed(2));
+  line.setAttribute("y1", inner.y.toFixed(2));
+  line.setAttribute("x2", outer.x.toFixed(2));
+  line.setAttribute("y2", outer.y.toFixed(2));
+}
+
+function setGaugeCircle(id, percent, radius){
+  const point = gaugePoint(percent, radius);
+  const circle = el(id);
+  circle.setAttribute("cx", point.x.toFixed(2));
+  circle.setAttribute("cy", point.y.toFixed(2));
+}
+
+function updateGaugeTicks(midPosition){
+  const ticks = [0, midPosition / 2, midPosition, midPosition + (100 - midPosition) / 2, 100];
+  const tickMarkup = ticks.map(percent => {
+    const inner = gaugePoint(percent, 196);
+    const outer = gaugePoint(percent, 226);
+    return `<line class="gauge-tick" x1="${inner.x.toFixed(2)}" y1="${inner.y.toFixed(2)}" x2="${outer.x.toFixed(2)}" y2="${outer.y.toFixed(2)}" />`;
+  }).join("");
+  el("gaugeTicks").innerHTML = tickMarkup;
+}
+
 function checkStatus(rate, row, minWage){
   if(rate === null) return {kind:"", label:t("enterRate"), message:t("missingRateMessage")};
   if(rate < minWage) return {kind:"stop", label:t("belowLegalMinimum"), message:t("belowLegalMinimumMessage")(euro(minWage))};
@@ -1450,31 +1617,50 @@ function updateVisuals(row, rate, wage, status, midpointResult){
   const mid = row.hour[1];
   const max = row.hour[2];
   const midExceeded = rate !== null && midpointResult.above;
-  el("rangeMap").style.setProperty("--mid-pos", `${markerPosition(mid, min, max)}%`);
+  const midPosition = markerPosition(mid, min, max);
+  const ratePosition = rate === null ? 0 : markerPosition(rate, min, max);
+  el("rangeMap").style.setProperty("--mid-pos", `${midPosition}%`);
   el("rangeMap").classList.toggle("mid-exceeded", midExceeded);
   el("rangeAlert").hidden = !midExceeded;
   el("rangeAlertTitle").textContent = t("midpointAlert");
   el("rangeAlertText").textContent = midExceeded ? t("midpointAlertDetail")(euro(rate), euro(mid)) : "";
-  el("axisMin").textContent = `${t("minShort")} ${euro(min)}`;
-  el("axisMid").textContent = `${t("midShort")} ${euro(mid)}`;
-  el("axisMax").textContent = `${t("maxShort")} ${euro(max)}`;
-  el("minMarker").style.left = `${markerPosition(min, min, max)}%`;
-  el("midMarker").style.left = `${markerPosition(mid, min, max)}%`;
-  el("maxMarker").style.left = `${markerPosition(max, min, max)}%`;
-  el("minMarkerLabel").textContent = `${t("minShort")}\n${euro(min)}`;
-  el("midMarkerLabel").textContent = `${t("midShort")}\n${euro(mid)}`;
-  el("maxMarkerLabel").textContent = `${t("maxShort")}\n${euro(max)}`;
+  el("axisMin").textContent = euro(min);
+  el("axisMid").textContent = euro(mid);
+  el("axisMax").textContent = euro(max);
+  el("gaugeBaseArc").setAttribute("d", gaugeArc(0, 100));
+  el("gaugeSafeArc").setAttribute("d", gaugeArc(0, midPosition));
+  el("gaugeRiskArc").setAttribute("d", gaugeArc(midPosition, 100));
+  el("gaugeRateSafeArc").setAttribute("d", gaugeArc(0, Math.min(ratePosition, midPosition)));
+  el("gaugeRateSafeArc").style.opacity = rate === null ? "0" : ".85";
+  el("gaugeRateRiskArc").setAttribute("d", gaugeArc(midPosition, Math.max(midPosition, ratePosition)));
+  el("gaugeRateRiskArc").style.opacity = midExceeded ? "1" : "0";
+  setGaugeLine("gaugeMidGate", midPosition, 166, 246);
+  setGaugeCircle("gaugeMidDot", midPosition, 246);
+  updateGaugeTicks(midPosition);
+  el("gaugeTitle").textContent = t("payPositionMap");
+  el("gaugeDesc").textContent = t("gaugeDesc");
 
-  const rateMarker = el("rateMarker");
+  const rateNeedle = el("rateNeedle");
+  const rateOrb = el("rateOrb");
   if(rate === null){
-    rateMarker.style.display = "none";
+    rateNeedle.hidden = true;
+    rateOrb.hidden = true;
     el("visualValue").textContent = t("noRateYet");
+    el("gaugeCenterKicker").textContent = t("midPoint");
+    el("gaugeCenterValue").textContent = euro(mid);
+    el("gaugeCenterSub").textContent = t("noRateYet");
   } else {
-    rateMarker.style.display = "block";
-    rateMarker.style.left = `${markerPosition(rate, min, max)}%`;
-    const rateKind = midExceeded ? "stop" : status.kind;
-    rateMarker.className = `map-marker rate ${rateKind || ""}`;
-    el("rateMarkerLabel").textContent = `${t("rateShort")}\n${euro(rate)}`;
+    const needleAngle = ratePosition / 100 * 180 - 90;
+    const ratePoint = gaugePoint(ratePosition, 220);
+    rateNeedle.hidden = false;
+    rateOrb.hidden = false;
+    rateNeedle.style.setProperty("--needle-angle", `${needleAngle.toFixed(2)}deg`);
+    rateNeedle.style.transform = `rotate(${needleAngle.toFixed(2)}deg)`;
+    rateOrb.setAttribute("cx", ratePoint.x.toFixed(2));
+    rateOrb.setAttribute("cy", ratePoint.y.toFixed(2));
+    el("gaugeCenterKicker").textContent = t("rateShort");
+    el("gaugeCenterValue").textContent = euro(rate);
+    el("gaugeCenterSub").textContent = midExceeded ? t("midpointTooHigh") : t("atOrBelowMidpoint");
     el("visualValue").textContent = `${t("rateShort")}: ${euro(rate)}`;
   }
 
@@ -1624,9 +1810,9 @@ function updateStaticLanguage(){
   el("statusOut").textContent = t("enterRate");
   el("visualTitle").textContent = t("payPositionMap");
   el("visualValue").textContent = t("noRateYet");
-  el("zoneBelowMid").textContent = t("minimumToMid");
-  el("zoneAboveMid").textContent = t("midToMaximum");
-  el("zoneOutside").textContent = t("outsideRange");
+  el("axisMinLabel").textContent = t("minPoint");
+  el("axisMidLabel").textContent = t("midPoint");
+  el("axisMaxLabel").textContent = t("maxPoint");
   el("visualWageTitle").textContent = t("minimumWage");
   el("visualRangeTitle").textContent = t("caoRange");
   el("visualMidpointTitle").textContent = t("midpointVisual");
