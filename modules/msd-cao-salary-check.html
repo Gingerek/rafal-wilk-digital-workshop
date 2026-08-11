@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MSD CAO Salary Check v15</title>
+<title>MSD CAO Salary Check v16</title>
 <style>
 :root{
   --page:#f7f8fa;
@@ -426,17 +426,11 @@ input:focus,select:focus,textarea:focus{
 .rate-beam[hidden]{
   display:none;
 }
-.range-alert-icon{
-  display:none;
-}
 .range-alert-copy strong{
   display:block;
   font-size:14px;
   line-height:1.25;
   font-weight:850;
-}
-.range-alert-copy span{
-  display:none;
 }
 .range-board{
   position:relative;
@@ -688,19 +682,11 @@ input:focus,select:focus,textarea:focus{
 }
 @media(max-width:620px){
   .range-alert{
-    grid-template-columns:32px 1fr;
-    gap:10px;
     padding:10px;
-  }
-  .range-alert-icon{
-    width:32px;
-    height:32px;
-    font-size:18px;
   }
   .range-alert-copy strong{
     font-size:13px;
   }
-  .range-alert-copy span,
   .mid-gate-label{
     font-size:10px;
   }
@@ -952,7 +938,7 @@ tr.selected td{
           <button id="langNl" type="button">NL</button>
         </div>
       </div>
-      <div class="version">v15</div>
+      <div class="version">v16</div>
     </div>
   </div>
 </header>
@@ -1031,10 +1017,8 @@ tr.selected td{
           </div>
           <div class="range-map" id="rangeMap">
             <div class="range-alert" id="rangeAlert" hidden>
-              <div class="range-alert-icon" aria-hidden="true">!</div>
               <div class="range-alert-copy">
                 <strong id="rangeAlertTitle">Rate exceeds mid point</strong>
-                <span id="rangeAlertText"></span>
               </div>
             </div>
             <div class="range-board" role="img" aria-labelledby="rangeBoardTitle rangeBoardDesc">
@@ -1259,7 +1243,6 @@ const translations = {
     minimumWageForAge:"Minimum wage for age",
     positionAgainstMidpoint:"Position against mid point",
     midpointAlert:"Rate exceeds mid point",
-    midpointAlertDetail:(rate, mid)=>`${rate} is above mid point ${mid}.`,
     moreDetails:"Details",
     checks:"Checks",
     scenarioComparison:"Scenario comparison",
@@ -1379,7 +1362,6 @@ const translations = {
     minimumWageForAge:"Minimumloon voor leeftijd",
     positionAgainstMidpoint:"Positie ten opzichte van midpoint",
     midpointAlert:"Uurtarief overschrijdt het midpoint",
-    midpointAlertDetail:(rate, mid)=>`${rate} ligt boven het midpoint ${mid}.`,
     moreDetails:"Details",
     checks:"Controles",
     scenarioComparison:"Scenariovergelijking",
@@ -1592,13 +1574,12 @@ function updateVisuals(row, rate, wage, status, midpointResult){
   el("rangeMap").classList.toggle("mid-exceeded", midExceeded);
   el("rangeAlert").hidden = !midExceeded;
   el("rangeAlertTitle").textContent = t("midpointAlert");
-  el("rangeAlertText").textContent = midExceeded ? t("midpointAlertDetail")(euro(rate), euro(mid)) : "";
   el("rangeBoardTitle").textContent = t("payPositionMap");
   el("rangeBoardDesc").textContent = t("rangeBoardDesc");
   el("rangeThresholdLabel").textContent = t("thresholdLabel");
   el("rangeThresholdValue").textContent = euro(mid);
   el("rangeStatusLabel").textContent = t("currentRate");
-  el("midGateLabel").textContent = `${t("midShort")} ${euro(mid)}`;
+  el("midGateLabel").textContent = t("midShort");
   el("axisMin").textContent = euro(min);
   el("axisMid").textContent = euro(mid);
   el("axisMax").textContent = euro(max);
