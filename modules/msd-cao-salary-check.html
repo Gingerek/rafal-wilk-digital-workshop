@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MSD CAO Salary Check v17</title>
+<title>MSD CAO Salary Check v18</title>
 <style>
 :root{
   --page:#f7f8fa;
@@ -998,7 +998,7 @@ tr.selected td{
           <button id="langNl" type="button">NL</button>
         </div>
       </div>
-      <div class="version">v17</div>
+      <div class="version">v18</div>
     </div>
   </div>
 </header>
@@ -1016,6 +1016,12 @@ tr.selected td{
         <div class="field">
           <label for="position" id="positionLabel">Position</label>
           <select id="position"></select>
+        </div>
+
+        <div class="field">
+          <label for="scaleSelect" id="scaleSelectLabel">CAO scale</label>
+          <select id="scaleSelect"></select>
+          <p class="note" id="scaleSelectNote"></p>
         </div>
 
         <div class="field">
@@ -1037,24 +1043,6 @@ tr.selected td{
             <input id="rate" type="number" step="0.01" min="0" placeholder="e.g. 29.27" />
           </div>
         </div>
-
-        <details>
-          <summary id="advancedSummary">Advanced scale override</summary>
-          <div class="details-body">
-            <div class="field">
-              <label for="scaleMode" id="scaleModeLabel">Scale selection</label>
-              <select id="scaleMode">
-                <option value="auto">Use profile level recommendation</option>
-                <option value="manual">Choose exact CAO scale manually</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="manualScale" id="manualScaleLabel">Manual CAO scale</label>
-              <select id="manualScale"></select>
-            </div>
-            <p class="note" id="overrideNote"></p>
-          </div>
-        </details>
 
       </div>
     </section>
@@ -1257,6 +1245,7 @@ const translations = {
     defaultCandidate:"Candidate",
     optional:"Optional",
     position:"Position",
+    caoScale:"CAO scale",
     profileLevel:"Point selection",
     starter:"Min point",
     matching:"Mid point",
@@ -1266,13 +1255,11 @@ const translations = {
     advanced:"Advanced scale override",
     scaleSelection:"Scale selection",
     autoScale:"Use profile level recommendation",
-    manualScaleMode:"Choose exact CAO scale manually",
-    manualScale:"Manual CAO scale",
     copySummary:"Copy summary",
     copied:"Copied",
     printPdf:"Print / save PDF",
     reset:"Reset",
-    recommendedScale:"Recommended CAO scale",
+    recommendedScale:"Selected CAO scale",
     enterRate:"Enter hourly rate",
     payPositionMap:"Salary range",
     rangeBoardDesc:"Minimum, mid point, maximum and entered hourly rate shown on one decision line.",
@@ -1314,7 +1301,7 @@ const translations = {
     scenarioComparison:"Scenario comparison",
     recommendationSummary:"Recommendation summary",
     pointsByPosition:"Minimum / Mid / Maximum by selected position",
-    auditNote:"Point selection maps to the lower, middle or higher scale available for the selected position.",
+    auditNote:"The CAO scale dropdown is generated only from the scales allowed for the selected position.",
     allowedScales:"allowed scales",
     scales:"scales",
     availableScales:"Available scales for",
@@ -1331,9 +1318,9 @@ const translations = {
     atOrBelowMidpoint:"At or below mid point",
     aboveMidpoint:"Rate exceeds mid point",
     profileLogic:{
-      starter:"Min point selection, lower scale in pathway range",
-      matching:"Mid point selection, middle scale where available",
-      senior:"Max point selection, higher scale in pathway range"
+      starter:"Scale selected from the allowed list by Min point shortcut",
+      matching:"Scale selected from the allowed list by Mid point shortcut",
+      senior:"Scale selected from the allowed list by Max point shortcut"
     },
     category:{
       "Business Support":"Business Support",
@@ -1367,7 +1354,7 @@ const translations = {
       belowMin:"Below selected scale minimum",
       aboveMax:"Above selected scale maximum",
       within:"Within selected scale range",
-      note:"Note: if the selected pathway contains multiple scales, the exact scale should be validated by the manager based on job level, responsibilities and candidate profile before final approval."
+      note:"Note: the selected CAO scale controls the minimum, mid point and maximum shown in this module."
     }
   },
   nl:{
@@ -1377,6 +1364,7 @@ const translations = {
     defaultCandidate:"Kandidaat",
     optional:"Optioneel",
     position:"Functie",
+    caoScale:"CAO-schaal",
     profileLevel:"Puntselectie",
     starter:"Min point",
     matching:"Mid point",
@@ -1386,13 +1374,11 @@ const translations = {
     advanced:"Geavanceerde schaalkeuze",
     scaleSelection:"Schaalkeuze",
     autoScale:"Gebruik aanbeveling op basis van profielniveau",
-    manualScaleMode:"Kies handmatig de exacte CAO-schaal",
-    manualScale:"Handmatige CAO-schaal",
     copySummary:"Samenvatting kopiëren",
     copied:"Gekopieerd",
     printPdf:"Printen / opslaan als PDF",
     reset:"Reset",
-    recommendedScale:"Aanbevolen CAO-schaal",
+    recommendedScale:"Geselecteerde CAO-schaal",
     enterRate:"Voer uurtarief in",
     payPositionMap:"Salarisrange",
     rangeBoardDesc:"Minimum, midpoint, maximum en ingevoerd uurtarief op een beslislijn.",
@@ -1434,7 +1420,7 @@ const translations = {
     scenarioComparison:"Scenariovergelijking",
     recommendationSummary:"Aanbevelingssamenvatting",
     pointsByPosition:"Minimum / Mid / Maximum per geselecteerde functie",
-    auditNote:"De puntselectie wordt gekoppeld aan de lagere, middelste of hogere schaal die beschikbaar is voor de geselecteerde functie.",
+    auditNote:"De CAO-schaalkeuze wordt alleen opgebouwd uit de schalen die voor de geselecteerde functie zijn toegestaan.",
     allowedScales:"toegestane schalen",
     scales:"schalen",
     availableScales:"Beschikbare schalen voor",
@@ -1451,9 +1437,9 @@ const translations = {
     atOrBelowMidpoint:"Op of onder midpoint",
     aboveMidpoint:"Uurtarief overschrijdt het midpoint",
     profileLogic:{
-      starter:"Min point selectie, lagere schaal binnen de pathway-range",
-      matching:"Mid point selectie, middelste schaal waar beschikbaar",
-      senior:"Max point selectie, hogere schaal binnen de pathway-range"
+      starter:"Schaal geselecteerd uit de toegestane lijst via Min point",
+      matching:"Schaal geselecteerd uit de toegestane lijst via Mid point",
+      senior:"Schaal geselecteerd uit de toegestane lijst via Max point"
     },
     category:{
       "Business Support":"Business Support",
@@ -1487,7 +1473,7 @@ const translations = {
       belowMin:"Onder minimum geselecteerde schaal",
       aboveMax:"Boven maximum geselecteerde schaal",
       within:"Binnen geselecteerde schaalrange",
-      note:"Let op: als de geselecteerde pathway meerdere schalen bevat, moet de exacte schaal vóór finale goedkeuring door de manager worden gevalideerd op basis van functieniveau, verantwoordelijkheden en kandidaatprofiel."
+      note:"Let op: de geselecteerde CAO-schaal bepaalt het minimum, midpoint en maximum in deze module."
     }
   }
 };
@@ -1527,8 +1513,8 @@ function scaleForProfile(allowed, profile){
 }
 
 function selectedScale(allowed){
-  if(el("scaleMode").value === "manual") return el("manualScale").value || allowed[0];
-  return scaleForProfile(allowed, activeProfile);
+  const selected = el("scaleSelect").value;
+  return allowed.includes(selected) ? selected : scaleForProfile(allowed, activeProfile);
 }
 
 function currentRate(){
@@ -1571,17 +1557,19 @@ function fillInputs(){
   if(previousPosition) el("position").value = previousPosition;
   el("age").innerHTML = `<option value="21">${t("age21")}</option>` + [20,19,18,17,16,15].map(age => `<option value="${age}">${age}</option>`).join("");
   if(previousAge) el("age").value = previousAge;
-  updateManualScaleOptions();
+  updateScaleOptions();
 }
 
-function updateManualScaleOptions(){
+function updateScaleOptions(preferredScale){
   const selected = selectedPosition();
-  const previous = el("manualScale").value;
-  el("manualScale").innerHTML = selected.allowed.map(scale => {
+  const current = preferredScale || el("scaleSelect").value;
+  const fallback = scaleForProfile(selected.allowed, activeProfile);
+  el("scaleSelect").innerHTML = selected.allowed.map(scale => {
     const row = scales[scale];
-    return `<option value="${scale}">${scale} (${euro(row.hour[0])} - ${euro(row.hour[2])})</option>`;
+    return `<option value="${scale}">${scale} - ${t("midPoint")} ${euro(row.hour[1])} (${euro(row.hour[0])} - ${euro(row.hour[2])})</option>`;
   }).join("");
-  if(selected.allowed.includes(previous)) el("manualScale").value = previous;
+  el("scaleSelect").value = selected.allowed.includes(current) ? current : fallback;
+  el("scaleSelectNote").textContent = `${t("availableScales")} ${selected.label}: ${selected.allowed.join(", ")}`;
 }
 
 function scenarioStatus(rate, scale, age){
@@ -1591,11 +1579,12 @@ function scenarioStatus(rate, scale, age){
 }
 
 function buildScenarios(selected, rate, age){
+  const currentScale = selectedScale(selected.allowed);
   return ["starter","matching","senior"].map(profile => {
     const scale = scaleForProfile(selected.allowed, profile);
     const row = scales[scale];
     const status = scenarioStatus(rate, scale, age);
-    const active = profile === activeProfile && el("scaleMode").value !== "manual";
+    const active = scale === currentScale;
     return `<div class="scenario ${active ? "active" : ""}">
       <div class="scenario-name">${t(profile)}</div>
       <div class="scenario-scale">${scale}</div>
@@ -1702,7 +1691,7 @@ function updateVisuals(row, rate, wage, status, midpointResult){
 function buildSummary(selected, scale, row, rate, age, wage, midpointResult, status){
   const s = translations[currentLanguage].summary;
   const candidate = el("candidate").value.trim() || t("defaultCandidate");
-  const logic = el("scaleMode").value === "manual" ? t("manualScale") : translations[currentLanguage].profileLogic[activeProfile];
+  const logic = `${t("scaleSelection")}: ${scale}`;
   let text = `${candidate} - ${s.title}\n\n`;
   text += `${s.position}: ${selected.label}\n`;
   text += `${s.allowed}: ${selected.allowed.join(", ")}\n`;
@@ -1725,7 +1714,7 @@ function buildSummary(selected, scale, row, rate, age, wage, midpointResult, sta
 }
 
 function update(){
-  updateManualScaleOptions();
+  updateScaleOptions();
   const selected = selectedPosition();
   const scale = selectedScale(selected.allowed);
   const row = scales[scale];
@@ -1772,7 +1761,6 @@ function update(){
   el("messageOut").className = `message ${status.kind}`;
   el("messageOut").hidden = rate !== null && status.kind === "ok";
   el("scenarioGrid").innerHTML = buildScenarios(selected, rate, age);
-  el("overrideNote").textContent = `${t("availableScales")} ${selected.label}: ${selected.allowed.join(", ")}`;
   buildAvailableTable(scale);
   el("summary").value = buildSummary(selected, scale, row, rate, age, wage, midpointResult, status);
 }
@@ -1782,16 +1770,10 @@ function reset(){
   el("rate").value = "";
   el("position").selectedIndex = 0;
   el("age").value = "21";
-  el("scaleMode").value = "auto";
   activeProfile = "matching";
   document.querySelectorAll(".segment").forEach(button => button.classList.toggle("active", button.dataset.profile === activeProfile));
+  updateScaleOptions(scaleForProfile(selectedPosition().allowed, activeProfile));
   update();
-}
-
-function updateScaleModeOptions(){
-  const previous = el("scaleMode").value || "auto";
-  el("scaleMode").innerHTML = `<option value="auto">${t("autoScale")}</option><option value="manual">${t("manualScaleMode")}</option>`;
-  el("scaleMode").value = previous;
 }
 
 function updateStaticLanguage(){
@@ -1802,6 +1784,7 @@ function updateStaticLanguage(){
   el("candidateLabel").textContent = t("candidateName");
   el("candidate").placeholder = t("optional");
   el("positionLabel").textContent = t("position");
+  el("scaleSelectLabel").textContent = t("caoScale");
   el("profileLabel").textContent = t("profileLevel");
   document.querySelector(".segments").setAttribute("aria-label", t("profileLevel"));
   document.querySelectorAll(".segment").forEach(button => {
@@ -1809,10 +1792,6 @@ function updateStaticLanguage(){
   });
   el("ageLabel").textContent = t("age");
   el("rateLabel").textContent = t("hourlyRate");
-  el("advancedSummary").textContent = t("advanced");
-  el("scaleModeLabel").textContent = t("scaleSelection");
-  updateScaleModeOptions();
-  el("manualScaleLabel").textContent = t("manualScale");
   el("copyBtn").textContent = t("copySummary");
   el("printBtn").textContent = t("printPdf");
   el("resetBtn").textContent = t("reset");
@@ -1862,16 +1841,21 @@ document.querySelectorAll(".segment").forEach(button => {
   button.addEventListener("click", () => {
     activeProfile = button.dataset.profile;
     document.querySelectorAll(".segment").forEach(item => item.classList.toggle("active", item === button));
+    const selected = selectedPosition();
+    updateScaleOptions(scaleForProfile(selected.allowed, activeProfile));
     update();
   });
 });
 
-el("position").addEventListener("change", update);
+el("position").addEventListener("change", () => {
+  const selected = selectedPosition();
+  updateScaleOptions(scaleForProfile(selected.allowed, activeProfile));
+  update();
+});
+el("scaleSelect").addEventListener("change", update);
 el("age").addEventListener("change", update);
 el("rate").addEventListener("input", update);
 el("candidate").addEventListener("input", update);
-el("scaleMode").addEventListener("change", update);
-el("manualScale").addEventListener("change", update);
 el("resetBtn").addEventListener("click", reset);
 el("langEn").addEventListener("click", () => setLanguage("en", true));
 el("langNl").addEventListener("click", () => setLanguage("nl", true));
