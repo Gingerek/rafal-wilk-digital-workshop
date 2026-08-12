@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Redukcja v35 — prosty wynik tygodnia</title>
+  <title>Redukcja v36 — tygodnie redukcji od 1</title>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.min.mjs" type="module"></script>
@@ -2060,7 +2060,7 @@ let detectedWeightInfo = null;
 let activeProView = "start";
 
 const HISTORY_KEY = "rafal_redukcja_master_history_clean_v1";
-const HISTORY_RESET_KEY = "rafal_redukcja_history_reset_20260811_fresh_start";
+const HISTORY_RESET_KEY = "rafal_redukcja_history_reset_20260812_reduction_week_1";
 const METRIC_OVERRIDE_KEY = "rafal_redukcja_metric_overrides_v25";
 const ENTRY_DRAFT_KEY = "rafal_redukcja_entry_draft_v1";
 const LEGACY_HISTORY_KEYS = [];
@@ -2626,11 +2626,44 @@ function filterMajorityWeek(days){
   return days.filter(d=>d.dateISO&&isoWeekInfo(d.dateISO).code===code);
 }
 function weekId(data){return majorityWeekCode(data)}
-function autoWeekName(data){
-  const dates=data.map(d=>d.dateISO).filter(Boolean).sort();
-  const info=isoWeekInfo(dates[Math.floor(dates.length/2)]||new Date().toISOString().slice(0,10));
-  return `Tydzień ${info.week} / ${info.year}${dates.length?` ${dates[0]} do ${dates[dates.length-1]}`:""}`;
+function reductionWeekLabel(number){return `Tydzień redukcji numer ${number}`}
+function reductionWeekNumberFromText(value){
+  const m=norm(value).match(/tydzien redukcji numer\s*(\d+)/);
+  return m?Number(m[1]):NaN;
 }
+function reductionWeekNumber(week){
+  const direct=num(week?.reductionNumber);
+  if(Number.isFinite(direct)&&direct>0)return direct;
+  return reductionWeekNumberFromText(week?.id)||reductionWeekNumberFromText(week?.weekName);
+}
+function reductionHistorySort(a,b){
+  const an=reductionWeekNumber(a), bn=reductionWeekNumber(b);
+  if(Number.isFinite(an)&&Number.isFinite(bn)&&an!==bn)return an-bn;
+  if(Number.isFinite(an)&&!Number.isFinite(bn))return -1;
+  if(!Number.isFinite(an)&&Number.isFinite(bn))return 1;
+  return (a?.start||a?.createdAt||"").localeCompare(b?.start||b?.createdAt||"");
+}
+function nextReductionWeekNumber(history=getHistory()){
+  const max=Math.max(0,...history.map(reductionWeekNumber).filter(Number.isFinite));
+  return max+1;
+}
+function dateRangeFromData(data){
+  const dates=data.map(d=>d.dateISO).filter(Boolean).sort();
+  return {start:dates[0]||"",end:dates[dates.length-1]||""};
+}
+function reductionIdentityForData(data,history=getHistory()){
+  const sourceWeekCode=majorityWeekCode(data);
+  const range=dateRangeFromData(data);
+  const existing=history.find(w=>
+    (sourceWeekCode&&(w.sourceWeekCode===sourceWeekCode||w.calendarWeekCode===sourceWeekCode||w.originalWeekId===sourceWeekCode))||
+    (range.start&&range.end&&w.start===range.start&&w.end===range.end)
+  );
+  const number=existing?reductionWeekNumber(existing):nextReductionWeekNumber(history);
+  const safeNumber=Number.isFinite(number)&&number>0?number:nextReductionWeekNumber(history);
+  const label=reductionWeekLabel(safeNumber);
+  return {id:label,label,number:safeNumber,sourceWeekCode,...range};
+}
+function autoWeekName(data){return reductionIdentityForData(data).label}
 
 function parseCaloriesCSV(text,filename,fitatuDays){
   const result={calories:{},active:{},resting:{},found:false};
@@ -3155,11 +3188,13 @@ function bindEntryDraftAutosave(){
     el.addEventListener("change",saveEntryDraft);
   });
 }
-function previousWeek(data){
-  const id=weekId(data), start=(data.map(d=>d.dateISO).filter(Boolean).sort()[0]||"");
-  const h=getHistory().filter(w=>w.id!==id&&Number.isFinite(w.weight?.curW)).sort((a,b)=>(a.start||"").localeCompare(b.start||""));
-  const before=h.filter(w=>(w.end||w.start||"")<start);
-  return before.length?before[before.length-1]:h[h.length-1]||null;
+function previousWeek(data,identity=reductionIdentityForData(data)){
+  const h=getHistory().filter(w=>w.id!==identity.id&&Number.isFinite(w.weight?.curW)).sort(reductionHistorySort);
+  if(Number.isFinite(identity.number)){
+    const before=h.filter(w=>reductionWeekNumber(w)<identity.number);
+    if(before.length)return before[before.length-1];
+  }
+  return h[h.length-1]||null;
 }
 function buildQuality(data,garmin,fitatu){return {missingBurnedDays:data.filter(d=>d.burned===null).map(d=>d.label),hasFitatu:!!fitatu.days.length,hasCalories:Object.keys(garmin.calories||{}).length>0,hasSteps:garmin.steps.length>0||Number.isFinite(garmin.ocrSummary?.stepsAvg),hasSleep:garmin.sleep.length>0||Number.isFinite(garmin.ocrSummary?.sleepAvg)||Number.isFinite(garmin.ocrSummary?.sleepScoreAvg),hasActivities:garmin.activities.length>0||Number.isFinite(garmin.ocrSummary?.activityCount)||(garmin.ocrSummary?.activities||[]).length>0}}
 function buildDataQualityReport(data,garmin,fitatu){
@@ -3198,7 +3233,7 @@ function buildDataQualityReport(data,garmin,fitatu){
 function compactWeek(result){
   const dates=result.data.map(d=>d.dateISO).filter(Boolean).sort();
   return {
-    id:result.id,weekName:result.weekName,weekNote:result.weekNote||"",createdAt:result.createdAt,start:dates[0]||"",end:dates[dates.length-1]||"",
+    id:result.id,weekName:result.weekName,weekNote:result.weekNote||"",reductionNumber:result.reductionNumber,sourceWeekCode:result.sourceWeekCode||majorityWeekCode(result.data),createdAt:result.createdAt,start:dates[0]||"",end:dates[dates.length-1]||"",
     summary:{eaten:result.summary.eaten,burned:result.summary.burned,deficit:result.summary.deficit,knownDays:result.summary.knownDays,avgEaten:result.summary.avgEaten,avgProtein:result.summary.avgProtein,stepsAvg:result.summary.stepsAvg,sleepAvg:result.summary.sleepAvg,sleepScoreAvg:result.summary.sleepScoreAvg,activityCount:result.summary.activityCount,activityDurationHours:result.summary.activityDurationHours,stressAvg:result.summary.stressAvg,restingHrAvg:result.summary.restingHrAvg,burnedAvgFromScreen:result.summary.burnedAvgFromScreen},
     weight:result.weight,
     bodyComposition:cleanBodyComposition(result.bodyComposition||bodyCompositionFromInputs(result.garmin?.ocrSummary?.bodyComposition||{})),
@@ -3256,13 +3291,13 @@ async function saveCurrentWeek(auto=false){
   if(!lastResult)return;
   const week=compactWeek(lastResult);
   const existingHistory=getHistory();
-  const previous=existingHistory.find(w=>w.id===week.id);
+  const previous=existingHistory.find(w=>w.id===week.id||(week.sourceWeekCode&&w.sourceWeekCode===week.sourceWeekCode)||(week.start&&week.end&&w.start===week.start&&w.end===week.end));
   const merged=previous?{...previous,...week,summary:{...(previous.summary||{}),...(week.summary||{})},weight:{...(previous.weight||{}),...(week.weight||{})}}:week;
   if(!hasBodyComposition(week.bodyComposition)&&hasBodyComposition(previous?.bodyComposition))merged.bodyComposition=previous.bodyComposition;
   else merged.bodyComposition=week.bodyComposition;
-  const history=existingHistory.filter(w=>w.id!==week.id);
+  const history=existingHistory.filter(w=>w.id!==week.id&&!(previous&&w.id===previous.id));
   history.push(merged);
-  history.sort((a,b)=>(a.start||"").localeCompare(b.start||""));
+  history.sort(reductionHistorySort);
   setHistory(history);
   clearEntryDraft();
   await saveWeekPrivate(merged);
@@ -3379,7 +3414,7 @@ function simpleSportText(summary={}){
   return Number.isFinite(count)&&count>0?`${simpleInt(count)} aktywności`:"-";
 }
 function simpleHistorySorted(){
-  return getHistory().slice().sort((a,b)=>(a.start||a.createdAt||"").localeCompare(b.start||b.createdAt||""));
+  return getHistory().slice().sort(reductionHistorySort);
 }
 function simplePreviousWeight(history,index){
   for(let i=index-1;i>=0;i--){
@@ -3411,7 +3446,7 @@ function renderSimpleCurrent(result){
   const diff=num(result.weight?.weightDiff);
   const delta=document.getElementById("simpleWeightDelta");
   const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value};
-  set("simpleWeekCode",`${result.id||"-"}${result.weekName?` - ${result.weekName}`:""}`);
+  set("simpleWeekCode",result.weekName||result.id||"-");
   set("simpleCurrentWeight",`Waga: ${simpleWeightText(curW)}`);
   if(delta){
     delta.textContent=simpleWeightDeltaText(diff);
@@ -3452,7 +3487,7 @@ function simpleWeekHeader(){
 function renderSimpleHistory(history=simpleHistorySorted()){
   const preview=document.getElementById("simpleHistoryPreview");
   const dialogList=document.getElementById("simpleHistoryDialogList");
-  const sorted=history.slice().sort((a,b)=>(a.start||a.createdAt||"").localeCompare(b.start||b.createdAt||""));
+  const sorted=history.slice().sort(reductionHistorySort);
   const rows=sorted.map((week,index)=>simpleWeekRow(week,index,sorted));
   if(preview){
     preview.innerHTML=rows.length
@@ -3514,11 +3549,12 @@ function closeSimpleHistory(){
 }
 function render(data,garmin,fitatu){
   if(chart)chart.destroy();
-  const s=summarize(data,garmin), curW=num(document.getElementById("weeklyWeight").value), prev=previousWeek(data), prevW=Number.isFinite(prev?.weight?.curW)?prev.weight.curW:NaN, weightDiff=Number.isFinite(prevW)&&Number.isFinite(curW)?curW-prevW:NaN;
-  const id=weekId(data), name=document.getElementById("weekName").value.trim()||autoWeekName(data), note=document.getElementById("weekNote").value.trim(), fatKg=s.deficit/7700, pct=Math.max(0,Math.min(160,(s.deficit/TARGET_DEFICIT)*100));
+  const identity=reductionIdentityForData(data);
+  const s=summarize(data,garmin), curW=num(document.getElementById("weeklyWeight").value), prev=previousWeek(data,identity), prevW=Number.isFinite(prev?.weight?.curW)?prev.weight.curW:NaN, weightDiff=Number.isFinite(prevW)&&Number.isFinite(curW)?curW-prevW:NaN;
+  const id=identity.id, name=identity.label, note=document.getElementById("weekNote").value.trim(), fatKg=s.deficit/7700, pct=Math.max(0,Math.min(160,(s.deficit/TARGET_DEFICIT)*100));
   const targetEstimate=estimateTargetWeight(curW,s,id);
   const bodyComposition=bodyCompositionFromInputs(garmin.ocrSummary?.bodyComposition||{});
-  lastResult={id,weekName:name,weekNote:note,data,garmin,fitatu,summary:s,weight:{prevW,curW,weightDiff,previousWeekId:prev?.id||null},bodyComposition,createdAt:new Date().toISOString()};
+  lastResult={id,weekName:name,weekNote:note,reductionNumber:identity.number,sourceWeekCode:identity.sourceWeekCode,data,garmin,fitatu,summary:s,weight:{prevW,curW,weightDiff,previousWeekId:prev?.id||null},bodyComposition,createdAt:new Date().toISOString()};
   renderSimpleCurrent(lastResult);
   document.getElementById("deficitRing").style.setProperty("--pct",`${Math.min(100,pct)*3.6}deg`);
   document.getElementById("ringPct").textContent=`${Math.round(pct)}%`;
@@ -4858,7 +4894,7 @@ function renderMonthlySummary(history=getHistory()){
   }).join("");
 }
 function renderHistory(){
-  const history=getHistory().sort((a,b)=>(a.start||"").localeCompare(b.start||""));
+  const history=getHistory().sort(reductionHistorySort);
   renderSimpleHistory(history);
   const list=document.getElementById("historyList"), trend=document.getElementById("historyTrendSummary");
   renderMonthlySummary(history);
@@ -4926,7 +4962,7 @@ async function saveWeekEdits(){
   inputs.forEach(input=>{const i=input.dataset.i,k=input.dataset.k;edited[i]=edited[i]||{};edited[i][k]=(k==="label"||k==="dateISO")?input.value:num(input.value)});
   week.data=Object.keys(edited).sort((a,b)=>Number(a)-Number(b)).map(i=>{const d=edited[i], eaten=d.eaten, burned=d.burned;return {label:d.label,dateISO:d.dateISO,eaten:Number.isFinite(eaten)?eaten:null,burned:Number.isFinite(burned)?burned:null,deficit:Number.isFinite(eaten)&&Number.isFinite(burned)?burned-eaten:null,protein:d.protein,fat:d.fat,carbs:d.carbs}});
   week.summary=summarizeWeekData(week.data,week);
-  setHistory(history.sort((a,b)=>(a.start||"").localeCompare(b.start||"")));
+  setHistory(history.sort(reductionHistorySort));
   await saveWeekPrivate(week);await saveWeekVisible(week);
   renderHistory();closeWeekEditor();setStatus("Zapisano zmiany w "+id+".");
 }
@@ -4954,7 +4990,7 @@ function loadLatestWeekPreview(){
   if(lastResult)return;
   const latest=getHistory()
     .filter(w=>w&&w.id&&(w.data||[]).length)
-    .sort((a,b)=>(a.start||a.createdAt||"").localeCompare(b.start||b.createdAt||""))
+    .sort(reductionHistorySort)
     .pop();
   if(latest)loadWeek(latest.id);
 }
