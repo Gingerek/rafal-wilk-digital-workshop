@@ -1,0 +1,37 @@
+name: Sync fixed Merit workbook once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-merit-fixed-mappings.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Copy corrected protected Merit workbook
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE='downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx'
+          curl -L --fail --retry 3 --output "$FILE" 'https://raw.githubusercontent.com/Gingerek/rafal-wilk-ai/main/downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx'
+      - name: Commit synchronized workbook
+        shell: bash
+        run: |
+          FILE='downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git diff --quiet -- "$FILE"; then
+            echo 'Workbook already synchronized.'
+            exit 0
+          fi
+          git add "$FILE"
+          git commit -m 'Sync corrected Merit salary scale mappings'
+          git push
