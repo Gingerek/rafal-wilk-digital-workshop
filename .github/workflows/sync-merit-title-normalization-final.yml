@@ -1,0 +1,25 @@
+name: Sync Merit title normalization final
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-merit-title-normalization-final.yml'
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy authoritative Merit workbook
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 --output downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx 'https://raw.githubusercontent.com/Gingerek/rafal-wilk-ai/main/downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx'
+      - name: Commit synchronized workbook
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Sync paste-safe Merit title lookups'
+          git push
