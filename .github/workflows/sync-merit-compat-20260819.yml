@@ -1,0 +1,29 @@
+name: Sync compatible Merit Excel once
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-merit-compat-20260819.yml'
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy verified compatible Merit workbook
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE='downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx'
+          curl -L --fail --retry 3 --output "$FILE" 'https://raw.githubusercontent.com/Gingerek/rafal-wilk-ai/main/downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx'
+          test "$(git hash-object "$FILE")" = '9d93324d3c6d6e34a6e76b9bdd07a06f2fcf7dca'
+      - name: Commit synchronized workbook
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Sync compatible paste-safe Merit Excel'
+          git push
