@@ -1,0 +1,43 @@
+name: Sync verified Merit workbook once
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-merit-final-20260819.yml'
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy and verify authoritative workbook
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE='downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx'
+          curl -L --fail --retry 3 --output "$FILE" 'https://raw.githubusercontent.com/Gingerek/rafal-wilk-ai/main/downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx'
+          echo '5493f60d994fb769e8c456a7cc97291757fcac21cba510a8f6c2f25760fb5184  '"$FILE" | sha256sum -c -
+          python3 - <<'PY'
+          import zipfile,xml.etree.ElementTree as ET
+          f='downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx'
+          NS='http://schemas.openxmlformats.org/spreadsheetml/2006/main'; ns={'m':NS}
+          with zipfile.ZipFile(f) as z:
+              s=ET.fromstring(z.read('xl/worksheets/sheet1.xml'))
+              styles=ET.fromstring(z.read('xl/styles.xml'))
+              fs=s.findall('.//m:f',ns)
+              down=sum((x.text or '').upper().count('ROUNDDOWN') for x in fs)
+              up=sum((x.text or '').upper().count('ROUNDUP') for x in fs)
+              hidden=sum(1 for p in styles.findall('.//m:protection',ns) if p.get('hidden')=='1')
+              assert len(fs)==5600 and down==0 and up==1050
+              assert s.find('m:sheetProtection',ns) is not None and hidden>=1
+          PY
+      - name: Commit synchronized workbook
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add downloads/Merit_2026_Employee_Bulk_Calculator_350_exact.xlsx
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Sync final Merit titles and upward rounding'
+          git push
