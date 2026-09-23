@@ -45,8 +45,8 @@
 <link rel="preload" as="image" href="assets/images/private-command-center-hero-personal-bg-day-v18-cleanwall.webp?v=20260806-cleanwall-2" type="image/webp" media="(min-width: 761px)">
 <link rel="preload" as="style" href="assets/css/platform-v2.min.css?v=20260806-cleanwall-2">
 <link rel="preload" as="style" href="assets/css/platform-nextlevel.css?v=20260807-zero-shadow-3">
-<link rel="preload" as="style" href="assets/css/platform-face-clarity.css?v=20260810-face-clarity-23">
-<link rel="preload" as="script" href="assets/js/platform-v2.js?v=20260807-binary-alpha-1">
+<link rel="preload" as="style" href="assets/css/platform-face-clarity.css?v=20260923-preid-sync-1">
+<link rel="preload" as="script" href="assets/js/platform-v2.js?v=20260923-preid-sync-1">
 <title>Rafal Wilk AI ©</title>
 <style id="rw-critical-startup-guard">
   html{background:#05080d}
@@ -91,7 +91,7 @@
 </style>
 <link rel="stylesheet" href="assets/css/platform-v2.min.css?v=20260806-cleanwall-2">
 <link rel="stylesheet" href="assets/css/platform-nextlevel.css?v=20260807-zero-shadow-3">
-<link rel="stylesheet" href="assets/css/platform-face-clarity.css?v=20260810-face-clarity-23">
+<link rel="stylesheet" href="assets/css/platform-face-clarity.css?v=20260923-preid-sync-1">
 <script id="rw-module-pin-bootstrap">
 (function(){
   var DEFAULT_PIN = '135';
@@ -285,6 +285,76 @@
 })();
 </script>
 
+<style id="rw-preid-dual-actions">
+body.rw-v2-ready main.wrap .card.rw-preid-card,
+body.rw-v2-ready:not(.app-open) main.wrap .card.rw-preid-card{
+  grid-template-columns:48px minmax(0,1fr) auto!important;
+}
+body.rw-v2-ready main.wrap .rw-preid-actions,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-preid-actions{
+  grid-column:3!important;
+  grid-row:2!important;
+  justify-self:end!important;
+  align-self:center!important;
+  display:flex!important;
+  gap:7px!important;
+  z-index:2!important;
+}
+body.rw-v2-ready main.wrap .rw-preid-actions .btn,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-preid-actions .btn{
+  width:auto!important;
+  min-width:76px!important;
+  height:36px!important;
+  min-height:36px!important;
+  padding:0 12px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:999px!important;
+  font-size:10px!important;
+  line-height:1!important;
+  text-indent:0!important;
+  overflow:visible!important;
+  white-space:nowrap!important;
+  text-decoration:none!important;
+}
+body.rw-v2-ready main.wrap .rw-preid-actions .rw-v2-card-open::before,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-preid-actions .rw-v2-card-open::before{
+  display:none!important;
+}
+body.rw-v2-ready main.wrap .rw-preid-actions .rw-preid-open svg,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-preid-actions .rw-preid-open svg{
+  display:none!important;
+}
+body.rw-v2-ready main.wrap .rw-preid-actions .rw-preid-open::after,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-preid-actions .rw-preid-open::after{
+  content:"Open";
+  font-size:10px!important;
+  line-height:1!important;
+  text-indent:0!important;
+}
+body.rw-v2-ready main.wrap .rw-preid-actions .rw-preid-download,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-preid-actions .rw-preid-download{
+  background:#fff!important;
+  color:#12304f!important;
+  border:1px solid rgba(66,122,171,.30)!important;
+  box-shadow:none!important;
+}
+@media(max-width:640px){
+  body.rw-v2-ready main.wrap .card.rw-preid-card,
+  body.rw-v2-ready:not(.app-open) main.wrap .card.rw-preid-card{
+    grid-template-columns:42px minmax(0,1fr)!important;
+  }
+  body.rw-v2-ready main.wrap .rw-preid-actions,
+  body.rw-v2-ready:not(.app-open) main.wrap .rw-preid-actions{
+    grid-column:2!important;
+    grid-row:3!important;
+    justify-self:start!important;
+    margin-top:8px!important;
+  }
+}
+</style>
+
 <style id="rw-visual-refresh-20260923">
 /* Visual refresh only. The original face video, its positioning and all module logic are preserved. */
 body.rw-v2-ready:not(.app-open) .rw-identity {
@@ -467,6 +537,13 @@ body.rw-v2-ready.rw-v2-command-open:not(.app-open) .rw-v2-command-trigger::befor
 <div class="title" data-title-key="Intake Call">Intake Call</div>
 <button class="btn" data-idx="3" type="button">Open in platform</button>
 </article>
+<article class="card rw-preid-card">
+<div class="title" data-title-key="Pre ID">Pre ID</div>
+<div class="rw-preid-actions">
+<a class="btn rw-preid-open" onclick="openApp('preidcandidate', this.closest('.card').querySelector('.title').textContent)">Open</a>
+<a class="btn rw-preid-download" href="modules/pre-id-candidate.html?v=20260923-preid-5" download="Pre ID.html">Download</a>
+</div>
+</article>
 <article class="card">
 <div class="title" data-title-key="Ocena dopasowania CV">Ocena dopasowania CV</div>
 <button class="btn" data-idx="4" type="button">Open in platform</button>
@@ -503,6 +580,7 @@ body.rw-v2-ready.rw-v2-command-open:not(.app-open) .rw-v2-command-trigger::befor
 </article>
 <div class="card"><div class="title" data-title-key="My Projects">My Projects</div><a class="btn" onclick="openMc()">Open</a></div></section>
 <section class="viewport">
+<iframe id="preidcandidate" title="Pre ID" data-src="modules/pre-id-candidate.html?v=20260923-preid-5" loading="lazy"></iframe>
 <iframe id="appframe" title="Aplikacja" loading="lazy"></iframe>
 <iframe id="managermeetingtracker" title="Rejestr spotkań z managerami" data-src="modules/manager-meeting-tracker.html" loading="lazy"></iframe>
 
@@ -1000,4 +1078,4 @@ function openApp(id, title){
   render();
 })();
 </script>
-<script src="assets/js/platform-v2.js?v=20260807-binary-alpha-1" defer></script>
+<script src="assets/js/platform-v2.js?v=20260923-preid-sync-1" defer></script>
