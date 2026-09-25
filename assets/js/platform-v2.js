@@ -2332,11 +2332,11 @@
   }
   let modulePinPendingOpen = null;
   let modulePinAuthorizedOnce = false;
-  const DEFAULT_MODULE_PIN = '135';
-  const MERIT_EXCEL_PIN = '4685';
+  const DEFAULT_MODULE_PIN = '4685';
+  const PRE_ID_PIN = '135';
   function modulePinFor(moduleTitle){
     const title = String(moduleTitle || '').toLowerCase();
-    return title.includes('merit excel') ? MERIT_EXCEL_PIN : DEFAULT_MODULE_PIN;
+    return title.includes('pre id') ? PRE_ID_PIN : DEFAULT_MODULE_PIN;
   }
   function activeModulePin(){
     const gate = document.getElementById('mc_gate');
