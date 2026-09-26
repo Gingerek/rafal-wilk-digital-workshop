@@ -1,0 +1,155 @@
+/* Readable tools below the original workshop. Face media and playback are unchanged. */
+html { scroll-padding-top: 24px; }
+body.rw-v2-ready:not(.app-open) {
+  --rw-scene-height: clamp(420px, 54.17vw, 76svh);
+  width:100%!important; min-width:0!important; height:auto!important;
+  overflow-x:clip!important; overflow-y:auto!important;
+  background:#070f19!important;
+}
+body.rw-v2-ready:not(.app-open) main.wrap {
+  position:relative!important; inset:auto!important; width:100%!important;
+  min-width:0!important; height:auto!important; min-height:100svh!important;
+  overflow:visible!important; background:none!important; z-index:auto!important;
+}
+body.rw-v2-ready:not(.app-open) .rw-v2-shell {
+  position:relative!important; inset:auto!important; width:100%!important;
+  min-width:0!important; height:var(--rw-scene-height)!important;
+  min-height:var(--rw-scene-height)!important; overflow:clip!important;
+  background-position:center!important; background-size:cover!important;
+}
+body.rw-v2-ready:not(.app-open) .rw-v2-hero {
+  position:absolute!important; inset:0!important; height:100%!important;
+  min-height:0!important; margin:0!important; pointer-events:none!important;
+}
+body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster { height:100%!important; min-height:0!important; }
+body.rw-v2-ready:not(.app-open) .rw-v2-floating-lang,
+body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger { position:absolute!important; }
+body.rw-v2-ready:not(.app-open) .rw-v2-floating-lang button { min-height:44px!important; min-width:44px!important; }
+body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger { min-height:44px!important; }
+body.rw-v2-ready:not(.app-open) .rw-workshop-catalog {
+  position:relative; z-index:20; max-width:1440px; margin:0 auto;
+  padding:36px clamp(18px,4vw,64px) 80px; color:#edf5ff;
+  background:#070f19; border-top:1px solid #284051;
+}
+body.app-open .rw-workshop-catalog { display:none!important; }
+body.rw-v2-ready:not(.app-open) .rw-workshop-catalog .rw-v2-toolbar {
+  position:relative!important; inset:auto!important; display:flex!important;
+  width:100%!important; height:auto!important; overflow:visible!important;
+  clip-path:none!important; opacity:1!important; visibility:visible!important;
+  pointer-events:auto!important; align-items:center; justify-content:space-between;
+  gap:24px; padding:0 0 8px!important; margin:0!important;
+  background:none!important; border:0!important; box-shadow:none!important;
+  backdrop-filter:none!important; transform:none!important;
+}
+.rw-workshop-eyebrow { color:#80cde8; font-size:11px; font-weight:700; letter-spacing:.18em; }
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog h1 { margin:8px 0; color:#edf5ff!important; font-size:clamp(26px,3vw,38px); line-height:1.2; letter-spacing:-.03em; }
+.rw-workshop-catalog .rw-v2-toolbar p { margin:0; color:#aebed0; font-size:14px; line-height:1.6; }
+.rw-workshop-catalog .rw-v2-toolbar button {
+  flex-shrink:0; min-height:46px; padding:0 22px; border:1px solid #456879;
+  border-radius:10px; background:#142536; color:#eefaff; font:inherit; font-size:14px; font-weight:600; cursor:pointer;
+}
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid {
+  position:relative!important; inset:auto!important; display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:none!important; grid-auto-rows:auto!important; width:100%!important; height:auto!important;
+  max-height:none!important; padding:0!important; margin:0!important;
+  overflow:visible!important; clip-path:none!important; opacity:1!important;
+  visibility:visible!important; pointer-events:auto!important;
+  gap:18px!important; transform:none!important;
+}
+.rw-workshop-group {
+  grid-column:1/-1; margin:22px 0 0; font-size:15px; font-weight:600;
+  color:#b3c6d8; letter-spacing:.03em; line-height:1.4;
+}
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card {
+  position:relative!important; inset:auto!important; display:flex!important;
+  flex-direction:column!important; align-items:stretch!important; gap:10px!important;
+  width:auto!important; height:auto!important; min-width:0!important; min-height:210px!important;
+  padding:22px!important; border:1px solid #334858!important; border-radius:14px!important;
+  background:linear-gradient(155deg,#172a3b 0%,#101e2d 42%,#0c1723 100%)!important;
+  box-shadow:inset 0 1px 0 #526070, 0 5px 0 #050a10, 0 6px 0 #263542, 0 14px 24px #0005!important;
+  overflow:hidden!important; opacity:1!important; visibility:visible!important;
+  clip-path:none!important; transform:none!important; filter:none!important;
+  backdrop-filter:none!important; animation:none!important; cursor:default!important;
+  transition:transform .18s ease,border-color .18s ease!important;
+}
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card[hidden] { display:none!important; }
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card::before,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card::after,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card .title::before,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card .title::after,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card .btn::before,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card .btn::after,
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .rw-v2-window-dots { display:none!important; content:none!important; }
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card .rw-v2-icon {
+  position:static!important; display:flex!important; width:32px!important; height:32px!important;
+  margin:0!important; padding:5px!important; border:1px solid #385567!important;
+  background:#122c3e!important; border-radius:8px!important; color:#9bdef6!important;
+  box-shadow:none!important; transform:none!important;
+}
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card .title {
+  position:static!important; display:block!important; width:auto!important; max-width:none!important;
+  margin:0!important; padding:0!important; color:#f1f7fd!important;
+  font-size:17px!important; line-height:1.4!important; font-weight:650!important;
+  white-space:normal!important; overflow:visible!important; text-overflow:clip!important;
+  -webkit-line-clamp:unset!important; transform:none!important; text-shadow:none!important;
+}
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card .rw-v2-card-desc {
+  display:block!important; margin:0 0 8px!important; color:#aebed0!important;
+  font-size:13px!important; line-height:1.65!important; font-weight:400!important;
+}
+body.rw-v2-ready:not(.app-open) .rw-identity {
+  position:absolute!important; top:calc(var(--rw-scene-height) - 90px)!important;
+  bottom:auto!important; left:24px!important;
+}
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card .btn {
+  position:static!important; display:inline-flex!important; align-items:center!important;
+  justify-content:center!important; align-self:flex-start!important; margin: auto 0 0!important;
+  width:auto!important; min-width:96px!important; height:44px!important; min-height:44px!important;
+  padding:0 16px!important; border:1px solid #486a81!important; border-radius:8px!important;
+  background:#19364a!important; color:#eaf8ff!important; box-shadow:none!important;
+  font-size:13px!important; line-height:1!important; font-weight:650!important;
+  text-indent:0!important; opacity:1!important; visibility:visible!important;
+  transform:none!important; cursor:pointer!important; text-decoration:none!important;
+}
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .rw-preid-actions {
+  display:flex!important; flex-wrap:wrap!important; align-self:flex-start!important;
+  margin:auto 0 0!important; gap:8px!important;
+}
+.rw-workshop-catalog :is(button,a):focus-visible { outline:2px solid #99e6ff!important; outline-offset:4px!important; }
+body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card:focus-within { border-color:#85d7f4!important; }
+@media (hover:hover) {
+  body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card:hover { transform:translateY(-2px)!important; border-color:#669bb5!important; }
+}
+/* Quiet only the decorative data; the video, its eyes and timing stay untouched. */
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active,
+body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active,
+body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-neural-link,
+body.rw-v2-ready.rw-v2-visual-high.rw-v2-video-face-ready:not(.app-open) .rw-v2-face-neural-link {
+  position:absolute!important;
+}
+html.rw-face-preset-cinematic-command,
+html.rw-face-preset-ai-presence,
+html.rw-face-preset-hologram-subtle {
+  --rw-face-data-opacity:.12; --rw-face-data-low:.08; --rw-face-data-high:.14;
+}
+@media (max-width:1000px) {
+  body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+}
+@media (max-width:760px) {
+  body.rw-v2-ready:not(.app-open) { --rw-scene-height:clamp(340px,110vw,500px); }
+  body.rw-v2-ready:not(.app-open) .rw-workshop-catalog { padding:28px 18px 54px; }
+  body.rw-v2-ready:not(.app-open) .rw-workshop-catalog .rw-v2-toolbar { flex-wrap:wrap; gap:16px; }
+  body.rw-v2-ready:not(.app-open) .rw-v2-command-trigger { top:78px!important; }
+  body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid { grid-template-columns:1fr!important; }
+  body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card { min-height:0!important; padding:20px!important; }
+  body.rw-v2-ready:not(.app-open) .rw-v2-assistant-face-video,
+  body.rw-v2-ready.rw-v2-video-face-ready:not(.app-open) .rw-v2-assistant-face-video.is-active {
+    position:absolute!important; display:block!important; visibility:visible!important;
+    left:3%!important; top:48px!important; width:40%!important; height:auto!important;
+    aspect-ratio:446/562!important;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card { transition:none!important; transform:none!important; }
+}
