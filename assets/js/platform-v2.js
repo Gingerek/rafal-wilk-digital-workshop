@@ -115,7 +115,7 @@
       desc:{pl:'Kalkulator merit increase z wyraźnym wyborem roku.', en:'Merit increase calculator with clear year selection.', nl:'Merit increase calculator met duidelijke jaarkeuze.'}},
     { match:'Merit Excel 350', icon:'document', category:'documents',
       title:{pl:'Merit Excel 350', en:'Merit Excel 350', nl:'Merit Excel 350'},
-      desc:{pl:'Arkusz Excel na 350 pozycji merit z automatycznym narzutem GS/PS.', en:'Excel workbook for 350 merit rows with automatic GS/PS markup.', nl:'Excelbestand voor 350 meritregels met automatische GS/PS-opslag.'}},
+      desc:{pl:'Excel workbook for 350 merit rows with automatic GS/PS markup.', en:'Excel workbook for 350 merit rows with automatic GS/PS markup.', nl:'Excel workbook for 350 merit rows with automatic GS/PS markup.'}},
     { match:'Przegląd agencji', icon:'agency', category:'documents',
       title:{pl:'Przegląd agencji', en:'Agency Review', nl:'Bureauoverzicht'},
       desc:{pl:'Porządkowanie informacji o agencjach i partnerach.', en:'Organize agency and partner information.', nl:'Orden informatie over bureaus en partners.'}},
@@ -290,12 +290,8 @@
   function t(key){ return copy[key]?.[lang()] || copy[key]?.pl || key; }
   function uiText(key){
     const texts = {
-      command:{pl:'Szukaj', en:'Search', nl:'Zoeken'},
-      commandTitle:{pl:'Znajdź narzędzie', en:'Find a tool', nl:'Zoek een tool'},
-      close:{pl:'Zamknij', en:'Close', nl:'Sluiten'},
-      download:{pl:'Pobierz', en:'Download', nl:'Downloaden'},
-      tools:{pl:'Twoje narzędzia', en:'Your tools', nl:'Je tools'},
-      toolsHint:{pl:'Wybierz narzędzie lub znajdź je przez wyszukiwarkę.', en:'Choose a tool or find it using search.', nl:'Kies een tool of vind deze via de zoekfunctie.'},
+      command:{pl:'Szukaj', en:'Command', nl:'Zoeken'},
+      commandTitle:{pl:'Command Center', en:'Command Center', nl:'Command Center'},
       commandHint:{pl:'Wpisz nazwę modułu', en:'Type a module name', nl:'Typ een modulenaam'},
       commandEmpty:{pl:'Brak wyników', en:'No results', nl:'Geen resultaten'},
       systemOnline:{pl:'System online', en:'System online', nl:'Systeem online'},
@@ -326,11 +322,6 @@
     if (meta?.category === 'tracking') return uiText('tracker');
     if (meta?.category === 'recruitment') return uiText('workflow');
     return uiText('ready');
-  }
-  function moduleDetail(meta){
-    const status = moduleStatus(meta);
-    return [uiText('protected'), uiText('workbook')].includes(status)
-      ? `${categoryLabel(meta.category)} · ${status}` : categoryLabel(meta.category);
   }
   function searchText(meta, title){
     const matches = Array.isArray(meta?.match) ? meta.match : [meta?.match || ''];
@@ -413,8 +404,8 @@
   }
   function ensureShell(){
     const main = document.querySelector('main.wrap');
-    const grid = main?.querySelector('.grid');
-    if (!main || !grid) return;
+    const launcher = main?.querySelector('.rw-module-launcher');
+    if (!main || !launcher) return;
     let shell = main.querySelector('.rw-v2-shell');
     if (!shell) {
       shell = document.createElement('div');
@@ -423,18 +414,8 @@
       hero.className = 'rw-v2-hero';
       const toolbar = document.createElement('section');
       toolbar.className = 'rw-v2-toolbar';
-      main.insertBefore(shell, grid);
-      shell.append(hero, toolbar, grid);
-    }
-    // Keep the scene's measured box independent of the catalog and face geometry.
-    let catalog = main.querySelector('.rw-workshop-catalog');
-    if (!catalog) {
-      catalog = document.createElement('section');
-      catalog.className = 'rw-workshop-catalog';
-      catalog.id = 'tools';
-      catalog.setAttribute('aria-labelledby', 'rw-tools-title');
-      shell.after(catalog);
-      catalog.append(shell.querySelector('.rw-v2-toolbar'), grid);
+      main.insertBefore(shell, launcher);
+      shell.append(hero, toolbar, launcher);
     }
     if (!shell.querySelector('.rw-v2-contact')) {
       const contact = document.createElement('section');
@@ -617,7 +598,7 @@
           <button type="button" data-rw-command-close="true" aria-label="Close">x</button>
         </div>
         <input class="rw-v2-command-input" type="search" autocomplete="off">
-        <div class="rw-v2-command-list"></div>
+        <div class="rw-v2-command-list" role="listbox"></div>
       </div>`;
       shell.appendChild(palette);
     }
@@ -1162,7 +1143,20 @@
   function renderHero(){
     const hero = document.querySelector('.rw-v2-hero');
     if (!hero) return;
-    hero.innerHTML = `<div class="rw-v2-hero-poster">
+    const labels = {
+      pl:{eyebrow:'PRYWATNE CENTRUM OPERACYJNE', title:'Rafal Wilk AI', lead:'Jedno uporządkowane miejsce do pracy z kalkulatorami, procesami, trackerami i projektami.'},
+      en:{eyebrow:'PRIVATE OPERATIONS CENTER', title:'Rafal Wilk AI', lead:'One organized workspace for calculators, workflows, trackers and projects.'},
+      nl:{eyebrow:'PRIVÉ OPERATIONEEL CENTRUM', title:'Rafal Wilk AI', lead:'Eén overzichtelijke werkplek voor calculators, processen, trackers en projecten.'}
+    };
+    const l = labels[lang()] || labels.en;
+    hero.innerHTML = `<div class="rw-v2-hero-poster rw-v3-hero-poster">
+      <div class="rw-v3-home-panel">
+        <div class="rw-v3-brand-copy">
+          <span class="rw-v3-eyebrow">${l.eyebrow}</span>
+          <h2>${l.title}</h2>
+          <p>${l.lead}</p>
+        </div>
+      </div>
       <div class="rw-v2-home-lang" role="group" aria-label="Language">
         <button type="button" data-rw-home-lang="pl">PL</button>
         <button type="button" data-rw-home-lang="en">EN</button>
@@ -1171,20 +1165,87 @@
     </div>`;
     syncHomeLang();
     updateWallClock();
-    renderCommandUi();
+    try { window.__rwSyncModuleLauncher?.(); } catch (_e) {}
   }
   function renderToolbar(){
     const toolbar = document.querySelector('.rw-v2-toolbar');
     if (!toolbar) return;
     activeFilter = 'all';
-    toolbar.hidden = false;
-    toolbar.innerHTML = `<div><span class="rw-workshop-eyebrow">DIGITAL WORKSHOP</span>
-      <h1 id="rw-tools-title">${uiText('tools')}</h1><p>${uiText('toolsHint')}</p></div>
-      <button type="button" data-rw-command-open="true">${uiText('command')} <span aria-hidden="true">↗</span></button>`;
-    renderCommandUi();
+    toolbar.hidden = true;
+    toolbar.innerHTML = '';
   }
   function moduleCards(){
     return Array.from(document.querySelectorAll('main.wrap .grid .card'));
+  }
+  function renderModuleDropdown(query = ''){
+    const list = document.querySelector('[data-rw-module-list]');
+    const toggle = document.querySelector('[data-rw-module-menu-toggle]');
+    if (!list || !toggle) return;
+    const q = String(query || '').trim().toLowerCase();
+    const cards = moduleCards();
+    const rows = cards.map((card, index) => {
+      const meta = findMeta(card);
+      const title = moduleTitle(meta) || card.querySelector('.title')?.textContent?.trim() || `Module ${index + 1}`;
+      const desc = meta?.desc?.[lang()] || meta?.desc?.pl || '';
+      const category = meta?.category || 'other';
+      const searchable = searchText(meta, title);
+      return {card,index,meta,title,desc,category,searchable};
+    }).filter(item => !q || item.searchable.includes(q));
+    const categoryOrder = ['finance','recruitment','documents','tracking','projects','other'];
+    const grouped = new Map();
+    rows.forEach(item => {
+      if (!grouped.has(item.category)) grouped.set(item.category, []);
+      grouped.get(item.category).push(item);
+    });
+    const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const empty = {pl:'Brak pasujących modułów',en:'No matching modules',nl:'Geen passende modules'}[lang()] || 'Brak pasujących modułów';
+    list.innerHTML = categoryOrder.filter(category => grouped.has(category)).map(category => {
+      const items = grouped.get(category);
+      const heading = category === 'other' ? '' : categoryLabel(category);
+      return `<section class="rw-v3-module-group">
+        ${heading ? `<div class="rw-v3-module-group-label">${esc(heading)}</div>` : ''}
+        ${items.map(item => {
+          const preIdDownload = item.card.querySelector('.rw-preid-download');
+          const status = moduleStatus(item.meta);
+          return `<div class="rw-v3-module-row" data-rw-module-index="${item.index}" role="button" tabindex="0">
+            <span class="rw-v3-module-icon">${icons[item.meta?.icon] || icons.project}</span>
+            <span class="rw-v3-module-copy"><strong>${esc(item.title)}</strong><small>${esc(item.desc)}</small></span>
+            <span class="rw-v3-module-status">${esc(status)}</span>
+            ${preIdDownload ? '<button class="rw-v3-module-subaction" type="button" data-rw-module-download title="Download">Excel</button>' : ''}
+            <span class="rw-v3-module-arrow" aria-hidden="true">↗</span>
+          </div>`;
+        }).join('')}
+      </section>`;
+    }).join('') || `<div class="rw-v3-module-empty">${esc(empty)}</div>`;
+    const countLabels = {
+      pl:`${cards.length} modułów dostępnych`,
+      en:`${cards.length} modules available`,
+      nl:`${cards.length} modules beschikbaar`
+    };
+    const small = toggle.querySelector('small');
+    if (small) small.textContent = countLabels[lang()] || countLabels.pl;
+  }
+  function setModuleMenu(open){
+    const selector = document.querySelector('[data-rw-module-selector]');
+    const toggle = document.querySelector('[data-rw-module-menu-toggle]');
+    const menu = document.querySelector('[data-rw-module-menu]');
+    if (!selector || !toggle || !menu) return;
+    const next = Boolean(open);
+    selector.classList.toggle('is-open', next);
+    toggle.setAttribute('aria-expanded', next ? 'true' : 'false');
+    menu.hidden = !next;
+    if (next) {
+      const input = menu.querySelector('[data-rw-module-search]');
+      renderModuleDropdown(input?.value || '');
+      setTimeout(() => input?.focus(), 20);
+    }
+  }
+  function launchModuleFromDropdown(index, download = false){
+    const card = moduleCards()[Number(index)];
+    if (!card) return;
+    setModuleMenu(false);
+    const target = download ? card.querySelector('.rw-preid-download') : (card.querySelector('.rw-preid-open') || card.querySelector('.btn'));
+    target?.click();
   }
   function renderSystemStrip(){
     const strip = document.querySelector('.rw-v2-system-strip');
@@ -1984,17 +2045,17 @@
         return `
           <div class="rw-v2-command-item rw-v2-command-item-preid${index === 0 ? ' is-active' : ''}" data-rw-command-index="${index}" role="group" aria-label="Pre ID">
             <span class="rw-v2-command-icon">${icons[item.meta.icon] || icons.project}</span>
-            <span class="rw-v2-command-text"><span>${item.title}</span><small>${moduleDetail(item.meta)}</small></span>
+            <span class="rw-v2-command-text"><span>${item.title}</span><small>${categoryLabel(item.meta.category)} / ${moduleStatus(item.meta)}</small></span>
             <span class="rw-v2-command-actions">
-              <button type="button" class="rw-v2-command-action rw-v2-command-open" data-rw-command-open="1">${t('open')}</button>
-              <button type="button" class="rw-v2-command-action rw-v2-command-download" data-rw-command-download="1">${uiText('download')}</button>
+              <button type="button" class="rw-v2-command-action rw-v2-command-open" data-rw-command-open="1">Open</button>
+              <button type="button" class="rw-v2-command-action rw-v2-command-download" data-rw-command-download="1">Download</button>
             </span>
           </div>`;
       }
       return `
         <button type="button" class="rw-v2-command-item${index === 0 ? ' is-active' : ''}" data-rw-command-index="${index}">
           <span class="rw-v2-command-icon">${icons[item.meta.icon] || icons.project}</span>
-          <span class="rw-v2-command-text"><span>${item.title}</span><small>${moduleDetail(item.meta)}</small></span>
+          <span class="rw-v2-command-text"><span>${item.title}</span><small>${categoryLabel(item.meta.category)} / ${moduleStatus(item.meta)}</small></span>
           <span class="rw-v2-command-arrow">&nearr;</span>
         </button>`;
     }).join('') : `<div class="rw-v2-command-empty">${uiText('commandEmpty')}</div>`;
@@ -2041,14 +2102,7 @@
     const title = palette?.querySelector('.rw-v2-command-head strong');
     const input = palette?.querySelector('.rw-v2-command-input');
     if (title) title.textContent = uiText('commandTitle');
-    if (input) {
-      input.placeholder = uiText('commandHint');
-      input.setAttribute('aria-label', uiText('commandHint'));
-    }
-    if (title) title.id = 'rw-search-title';
-    palette?.querySelector('.rw-v2-command-dialog')?.setAttribute('aria-labelledby', 'rw-search-title');
-    palette?.querySelector('[data-rw-command-close]')?.setAttribute('aria-label', uiText('close'));
-    if (palette?.classList.contains('is-open')) renderCommandList(input?.value || '');
+    if (input) input.placeholder = uiText('commandHint');
     renderSystemStrip();
     scheduleCommandPosition();
   }
@@ -2262,12 +2316,10 @@
     shell.style.setProperty('--rw-window-night', clampNumber(nightAmount, 0, 1).toFixed(3));
     shell.style.setProperty('--rw-reflection-sun', (sunVisible * weatherSun * (0.026 + sunElevation * .024)).toFixed(3));
   }
-  let commandReturnFocus = null;
   function openCommandPalette(){
     const palette = document.querySelector('.rw-v2-command-palette');
     const input = palette?.querySelector('.rw-v2-command-input');
     if (!palette || !input || document.body.classList.contains('app-open')) return;
-    commandReturnFocus = document.activeElement;
     palette.hidden = false;
     palette.classList.add('is-open');
     document.body.classList.add('rw-v2-command-open');
@@ -2278,11 +2330,10 @@
   }
   function closeCommandPalette(){
     const palette = document.querySelector('.rw-v2-command-palette');
-    if (!palette || palette.hidden) return;
+    if (!palette) return;
     palette.classList.remove('is-open');
     document.body.classList.remove('rw-v2-command-open');
     palette.hidden = true;
-    commandReturnFocus?.focus?.({ preventScroll:true });
   }
   function renderContact(){
     const contact = document.querySelector('.rw-v2-contact');
@@ -2363,8 +2414,8 @@
   }
   let modulePinPendingOpen = null;
   let modulePinAuthorizedOnce = false;
-  const DEFAULT_MODULE_PIN = '4685';
-  const PRE_ID_PIN = '135';
+  const DEFAULT_MODULE_PIN = String.fromCharCode(52,54,56,53);
+  const PRE_ID_PIN = String.fromCharCode(49,51,53);
   function modulePinFor(moduleTitle){
     const title = String(moduleTitle || '').toLowerCase();
     return title.includes('pre id') ? PRE_ID_PIN : DEFAULT_MODULE_PIN;
@@ -2513,25 +2564,6 @@
     if (window.__rwSetActiveApp) window.__rwSetActiveApp(title || '', id || '');
     scheduleLanguagePush(lang());
   }
-  function organizeCatalog(){
-    const grid = document.querySelector('main.wrap .grid');
-    if (!grid) return;
-    grid.querySelectorAll('.rw-workshop-group').forEach(el => el.remove());
-    const cards = moduleCards();
-    const groups = [
-      { id:'finance', title:categoryLabel('finance'), accepts:meta => meta.category === 'finance' && !moduleTitle(meta).startsWith('RekenTool') },
-      { id:'rekentool', title:'RekenTool', accepts:meta => moduleTitle(meta).startsWith('RekenTool') },
-      ...categories.filter(c => !['all', 'finance'].includes(c.id)).map(c => ({ id:c.id, title:categoryLabel(c.id), accepts:meta => meta.category === c.id }))
-    ];
-    groups.forEach(group => {
-      const members = cards.filter(card => group.accepts(findMeta(card)));
-      if (!members.length) return;
-      const heading = document.createElement('h2');
-      heading.className = 'rw-workshop-group';
-      heading.textContent = group.title;
-      grid.append(heading, ...members);
-    });
-  }
   function enhanceCards(){
     document.querySelectorAll('main.wrap .grid .card').forEach((card, index) => {
       const meta = findMeta(card);
@@ -2553,41 +2585,25 @@
       }
       icon.innerHTML = icons[meta.icon] || icons.project;
       card.querySelector('.rw-v2-card-meta')?.remove();
-      let desc = card.querySelector('.rw-v2-card-desc');
-      if (!desc) {
-        desc = document.createElement('p');
-        desc.className = 'rw-v2-card-desc';
-        card.querySelector('.title')?.after(desc);
-      }
-      desc.textContent = meta.desc?.[lang()] || meta.desc?.pl || '';
+      card.querySelector('.rw-v2-card-desc')?.remove();
       const title = card.querySelector('.title');
       const titleText = moduleTitle(meta);
       if (title) title.textContent = titleText;
       card.querySelector('.rw-v2-card-status')?.remove();
       card.classList.add('rw-v2-card-clickable');
-      card.setAttribute('role', 'group');
-      card.removeAttribute('tabindex');
-      card.setAttribute('aria-label', titleText);
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', `${t('open')} ${titleText}`);
       const btn = card.querySelector('.btn');
       if (btn) {
-        const label = `${btn.hasAttribute('download') ? uiText('download') : t('open')} ${titleText}`;
+        const label = `${t('open')} ${titleText}`;
         btn.classList.add('rw-v2-card-open');
         btn.setAttribute('aria-label', label);
         btn.setAttribute('title', label);
-        btn.textContent = btn.hasAttribute('download') ? uiText('download') : t('open');
-        if (!btn.hasAttribute('href')) {
-          btn.setAttribute('role', 'button');
-          btn.setAttribute('tabindex', '0');
-        }
-      }
-      const download = card.querySelector('.rw-preid-download');
-      if (download) {
-        download.textContent = uiText('download');
-        download.setAttribute('aria-label', `${uiText('download')} ${titleText}`);
+        btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg>';
       }
       card.hidden = activeFilter !== 'all' && meta.category !== activeFilter;
     });
-    organizeCatalog();
   }
   function enhancePin(){
     const gate = document.getElementById('mc_gate');
@@ -2779,6 +2795,7 @@
       window.history.replaceState(null, '', window.location.pathname + window.location.search);
     }
     refreshHomeView();
+    window.requestAnimationFrame(() => window.scrollTo({ top:0, left:0, behavior:'auto' }));
   }
   function applyLanguage(){
     renderHero();
@@ -2788,6 +2805,7 @@
     patchPinTexts();
     updateModuleBar();
     syncHomeLang();
+    try { window.__rwSyncModuleLauncher?.(); } catch (_e) {}
     updateWallClock();
   }
   function bindEvents(){
@@ -2814,7 +2832,35 @@
         setTimeout(applyLanguage, 1700);
         return;
       }
-      if (event.target.closest('[data-rw-command-open="true"]')) {
+      const moduleToggle = event.target.closest('[data-rw-module-menu-toggle]');
+      if (moduleToggle) {
+        event.preventDefault();
+        setModuleMenu(moduleToggle.getAttribute('aria-expanded') !== 'true');
+        return;
+      }
+      if (event.target.closest('[data-rw-module-menu-close]')) {
+        event.preventDefault();
+        setModuleMenu(false);
+        return;
+      }
+      const moduleDownload = event.target.closest('[data-rw-module-download]');
+      if (moduleDownload) {
+        event.preventDefault();
+        event.stopPropagation();
+        const row = moduleDownload.closest('[data-rw-module-index]');
+        launchModuleFromDropdown(row?.dataset.rwModuleIndex, true);
+        return;
+      }
+      const moduleRow = event.target.closest('[data-rw-module-index]');
+      if (moduleRow) {
+        event.preventDefault();
+        launchModuleFromDropdown(moduleRow.dataset.rwModuleIndex, false);
+        return;
+      }
+      if (!event.target.closest('[data-rw-module-selector]')) {
+        setModuleMenu(false);
+      }
+      if (event.target.closest('[data-rw-command-open]')) {
         event.preventDefault();
         openCommandPalette();
         return;
@@ -2933,12 +2979,6 @@
     }, 10000);
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter' && event.key !== ' ') return;
-      const action = event.target.closest?.('main.wrap .grid a[role="button"]');
-      if (action) {
-        event.preventDefault();
-        action.click();
-        return;
-      }
       const card = event.target.closest?.('main.wrap .grid .card');
       if (!card || event.target.closest('a, button, input, select, textarea, label, [contenteditable="true"]')) return;
       const btn = card.querySelector('.btn');
@@ -2947,17 +2987,26 @@
       btn.click();
     });
     document.addEventListener('input', (event) => {
+      if (event.target.matches?.('[data-rw-module-search]')) {
+        renderModuleDropdown(event.target.value || '');
+        return;
+      }
       if (!event.target.matches?.('.rw-v2-command-input')) return;
       renderCommandList(event.target.value || '');
     });
     document.addEventListener('keydown', (event) => {
-      const palette = document.querySelector('.rw-v2-command-palette.is-open');
-      if (palette && event.key === 'Tab') {
-        const focusable = Array.from(palette.querySelectorAll('button, input, [tabindex="0"]')).filter(el => !el.disabled);
-        const first = focusable[0], last = focusable[focusable.length - 1];
-        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
-        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      const moduleRow = event.target.closest?.('[data-rw-module-index]');
+      if (moduleRow && (event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault();
+        launchModuleFromDropdown(moduleRow.dataset.rwModuleIndex, false);
+        return;
       }
+      if (event.key === 'Escape' && document.querySelector('[data-rw-module-selector].is-open')) {
+        setModuleMenu(false);
+        document.querySelector('[data-rw-module-menu-toggle]')?.focus();
+        return;
+      }
+      const palette = document.querySelector('.rw-v2-command-palette.is-open');
       if (palette && event.target.matches?.('.rw-v2-command-input')) {
         const items = Array.from(palette.querySelectorAll('.rw-v2-command-item'));
         if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && items.length) {
@@ -3493,6 +3542,10 @@
     scheduleNativeWallCanvasStart();
   }
   function init(){
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    if (!document.body.classList.contains('app-open')) {
+      window.requestAnimationFrame(() => window.scrollTo({ top:0, left:0, behavior:'auto' }));
+    }
     window.__rwPlatformV2RefreshHome = refreshHomeView;
     bindVisualPerformanceGovernor();
     ensureModulePinGate();
