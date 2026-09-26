@@ -153,3 +153,96 @@ html.rw-face-preset-hologram-subtle {
 @media (prefers-reduced-motion:reduce) {
   body.rw-v2-ready:not(.app-open) main.wrap .rw-workshop-catalog .grid .card { transition:none!important; transform:none!important; }
 }
+
+
+/* RW final fullscreen override: no space below hero */
+body.rw-v2-ready:not(.app-open){
+  --rw-scene-height:100dvh!important;
+  width:100vw!important;
+  min-width:100vw!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+  overflow:hidden!important;
+  overflow-x:hidden!important;
+  overflow-y:hidden!important;
+}
+
+body.rw-v2-ready:not(.app-open) main.wrap{
+  position:relative!important;
+  inset:0!important;
+  width:100vw!important;
+  max-width:100vw!important;
+  min-width:100vw!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-shell{
+  position:relative!important;
+  inset:0!important;
+  width:100vw!important;
+  max-width:100vw!important;
+  min-width:100vw!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-hero{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  max-width:none!important;
+  height:100%!important;
+  min-height:100%!important;
+  max-height:100%!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background-size:cover!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  overflow:hidden!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-v2-hero-poster{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+  max-height:100%!important;
+}
+
+body.rw-v2-ready:not(.app-open) .rw-workshop-catalog,
+body.rw-v2-ready:not(.app-open) .rw-v2-contact,
+body.rw-v2-ready:not(.app-open) .privacy-footer{
+  display:none!important;
+  visibility:hidden!important;
+}
+
+@supports not (height:100dvh){
+  body.rw-v2-ready:not(.app-open){
+    --rw-scene-height:100vh!important;
+    height:100vh!important;
+    min-height:100vh!important;
+    max-height:100vh!important;
+  }
+  body.rw-v2-ready:not(.app-open) main.wrap,
+  body.rw-v2-ready:not(.app-open) .rw-v2-shell{
+    height:100vh!important;
+    min-height:100vh!important;
+    max-height:100vh!important;
+  }
+}
