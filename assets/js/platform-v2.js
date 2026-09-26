@@ -115,7 +115,7 @@
       desc:{pl:'Kalkulator merit increase z wyraźnym wyborem roku.', en:'Merit increase calculator with clear year selection.', nl:'Merit increase calculator met duidelijke jaarkeuze.'}},
     { match:'Merit Excel 350', icon:'document', category:'documents',
       title:{pl:'Merit Excel 350', en:'Merit Excel 350', nl:'Merit Excel 350'},
-      desc:{pl:'Excel workbook for 350 merit rows with automatic GS/PS markup.', en:'Excel workbook for 350 merit rows with automatic GS/PS markup.', nl:'Excel workbook for 350 merit rows with automatic GS/PS markup.'}},
+      desc:{pl:'Arkusz Excel na 350 pozycji merit z automatycznym narzutem GS/PS.', en:'Excel workbook for 350 merit rows with automatic GS/PS markup.', nl:'Excelbestand voor 350 meritregels met automatische GS/PS-opslag.'}},
     { match:'Przegląd agencji', icon:'agency', category:'documents',
       title:{pl:'Przegląd agencji', en:'Agency Review', nl:'Bureauoverzicht'},
       desc:{pl:'Porządkowanie informacji o agencjach i partnerach.', en:'Organize agency and partner information.', nl:'Orden informatie over bureaus en partners.'}},
@@ -290,8 +290,12 @@
   function t(key){ return copy[key]?.[lang()] || copy[key]?.pl || key; }
   function uiText(key){
     const texts = {
-      command:{pl:'Szukaj', en:'Command', nl:'Zoeken'},
-      commandTitle:{pl:'Command Center', en:'Command Center', nl:'Command Center'},
+      command:{pl:'Szukaj', en:'Search', nl:'Zoeken'},
+      commandTitle:{pl:'Znajdź narzędzie', en:'Find a tool', nl:'Zoek een tool'},
+      close:{pl:'Zamknij', en:'Close', nl:'Sluiten'},
+      download:{pl:'Pobierz', en:'Download', nl:'Downloaden'},
+      tools:{pl:'Twoje narzędzia', en:'Your tools', nl:'Je tools'},
+      toolsHint:{pl:'Wybierz narzędzie lub znajdź je przez wyszukiwarkę.', en:'Choose a tool or find it using search.', nl:'Kies een tool of vind deze via de zoekfunctie.'},
       commandHint:{pl:'Wpisz nazwę modułu', en:'Type a module name', nl:'Typ een modulenaam'},
       commandEmpty:{pl:'Brak wyników', en:'No results', nl:'Geen resultaten'},
       systemOnline:{pl:'System online', en:'System online', nl:'Systeem online'},
@@ -322,6 +326,11 @@
     if (meta?.category === 'tracking') return uiText('tracker');
     if (meta?.category === 'recruitment') return uiText('workflow');
     return uiText('ready');
+  }
+  function moduleDetail(meta){
+    const status = moduleStatus(meta);
+    return [uiText('protected'), uiText('workbook')].includes(status)
+      ? `${categoryLabel(meta.category)} · ${status}` : categoryLabel(meta.category);
   }
   function searchText(meta, title){
     const matches = Array.isArray(meta?.match) ? meta.match : [meta?.match || ''];
@@ -416,6 +425,16 @@
       toolbar.className = 'rw-v2-toolbar';
       main.insertBefore(shell, grid);
       shell.append(hero, toolbar, grid);
+    }
+    // Keep the scene's measured box independent of the catalog and face geometry.
+    let catalog = main.querySelector('.rw-workshop-catalog');
+    if (!catalog) {
+      catalog = document.createElement('section');
+      catalog.className = 'rw-workshop-catalog';
+      catalog.id = 'tools';
+      catalog.setAttribute('aria-labelledby', 'rw-tools-title');
+      shell.after(catalog);
+      catalog.append(shell.querySelector('.rw-v2-toolbar'), grid);
     }
     if (!shell.querySelector('.rw-v2-contact')) {
       const contact = document.createElement('section');
@@ -598,7 +617,7 @@
           <button type="button" data-rw-command-close="true" aria-label="Close">x</button>
         </div>
         <input class="rw-v2-command-input" type="search" autocomplete="off">
-        <div class="rw-v2-command-list" role="listbox"></div>
+        <div class="rw-v2-command-list"></div>
       </div>`;
       shell.appendChild(palette);
     }
@@ -1158,8 +1177,10 @@
     const toolbar = document.querySelector('.rw-v2-toolbar');
     if (!toolbar) return;
     activeFilter = 'all';
-    toolbar.hidden = true;
-    toolbar.innerHTML = '';
+    toolbar.hidden = false;
+    toolbar.innerHTML = `<div><span class="rw-workshop-eyebrow">DIGITAL WORKSHOP</span>
+      <h1 id="rw-tools-title">${uiText('tools')}</h1><p>${uiText('toolsHint')}</p></div>
+      <button type="button" data-rw-command-open="true">${uiText('command')} <span aria-hidden="true">↗</span></button>`;
     renderCommandUi();
   }
   function moduleCards(){
@@ -1963,17 +1984,17 @@
         return `
           <div class="rw-v2-command-item rw-v2-command-item-preid${index === 0 ? ' is-active' : ''}" data-rw-command-index="${index}" role="group" aria-label="Pre ID">
             <span class="rw-v2-command-icon">${icons[item.meta.icon] || icons.project}</span>
-            <span class="rw-v2-command-text"><span>${item.title}</span><small>${categoryLabel(item.meta.category)} / ${moduleStatus(item.meta)}</small></span>
+            <span class="rw-v2-command-text"><span>${item.title}</span><small>${moduleDetail(item.meta)}</small></span>
             <span class="rw-v2-command-actions">
-              <button type="button" class="rw-v2-command-action rw-v2-command-open" data-rw-command-open="1">Open</button>
-              <button type="button" class="rw-v2-command-action rw-v2-command-download" data-rw-command-download="1">Download</button>
+              <button type="button" class="rw-v2-command-action rw-v2-command-open" data-rw-command-open="1">${t('open')}</button>
+              <button type="button" class="rw-v2-command-action rw-v2-command-download" data-rw-command-download="1">${uiText('download')}</button>
             </span>
           </div>`;
       }
       return `
         <button type="button" class="rw-v2-command-item${index === 0 ? ' is-active' : ''}" data-rw-command-index="${index}">
           <span class="rw-v2-command-icon">${icons[item.meta.icon] || icons.project}</span>
-          <span class="rw-v2-command-text"><span>${item.title}</span><small>${categoryLabel(item.meta.category)} / ${moduleStatus(item.meta)}</small></span>
+          <span class="rw-v2-command-text"><span>${item.title}</span><small>${moduleDetail(item.meta)}</small></span>
           <span class="rw-v2-command-arrow">&nearr;</span>
         </button>`;
     }).join('') : `<div class="rw-v2-command-empty">${uiText('commandEmpty')}</div>`;
@@ -2020,7 +2041,14 @@
     const title = palette?.querySelector('.rw-v2-command-head strong');
     const input = palette?.querySelector('.rw-v2-command-input');
     if (title) title.textContent = uiText('commandTitle');
-    if (input) input.placeholder = uiText('commandHint');
+    if (input) {
+      input.placeholder = uiText('commandHint');
+      input.setAttribute('aria-label', uiText('commandHint'));
+    }
+    if (title) title.id = 'rw-search-title';
+    palette?.querySelector('.rw-v2-command-dialog')?.setAttribute('aria-labelledby', 'rw-search-title');
+    palette?.querySelector('[data-rw-command-close]')?.setAttribute('aria-label', uiText('close'));
+    if (palette?.classList.contains('is-open')) renderCommandList(input?.value || '');
     renderSystemStrip();
     scheduleCommandPosition();
   }
@@ -2234,10 +2262,12 @@
     shell.style.setProperty('--rw-window-night', clampNumber(nightAmount, 0, 1).toFixed(3));
     shell.style.setProperty('--rw-reflection-sun', (sunVisible * weatherSun * (0.026 + sunElevation * .024)).toFixed(3));
   }
+  let commandReturnFocus = null;
   function openCommandPalette(){
     const palette = document.querySelector('.rw-v2-command-palette');
     const input = palette?.querySelector('.rw-v2-command-input');
     if (!palette || !input || document.body.classList.contains('app-open')) return;
+    commandReturnFocus = document.activeElement;
     palette.hidden = false;
     palette.classList.add('is-open');
     document.body.classList.add('rw-v2-command-open');
@@ -2248,10 +2278,11 @@
   }
   function closeCommandPalette(){
     const palette = document.querySelector('.rw-v2-command-palette');
-    if (!palette) return;
+    if (!palette || palette.hidden) return;
     palette.classList.remove('is-open');
     document.body.classList.remove('rw-v2-command-open');
     palette.hidden = true;
+    commandReturnFocus?.focus?.({ preventScroll:true });
   }
   function renderContact(){
     const contact = document.querySelector('.rw-v2-contact');
@@ -2482,6 +2513,25 @@
     if (window.__rwSetActiveApp) window.__rwSetActiveApp(title || '', id || '');
     scheduleLanguagePush(lang());
   }
+  function organizeCatalog(){
+    const grid = document.querySelector('main.wrap .grid');
+    if (!grid) return;
+    grid.querySelectorAll('.rw-workshop-group').forEach(el => el.remove());
+    const cards = moduleCards();
+    const groups = [
+      { id:'finance', title:categoryLabel('finance'), accepts:meta => meta.category === 'finance' && !moduleTitle(meta).startsWith('RekenTool') },
+      { id:'rekentool', title:'RekenTool', accepts:meta => moduleTitle(meta).startsWith('RekenTool') },
+      ...categories.filter(c => !['all', 'finance'].includes(c.id)).map(c => ({ id:c.id, title:categoryLabel(c.id), accepts:meta => meta.category === c.id }))
+    ];
+    groups.forEach(group => {
+      const members = cards.filter(card => group.accepts(findMeta(card)));
+      if (!members.length) return;
+      const heading = document.createElement('h2');
+      heading.className = 'rw-workshop-group';
+      heading.textContent = group.title;
+      grid.append(heading, ...members);
+    });
+  }
   function enhanceCards(){
     document.querySelectorAll('main.wrap .grid .card').forEach((card, index) => {
       const meta = findMeta(card);
@@ -2503,25 +2553,41 @@
       }
       icon.innerHTML = icons[meta.icon] || icons.project;
       card.querySelector('.rw-v2-card-meta')?.remove();
-      card.querySelector('.rw-v2-card-desc')?.remove();
+      let desc = card.querySelector('.rw-v2-card-desc');
+      if (!desc) {
+        desc = document.createElement('p');
+        desc.className = 'rw-v2-card-desc';
+        card.querySelector('.title')?.after(desc);
+      }
+      desc.textContent = meta.desc?.[lang()] || meta.desc?.pl || '';
       const title = card.querySelector('.title');
       const titleText = moduleTitle(meta);
       if (title) title.textContent = titleText;
       card.querySelector('.rw-v2-card-status')?.remove();
       card.classList.add('rw-v2-card-clickable');
-      card.setAttribute('role', 'button');
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('aria-label', `${t('open')} ${titleText}`);
+      card.setAttribute('role', 'group');
+      card.removeAttribute('tabindex');
+      card.setAttribute('aria-label', titleText);
       const btn = card.querySelector('.btn');
       if (btn) {
-        const label = `${t('open')} ${titleText}`;
+        const label = `${btn.hasAttribute('download') ? uiText('download') : t('open')} ${titleText}`;
         btn.classList.add('rw-v2-card-open');
         btn.setAttribute('aria-label', label);
         btn.setAttribute('title', label);
-        btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg>';
+        btn.textContent = btn.hasAttribute('download') ? uiText('download') : t('open');
+        if (!btn.hasAttribute('href')) {
+          btn.setAttribute('role', 'button');
+          btn.setAttribute('tabindex', '0');
+        }
+      }
+      const download = card.querySelector('.rw-preid-download');
+      if (download) {
+        download.textContent = uiText('download');
+        download.setAttribute('aria-label', `${uiText('download')} ${titleText}`);
       }
       card.hidden = activeFilter !== 'all' && meta.category !== activeFilter;
     });
+    organizeCatalog();
   }
   function enhancePin(){
     const gate = document.getElementById('mc_gate');
@@ -2748,7 +2814,7 @@
         setTimeout(applyLanguage, 1700);
         return;
       }
-      if (event.target.closest('[data-rw-command-open]')) {
+      if (event.target.closest('[data-rw-command-open="true"]')) {
         event.preventDefault();
         openCommandPalette();
         return;
@@ -2867,6 +2933,12 @@
     }, 10000);
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter' && event.key !== ' ') return;
+      const action = event.target.closest?.('main.wrap .grid a[role="button"]');
+      if (action) {
+        event.preventDefault();
+        action.click();
+        return;
+      }
       const card = event.target.closest?.('main.wrap .grid .card');
       if (!card || event.target.closest('a, button, input, select, textarea, label, [contenteditable="true"]')) return;
       const btn = card.querySelector('.btn');
@@ -2880,6 +2952,12 @@
     });
     document.addEventListener('keydown', (event) => {
       const palette = document.querySelector('.rw-v2-command-palette.is-open');
+      if (palette && event.key === 'Tab') {
+        const focusable = Array.from(palette.querySelectorAll('button, input, [tabindex="0"]')).filter(el => !el.disabled);
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
       if (palette && event.target.matches?.('.rw-v2-command-input')) {
         const items = Array.from(palette.querySelectorAll('.rw-v2-command-item'));
         if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && items.length) {
