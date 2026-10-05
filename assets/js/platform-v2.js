@@ -1980,9 +1980,9 @@
     const rows = commandRows(query);
     list.innerHTML = rows.length ? rows.map((item, index) => {
       const isPreId = item.card?.classList?.contains('rw-preid-card') || item.title === 'Pre ID';
-      if (isPreId) {
+      if (isPreId || item.card?.querySelector('.rw-rekentool-download')) {
         return `
-          <div class="rw-v2-command-item rw-v2-command-item-preid${index === 0 ? ' is-active' : ''}" data-rw-command-index="${index}" role="group" aria-label="Pre ID">
+          <div class="rw-v2-command-item rw-v2-command-item-preid${index === 0 ? ' is-active' : ''}" data-rw-command-index="${index}" role="group" aria-label="${item.title}">
             <span class="rw-v2-command-icon">${icons[item.meta.icon] || icons.project}</span>
             <span class="rw-v2-command-text"><span>${item.title}</span><small>${moduleDetail(item.meta)}</small></span>
             <span class="rw-v2-command-actions">
@@ -2019,7 +2019,7 @@
         const row = button.closest('[data-rw-command-index]');
         const item = rows[Number(row?.dataset.rwCommandIndex || 0)];
         closeCommandPalette();
-        item?.card?.querySelector('.rw-preid-open')?.click();
+        item?.card?.querySelector('.rw-preid-open, .btn:not([download])')?.click();
       });
     });
 
@@ -2030,7 +2030,7 @@
         const row = button.closest('[data-rw-command-index]');
         const item = rows[Number(row?.dataset.rwCommandIndex || 0)];
         closeCommandPalette();
-        item?.card?.querySelector('.rw-preid-download')?.click();
+        item?.card?.querySelector('.rw-preid-download, .rw-rekentool-download')?.click();
       });
     });
   }
@@ -2580,7 +2580,7 @@
           btn.setAttribute('tabindex', '0');
         }
       }
-      const download = card.querySelector('.rw-preid-download');
+      const download = card.querySelector('.rw-preid-download, .rw-rekentool-download');
       if (download) {
         download.textContent = uiText('download');
         download.setAttribute('aria-label', `${uiText('download')} ${titleText}`);
@@ -3527,3 +3527,4 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
+
