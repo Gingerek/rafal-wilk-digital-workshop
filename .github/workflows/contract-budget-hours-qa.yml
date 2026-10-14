@@ -154,7 +154,7 @@ jobs:
             const extreme=await testUsage('103,30','100%',true,'633');
             if(!extreme.details||!extreme.state)
               throw new Error('Extreme over-budget information missing: '+JSON.stringify(extreme));
-            await testUsage('9876','28%',false,'27');
+            await testUsage('6800','40%',false,'40%');
 
             await page.screenshot({path:'budget-hours-qa.png',fullPage:true});
 
