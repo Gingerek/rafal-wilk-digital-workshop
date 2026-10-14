@@ -1,0 +1,58 @@
+name: Contract budget DOM inspection
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/budget-diagnostic.yml'
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser
+        run: npm install --no-save playwright-core
+      - name: Inspect budget module in Chromium
+        run: |
+          CHROME_BIN="$(which google-chrome-stable || which google-chrome || which chromium || which chromium-browser)" node <<'NODE'
+          const {chromium}=require('playwright-core');
+          (async()=>{
+            const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const page=await browser.newPage({viewport:{width:1440,height:900}});
+            const errors=[];
+            page.on('pageerror',e=>errors.push(String(e)));
+            page.on('requestfailed',r=>errors.push('Network '+r.url()+': '+r.failure()?.errorText));
+            await page.goto('https://www.rafalwilkai.com/',{waitUntil:'domcontentloaded',timeout:45000});
+            await page.evaluate(()=>window.__rwLoadLegacyApps?.());
+            await page.waitForFunction(()=>typeof window.loadApp==='function');
+            await page.evaluate(()=>window.loadApp(0));
+            await page.waitForTimeout(2500);
+            const root=await page.evaluate(()=>{
+              const f=document.querySelector('#appframe');return {src:f?.src,show:f?.className,body:document.body.className};
+            });
+            console.log('BUDGET_FRAME',JSON.stringify(root));
+            const frame=page.frameLocator('#appframe');
+            const tree=await frame.locator('body').evaluate(el=>({
+              title:document.title,
+              text:el.innerText.slice(0,12000),
+              forms:[...document.querySelectorAll('form')].map(e=>({id:e.id,className:e.className})),
+              fields:[...document.querySelectorAll('input,select,button,output')].slice(0,120).map(e=>({tag:e.tagName,id:e.id,name:e.name||'',type:e.type||'',placeholder:e.placeholder||'',text:(e.textContent||'').trim().slice(0,80),value:e.value||'',outer:e.outerHTML.slice(0,300)})),
+              headings:[...document.querySelectorAll('h1,h2,h3,h4,section,.card,.panel')].slice(0,40).map(e=>({tag:e.tagName,id:e.id,className:e.className,text:e.textContent?.trim().slice(0,110)}))
+            })).catch(e=>({error:String(e)}));
+            console.log('BUDGET_DOM',JSON.stringify(tree));
+            console.log('BUDGET_ERRORS',JSON.stringify(errors));
+            await page.screenshot({path:'budget-module.png',fullPage:true});
+            await browser.close();
+          })().catch(e=>{console.error(e.stack||String(e));process.exit(1)});
+          NODE
+      - name: Upload screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: budget-module-inspection
+          path: budget-module.png
+          if-no-files-found: ignore
