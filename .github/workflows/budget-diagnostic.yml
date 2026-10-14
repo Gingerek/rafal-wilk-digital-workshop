@@ -38,6 +38,10 @@ jobs:
             const arr=term==='function'||term==='calc'?[]:[styles,scripts].flatMap((t,i)=>{let pos=t.indexOf(term);return pos>=0?[{source:i?'js':'css',piece:t.slice(Math.max(0,pos-150),pos+650)}]:[]});
             samples[term]=arr.slice(0,2);
           }
+          const calcAt=scripts.indexOf('function calc(');
+          const isoAt=scripts.indexOf('startISOHidden');
+          const parseAt=scripts.indexOf('function parse');
+          console.log('BUDGET_CALC',JSON.stringify({calc:scripts.slice(calcAt,calcAt+4300),iso:scripts.slice(isoAt,isoAt+2900),parse:scripts.slice(parseAt,parseAt+1000),scriptEnd:scripts.slice(-1400)}));
           console.log('BUDGET_DETAILS',JSON.stringify({stylesBytes:styles.length,scriptsBytes:scripts.length,samples,bodyEnd:budget.slice(budget.indexOf('id="resultCard"')-120,budget.indexOf('id="resultCard"')+5500)}));
           console.log('BUDGET_HTML',JSON.stringify({title:list[0].title,length:budget.length,headings:[...budget.matchAll(/<h[1-4][^>]*>/gi)].slice(0,25).map(x=>x[0].slice(0,230)),fields:[...budget.matchAll(/<(input|select|button|output)[^>]*>/gi)].slice(0,95).map(x=>x[0].slice(0,240)),sections:[...budget.matchAll(/<(section|main|div)[^>]*>/gi)].slice(0,40).map(x=>x[0].slice(0,160)),bodyStart:budget.slice(budget.indexOf('<body'),budget.indexOf('<body')+4500)}));
 
