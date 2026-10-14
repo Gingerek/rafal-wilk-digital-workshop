@@ -50,6 +50,8 @@
 <title>Rafal Wilk AI ©</title>
 <style id="rw-critical-startup-guard">
   html{background:#05080d}
+  /* Hide voice agent content until the dialog is explicitly opened. */
+  #rwAgentOverlay:not(.open){display:none!important}
   body:not(.rw-v2-ready):not(.app-open){
     background:#05080d!important;
     overflow:hidden!important;
