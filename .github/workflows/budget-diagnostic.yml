@@ -29,11 +29,14 @@ jobs:
             await page.goto('https://www.rafalwilkai.com/',{waitUntil:'domcontentloaded',timeout:45000});
             await page.evaluate(()=>window.__rwLoadLegacyApps?.());
             await page.waitForFunction(()=>typeof window.loadApp==='function');
+            console.log('BUDGET_SOURCE',JSON.stringify(await page.evaluate(()=>({loaded:window.__rwLegacyAppsLoaded,fn:String(window.loadApp).slice(0,1600),iframeCount:document.querySelectorAll('iframe').length}))));
             await page.evaluate(()=>window.loadApp(0));
-            await page.waitForTimeout(2500);
-            const root=await page.evaluate(()=>{
-              const f=document.querySelector('#appframe');return {src:f?.src,show:f?.className,body:document.body.className};
-            });
+            await page.waitForTimeout(3000);
+            const root=await page.evaluate(()=>({
+              frames:[...document.querySelectorAll('iframe')].map(f=>({id:f.id,src:f.src,show:f.className,docText:f.contentDocument?.body?.innerText?.slice(0,400)||''})),
+              body:document.body.className,
+              fn:String(window.loadApp).slice(0,900)
+            }));
             console.log('BUDGET_FRAME',JSON.stringify(root));
             const frame=page.frameLocator('#appframe');
             const tree=await frame.locator('body').evaluate(el=>({
