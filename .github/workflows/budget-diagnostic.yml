@@ -30,7 +30,7 @@ jobs:
           const q=s.indexOf('];',p)+1;
           const list=JSON.parse(s.slice(p,q));
           const budget=Buffer.from(list[0].b64,'base64').toString('utf8');
-          console.log('BUDGET_HTML',JSON.stringify({title:list[0].title,length:budget.length,headings:[...budget.matchAll(/<h[1-4][^>]*>[\\s\\S]*?<\\/h[1-4]>/gi)].slice(0,25).map(x=>x[0].slice(0,230)),fields:[...budget.matchAll(/<(input|select|button|output)[^>]*>/gi)].slice(0,95).map(x=>x[0].slice(0,240)),sections:[...budget.matchAll(/<section[^>]*>|<main[^>]*>|<div[^>]+class="[^"]*card[^"]*"[^>]*>/gi)].slice(0,40).map(x=>x[0].slice(0,160)),bodyStart:budget.slice(budget.indexOf('<body'),budget.indexOf('<body')+4500)}));
+          console.log('BUDGET_HTML',JSON.stringify({title:list[0].title,length:budget.length,headings:[...budget.matchAll(/<h[1-4][^>]*>/gi)].slice(0,25).map(x=>x[0].slice(0,230)),fields:[...budget.matchAll(/<(input|select|button|output)[^>]*>/gi)].slice(0,95).map(x=>x[0].slice(0,240)),sections:[...budget.matchAll(/<(section|main|div)[^>]*>/gi)].slice(0,40).map(x=>x[0].slice(0,160)),bodyStart:budget.slice(budget.indexOf('<body'),budget.indexOf('<body')+4500)}));
 
           NODE
       - name: Inspect budget module in Chromium
