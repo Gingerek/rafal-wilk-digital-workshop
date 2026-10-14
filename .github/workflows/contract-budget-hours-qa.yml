@@ -1,0 +1,73 @@
+name: Contract Budget Hours QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'assets/js/contract-budget-hours.js'
+      - '.github/workflows/contract-budget-hours-qa.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright-core
+      - name: Test embedded calculator in Chromium
+        run: |
+          export CHROME_BIN="$(which google-chrome-stable || which google-chrome || which chromium || which chromium-browser)"
+          python3 -m http.server 4173 > /tmp/http.log 2>&1 &
+          node <<'NODE'
+          const fs=require('fs'),{chromium}=require('playwright-core');
+          (async()=>{
+            const src=fs.readFileSync('assets/js/legacy-apps-bundle.js','utf8');
+            const a=src.indexOf('const APPS = ')+13,b=src.indexOf('];',a)+1;
+            const apps=JSON.parse(src.slice(a,b));
+            const html=Buffer.from(apps[0].b64,'base64').toString('utf8');
+            const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const page=await browser.newPage({viewport:{width:1440,height:950}});
+            const errors=[];
+            page.on('pageerror',e=>errors.push(String(e)));
+            await page.goto('http://127.0.0.1:4173/index.html',{waitUntil:'domcontentloaded'});
+            await page.evaluate(html=>{
+              const f=document.getElementById('appframe');
+              f.loading='eager';f.srcdoc=html;f.classList.add('show');
+              document.body.classList.add('app-open');
+              document.querySelector('.viewport')?.classList.add('active');
+            },html);
+            await page.waitForFunction(()=>!!document.querySelector('#appframe')?.contentDocument?.getElementById('rwContractHoursTile'),null,{timeout:15000});
+            const frame=page.frameLocator('#appframe');
+            async function scenario(weekly,start,end,expected,language='en'){
+              await frame.locator('#langSelect').selectOption(language);
+              await frame.locator('#uren').fill(weekly);
+              await frame.locator('#start').fill(start);
+              await frame.locator('#eind').fill(end);
+              await page.waitForTimeout(800);
+              const output=await frame.locator('#rwContractHoursTile [data-rw-hours-value]').innerText();
+              if(output!==expected)throw new Error([weekly,start,end,expected,output].join(' / '));
+              console.log('HOURS_PASS',JSON.stringify({weekly,start,end,expected,language}));
+            }
+            await scenario('40','01-10-2026','31-10-2026','176');
+            await scenario('40','14-10-2026','14-10-2026','8');
+            await scenario('40','17-10-2026','18-10-2026','0');
+            await scenario('40','16-10-2026','19-10-2026','16');
+            await scenario('37,5','12-10-2026','16-10-2026','37,5','nl');
+            await scenario('40','20-10-2026','19-10-2026','—','pl');
+            const count=await frame.locator('#resultCard .kpi .tile').count();
+            console.log('LEGACY_TILES',count);
+            if(count<5||errors.length)throw new Error('Legacy results missing or JS errors: '+JSON.stringify(errors));
+            await page.screenshot({path:'budget-hours-qa.png',fullPage:true});
+            console.log('CONTRACT_BUDGET_QA_PASS');
+            await browser.close();
+          })().catch(e=>{console.error(e.stack||String(e));process.exit(1)});
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: budget-hours-screenshot
+          path: budget-hours-qa.png
+          if-no-files-found: ignore
