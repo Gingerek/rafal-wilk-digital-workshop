@@ -5,6 +5,7 @@ on:
     paths:
       - 'index.html'
       - 'assets/js/contract-budget-hours.js'
+      - 'assets/js/contract-budget-layout.js'
       - '.github/workflows/contract-budget-hours-qa.yml'
   workflow_dispatch:
 jobs:
@@ -62,10 +63,66 @@ jobs:
             await scenario('40','16-10-2026','19-10-2026','16');
             await scenario('37,5','12-10-2026','16-10-2026','37,5','nl');
             await scenario('40','20-10-2026','19-10-2026','—','pl');
+
+            await page.waitForFunction(()=>document.querySelector('#appframe')?.contentDocument?.documentElement.classList.contains('rw-budget-pro'),null,{timeout:9000});
+            const check=await page.evaluate(()=>{
+              const d=document.querySelector('#appframe').contentDocument;
+              return {
+                sections:d.querySelectorAll('.rw-budget-section').length,
+                original:d.querySelectorAll('.rw-budget-section .row').length,
+                days:d.querySelector('#rwWorkingDaysValue')?.textContent,
+                groups:d.querySelectorAll('.rw-budget-group').length,
+                CSS:d.querySelector('#rw-contract-budget-professional-v2')?.textContent.length||0,
+                columns:getComputedStyle(d.querySelector('.layout')).gridTemplateColumns
+              };
+            });
+            console.log('REDESIGN_DESKTOP',JSON.stringify(check));
+            if(check.sections!==2||check.groups!==3||check.original!==6||check.CSS<1000)throw new Error('Restructured sections missing: '+JSON.stringify(check));
+            await page.evaluate(()=>{
+              const d=document.querySelector('#appframe').contentDocument;
+              const state={tarief:'34',uren:'40',start:'01-10-2026',eind:'31-10-2026',budget:'9876',wekenMan:''};
+              for(const [id,v] of Object.entries(state)){
+                const el=d.getElementById(id);
+                el.value=v;
+                el.dispatchEvent(new Event('input',{bubbles:true}));
+                el.dispatchEvent(new Event('change',{bubbles:true}));
+              }
+              d.getElementById('ceil').checked=true;
+              d.getElementById('ceil').dispatchEvent(new Event('change',{bubbles:true}));
+            });
+            await page.waitForTimeout(1400);
+            const automatic=await page.evaluate(()=>{
+              const d=document.querySelector('#appframe').contentDocument;
+              const text=id=>d.getElementById(id)?.textContent.trim();
+              return {weeks:text('weeksUsed'),planned:text('planned'),hours:text('rwContractHoursTile'),workDays:text('rwWorkingDaysValue'),startISO:d.getElementById('startISO')?.value,endISO:d.getElementById('eindISO')?.value};
+            });
+            console.log('REDESIGN_BUDGET_AUTOMATIC',JSON.stringify(automatic));
+            if(automatic.weeks!=='5' || automatic.startISO!=='2026-10-01' || automatic.endISO!=='2026-10-31')throw new Error('Date sync and original week formulas did not update: '+JSON.stringify(automatic));
+            if(!automatic.planned.includes('6.800')||automatic.workDays!=='22')throw new Error('Original planned budget or new working days are wrong: '+JSON.stringify(automatic));
+            await page.evaluate(()=>{
+              const d=document.querySelector('#appframe').contentDocument,el=d.getElementById('wekenMan');
+              el.value='2';el.dispatchEvent(new Event('input',{bubbles:true}));
+            });
+            await page.waitForTimeout(750);
+            const manual=await page.evaluate(()=>{
+              const d=document.querySelector('#appframe').contentDocument;
+              return {weeks:d.getElementById('weeksUsed').textContent.trim(),planned:d.getElementById('planned').textContent.trim(),hours:d.querySelector('#rwContractHoursTile [data-rw-hours-value]').textContent.trim(),hint:d.querySelector('[data-rw-ui="override"]').textContent.trim()};
+            });
+            console.log('REDESIGN_BUDGET_OVERRIDE',JSON.stringify(manual));
+            if(manual.weeks!=='2'||!manual.planned.includes('2.720')||manual.hours!=='176'||!manual.hint.includes('Manual'))throw new Error('Manual override unexpectedly changes hours or fails budget: '+JSON.stringify(manual));
+            await page.screenshot({path:'budget-hours-qa.png',fullPage:true});
+            await page.setViewportSize({width:390,height:844});
+            await page.waitForTimeout(400);
+            const mobile=await page.evaluate(()=>{
+              const d=document.querySelector('#appframe').contentDocument;
+              return {viewport:d.defaultView.innerWidth,columns:getComputedStyle(d.querySelector('.layout')).gridTemplateColumns,formWidth:d.querySelector('.layout>.card').getBoundingClientRect().width,scrollWidth:d.documentElement.scrollWidth,tiles:d.querySelectorAll('#resultCard .kpi .tile').length};
+            });
+            console.log('REDESIGN_MOBILE',JSON.stringify(mobile));
+            if(mobile.scrollWidth>mobile.viewport+5)throw new Error('Mobile horizontal overflow: '+JSON.stringify(mobile));
+            await page.screenshot({path:'budget-hours-mobile.png',fullPage:true});
             const count=await frame.locator('#resultCard .kpi .tile').count();
             console.log('LEGACY_TILES',count);
             if(count<5||errors.length)throw new Error('Legacy results missing or JS errors: '+JSON.stringify(errors));
-            await page.screenshot({path:'budget-hours-qa.png',fullPage:true});
             console.log('CONTRACT_BUDGET_QA_PASS');
             await browser.close();
           })().catch(e=>{console.error(e.stack||String(e));process.exit(1)});
@@ -74,5 +131,7 @@ jobs:
         if: always()
         with:
           name: budget-hours-screenshot
-          path: budget-hours-qa.png
+          path: |
+            budget-hours-qa.png
+            budget-hours-mobile.png
           if-no-files-found: ignore
