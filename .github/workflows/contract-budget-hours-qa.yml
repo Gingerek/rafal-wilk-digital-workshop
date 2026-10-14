@@ -111,6 +111,17 @@ jobs:
             console.log('REDESIGN_BUDGET_OVERRIDE',JSON.stringify(manual));
             if(manual.weeks!=='2'||!manual.planned.includes('2.720')||manual.hours!=='176'||manual.hint.length<20)throw new Error('Manual override unexpectedly changes hours or fails budget: '+JSON.stringify(manual));
             await page.screenshot({path:'budget-hours-qa.png',fullPage:true});
+
+            for(const dims of [[1600,900],[1440,900],[1366,768],[1280,720],[1920,1080]]){
+              await page.setViewportSize({width:dims[0],height:dims[1]});
+              await page.waitForTimeout(80);
+              const sizes=await page.evaluate(()=>{
+                const f=document.querySelector('#appframe'),d=f.contentDocument;
+                const rect=q=>{const r=d.querySelector(q)?.getBoundingClientRect();return r?{top:Math.round(r.top),bottom:Math.round(r.bottom),height:Math.round(r.height),width:Math.round(r.width)}:null};
+                return {outer:[innerWidth,innerHeight],frameHeight:Math.round(f.getBoundingClientRect().height),inner:[d.defaultView.innerWidth,d.defaultView.innerHeight],htmlScroll:d.documentElement.scrollHeight,bodyScroll:d.body.scrollHeight,viewport:rect('.viewport'),header:rect('.viewport > header'),layout:rect('.layout'),left:rect('.layout>.card'),right:rect('#resultCard'),groups:[...d.querySelectorAll('.rw-budget-group')].map(e=>Math.round(e.getBoundingClientRect().top)),lastTile:rect('.rw-tile-usage')};
+              });
+              console.log('VIEWPORT_MEASURE',JSON.stringify(sizes));
+            }
             await page.setViewportSize({width:390,height:844});
             await page.waitForTimeout(400);
             const mobile=await page.evaluate(()=>{
