@@ -42,12 +42,17 @@ jobs:
             await page.waitForFunction(()=>!!document.querySelector('#appframe')?.contentDocument?.getElementById('rwContractHoursTile'),null,{timeout:15000});
             const frame=page.frameLocator('#appframe');
             async function scenario(weekly,start,end,expected,language='en'){
-              await frame.locator('#langSelect').selectOption(language);
-              await frame.locator('#uren').fill(weekly);
-              await frame.locator('#start').fill(start);
-              await frame.locator('#eind').fill(end);
+              await page.evaluate(({weekly,start,end,language})=>{
+                const d=document.querySelector('#appframe').contentDocument;
+                for(const [id,v] of [['langSelect',language],['uren',weekly],['start',start],['eind',end]]){
+                  const el=d.getElementById(id);
+                  el.value=v;
+                  el.dispatchEvent(new Event('input',{bubbles:true}));
+                  el.dispatchEvent(new Event('change',{bubbles:true}));
+                }
+              },{weekly,start,end,language});
               await page.waitForTimeout(800);
-              const output=await frame.locator('#rwContractHoursTile [data-rw-hours-value]').innerText();
+              const output=await page.evaluate(()=>document.querySelector('#appframe').contentDocument.querySelector('#rwContractHoursTile [data-rw-hours-value]').textContent.trim());
               if(output!==expected)throw new Error([weekly,start,end,expected,output].join(' / '));
               console.log('HOURS_PASS',JSON.stringify({weekly,start,end,expected,language}));
             }
