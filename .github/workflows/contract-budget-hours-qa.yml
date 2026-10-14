@@ -149,7 +149,7 @@ jobs:
             await testUsage('5440','50%',false,'50%');
             await testUsage('2720','100%',false,'100%');
             const excess=await testUsage('1088','100%',true,'250%');
-            if(!excess.details.includes('1.632')||!excess.details.includes('150%'))
+            if(!/(1[., ]?632)/.test(excess.details)||!excess.details.includes('150%'))
               throw new Error('Over-budget amount or excess percent missing: '+JSON.stringify(excess));
             const extreme=await testUsage('103,30','100%',true,'633');
             if(!extreme.details||!extreme.state)
