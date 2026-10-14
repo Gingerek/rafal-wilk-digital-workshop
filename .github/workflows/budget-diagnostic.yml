@@ -16,6 +16,17 @@ jobs:
           node-version: '22'
       - name: Install browser
         run: npm install --no-save playwright-core
+      - name: Inspect legacy budget source
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          const s=fs.readFileSync('assets/js/legacy-apps-bundle.js','utf8');
+          const terms=['function loadApp(', 'loadApp =', 'window.loadApp', '__origLoad', 'srcdoc', 'const apps', 'const APPS', 'var APP', 'Contract Budget Calculator','budżet','Contract Budget'];
+          for(const term of terms){
+            const i=s.indexOf(term);console.log('BUNDLE_SEARCH',JSON.stringify({term,at:i,snippet:i>=0?s.slice(Math.max(0,i-350),i+1100):''}));
+          }
+          console.log('BUNDLE_LENGTH',s.length);
+          NODE
       - name: Inspect budget module in Chromium
         run: |
           CHROME_BIN="$(which google-chrome-stable || which google-chrome || which chromium || which chromium-browser)" node <<'NODE'
@@ -33,7 +44,7 @@ jobs:
             await page.evaluate(()=>window.loadApp(0));
             await page.waitForTimeout(3000);
             const root=await page.evaluate(()=>({
-              frames:[...document.querySelectorAll('iframe')].map(f=>({id:f.id,src:f.src,show:f.className,docText:f.contentDocument?.body?.innerText?.slice(0,400)||''})),
+              frames:[...document.querySelectorAll('iframe')].map(f=>({id:f.id,src:f.src,srcdocSize:f.getAttribute('srcdoc')?.length||0,show:f.className,docText:f.contentDocument?.body?.innerText?.slice(0,400)||''})),
               body:document.body.className,
               fn:String(window.loadApp).slice(0,900)
             }));
