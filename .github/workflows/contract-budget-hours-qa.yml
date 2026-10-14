@@ -134,6 +134,14 @@ jobs:
             const count=await frame.locator('#resultCard .kpi .tile').count();
             console.log('LEGACY_TILES',count);
             if(count<5||errors.length)throw new Error('Legacy results missing or JS errors: '+JSON.stringify(errors));
+
+            const production=await page.request.get('https://www.rafalwilkai.com/assets/js/contract-budget-layout.js?v=20261014-screenfit-1',{timeout:30000});
+            const deployedCode=await production.text();
+            const productionIndex=await page.request.get('https://www.rafalwilkai.com/',{timeout:30000});
+            const deployedIndex=await productionIndex.text();
+            const live={status:production.status(),indexStatus:productionIndex.status(),newStyles:deployedCode.includes('compact desktop screen fit'),newScriptRef:deployedIndex.includes('contract-budget-layout.js?v=20261014-screenfit-1')};
+            console.log('PRODUCTION_SCREENFIT_DEPLOYMENT',JSON.stringify(live));
+            if(!production.ok()||!productionIndex.ok()||!live.newStyles||!live.newScriptRef)throw new Error('Published site is outdated: '+JSON.stringify(live));
             console.log('CONTRACT_BUDGET_QA_PASS');
             await browser.close();
           })().catch(e=>{console.error(e.stack||String(e));process.exit(1)});
