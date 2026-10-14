@@ -6,6 +6,7 @@ on:
       - 'index.html'
       - 'assets/js/contract-budget-hours.js'
       - 'assets/js/contract-budget-layout.js'
+      - 'assets/js/contract-budget-utilization.js'
       - '.github/workflows/contract-budget-hours-qa.yml'
   workflow_dispatch:
 jobs:
@@ -110,6 +111,51 @@ jobs:
             });
             console.log('REDESIGN_BUDGET_OVERRIDE',JSON.stringify(manual));
             if(manual.weeks!=='2'||!manual.planned.includes('2.720')||manual.hours!=='176'||manual.hint.length<20)throw new Error('Manual override unexpectedly changes hours or fails budget: '+JSON.stringify(manual));
+
+            await page.waitForFunction(()=>!!document.querySelector('#appframe')?.contentDocument?.getElementById('rwBudgetUseSummary'),null,{timeout:9000});
+            async function testUsage(budget,expectedRing,shouldOver,expectedActual){
+              await page.evaluate(value=>{
+                const d=document.querySelector('#appframe').contentDocument;
+                const el=d.getElementById('budget');
+                el.value=value;
+                el.dispatchEvent(new Event('input',{bubbles:true}));
+                el.dispatchEvent(new Event('change',{bubbles:true}));
+              },budget);
+              await page.waitForTimeout(650);
+              const usage=await page.evaluate(()=>{
+                const d=document.querySelector('#appframe').contentDocument;
+                const t=id=>d.getElementById(id)?.textContent.trim();
+                return {
+                  center:t('percentText'),
+                  actual:t('rwBudgetUseActual'),
+                  state:t('rwBudgetUseState'),
+                  details:t('rwBudgetUseDetail'),
+                  originalPercent:t('utilValue'),
+                  originalPlanned:t('planned'),
+                  ring:d.getElementById('ring')?.getAttribute('stroke-dashoffset'),
+                  over:d.querySelector('.rw-tile-usage')?.classList.contains('rw-budget-over'),
+                  legendVisible:getComputedStyle(d.querySelector('.rw-tile-usage .legend')).display
+                };
+              });
+              console.log('BUDGET_PERCENT_CASE',JSON.stringify({budget,usage}));
+              if(usage.center!==expectedRing||usage.over!==shouldOver)
+                throw new Error('Budget ring must cap at 100%: '+JSON.stringify({budget,usage,expectedRing,shouldOver}));
+              if(expectedActual && !usage.actual.includes(expectedActual))
+                throw new Error('Actual budget usage missing: '+JSON.stringify({budget,usage,expectedActual}));
+              if(usage.originalPlanned!=='2.720,00')
+                throw new Error('Budget planned calculation has changed unexpectedly: '+JSON.stringify(usage));
+              return usage;
+            }
+            await testUsage('5440','50%',false,'50%');
+            await testUsage('2720','100%',false,'100%');
+            const excess=await testUsage('1088','100%',true,'250%');
+            if(!excess.details.includes('1.632')||!excess.details.includes('150%'))
+              throw new Error('Over-budget amount or excess percent missing: '+JSON.stringify(excess));
+            const extreme=await testUsage('103,30','100%',true,'633');
+            if(!extreme.details||!extreme.state)
+              throw new Error('Extreme over-budget information missing: '+JSON.stringify(extreme));
+            await testUsage('9876','28%',false,'27');
+
             await page.screenshot({path:'budget-hours-qa.png',fullPage:true});
 
             for(const dims of [[1600,900],[1440,900],[1366,768],[1280,720],[1920,1080]]){
