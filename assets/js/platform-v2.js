@@ -2269,6 +2269,22 @@
     shell.style.setProperty('--rw-reflection-sun', (sunVisible * weatherSun * (0.026 + sunElevation * .024)).toFixed(3));
   }
   let commandReturnFocus = null;
+
+  // Use the dedicated module list as the sole wheel scroll container.
+  // This avoids delayed scroll chaining into the fullscreen launcher.
+  document.addEventListener('wheel', (event) => {
+    const palette = document.querySelector('.rw-v2-command-palette');
+    if (!palette || palette.hidden || !palette.contains(event.target)) return;
+    const list = palette.querySelector('.rw-v2-command-list');
+    if (!list || list.scrollHeight <= list.clientHeight + 1) return;
+    if (!event.target.closest('.rw-v2-command-dialog')) return;
+    if (event.ctrlKey) return;
+    const multiplier = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? list.clientHeight : 1;
+    const amount = event.deltaY * multiplier;
+    if (!amount) return;
+    event.preventDefault();
+    list.scrollTop += amount;
+  }, {passive:false, capture:true});
   function openCommandPalette(){
     const palette = document.querySelector('.rw-v2-command-palette');
     const input = palette?.querySelector('.rw-v2-command-input');
