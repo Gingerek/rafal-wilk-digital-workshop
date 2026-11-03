@@ -1110,4 +1110,141 @@ function openApp(id, title){
 <script src="assets/js/contract-budget-hours.js?v=20261014-1" defer></script>
 <script src="assets/js/contract-budget-layout.js?v=20261014-screenfit-1" defer></script>
 <script src="assets/js/contract-budget-utilization.js?v=20261014-usage100-v1" defer></script>
+<script id="rw-intake-call-fixes-20261103">
+(function(){
+  'use strict';
+  if (window.__rwIntakeFix20261103) return;
+  window.__rwIntakeFix20261103 = true;
+  var moduleIndex = '3';
+  var activeKey = 'rw_active_module_idx';
+  var stateKey = 'rw_module_state_v1:module:3';
 
+  // Patch only the embedded Intake Call HTML, before its original scripts run.
+  // Keep all other embedded modules untouched.
+  function patchIntakeHtml(html) {
+    if (typeof html !== 'string' ||
+        html.indexOf('id="jobreq_func"') === -1 ||
+        html.indexOf('id="downloadPdfBtn"') === -1) return html;
+    var changes = [
+      [
+        'const jobReq = guessJobReq() || "Intake";',
+        'const jobReq = String((document.getElementById("jobreq_func") || {}).value || "").trim();\n' +
+        '    if (!jobReq) { alert("Enter the Job Number before downloading the PDF."); return; }'
+      ],
+      [
+        'doc.text("Job Req: " + jobReq + "   •   Datum: " + datum, 56, 46);',
+        'doc.text(jobReq, 56, 46);\n  doc.text("Datum: " + datum, pageW - 56, 46, {align:"right"});'
+      ],
+      [
+        'const safe = (jobReq||"").replace(/[^\\w\\-]+/g,"_");\n    doc.save("Intake_Raport_MONO_" + safe + "_" + today + ".pdf");',
+        'const safe = jobReq.replace(/[\\\\/:*?"<>|]/g, "_").trim();\n    doc.save(safe + ".pdf");'
+      ]
+    ];
+    for (var i = 0; i < changes.length; i++) {
+      if (html.indexOf(changes[i][0]) === -1) {
+        console.warn('Intake Call PDF patch: template changed, no replacement applied.');
+        return html;
+      }
+    }
+    changes.forEach(function(pair){ html = html.replace(pair[0], pair[1]); });
+    return html;
+  }
+
+  var descriptor = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'srcdoc');
+  if (descriptor && descriptor.configurable && descriptor.get && descriptor.set) {
+    Object.defineProperty(HTMLIFrameElement.prototype, 'srcdoc', {
+      configurable: descriptor.configurable,
+      enumerable: descriptor.enumerable,
+      get: function(){ return descriptor.get.call(this); },
+      set: function(value){
+        if (this.id === 'appframe') value = patchIntakeHtml(value);
+        return descriptor.set.call(this, value);
+      }
+    });
+  }
+
+  function clearSavedState(frameWindow) {
+    try { localStorage.removeItem(stateKey); } catch(_e){}
+    try { sessionStorage.removeItem(stateKey); } catch(_e){}
+    try { frameWindow.localStorage.removeItem(stateKey); } catch(_e){}
+    try { frameWindow.sessionStorage.removeItem(stateKey); } catch(_e){}
+  }
+
+  function clearDocument(doc, frameWindow) {
+    doc.querySelectorAll('form').forEach(function(form){
+      try { form.reset(); } catch(_e){}
+    });
+    doc.querySelectorAll('input,textarea,select,[contenteditable="true"]').forEach(function(el) {
+      var tag = el.tagName.toLowerCase();
+      if (tag === 'input') {
+        var type = String(el.type || 'text').toLowerCase();
+        if (['button','submit','reset','hidden','file'].indexOf(type) !== -1) return;
+        if (type === 'checkbox' || type === 'radio') el.checked = false;
+        else el.value = '';
+      } else if (tag === 'textarea') el.value = '';
+      else if (tag === 'select') el.selectedIndex = 0;
+      else if (el.isContentEditable) el.textContent = '';
+      try { el.dispatchEvent(new Event('input', {bubbles:true})); } catch(_e){}
+      try { el.dispatchEvent(new Event('change', {bubbles:true})); } catch(_e){}
+    });
+    doc.querySelectorAll('output').forEach(function(el){ el.textContent = ''; });
+    clearSavedState(frameWindow);
+    setTimeout(function(){clearSavedState(frameWindow);}, 120);
+  }
+
+  function installButton() {
+    var frame = document.getElementById('appframe');
+    if (!frame || !frame.classList.contains('show')) return;
+    var active = null;
+    try { active = localStorage.getItem(activeKey); } catch(_e){}
+    if (String(active) !== moduleIndex) return;
+    var doc, frameWindow;
+    try { doc = frame.contentDocument; frameWindow = frame.contentWindow; } catch(_e){return;}
+    if (!doc || !doc.body || !doc.getElementById('jobreq_func')) return;
+    var bar = doc.querySelector('.rw-top-actions');
+    var download = doc.getElementById('downloadPdfBtn');
+    if (!bar || !download) return;
+
+    if (!doc.getElementById('rwIntakeActionsLayout20261103')) {
+      var style = doc.createElement('style');
+      style.id = 'rwIntakeActionsLayout20261103';
+      style.textContent =
+        '.rw-top-actions{position:relative!important;top:auto!important;right:auto!important;left:auto!important;transform:none!important;' +
+        'display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;justify-content:flex-end!important;' +
+        'align-items:center!important;gap:10px!important;width:100%!important;max-width:100%!important;' +
+        'padding:12px 18px!important;margin:0!important;box-sizing:border-box!important;z-index:99999!important}' +
+        '.rw-top-actions .rw-tool-lang-ui{position:static!important;top:auto!important;right:auto!important;' +
+        'left:auto!important;transform:none!important;margin:0!important}' +
+        '.rw-top-actions #rwIntakeClearDocument,.rw-top-actions #downloadPdfBtn{position:static!important;' +
+        'top:auto!important;right:auto!important;left:auto!important;transform:none!important;margin:0!important;' +
+        'max-width:100%!important;box-sizing:border-box!important;white-space:normal!important}' +
+        '@media(max-width:520px){.rw-top-actions{padding:10px!important;justify-content:center!important}}';
+      doc.head.appendChild(style);
+    }
+
+    var clear = doc.getElementById('rwIntakeClearDocument');
+    if (!clear) {
+      clear = doc.createElement('button');
+      clear.id = 'rwIntakeClearDocument';
+      clear.type = 'button';
+      clear.textContent = 'Wyczyść dokument';
+      clear.setAttribute('aria-label', 'Wyczyść dokument');
+      clear.style.cssText = 'padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.28);' +
+        'background:#151515;color:#fff;font:600 14px/1.2 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;' +
+        'cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.28)';
+      clear.addEventListener('click', function(){ clearDocument(doc, frameWindow); });
+    }
+    if (clear.parentNode !== bar || clear.nextSibling !== download) bar.insertBefore(clear, download);
+  }
+
+  var frame = document.getElementById('appframe');
+  if (frame) frame.addEventListener('load', function(){
+    setTimeout(installButton, 0);
+    setTimeout(installButton, 180);
+  });
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', installButton);
+  else installButton();
+  setInterval(installButton, 900);
+})();
+</script>
