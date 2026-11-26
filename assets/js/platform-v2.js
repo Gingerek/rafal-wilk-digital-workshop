@@ -2511,7 +2511,7 @@
     });
   }
   function openModuleFrame(id, title){
-    ensureModulePinGate();
+
     if (!window.__rwModulePinConsume || !window.__rwModulePinConsume()){
       if (window.__rwRequestModulePin) {
         window.__rwRequestModulePin(() => openModuleFrame(id, title), title || id || 'Module');
@@ -3518,7 +3518,7 @@
   function init(){
     window.__rwPlatformV2RefreshHome = refreshHomeView;
     bindVisualPerformanceGovernor();
-    ensureModulePinGate();
+
     retireLegacyVisualLayers();
     syncBrand();
     ensureShell();
@@ -3528,8 +3528,8 @@
     setInterval(updateWallClock, 60000);
     window.addEventListener('resize', scheduleCommandPosition, { passive:true });
     ensureOpenAppBridge();
-    enhancePin();
-    patchPinGateHooks();
+
+
     ensureModuleBar();
     bindEvents();
     hideStageWidgets();
