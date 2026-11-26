@@ -3475,6 +3475,7 @@
         doc.__rwLanguageDedupeObserver.observe(doc.body, { childList:true, subtree:true });
       }
       integrateRekentoolMerit(frame);
+      if (doc.documentElement.hasAttribute('data-workshop-module')) return;
       if (isCvMatchModule) {
         doc.getElementById('rw-premium-module-theme')?.remove();
         return;
@@ -3550,4 +3551,5 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
+
 

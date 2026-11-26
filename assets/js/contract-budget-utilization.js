@@ -106,32 +106,7 @@
     var legend = tile?.querySelector('.legend');
     if (!tile || !legend || !doc.getElementById('percentText')) return false;
 
-    if (!doc.getElementById('rwBudgetUtilizationStyles')) {
-      var style = doc.createElement('style');
-      style.id = 'rwBudgetUtilizationStyles';
-      style.textContent = [
-        'html.rw-budget-pro .rw-tile-usage{background:#f6faff!important;border-color:#dfeaf6!important}',
-        'html.rw-budget-pro .rw-tile-usage .legend>div:not(.rw-budget-use-summary){display:none!important}',
-        'html.rw-budget-pro .rw-tile-usage .donut svg #percentText{fill:#173653!important;font-size:18px!important;font-weight:900!important}',
-        'html.rw-budget-pro .rw-tile-usage.rw-budget-over{background:#fff4f3!important;border-color:#efc1c0!important}',
-        'html.rw-budget-pro .rw-tile-usage.rw-budget-over .donut svg #ring{stroke:#d84e4e!important}',
-        'html.rw-budget-pro .rw-tile-usage.rw-budget-over .donut svg #percentText{fill:#b52f35!important}',
-        'html.rw-budget-pro .rw-budget-use-summary{display:flex!important;flex-direction:column!important;gap:4px!important;align-items:flex-start!important;min-width:0!important}',
-        'html.rw-budget-pro .rw-budget-use-heading{font-size:11px!important;font-weight:750!important;color:#64748b!important}',
-        'html.rw-budget-pro .rw-budget-use-actual{font-size:clamp(19px,1.8vw,26px)!important;font-weight:900!important;line-height:1.08!important;letter-spacing:-.5px!important;color:#122b48!important;font-variant-numeric:tabular-nums!important}',
-        'html.rw-budget-pro .rw-budget-use-state{font-size:11px!important;font-weight:850!important;color:#167651!important}',
-        'html.rw-budget-pro .rw-budget-use-detail{font-size:10px!important;line-height:1.3!important;color:#67798d!important;overflow-wrap:anywhere!important}',
-        'html.rw-budget-pro .rw-budget-over .rw-budget-use-actual,html.rw-budget-pro .rw-budget-over .rw-budget-use-state{color:#b8343c!important}',
-        'html.rw-budget-pro .rw-tile-usage .donut-wrap{gap:12px!important}',
-        '@media(min-width:1100px) and (max-height:735px){',
-        'html.rw-budget-pro .rw-budget-use-summary{gap:2px!important}',
-        'html.rw-budget-pro .rw-budget-use-actual{font-size:20px!important}',
-        'html.rw-budget-pro .rw-budget-use-heading,html.rw-budget-pro .rw-budget-use-state{font-size:10px!important}',
-        'html.rw-budget-pro .rw-budget-use-detail{font-size:9px!important;line-height:1.25!important}',
-        '}'
-      ].join('\n');
-      doc.head.appendChild(style);
-    }
+
 
     if (!doc.getElementById('rwBudgetUseSummary')) {
       var summary = doc.createElement('div');
